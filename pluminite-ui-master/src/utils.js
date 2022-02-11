@@ -6,7 +6,8 @@ import { APP } from './constants';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
-export const getMarketContractName = (nftContractName) => `market.${nftContractName}`;
+//export const getMarketContractName = (nftContractName) => `market.${nftContractName}`;
+export const getMarketContractName = (nftContractName) => `${nftContractName}`;
 
 // Initialize contract & set global variables
 export async function initContracts() {
@@ -26,6 +27,8 @@ export async function initContracts() {
     };
   }
 
+    console.log('account ', walletConnection.account());
+
   // Initializing our contract APIs by contract name and configuration
   const nftContract = await new Contract(walletConnection.account(), nearConfig.contractName, {
     // View methods are read only. They don't modify the state, but usually return some value.
@@ -35,6 +38,9 @@ export async function initContracts() {
     // Sender is the account ID to initialize transactions.
     sender: walletConnection.getAccountId(),
   });
+
+    console.log('nftContract ', nftContract);
+
 
   // Initializing our contract APIs by contract name and configuration
   const marketContract = await new Contract(
@@ -48,7 +54,10 @@ export async function initContracts() {
       // Sender is the account ID to initialize transactions.
       sender: walletConnection.getAccountId(),
     }
-  );
+);
+
+    console.log('marketContract ', marketContract);
+
 
   return {
     nftContract,

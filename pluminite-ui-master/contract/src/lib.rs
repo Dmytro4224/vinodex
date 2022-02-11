@@ -178,6 +178,10 @@ impl Contract {
         self.version
     }
 
+    pub fn get_version1(&self) -> u16 {
+        1
+    }
+
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
         assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
         self.use_storage_fees = use_storage_fees;
