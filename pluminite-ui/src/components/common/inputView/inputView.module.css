@@ -1,6 +1,46 @@
+.inputWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  border-radius: 4px;
+  max-width: 360px;
+  background: var(--wildSand);
+}
+
 .inputView {
+  padding: 5px 10px;
+  width: 100%;
+  min-height: 30px;
   font-size: 16px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.6);
-  background: rgba(0, 0, 0, 0.87);
+  border: none;
+  border-radius: 4px;
+  outline: none;
+  background: var(--wildSand);
+}
+
+.inputView::placeholder {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--doveGray);
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  margin: 0 0 0 10px;
+}
+
+.absPlaceholder {
+  position: absolute;
+  top: 50%;
+  left: 44px;
+  transform: translateY(-50%);
+  transition: transform 0.2s ease;
+  will-change: transform;
+}
+
+.inputView:focus + .absPlaceholder {
+  transform: translateY(-120%);
 }
