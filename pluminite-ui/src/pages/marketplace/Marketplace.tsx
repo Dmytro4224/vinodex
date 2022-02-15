@@ -9,16 +9,6 @@ class Marketplace extends Component {
     return (
       <>
         <InputView
-          onChange={(e) => {
-            console.log(e)
-          }}
-          placeholder={'Search'}/>
-          <ButtonView
-              onClick={ (e) => { console.log(e) }}
-              text={'save'}
-              color={buttonColors.blue}
-          />
-          <TabsView tabItems={[{ title: "tab1" }, { title: "tab2" }]} type={'1'} />
           onChange={(e) => { console.log(e) }}
           placeholder={'Search'}
           icon={searchIcon}
@@ -29,6 +19,7 @@ class Marketplace extends Component {
           text={'save'}
           color={buttonColors.blue}
         />
+        <TabsView tabItems={[{ title: "tab1" }, { title: "tab2" }]} type={'1'} />
       </>
     )
   }

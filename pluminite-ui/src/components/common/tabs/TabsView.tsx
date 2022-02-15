@@ -1,4 +1,4 @@
-import styles from './tabs.module.css';
+import styles from './tabsView.module.css';
 import {Component, MouseEvent} from "react";
 import {buttonColors} from "../button/ButtonView";
 
@@ -22,7 +22,7 @@ class TabsView extends Component<Readonly<ITabsView>>{
 
     render() {
         return (
-            <div>
+            <div className={"tabs-wrap"}>
                 {this.tabs.map(item => item.title)}
             </div>
         )
