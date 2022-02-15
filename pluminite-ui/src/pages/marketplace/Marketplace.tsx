@@ -1,6 +1,6 @@
 import {Component} from "react";
-import {InputView} from "../../components/common/input/InputView";
 import {buttonColors, ButtonView} from "../../components/common/button/ButtonView";
+import { InputView } from "../../components/common/inputView/InputView";
 
 class Marketplace extends Component {
   render() {
