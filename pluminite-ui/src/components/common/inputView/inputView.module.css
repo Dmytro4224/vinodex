@@ -37,10 +37,20 @@
   top: 50%;
   left: 44px;
   transform: translateY(-50%);
+  font-size: 12px;
   transition: transform 0.2s ease;
   will-change: transform;
+  color: var(--doveGray);
 }
 
 .inputView:focus + .absPlaceholder {
-  transform: translateY(-120%);
+  transform: translateY(-20px);
+}
+
+.inputView:not(:placeholder-shown) + .absPlaceholder {
+  transform: translateY(-20px);
+}
+
+.inputView.hidePlaceholder::placeholder {
+  color: transparent;
 }

@@ -4,7 +4,7 @@ import styles from './inputView.module.css';
 interface IInputView {
   onChange: (e: ChangeEvent) => void;
   absPlaceholder?: string;
-  placeholder?: string;
+  placeholder: string;
   alt?: string;
   icon?: any;
 };
@@ -41,7 +41,7 @@ class InputView extends Component<Readonly<IInputView>> {
         <input
           onChange={this.onChange}
           placeholder={this.placeholder}
-          className={styles.inputView}
+          className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
           type="text"
         />
         { this.absPlaceholder && <span className={styles.absPlaceholder}>{this.absPlaceholder}</span> }
