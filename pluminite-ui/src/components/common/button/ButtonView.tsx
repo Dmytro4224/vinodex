@@ -23,7 +23,7 @@ class ButtonView extends Component<Readonly<IButtonView>>{
 
     private onClick = async (event: MouseEvent) => {
         this.props.onClick(event);
-    }                                                                   
+    }
 
     public render(){
         return (
