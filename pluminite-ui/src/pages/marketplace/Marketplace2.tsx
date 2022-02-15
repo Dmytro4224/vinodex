@@ -2,7 +2,7 @@ import { Component } from "react";
 import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
 import { InputView } from "../../components/common/inputView/InputView";
 import {TabsView, tabType} from "../../components/common/tabs/TabsView";
-import searchIcon from '../../assets/icons/search.svg';
+import arrow from '../../assets/icons/arrow-down.svg';
 
 class Marketplace2 extends Component {
     render() {
@@ -10,10 +10,11 @@ class Marketplace2 extends Component {
             <>
                 <ButtonView
                     onClick={(e) => { console.log(e) }}
-                    text={'save'}
-                    color={buttonColors.blue}
-                    iconClass={'arrow-long'}
+                    text={'Sort by'}
+                    color={buttonColors.select}
+                    icon={arrow}
                 />
+
                 <TabsView tabItems={
                     [
                         { title: "All", id: 1, link: "#" },

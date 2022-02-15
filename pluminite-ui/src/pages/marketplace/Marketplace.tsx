@@ -14,11 +14,6 @@ class Marketplace extends Component {
           icon={searchIcon}
           absPlaceholder={'Search'}
         />
-        <ButtonView
-          onClick={(e) => { console.log(e) }}
-          text={'save'}
-          color={buttonColors.blue}
-        />
       </>
     )
   }
