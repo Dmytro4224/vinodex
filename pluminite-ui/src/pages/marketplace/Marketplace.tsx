@@ -19,7 +19,6 @@ class Marketplace extends Component {
           text={'save'}
           color={buttonColors.blue}
         />
-        <TabsView tabItems={[{ title: "tab1" }, { title: "tab2" }]} type={'1'} />
       </>
     )
   }
