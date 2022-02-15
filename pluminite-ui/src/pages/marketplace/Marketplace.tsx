@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { InputView } from "../../components/common/input/InputView";
+import { InputView } from "../../components/common/inputView/InputView";
 
 class Marketplace extends Component {
   render() {
