@@ -1,12 +1,15 @@
-import styles from './marketplace.module.css';
 import { Component } from "react";
+import { InputView } from "../../components/common/input/InputView";
 
-class Marketplace extends Component<any, any> {
+class Marketplace extends Component {
   render() {
     return (
       <>
-        <h1 className={styles.title}>Marketplace</h1>
-        <p>page</p>
+        <InputView
+          onChange={(e) => {
+            console.log(e)
+          }}
+          placeholder={'Search'}/>
       </>
     )
   }
