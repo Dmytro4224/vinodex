@@ -3,7 +3,6 @@
   display: flex;
   align-items: center;
   border-radius: 4px;
-  max-width: 360px;
   background: var(--wildSand);
 }
 
@@ -13,7 +12,7 @@
   min-height: 30px;
   font-size: 16px;
   font-weight: 500;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(0, 0, 0, 0.8);
   border: none;
   border-radius: 4px;
   outline: none;
