@@ -53,6 +53,7 @@ class Marketplace2 extends Component {
                     name={'Item Name'}
                     author={'Creat name'}
                     likesCount={99}
+                    isSmall={false}
                     buttonText={'Place a bid 0.08 ETH'}
                     onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
             </>

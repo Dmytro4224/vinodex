@@ -53,12 +53,31 @@
     display: flex;
     align-items: center;
 }
-
+.imageStyle{
+    width: 100%;
+}
 .button{
     padding: 6px 12px;
     font-size: 14px;
 }
 
 .card.cardSmall{
-    max-width: 432px;
+    max-width: 297px;
+}
+.card.cardSmall .imageStyle{
+    min-height: 297px;
+    object-fit: cover;
+    background-position: center;
+}
+.card.cardSmall .cardFooter{
+    flex-wrap: wrap;
+}
+.card.cardSmall .cardControls{
+    justify-content: space-between;
+    margin-top: 16px;
+    width: 100%;
+    flex-direction: row-reverse;
+}
+.card.cardSmall .likes{
+    margin-right: 0;
 }

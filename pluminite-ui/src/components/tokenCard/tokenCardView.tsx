@@ -38,7 +38,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
         return(
             <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''}`}>
                 <div className={styles.cardImage}>
-                    <img src={this.icon} alt={this.props.alt || 'preview image'}/>
+                    <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'}/>
                     <div className={styles.cardDetail}>
                         { (this.props.countL > 0 || this.props.countR > 0) && <div className={styles.count}>
                             {this.props.countL}/{this.props.countR}
