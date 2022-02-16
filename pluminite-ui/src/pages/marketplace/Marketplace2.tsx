@@ -11,6 +11,21 @@ class Marketplace2 extends Component {
             <>
                 <DropdownView
                     colorType={dropdownColors.select}
+                    title={'Sort by'}
+                    childrens={[
+                        {
+                            id: 1,
+                            title: 'Recently Listed'
+                        },
+                        {
+                            id: 2,
+                            title: 'Recently Created'
+                        },
+                        {
+                            id: 3,
+                            title: 'Recently Sold'
+                        }
+                    ]}
                 />
                 <ButtonView
                     onClick={(e) => { console.log(e) }}
