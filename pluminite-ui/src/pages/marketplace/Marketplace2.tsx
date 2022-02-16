@@ -12,7 +12,6 @@ class Marketplace2 extends Component {
                     onClick={(e) => { console.log(e) }}
                     text={'save'}
                     color={buttonColors.blue}
-                    iconClass={'arrow-long'}
                 />
                 <TabsView tabItems={
                     [
