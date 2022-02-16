@@ -12,6 +12,7 @@ class Marketplace2 extends Component {
                 <DropdownView
                     colorType={dropdownColors.select}
                     title={'Sort by'}
+                    onChange={(item) => { console.log(item) }}
                     childrens={[
                         {
                             id: 1,
@@ -26,12 +27,6 @@ class Marketplace2 extends Component {
                             title: 'Recently Sold'
                         }
                     ]}
-                />
-                <ButtonView
-                    onClick={(e) => { console.log(e) }}
-                    text={'Sort by'}
-                    color={buttonColors.select}
-                    icon={arrow}
                 />
 
                 <TabsView tabItems={

@@ -1,9 +1,17 @@
-import styles from './dropdownView.module.css';
 import React, {MouseEvent, Component} from "react";
 import Dropdown from 'react-bootstrap/Dropdown';
+import styles from './dropdownView.module.css';
 
-interface IDropdownView{
-    colorType: dropdownColors
+interface IDropdownView {
+    colorType: dropdownColors,
+    onChange: (item: dropdownItem) => void;
+    childrens: dropdownItem[],
+    title: string
+}
+
+interface dropdownItem {
+    id: number,
+    title: string
 }
 
 enum dropdownColors {
@@ -22,18 +30,59 @@ class DropdownView extends Component<Readonly<IDropdownView>>{
         super(props);
     }
 
+    private get childrens(){
+        return this.props.childrens;
+    }
+
+    public get dropdownColor(){
+        let color = 'blue';
+
+        switch (this.props.colorType){
+            case 'blue':
+                color = styles.dropdownBlue;
+                break;
+            case 'white':
+                color = styles.dropdownWhite;
+                break;
+            case 'select':
+                color = styles.dropdownSelect;
+                break;
+            case 'primary':
+                color = styles.dropdownPrimary;
+                break;
+            case 'gray':
+                color = styles.dropdownGray;
+                break;
+            case 'whiteGray':
+                color = styles.dropdownWhiteGray;
+                break;
+            case 'selectGray':
+                color = styles.dropdownSelectGray;
+                break;
+            case 'darkGray':
+                color = styles.dropdownDarkGray;
+                break;
+        }
+
+        return color;
+    }
+
+    private onChange(item: dropdownItem){
+        this.props.onChange(item)
+    }
+
     render(){
         return(
             <>
                 <Dropdown className={`${styles.customDropdown}`}>
-                    <Dropdown.Toggle variant="primary" id="dropdown-basic" className={styles.dropdownButton}>
-                        Sort by
+                    <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${this.dropdownColor}`}>
+                        {this.props.title}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">Another action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Something else</Dropdown.Item>
+                        {this.childrens.map((child, i) => {
+                            return <Dropdown.Item key={i} onClick={() => { this.onChange(child) }} className={styles.dropdownItem}>{child.title}</Dropdown.Item>
+                        })}
                     </Dropdown.Menu>
                 </Dropdown>
             </>
