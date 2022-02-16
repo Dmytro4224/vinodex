@@ -2,12 +2,16 @@ import { Component } from "react";
 import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
 import { InputView } from "../../components/common/inputView/InputView";
 import {TabsView, tabType} from "../../components/common/tabs/TabsView";
+import {DropdownView, dropdownColors} from "../../components/common/dropdown/dropdownView";
 import arrow from '../../assets/icons/arrow-down.svg';
 
 class Marketplace2 extends Component {
     render() {
         return (
             <>
+                <DropdownView
+                    colorType={dropdownColors.select}
+                />
                 <ButtonView
                     onClick={(e) => { console.log(e) }}
                     text={'Sort by'}
