@@ -5,6 +5,7 @@ import {TabsView, tabType} from "../../components/common/tabs/TabsView";
 import {DropdownView, dropdownColors} from "../../components/common/dropdown/dropdownView";
 import arrow from '../../assets/icons/arrow-down.svg';
 import { TokenCardView } from "../../components/tokenCard/tokenCardView";
+import { CarouselView } from "../../components/carousel/carouselView";
 
 class Marketplace2 extends Component {
     render() {
@@ -46,7 +47,7 @@ class Marketplace2 extends Component {
                           currentTabIndex={0}
                 />
 
-                <TokenCardView
+                {/*<TokenCardView
                     countL={3}
                     countR={10}
                     days={'121 days left'}
@@ -55,7 +56,9 @@ class Marketplace2 extends Component {
                     likesCount={99}
                     isSmall={false}
                     buttonText={'Place a bid 0.08 ETH'}
-                    onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
+                    onClick={() => { alert('buy Place a bid 0.08 ETH') }} />*/}
+
+              <CarouselView customCLass={'carousel-owl-tokens'} />
             </>
         )
     }

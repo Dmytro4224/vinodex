@@ -1,0 +1,12 @@
+/*
+.carousel-owl-tokens .carousel-control-prev{
+    left: -50px;
+}
+
+.carousel-owl-tokens .carousel-control-next{
+    right: -50px;
+}*/
+.slick-slider .slick-track, .slick-slider .slick-list{
+    display: flex;
+    gap: 30px;
+}
