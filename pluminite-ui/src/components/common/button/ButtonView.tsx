@@ -17,6 +17,7 @@ interface IButtonView{
     text: string;
     onClick: (event: MouseEvent) => void;
     color: buttonColors;
+    customClass?: string;
     icon?: any;
 }
 
@@ -75,7 +76,7 @@ class ButtonView extends Component<Readonly<IButtonView>>{
             <button
                 ref={this._ref}
                 onClick={this.onClick}
-                className={`${styles.buttonView} ${this.buttonColor} ${this.props.icon && styles.btnIcon}`}>
+                className={`${styles.buttonView} ${this.buttonColor} ${this.props.icon && styles.btnIcon} ${this.props.customClass || ''}`}>
                 <span className={styles.btnText}>{this.text}</span>
                 {this.props.icon && <i style={{
                     backgroundImage: `url(${this.props.icon})`

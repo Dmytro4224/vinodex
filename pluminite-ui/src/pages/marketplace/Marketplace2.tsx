@@ -4,6 +4,7 @@ import { InputView } from "../../components/common/inputView/InputView";
 import {TabsView, tabType} from "../../components/common/tabs/TabsView";
 import {DropdownView, dropdownColors} from "../../components/common/dropdown/dropdownView";
 import arrow from '../../assets/icons/arrow-down.svg';
+import { TokenCardView } from "../../components/tokenCard/tokenCardView";
 
 class Marketplace2 extends Component {
     render() {
@@ -44,6 +45,16 @@ class Marketplace2 extends Component {
                           onClick={(item) => { console.log(item) }}
                           currentTabIndex={0}
                 />
+
+                <TokenCardView
+                    countL={3}
+                    countR={10}
+                    days={'121 days left'}
+                    name={'Item Name'}
+                    author={'Creat name'}
+                    likesCount={99}
+                    buttonText={'Place a bid 0.08 ETH'}
+                    onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
             </>
         )
     }

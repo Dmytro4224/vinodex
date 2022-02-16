@@ -1,0 +1,11 @@
+.likeImage{
+    cursor: pointer;
+}
+.iconStyle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.count{
+    margin-left: 8px;
+}
