@@ -8,6 +8,10 @@ use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
 };
+/**для регексу */
+extern crate regex;
+use regex::Regex;
+/**для регексу */
 
 use crate::internal::*;
 pub use crate::metadata::*;
@@ -22,15 +26,19 @@ mod mint;
 mod nft_core;
 mod token;
 mod enumerable;
-mod author_data;
 
-// CUSTOM types
+///тип токену
 pub type TokenType = String;
+//типи токенів
 pub type TypeSupplyCaps = HashMap<TokenType, U64>;
 
 pub const CONTRACT_ROYALTY_CAP: u32 = 1000;
 pub const MINTER_ROYALTY_CAP: u32 = 9000;
+///максимальна довжина імені користувача
+pub const MAX_PROFILE_NAME_LENGTH: usize = 256;
+///максимальна довжина опису профілю
 pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
+///максимальна величина картинки
 pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
 
 near_sdk::setup_alloc!();
@@ -38,28 +46,34 @@ near_sdk::setup_alloc!();
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
+    ///токени власника
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
+    ///токени автора
     pub tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
-
+    ///токени по ідентифікатру
     pub tokens_by_id: LookupMap<TokenId, Token>,
-
+    ///метадані токену по ідентифікатору токена
     pub token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
-
+    ///власник
     pub owner_id: AccountId,
 
     /// The storage size in bytes for one account.
     pub extra_storage_in_bytes_per_token: StorageUsage,
-
+    ///метадані нфтшки
     pub metadata: LazyOption<NFTMetadata>,
 
     /// CUSTOM fields
     pub supply_cap_by_type: TypeSupplyCaps,
     pub tokens_per_type: LookupMap<TokenType, UnorderedSet<TokenId>>,
     pub token_types_locked: UnorderedSet<TokenType>,
+    
+    ///кмісійні
     pub contract_royalty: u32,
     pub profiles: LookupMap<AccountId, Profile>,
 
+    ///чи брати плату за зберігання інфи з юзера
     pub use_storage_fees: bool,
+    //к-сть безплатних токенів для юзера
     pub free_mints: u64,
     pub version: u16,
 }
@@ -67,9 +81,13 @@ pub struct Contract {
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct Profile {
+    ///коротка інфа
     pub bio: String,
+    //ім'я юзера
     pub name:String,
+    ///фотка
     pub image: String,
+    ///електропошта
     pub email:String,
 }
 
@@ -181,10 +199,6 @@ impl Contract {
         self.version
     }
 
-    pub fn get_version1(&self) -> u16 {
-        1
-    }
-
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
         assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
         self.use_storage_fees = use_storage_fees;
@@ -216,28 +230,44 @@ impl Contract {
     pub fn get_use_storage_fees(&self) -> bool {
         self.use_storage_fees
     }
-
+    
+    ///Отримати дані профілю для юзера AccountId
     pub fn get_profile(&self, account_id: ValidAccountId) -> Option<Profile> {
         let account_id: AccountId = account_id.into();
         self.profiles.get(&account_id)
     }
 
+    ///Встановити дані профілю
     pub fn set_profile(&mut self, profile: Profile) {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
-            "Profile bio length is too long"
+            "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
         );
 
         assert!(
             profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile image length is too long"
+            "Profile image length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
         );
 
+        assert!(
+            profile.name.len() < MAX_PROFILE_NAME_LENGTH,
+            "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+        );
+
+        //регулярка для пошти
+        let email_regex = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").unwrap();
+
+        assert!(
+            email_regex.is_match(profile.email.as_str())==false,
+            "Please provide a valid email address"
+        );
+        
         let predecessor_account_id = env::predecessor_account_id();
 
         self.profiles.insert(&predecessor_account_id, &profile);
     }
-
+    
+ 
     fn measure_min_token_storage_cost(&mut self) {
         let initial_storage_usage = env::storage_usage();
         let tmp_account_id = "a".repeat(64);

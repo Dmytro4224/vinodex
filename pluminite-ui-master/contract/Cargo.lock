@@ -365,6 +365,7 @@ name = "nft_simple"
 version = "0.1.0"
 dependencies = [
  "near-sdk",
+ "regex",
 ]
 
 [[package]]
