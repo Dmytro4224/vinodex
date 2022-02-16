@@ -22,6 +22,7 @@ mod mint;
 mod nft_core;
 mod token;
 mod enumerable;
+mod author_data;
 
 // CUSTOM types
 pub type TokenType = String;
@@ -67,7 +68,9 @@ pub struct Contract {
 #[serde(crate = "near_sdk::serde")]
 pub struct Profile {
     pub bio: String,
+    pub name:String,
     pub image: String,
+    pub email:String,
 }
 
 /// Helper structure to for keys of the persistent collections.
