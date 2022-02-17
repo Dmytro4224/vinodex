@@ -96,8 +96,19 @@ class Home extends Component {
                                                 }}/>;
                         })}/>
 
-        <div className="d-flex flex-wrap flex-gap-36 mt-5">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}].map(item => {
+        <p className="separator-horizontal" />
+
+        <div className="d-flex align-items-center justify-content-between mt-3">
+          <LabelView  text={'Popular'}/>
+          <ButtonView
+            text={'More'}
+            onClick={() => {  }}
+            color={buttonColors.white}
+          />
+        </div>
+
+        <div className="d-flex flex-wrap flex-gap-36 mt-3">
+          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
             return <TokenCardView key={item.id}
                                   countL={item.id}
                                   countR={10}
