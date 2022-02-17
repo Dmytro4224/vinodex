@@ -30,3 +30,6 @@ a {
     display: flex;
     gap: 30px;
 }
+.flex-gap-36{
+    gap: 36px;
+}
