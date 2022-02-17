@@ -1,6 +1,6 @@
 // todo: get contract name from environment variable
 //const CONTRACT_NAME = process.env.vinodex1 || 'pluminite-ui.alexandro220835.testnet';
-const CONTRACT_NAME = 'pluminite-ui.alexandro220835.testnet';
+const CONTRACT_NAME = 'pluminite-ui.vano.testnet';
 //let CONTRACT_NAME;
 
 function getConfig(env) {
