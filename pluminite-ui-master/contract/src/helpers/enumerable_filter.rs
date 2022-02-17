@@ -32,7 +32,7 @@ near_sdk::setup_alloc!();
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
 pub struct HomePageFilter {
-///тип вибірки:all (default=null) top10, popular, new
+///тип вибірки:all (default=null), top10 = 0, popular = 1, new = 1
     pub  list_type :Option<u8>,
     ///тип сортування при виводі
     /// Recently Listed = 0
@@ -44,7 +44,9 @@ pub struct HomePageFilter {
     ///Most Viewed=6
     ///Most Favorited=7
     ///Oldest=8
-    pub sort:u8
+    pub sort:u8,
+    ///тип каталогу, до якого належить токен
+    pub catalog:u8
 }
 
 
