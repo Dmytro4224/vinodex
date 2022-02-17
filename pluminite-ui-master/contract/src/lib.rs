@@ -25,10 +25,14 @@ pub use crate::metadata::*;
 mod mint_contract;
 pub use crate::mint_contract::*;
 
+#[path = "tokens/list_contract.rs"]
+mod list_contract;
+pub use crate::list_contract::*;
+
+
 #[path = "tokens/token.rs"]
 mod token;
 pub use crate::token::*;
-pub use crate::enumerable::*;
 pub use crate::users::*;
 pub use crate::nft_core::*;
 

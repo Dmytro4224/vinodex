@@ -1,11 +1,6 @@
 ///випуск токену
 use crate::*;
 
-#[path = "list_contract.rs"]
-mod list;
-
-
-
 #[near_bindgen]
 impl Contract {
     #[payable]
