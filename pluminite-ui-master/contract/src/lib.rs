@@ -20,20 +20,18 @@ use crate::internal::*;
 mod metadata;
 pub use crate::metadata::*;
 
-#[path = "tokens/mint.rs"]
-mod mint;
-pub use crate::mint::*;
+#[path = "tokens/mint_contract.rs"]
+mod mint_contract;
+pub use crate::mint_contract::*;
 
 #[path = "tokens/token.rs"]
 mod token;
 pub use crate::token::*;
 
 pub use crate::nft_core::*;
-pub use crate::enumerable::*;
 
 mod internal;
 mod nft_core;
-mod enumerable;
 
 ///тип токену
 pub type TokenType = String;
