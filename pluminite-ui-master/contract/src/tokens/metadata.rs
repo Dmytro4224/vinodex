@@ -1,3 +1,4 @@
+///Метадані токенів
 use crate::*;
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]

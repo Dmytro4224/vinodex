@@ -1,3 +1,4 @@
+///випуск токену
 use crate::*;
 
 #[near_bindgen]

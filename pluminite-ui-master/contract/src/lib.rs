@@ -13,18 +13,26 @@ extern crate regex;
 use regex::Regex;
 /**для регексу */
 
+
 use crate::internal::*;
+
+#[path = "tokens/metadata.rs"]
+mod metadata;
 pub use crate::metadata::*;
+
+#[path = "tokens/mint.rs"]
+mod mint;
 pub use crate::mint::*;
-pub use crate::nft_core::*;
+
+#[path = "tokens/token.rs"]
+mod token;
 pub use crate::token::*;
+
+pub use crate::nft_core::*;
 pub use crate::enumerable::*;
 
 mod internal;
-mod metadata;
-mod mint;
 mod nft_core;
-mod token;
 mod enumerable;
 
 ///тип токену
