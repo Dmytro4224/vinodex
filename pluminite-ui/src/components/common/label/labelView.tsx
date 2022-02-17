@@ -17,9 +17,11 @@ class LabelView extends Component<Readonly<ILableView>>{
 
     render(){
       return (
-        <h3>
+        <h3 className={styles.title}>
           {this.text}
         </h3>
       )
     }
 }
+
+export { LabelView };

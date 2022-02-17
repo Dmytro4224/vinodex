@@ -3,6 +3,7 @@
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 14px;
+    font-weight: 400;
 }
 
 ul,
@@ -29,4 +30,11 @@ a {
 .slick-slider .slick-track, .slick-slider .slick-list{
     display: flex;
     gap: 30px;
+}
+
+.separator-horizontal {
+    margin: 24px 0;
+    width: 100%;
+    height: 1px;
+    background-color: var(--mercury);
 }

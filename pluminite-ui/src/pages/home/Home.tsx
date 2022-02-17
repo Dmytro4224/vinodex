@@ -5,8 +5,7 @@ import {dropdownColors, DropdownView } from "../../components/common/dropdown/dr
 import { TabsView, tabType } from "../../components/common/tabs/TabsView";
 import { TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
-import Marketplace from "../marketplace/Marketplace";
-import Marketplace2 from "../marketplace/Marketplace2";
+import {LabelView} from "../../components/common/label/labelView";
 
 class Home extends Component {
   render() {
@@ -66,6 +65,17 @@ class Home extends Component {
             text={"Filter"}
             onClick={() => {  }}
             color={buttonColors.select}
+          />
+        </div>
+
+        <p className="separator-horizontal" />
+        
+        <div className="d-flex align-items-center justify-content-between mt-3">
+          <LabelView  text={'Top 10'}/>
+          <ButtonView
+            text={'More'}
+            onClick={() => {  }}
+            color={buttonColors.white}
           />
         </div>
 
