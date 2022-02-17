@@ -1,5 +1,6 @@
 .carouselWrap{
     padding: 16px 0;
+    margin: 0 -22px;
 }
 .carousel, .carouselItem{
 }
