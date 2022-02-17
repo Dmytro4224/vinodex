@@ -76,12 +76,46 @@ impl Contract {
     
     pub fn nft_tokens_by_filter(
         &self,
-        token_type: String,
+        token_type: Option<String>,
         page_index: U64,
-        page_size: u64,
-    ) ->Option<Vec<JsonToken>> {
-        
-        return None;
+        mut page_size: u64,
+    ) ->Vec<JsonToken> {
+
+        if(token_type.is_some())
+        {
+            let tokens = self.tokens_per_type.get(&token_type.unwrap());
+            if(tokens.is_none())
+            {
+                return Vec::new();
+            }
+
+            let unwrapedTokens = tokens.unwrap();
+
+            let skip = (u64::from(page_index) - 1) * page_size;
+            let availableAmount = unwrapedTokens.len() - skip;
+
+            if(availableAmount <= 0)
+            {
+                return Vec::new();
+            }
+
+            if(availableAmount < page_size)
+            {
+                page_size = availableAmount;
+            }
+
+            return 
+                unwrapedTokens.iter()
+                .skip(skip as usize)
+                .take(page_size as usize)
+                .map(|token_id| self.nft_token(token_id.clone()).unwrap())
+                .collect();
+        }
+        else
+        {
+            return Vec::new();
+        }
+       
     }
     
 
