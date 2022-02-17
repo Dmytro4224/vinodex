@@ -83,7 +83,8 @@ impl Contract {
         account_id: &AccountId,
         token_id: &TokenId,
     ) {
-        let mut tokens_set = self.tokens_per_owner.get(account_id).unwrap_or_else(|| {
+        let mut tokens_set = 
+        self.tokens_per_owner.get(account_id).unwrap_or_else(|| {
             UnorderedSet::new(
                 StorageKey::TokenPerOwnerInner {
                     account_id_hash: hash_account_id(&account_id),
