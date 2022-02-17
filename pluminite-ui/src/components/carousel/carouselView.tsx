@@ -44,11 +44,11 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
 
   private get settings(){
     let settings = {
-      dots: true,
       infinite: true,
       speed: 500,
       slidesToShow: 2,
       currentslide: 1,
+      dots: false,
       nextArrow: <SampleNextArrow {...this.props} />, //this.SampleNextArrow(),
       prevArrow: <SamplePrevArrow {...this.props} /> //this.SamplePrevArrow()
     };
