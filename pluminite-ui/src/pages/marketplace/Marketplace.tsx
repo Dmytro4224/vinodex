@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import searchIcon from '../../assets/icons/search.svg';
 import { InputView } from "../../components/common/inputView/InputView";
 import { ArtistCard } from "../../components/artistCard/ArtistCard";
-import {ModalSample} from "../../components/common/modalSample/ModalSample";
+import {ModalSample, ModalSampleSizeType} from "../../components/common/modalSample/ModalSample";
 import {buttonColors, ButtonView} from "../../components/common/button/ButtonView";
 
 class Marketplace extends Component {
@@ -29,15 +29,16 @@ class Marketplace extends Component {
         />
 
         <ModalSample
+          size={ModalSampleSizeType.lg}
           modalTitle={"Modal Title"}
           isShow={this.state.modalIsShow}
           onHide={() => { this.hideModal(); }}
           buttons={
             <>
               <ButtonView
-                text={'Close'}
+                text={'Cancel'}
                 onClick={() => { this.hideModal(); }}
-                color={buttonColors.blue}
+                color={buttonColors.gray}
               />
 
               <ButtonView
@@ -48,7 +49,7 @@ class Marketplace extends Component {
             </>
           }
         >
-
+          <p>Modal children</p>
         </ModalSample>
 
         <ArtistCard

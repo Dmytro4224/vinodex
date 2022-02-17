@@ -1,17 +1,20 @@
 import {Component} from "react";
 import {Modal} from "react-bootstrap";
+import styles from './modalSample.module.css';
 
 interface IModalSample {
   modalTitle: string
   children: any;
-  buttons: any;
-  size?: string;
   isShow: boolean;
   onHide: () => void;
+  size: ModalSampleSizeType;
+  buttons?: any;
 }
 
 enum ModalSampleSizeType {
+  xl = "xl",
   lg = "lg",
+  sm = "sm",
 }
 
 class ModalSample extends Component<Readonly<IModalSample>> {
@@ -48,19 +51,20 @@ class ModalSample extends Component<Readonly<IModalSample>> {
       <Modal
         show={this.isShow}
         onHide={() => { this.onHide() }}
-        size="lg"
+        size={this.size}
+        className={styles.modal}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">
+        <Modal.Header closeButton className={styles.borderNone}>
+          <Modal.Title className={styles.modalTitle}>
             { this.modalTitle }
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           { this.children }
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className={styles.borderNone}>
           { this.buttons }
         </Modal.Footer>
       </Modal>
