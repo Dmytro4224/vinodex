@@ -1,0 +1,18 @@
+.navLink {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--doveGray);
+  text-transform: uppercase;
+  padding: 20px 0;
+  display: inline-block;
+  margin-bottom: -3px;
+}
+
+.active {
+  color: var(--denim);
+  border-bottom: 2px solid var(--cobalt);
+}
+
+.navLink:not(:last-of-type) {
+  margin-right: 20px;
+}

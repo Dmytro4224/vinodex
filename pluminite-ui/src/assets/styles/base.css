@@ -5,14 +5,27 @@ body {
     font-size: 14px;
 }
 
-/*
-.carousel-owl-tokens .carousel-control-prev{
-    left: -50px;
+ul,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
 }
 
-.carousel-owl-tokens .carousel-control-next{
-    right: -50px;
-}*/
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
 .slick-slider .slick-track, .slick-slider .slick-list{
     display: flex;
     gap: 30px;
