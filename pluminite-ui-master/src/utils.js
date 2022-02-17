@@ -6,8 +6,8 @@ import { APP } from './constants';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
-//export const getMarketContractName = (nftContractName) => `market.${nftContractName}`;
-export const getMarketContractName = (nftContractName) => `${nftContractName}`;
+export const getMarketContractName = (nftContractName) => `market.${nftContractName}`;
+//export const getMarketContractName = (nftContractName) => `${nftContractName}`;
 
 // Initialize contract & set global variables
 export async function initContracts() {
