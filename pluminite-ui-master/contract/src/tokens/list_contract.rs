@@ -77,9 +77,12 @@ impl Contract {
     pub fn nft_tokens_by_filter(
         &self,
         token_type: Option<String>,
+        sort: u8,
         page_index: U64,
         mut page_size: u64,
     ) ->Vec<JsonToken> {
+
+        let mut result;
 
         if(token_type.is_some())
         {
@@ -104,7 +107,7 @@ impl Contract {
                 page_size = availableAmount;
             }
 
-            return 
+            result = 
                 unwrapedTokens.iter()
                 .skip(skip as usize)
                 .take(page_size as usize)
@@ -113,9 +116,22 @@ impl Contract {
         }
         else
         {
-            return Vec::new();
+            result = Vec::new();
         }
        
+        match sort
+        {
+            1 =>
+            {
+                //result.sort_by(|a, b| DateTime::b.metadata.issued_at)
+            },
+            _ =>
+            {
+
+            }
+        }
+
+        return result;
     }
     
 
