@@ -60,16 +60,26 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
             <p className={styles.artistName}>{this.name}</p>
             <div className={styles.identificationWrap}>
               <p className={styles.artistId}>{transformArtistId(this.identification)}</p>
-              <OverlayTrigger
+              <Tooltip
                 placement={'top'}
-                overlay={ <Tooltip id={`tooltip-top`}>Copy to clipboard</Tooltip> }
-              >
-                <button
-                  onClick={ () => { this.copyToClipboard() } }
-                  className={styles.btnCopy}>
-                  <img src={copyIcon} alt="copy"/>
-                </button>
-              </OverlayTrigger>
+                children={
+                  <button
+                    onClick={() => { this.copyToClipboard() }}
+                    className={styles.btnCopy}>
+                    <img src={copyIcon} alt="copy"/>
+                  </button>
+                }
+              />
+              {/*<OverlayTrigger*/}
+              {/*  placement={'top'}*/}
+              {/*  overlay={ <Tooltip id={`tooltip-top`}>Copy to clipboard</Tooltip> }*/}
+              {/*  >*/}
+              {/*  <button*/}
+              {/*    onClick={() => { this.copyToClipboard() }}*/}
+              {/*    className={styles.btnCopy}>*/}
+              {/*    <img src={copyIcon} alt="copy"/>*/}
+              {/*  </button>*/}
+              {/*</OverlayTrigger>*/}
             </div>
           </div>
         </div>
