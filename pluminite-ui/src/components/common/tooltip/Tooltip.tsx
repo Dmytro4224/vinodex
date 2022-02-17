@@ -1,8 +1,9 @@
 import {Component} from "react";
-import {OverlayTrigger} from "react-bootstrap";
+import {OverlayTrigger, Tooltip} from "react-bootstrap";
 
 interface ITooltip {
   placement: PlacementType;
+  children: any;
   text: string;
 }
 
@@ -13,7 +14,7 @@ enum PlacementType {
   bottom = "bottom"
 }
 
-class Tooltip extends Component<Readonly<ITooltip>> {
+class TooltipS extends Component<Readonly<ITooltip>> {
   constructor(props: ITooltip) {
     super(props);
   }
@@ -34,11 +35,15 @@ class Tooltip extends Component<Readonly<ITooltip>> {
     return (
       <OverlayTrigger
         placement={this.placement}
-        overlay={ <Tooltip id={`tooltip-top`} placement={this.placement} text={this.text} /> }
+        overlay={
+          <Tooltip id={`tooltip-${this.placement}`}>
+            {this.text}
+          </Tooltip>
+        }
         children={this.children}
       />
     )
   }
 }
 
-export { Tooltip, PlacementType }
+export { TooltipS, PlacementType }

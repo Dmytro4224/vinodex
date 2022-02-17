@@ -28,6 +28,7 @@
 
 .artistId {
   margin: 0 5px 0 0;
+  transition: color 0.4s ease;
 }
 
 .identificationWrap {
@@ -47,4 +48,8 @@
 
 .buttonFollow {
   padding: 6px 12px !important;
+}
+
+.colorCopySuccess {
+  color: var(--color-copy-success);
 }
