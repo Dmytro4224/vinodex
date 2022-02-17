@@ -1,11 +1,31 @@
-/*
-.carousel-owl-tokens .carousel-control-prev{
-    left: -50px;
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
 }
 
-.carousel-owl-tokens .carousel-control-next{
-    right: -50px;
-}*/
+ul,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    margin: 0;
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+}
+
 .slick-slider .slick-track, .slick-slider .slick-list{
     display: flex;
     gap: 30px;

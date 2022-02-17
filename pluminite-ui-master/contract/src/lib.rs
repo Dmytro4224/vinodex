@@ -14,6 +14,10 @@ extern crate regex;
 use regex::Regex;
 /**для регексу */
 
+#[macro_use]
+extern crate serde_derive;
+
+use serde_json::Result;
 
 use crate::internal::*;
 
