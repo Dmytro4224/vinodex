@@ -79,6 +79,7 @@ pub struct Contract {
 
     /// CUSTOM fields
     pub supply_cap_by_type: TypeSupplyCaps,
+    //токени по типу
     pub tokens_per_type: LookupMap<TokenType, UnorderedSet<TokenId>>,
     pub token_types_locked: UnorderedSet<TokenType>,
     
