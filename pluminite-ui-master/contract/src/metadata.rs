@@ -29,6 +29,14 @@ pub struct TokenMetadata {
     pub reference_hash: Option<Base64VecU8>, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct TestMeta
+{
+    pub title: String,
+    pub description: Option<String>
+}
+
 pub trait NonFungibleTokenMetadata {
     fn nft_metadata(&self) -> NFTMetadata;
 }
