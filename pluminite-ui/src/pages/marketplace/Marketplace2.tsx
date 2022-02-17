@@ -6,6 +6,7 @@ import {DropdownView, dropdownColors} from "../../components/common/dropdown/dro
 import arrow from '../../assets/icons/arrow-down.svg';
 import { TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { CarouselView } from "../../components/carousel/carouselView";
+import { NearContext } from '../../contexts';
 
 class Marketplace2 extends Component {
     render() {
@@ -31,21 +32,36 @@ class Marketplace2 extends Component {
                     ]}
                 />
 
-                <TabsView tabItems={
-                    [
-                        { title: "All", id: 1, link: "#" },
-                        { title: "Art", id: 2, link: "#" },
-                        { title: "Music", id: 3, link: "#" },
-                        { title: "Domain Names", id: 4, link: "#" },
-                        { title: "Virtual Worlds", id: 5, link: "#" },
-                        { title: "Trading Cards", id: 6, link: "#" },
-                        { title: "Collectibles", id: 7, link: "#" },
-                        { title: "Sports", id: 8, link: "#" },
-                        { title: "Utility", id: 9, link: "#" },
-                    ]}    type={ tabType.button}
-                          onClick={(item) => { console.log(item) }}
-                          currentTabIndex={0}
-                />
+                <NearContext.Consumer>
+                    {context => (
+                        <>
+                            <TabsView tabItems={
+                                [
+                                    { title: "All", id: 1, link: "#" },
+                                    { title: "Art", id: 2, link: "#" },
+                                    { title: "Music", id: 3, link: "#" },
+                                    { title: "Domain Names", id: 4, link: "#" },
+                                    { title: "Virtual Worlds", id: 5, link: "#" },
+                                    { title: "Trading Cards", id: 6, link: "#" },
+                                    { title: "Collectibles", id: 7, link: "#" },
+                                    { title: "Sports", id: 8, link: "#" },
+                                    { title: "Utility", id: 9, link: "#" },
+                                ]} type={tabType.button}
+                                onClick={(item) => {
+
+                                    context.setUser({ accountId: item.title, balance: item.id.toString() });
+
+                                }}
+                                currentTabIndex={0}
+                            />
+                            {/*
+                            // @ts-ignore */}
+                            <span>{context.user ? context.user.accountId : 'NONE'}</span>
+                        </>
+                    )}
+                </NearContext.Consumer>
+
+               
 
                 {/*<TokenCardView
                     countL={3}
