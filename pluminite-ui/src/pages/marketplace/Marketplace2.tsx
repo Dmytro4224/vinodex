@@ -6,6 +6,7 @@ import {DropdownView, dropdownColors} from "../../components/common/dropdown/dro
 import arrow from '../../assets/icons/arrow-down.svg';
 import { TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { CarouselView } from "../../components/carousel/carouselView";
+import { NearContext } from '../../contexts';
 
 class Marketplace2 extends Component {
     render() {
