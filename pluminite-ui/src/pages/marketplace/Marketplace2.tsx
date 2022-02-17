@@ -58,7 +58,21 @@ class Marketplace2 extends Component {
                     buttonText={'Place a bid 0.08 ETH'}
                     onClick={() => { alert('buy Place a bid 0.08 ETH') }} />*/}
 
-              <CarouselView customCLass={'carousel-owl-tokens'} />
+              <CarouselView customCLass={'carousel-owl-tokens'}
+                            tokenItems={[
+                              {
+                                id: 1,
+                                countL: 3,
+                                countR: 10,
+                                days: '121 days left',
+                                name:'Item Name',
+                                author:'Creat name',
+                                likesCount:99,
+                                isSmall:false,
+                                buttonText:'Place a bid 0.08 ETH',
+                              }
+                            ]}
+                            onClick={(item: Object) => { console.log(item) }} />
             </>
         )
     }

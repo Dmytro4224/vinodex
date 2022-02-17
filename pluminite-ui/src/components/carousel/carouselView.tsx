@@ -7,7 +7,24 @@ import prev from '../../assets/icons/arrow-slider-left.svg';
 import Slider from "react-slick";
 
 interface ICarouselView{
-  customCLass: string
+  customCLass: string,
+  tokenItems: ITokenItem[],
+  onClick: (item: ITokenItem) => void
+}
+
+interface ITokenItem{
+  id: number,
+  icon?: any;
+  alt?: string;
+  countL: number;
+  countR: number;
+  days: string;
+  name: string;
+  author: string;
+  likesCount: number;
+  buttonText: string;
+  isSmall?: boolean;
+  onClick?: (item: ITokenItem) => void
 }
 
 class CarouselView extends Component<Readonly<ICarouselView>>{
@@ -27,6 +44,10 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
     );
   }
 
+  private onClick = (item: ITokenItem) => {
+    this.props.onClick(item);
+  }
+
   render(){
     const settings = {
       dots: true,
@@ -42,46 +63,19 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
     return (
       <div className={`${styles.carouselWrap} ${this.props.customCLass || ''}`}>
         <Slider {...settings} className={styles.gap}>
-          <TokenCardView
-            countL={3}
-            countR={10}
-            days={'121 days left'}
-            name={'Item Name'}
-            author={'Creat name'}
-            likesCount={99}
-            isSmall={false}
-            buttonText={'Place a bid 0.08 ETH'}
-            onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
-          <TokenCardView
-            countL={3}
-            countR={10}
-            days={'121 days left'}
-            name={'Item Name'}
-            author={'Creat name'}
-            likesCount={99}
-            isSmall={false}
-            buttonText={'Place a bid 0.08 ETH'}
-            onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
-          <TokenCardView
-            countL={3}
-            countR={10}
-            days={'121 days left'}
-            name={'Item Name'}
-            author={'Creat name'}
-            likesCount={99}
-            isSmall={false}
-            buttonText={'Place a bid 0.08 ETH'}
-            onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
-          <TokenCardView
-            countL={3}
-            countR={10}
-            days={'121 days left'}
-            name={'Item Name'}
-            author={'Creat name'}
-            likesCount={99}
-            isSmall={false}
-            buttonText={'Place a bid 0.08 ETH'}
-            onClick={() => { alert('buy Place a bid 0.08 ETH') }} />
+          {this.props.tokenItems.map(item => {
+            return <TokenCardView key={item.id}
+              countL={item.countL}
+              countR={item.countR}
+              days={item.days}
+              name={item.name}
+              author={item.author}
+              likesCount={item.likesCount}
+              isSmall={false}
+              buttonText={item.buttonText}
+              onClick={() => { this.onClick(item) }} />
+          })}
+
           <TokenCardView
             countL={3}
             countR={10}
