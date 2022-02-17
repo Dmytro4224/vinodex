@@ -30,18 +30,16 @@ class Header extends Component {
               childrens={[
                 {
                   id: 1,
-                  title: 'Recently Listed'
+                  title: 'UK'
                 },
                 {
                   id: 2,
-                  title: 'Recently Created'
+                  title: 'US'
                 },
-                {
-                  id: 3,
-                  title: 'Recently Sold'
-                }
               ]}
             />
+
+            <span className={styles.separator}></span>
 
             <ButtonView
               text={'CONNECT WALLET'}
