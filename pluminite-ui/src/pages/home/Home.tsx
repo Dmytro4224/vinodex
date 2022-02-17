@@ -147,6 +147,43 @@ class Home extends Component {
             />;
           })}
         </div>
+
+        <p className="separator-horizontal" />
+
+        <div className="d-flex align-items-center justify-content-between mt-3">
+          <LabelView  text={'All'}/>
+          <ButtonView
+            text={'More'}
+            onClick={() => {  }}
+            color={buttonColors.white}
+          />
+        </div>
+
+        <div className="d-flex flex-wrap flex-gap-36 mt-3">
+          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
+            return <TokenCardView key={item.id}
+                                  countL={item.id}
+                                  countR={10}
+                                  days={'121 days left'}
+                                  name={'Item Name'}
+                                  author={'Creat name'}
+                                  likesCount={99}
+                                  isSmall={true}
+                                  buttonText={'Place a bid 0.08 ETH'}
+                                  onClick={() => {
+                                    alert('buy Place a bid 0.08 ETH');
+                                  }}/>;
+          })}
+        </div>
+
+        <div className="d-flex align-items-center justify-content-center mt-5 w-100">
+          <ButtonView
+            text={'Load more'}
+            onClick={() => {  }}
+            color={buttonColors.select}
+          />
+        </div>
+
       </div>
     );
   }
