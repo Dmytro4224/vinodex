@@ -1,11 +1,11 @@
-import {Component} from "react";
+import React, {Component} from "react";
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
 import copyIcon from '../../assets/icons/copy.svg'
 import {transformArtistId} from "../../utils/sys";
 import {LikeView, LikeViewType} from "../like/likeView";
 import {buttonColors, ButtonView} from "../common/button/ButtonView";
-import {OverlayTrigger, Tooltip} from "react-bootstrap";
+import {PlacementType, TooltipS} from "../common/tooltip/Tooltip";
 
 interface IArtistCard {
   avatar?: any;
@@ -17,8 +17,12 @@ interface IArtistCard {
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard>> {
+  private readonly _refIdentificationText:  React.RefObject<HTMLParagraphElement>;
+
   constructor(props: IArtistCard) {
     super(props);
+
+    this._refIdentificationText = React.createRef();
   }
 
   private get avatar() {
@@ -48,7 +52,14 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
   private btnFollowHandler() {}
 
   private copyToClipboard() {
-    navigator.clipboard.writeText(this.identification)
+    navigator.clipboard.writeText(this.identification);
+
+    this._refIdentificationText.current?.classList.add(styles.colorCopySuccess);
+
+    const t = setTimeout(() => {
+      this._refIdentificationText.current?.classList.remove(styles.colorCopySuccess);
+      clearTimeout(t);
+    }, 1500);
   }
 
   render() {
@@ -59,9 +70,10 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
           <div>
             <p className={styles.artistName}>{this.name}</p>
             <div className={styles.identificationWrap}>
-              <p className={styles.artistId}>{transformArtistId(this.identification)}</p>
-              <Tooltip
-                placement={'top'}
+              <p ref={this._refIdentificationText} className={styles.artistId}>{transformArtistId(this.identification)}</p>
+              <TooltipS
+                placement={PlacementType.top}
+                text={`Copy to clipboard`}
                 children={
                   <button
                     onClick={() => { this.copyToClipboard() }}
@@ -70,16 +82,6 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
                   </button>
                 }
               />
-              {/*<OverlayTrigger*/}
-              {/*  placement={'top'}*/}
-              {/*  overlay={ <Tooltip id={`tooltip-top`}>Copy to clipboard</Tooltip> }*/}
-              {/*  >*/}
-              {/*  <button*/}
-              {/*    onClick={() => { this.copyToClipboard() }}*/}
-              {/*    className={styles.btnCopy}>*/}
-              {/*    <img src={copyIcon} alt="copy"/>*/}
-              {/*  </button>*/}
-              {/*</OverlayTrigger>*/}
             </div>
           </div>
         </div>
