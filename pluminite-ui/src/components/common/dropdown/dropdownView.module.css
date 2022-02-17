@@ -26,3 +26,7 @@
     background-color: var(--linkWater);
     color: var(--denim);
 }
+
+.dropdownSelectGray {
+    background-color: var(--wildSand);
+}

@@ -1,12 +1,10 @@
 .artistCard {
   padding: 16px;
   width: 100%;
-  max-width: 300px;
+  max-width: 290px;
   background: var(--alabaster);
   border: 1px solid var(--artistBorder);
   border-radius: 4px;
-
-  margin: 20px;
 }
 
 .btnCopy {

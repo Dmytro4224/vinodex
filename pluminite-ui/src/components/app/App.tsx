@@ -22,11 +22,11 @@ class App extends Component {
           </Routes>
         </main>
 
-        <NftContractContext.Consumer>
+        {/*<NftContractContext.Consumer>
             {context => (
                 <span>{context?.nftContract?.contractId}</span>
             )}
-        </NftContractContext.Consumer>
+        </NftContractContext.Consumer>*/}
       </>
     );
   }
