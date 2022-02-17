@@ -1,0 +1,26 @@
+.carouselWrap{
+    padding: 16px 72px;
+}
+.carousel, .carouselItem{
+}
+.carousel-inner{
+}
+.dFlex{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+    padding: 0 10px;
+}
+.carousel a[role=button]{
+    width: auto !important;
+}
+
+.carousel a[role=button].carousel-control-prev{
+    width: auto !important;
+    left: -50px;
+}
+.gap{
+    gap: 30px;
+}

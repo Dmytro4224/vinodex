@@ -4,19 +4,28 @@
   align-items: center;
   border-radius: 4px;
   background: var(--wildSand);
+  margin: 20px;
 }
 
 .inputView {
   padding: 5px 10px;
   width: 100%;
-  min-height: 30px;
+  min-height: 44px;
   font-size: 16px;
   font-weight: 500;
   color: rgba(0, 0, 0, 0.8);
-  border: none;
   border-radius: 4px;
   outline: none;
-  background: var(--wildSand);
+  border: none;
+  background-color: var(--wildSand);
+}
+
+.inputView:focus {
+  color: unset;
+  background-color: unset;
+  border-color: unset;
+  outline: 0;
+  box-shadow: unset;
 }
 
 .inputView::placeholder {
@@ -40,14 +49,15 @@
   transition: transform 0.2s ease;
   will-change: transform;
   color: var(--doveGray);
+  pointer-events: none;
 }
 
 .inputView:focus + .absPlaceholder {
-  transform: translateY(-20px);
+  transform: translateY(-23px);
 }
 
 .inputView:not(:placeholder-shown) + .absPlaceholder {
-  transform: translateY(-20px);
+  transform: translateY(-23px);
 }
 
 .inputView.hidePlaceholder::placeholder {
