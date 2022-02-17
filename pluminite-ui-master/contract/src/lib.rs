@@ -33,14 +33,14 @@ pub use crate::list_contract::*;
 #[path = "tokens/token.rs"]
 mod token;
 pub use crate::token::*;
-pub use crate::users::*;
+pub use crate::profile::*;
 pub use crate::nft_core::*;
 
 mod internal;
 mod nft_core;
 
-#[path = "users/profile_provider.rs"]
-mod users;
+#[path = "profiles/profile_provider.rs"]
+mod profile;
 
 ///тип токену
 pub type TokenType = String;
