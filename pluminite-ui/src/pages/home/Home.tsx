@@ -107,7 +107,7 @@ class Home extends Component {
         </div>
 
         <div className="d-flex flex-wrap flex-gap-36 mt-3">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}].map(item => {
+          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
             return <TokenCardView key={item.id}
                                   countL={item.id}
                                   countR={10}
