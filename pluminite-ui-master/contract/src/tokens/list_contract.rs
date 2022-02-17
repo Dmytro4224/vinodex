@@ -134,7 +134,6 @@ impl Contract {
         return result;
     }
     
-
     pub fn nft_supply_for_owner(
         &self,
         account_id: AccountId,

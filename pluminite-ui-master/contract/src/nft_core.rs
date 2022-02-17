@@ -45,6 +45,9 @@ pub trait NonFungibleTokenCore {
     fn nft_total_supply(&self) -> U64;
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken>;
+
+    fn get_token_likes_count(&self, token_id: TokenId) -> usize;
+    fn get_token_views_count(&self, token_id: TokenId) -> usize;
 }
 
 #[ext_contract(ext_non_fungible_token_receiver)]
@@ -333,6 +336,10 @@ impl NonFungibleTokenCore for Contract {
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
         if let Some(token) = self.tokens_by_id.get(&token_id) {
             let metadata = self.token_metadata_by_id.get(&token_id).unwrap();
+
+            metadata.likes_count = self.get_token_likes_count(token_id) as u64;
+            metadata.views_count = self.get_token_views_count(token_id) as u64;
+
             Some(JsonToken {
                 token_id,
                 owner_id: token.owner_id,
@@ -343,6 +350,34 @@ impl NonFungibleTokenCore for Contract {
             })
         } else {
             None
+        }
+    }
+
+    fn get_token_likes_count(&self, token_id: TokenId) -> usize
+    {
+        let hashSet = self.tokens_users_likes.get(&token_id);
+
+        if(hashSet.is_none())
+        {
+            return 0;
+        }
+        else
+        {
+            return hashSet.unwrap().len();
+        }
+    }
+
+    fn get_token_views_count(&self, token_id: TokenId) -> usize
+    {
+        let hashSet = self.tokens_users_views.get(&token_id);
+
+        if(hashSet.is_none())
+        {
+            return 0;
+        }
+        else
+        {
+            return hashSet.unwrap().len();
         }
     }
 }
