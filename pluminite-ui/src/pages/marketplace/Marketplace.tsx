@@ -65,7 +65,6 @@ class Marketplace extends Component {
             onChange={(e) => { console.log(e) }}
             placeholder={'Search'}
             icon={searchIcon}
-            absPlaceholder={'Search'}
           />
         </div>
       </>
