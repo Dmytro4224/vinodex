@@ -3,23 +3,30 @@ import React, { Component } from "react"
 import { NftContractContext } from '../../contexts';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-
-import Marketplace from "../../pages/marketplace/Marketplace";
-import Marketplace2 from "../../pages/marketplace/Marketplace2";
+import {Link, Navigate, Route, Routes} from 'react-router-dom';
+import {Home} from "../../pages/home/Home";
+import {Header} from "../header/Header";
 
 class App extends Component {
     //static contextType = null;
   render() {
     return (
       <>
-        <Marketplace />
-            <Marketplace2 />
+        <Header />
 
-            <NftContractContext.Consumer>
-                {context => (
-                    <span>{context?.nftContract?.contractId}</span>
-                )}
-            </NftContractContext.Consumer>
+        <main className="container">
+          <Routes>
+            <Route path="*" element={ <Navigate to="/" /> } />
+            <Route path="/" element={ <Home /> } />
+            <Route path="/artists/*" element={ <p>ARTISTS PAGE</p> } />
+          </Routes>
+        </main>
+
+        <NftContractContext.Consumer>
+            {context => (
+                <span>{context?.nftContract?.contractId}</span>
+            )}
+        </NftContractContext.Consumer>
       </>
     );
   }

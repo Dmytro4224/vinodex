@@ -1,10 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 
 import { App } from './components/app/App';
 import { initContracts } from './utils';
 import { NearContextProvider, NftContractContextProvider, MarketContractContextProvider } from './contexts';
+import { BrowserRouter } from "react-router-dom";
+
+import './index.css';
 
 const rootElement = document.getElementById('root');
 
@@ -15,7 +17,9 @@ initContracts()
             <NearContextProvider currentUser={currentUser} nearConfig={nearConfig} wallet={walletConnection} near={near}>
                 <NftContractContextProvider nftContract={nftContract}>
                     <MarketContractContextProvider marketContract={marketContract}>
+                      <BrowserRouter>
                         <App />
+                      </BrowserRouter>
                     </MarketContractContextProvider>
                 </NftContractContextProvider>
             </NearContextProvider>

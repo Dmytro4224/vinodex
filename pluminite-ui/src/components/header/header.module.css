@@ -1,0 +1,21 @@
+.header {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  padding: 2px 24px;
+  margin-bottom: 36px;
+  border-bottom: 1px solid var(--mercury);
+  background-color: var(--white);
+}
+
+.buttonWrap button:not(:last-of-type) {
+  margin-right: 16px;
+}
+
+.separator {
+  width: 1px;
+  height: 40px;
+  background-color: var(--mercury);
+  margin: 0 15px;
+}
