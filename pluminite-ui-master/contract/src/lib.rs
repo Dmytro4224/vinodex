@@ -14,20 +14,26 @@ extern crate regex;
 use regex::Regex;
 /**для регексу */
 
+
 use crate::internal::*;
+
+#[path = "tokens/metadata.rs"]
+mod metadata;
 pub use crate::metadata::*;
-pub use crate::mint::*;
-pub use crate::nft_core::*;
+
+#[path = "tokens/mint_contract.rs"]
+mod mint_contract;
+pub use crate::mint_contract::*;
+
+#[path = "tokens/token.rs"]
+mod token;
 pub use crate::token::*;
 pub use crate::enumerable::*;
 pub use crate::users::*;
+pub use crate::nft_core::*;
 
 mod internal;
-mod metadata;
-mod mint;
 mod nft_core;
-mod token;
-mod enumerable;
 
 #[path = "users/profile_provider.rs"]
 mod users;
