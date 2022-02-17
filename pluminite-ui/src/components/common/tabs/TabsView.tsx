@@ -43,17 +43,17 @@ class TabsView extends Component<Readonly<ITabsView>>{
         return this.props.type;
     }
 
-    private get currentTabIndex(){
+    private get currentTabIndex() {
         return this.props.currentTabIndex;
     }
 
     private onTabClick = async (item: ITabsViewItem) => {
 
-        if(this._currentTab !== null){
-            this._refs[this.tabs.indexOf(this._currentTab)].current?.classList.remove(styles.active);
+        if (this._currentTab !== null) {
+            this._refs[this.tabs.findIndex(tab => tab.id === this._currentTab?.id)].current?.classList.remove(styles.active);
         }
 
-        this._refs[this.tabs.indexOf(item)].current?.classList.add(styles.active);
+        this._refs[this.tabs.findIndex(tab => tab.id === item.id)].current?.classList.add(styles.active);
         this._currentTab = item;
 
         this.props.onClick(item);

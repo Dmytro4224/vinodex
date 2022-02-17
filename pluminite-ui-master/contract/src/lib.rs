@@ -8,24 +8,39 @@ use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
 };
+
 /**для регексу */
 extern crate regex;
 use regex::Regex;
 /**для регексу */
 
+
 use crate::internal::*;
+
+#[path = "tokens/metadata.rs"]
+mod metadata;
 pub use crate::metadata::*;
-pub use crate::mint::*;
-pub use crate::nft_core::*;
+
+#[path = "tokens/mint_contract.rs"]
+mod mint_contract;
+pub use crate::mint_contract::*;
+
+#[path = "tokens/list_contract.rs"]
+mod list_contract;
+pub use crate::list_contract::*;
+
+
+#[path = "tokens/token.rs"]
+mod token;
 pub use crate::token::*;
-pub use crate::enumerable::*;
+pub use crate::users::*;
+pub use crate::nft_core::*;
 
 mod internal;
-mod metadata;
-mod mint;
 mod nft_core;
-mod token;
-mod enumerable;
+
+#[path = "users/profile_provider.rs"]
+mod users;
 
 ///тип токену
 pub type TokenType = String;
@@ -76,19 +91,6 @@ pub struct Contract {
     //к-сть безплатних токенів для юзера
     pub free_mints: u64,
     pub version: u16,
-}
-
-#[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-#[serde(crate = "near_sdk::serde")]
-pub struct Profile {
-    ///коротка інфа
-    pub bio: String,
-    //ім'я юзера
-    pub name:String,
-    ///фотка
-    pub image: String,
-    ///електропошта
-    pub email:String,
 }
 
 /// Helper structure to for keys of the persistent collections.
@@ -305,19 +307,21 @@ impl Contract {
             }
             self.supply_cap_by_type.insert(token_type.to_string(), *hard_cap);
 
-            if token_type == "HipHopHeadsFirstEditionMedley" {
-                let keys = self.token_metadata_by_id.keys_as_vector();
-                for i in 0..keys.len() {
-                    let token_id = keys.get(i).unwrap();
-                    if let Some(token) = self.tokens_by_id.get(&token_id) {
-                        let mut token_2 = token;
-                        token_2.royalty.insert("edyoung.near".to_string(), 200);
-                        self.tokens_by_id.insert(&token_id, &token_2);
-                    }
-                }
-            }
+            // // // if token_type == "HipHopHeadsFirstEditionMedley" {
+            // // //     let keys = self.token_metadata_by_id.keys_as_vector();
+            // // //     for i in 0..keys.len() {
+            // // //         let token_id = keys.get(i).unwrap();
+            // // //         if let Some(token) = self.tokens_by_id.get(&token_id) {
+            // // //             let mut token_2 = token;
+            // // //             token_2.royalty.insert("edyoung.near".to_string(), 200);
+            // // //             self.tokens_by_id.insert(&token_id, &token_2);
+            // // //         }
+            // // //     }
+            // // // }
         }
     }
+
+    
 
     pub fn unlock_token_types(&mut self, token_types: Vec<String>) {
         for token_type in &token_types {
