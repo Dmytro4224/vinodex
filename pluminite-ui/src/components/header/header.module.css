@@ -7,6 +7,7 @@
   margin-bottom: 36px;
   border-bottom: 1px solid var(--mercury);
   background-color: var(--white);
+  z-index: 10;
 }
 
 .buttonWrap button:not(:last-of-type) {

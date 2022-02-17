@@ -38,3 +38,7 @@ a {
     height: 1px;
     background-color: var(--mercury);
 }
+
+.flex-gap-36{
+    gap: 36px;
+}
