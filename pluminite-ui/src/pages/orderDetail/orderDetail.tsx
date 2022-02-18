@@ -1,5 +1,6 @@
 import { Component } from "react";
-import { TokenViewDetail } from "../../components/tokenDetail/tokenViewDetail";
+import TokenViewDetail from "../../components/tokenDetail/tokenViewDetail";
+import { withComponent } from "../../utils/withComponent";
 
 class OrderDetail extends Component{
     render(){
@@ -10,3 +11,5 @@ class OrderDetail extends Component{
       )
     }
 }
+
+export default withComponent(OrderDetail);

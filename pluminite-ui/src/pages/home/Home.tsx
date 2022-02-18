@@ -92,9 +92,10 @@ class Home extends Component {
                                                 likesCount={99}
                                                 isSmall={false}
                                                 buttonText={'Place a bid 0.08 ETH'}
-                                                linkTo={`/token/:qwewqq-1231-weq-123`}
+                                                linkTo={`/token/qwewqq-1231-weq-123`}
                                                 onClick={() => {
-                                                  alert('buy Place a bid 0.08 ETH');
+                                                  // @ts-ignore
+                                                  this.props.navigate('/token/qwewqq-1231-weq-123');
                                                 }}/>;
                         })}/>
 

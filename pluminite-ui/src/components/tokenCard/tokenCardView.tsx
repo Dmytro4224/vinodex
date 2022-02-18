@@ -17,7 +17,7 @@ interface ITokenCardView{
     buttonText: string;
     isSmall?: boolean;
     linkTo?: string;
-    onClick: () => void
+    onClick?: () => void
 }
 
 class TokenCardView extends Component<Readonly<ITokenCardView>>{
@@ -33,7 +33,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
     }
 
     private onClick(){
-        this.props.onClick();
+        this.props.onClick && this.props.onClick();
     }
 
     render(){

@@ -1,0 +1,37 @@
+.cardImage{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 65%;
+    height: calc(100vh - 60px);
+}
+.cardImage .imageStyle{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.cardDetail{
+    position: absolute;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    width: 100%;
+}
+.cardDetail .count, .cardDetail .daysInfo{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px 12px;
+    color: var(--black);
+    background: var(--white);
+    border: 2px solid rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+    font-size: 14px;
+}
+.cardDetail .daysInfo{
+    margin-left: auto;
+}
