@@ -31,7 +31,7 @@ pub struct TokenMetadata {
     pub reference_hash: Option<Base64VecU8>, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
     pub views_count: u64, //кількість переглядів
     pub likes_count: u64, //кількість вподобань
-    pub price: f64 // ціна токена
+    pub price: u128 // ціна токена
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -56,7 +56,7 @@ impl NonFungibleTokenMetadata for Contract {
 //Керуючий елемент для вподобань та переглядів токенів
 #[near_bindgen]
 impl Contract {
-    pub fn token_setLike(&self, token_id: TokenId)
+    pub fn token_setLike(&mut self, token_id: TokenId)
     {
         assert!(
             self.tokens_by_id.get(&token_id).is_none(),
@@ -65,17 +65,18 @@ impl Contract {
 
         let user_id = env::predecessor_account_id();
 
-        let mut tokenLikes = self.tokens_users_likes.get(&token_id);
+        let tokenLikes = self.tokens_users_likes.get(&token_id);
 
         if(tokenLikes.is_none())
         {
-            let mut hashSet: HashSet<String> = vec![&user_id];
+            let mut hashSet: HashSet<String> = HashSet::new();
+            hashSet.insert(user_id);
 
             self.tokens_users_likes.insert(&token_id, &hashSet);
         }
         else
         {
-            let unwrappedTokenLikes = tokenLikes.unwrap();
+            let mut unwrappedTokenLikes = tokenLikes.unwrap();
 
             if(unwrappedTokenLikes.contains(&user_id))
             {
@@ -88,7 +89,7 @@ impl Contract {
         }
     }
 
-    pub fn token_setView(&self, token_id: TokenId)
+    pub fn token_setView(&mut self, token_id: TokenId)
     {
         assert!(
             self.tokens_by_id.get(&token_id).is_none(),
@@ -97,17 +98,18 @@ impl Contract {
 
         let user_id = env::predecessor_account_id();
 
-        let mut tokenViews = self.tokens_users_views.get(&token_id);
+        let tokenViews = self.tokens_users_views.get(&token_id);
 
         if(tokenViews.is_none())
         {
-            let mut hashSet: HashSet<String> = vec![&user_id];
+            let mut hashSet: HashSet<String> = HashSet::new();
+            hashSet.insert(user_id);
 
             self.tokens_users_views.insert(&token_id, &hashSet);
         }
         else
         {
-            let unwrappedTokenViews = tokenViews.unwrap();
+            let mut unwrappedTokenViews = tokenViews.unwrap();
 
             if(!unwrappedTokenViews.contains(&user_id))
             {

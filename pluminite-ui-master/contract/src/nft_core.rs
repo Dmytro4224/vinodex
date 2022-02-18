@@ -335,10 +335,10 @@ impl NonFungibleTokenCore for Contract {
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
         if let Some(token) = self.tokens_by_id.get(&token_id) {
-            let metadata = self.token_metadata_by_id.get(&token_id).unwrap();
+            let mut metadata = self.token_metadata_by_id.get(&token_id).unwrap();
 
-            metadata.likes_count = self.get_token_likes_count(token_id) as u64;
-            metadata.views_count = self.get_token_views_count(token_id) as u64;
+            metadata.likes_count = self.get_token_likes_count(token_id.clone()) as u64;
+            metadata.views_count = self.get_token_views_count(token_id.clone()) as u64;
 
             Some(JsonToken {
                 token_id,
