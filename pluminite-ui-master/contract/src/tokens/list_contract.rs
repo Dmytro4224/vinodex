@@ -76,9 +76,13 @@ impl Contract {
     
     pub fn nft_tokens_by_filter(
         &self,
+        // каталог або null|none
         token_type: Option<String>,
-        sort: u8,
+       // order by шось
+        sort: u8, 
+        //пагінація
         page_index: U64,
+        //ксть елементів на сторінкі
         mut page_size: u64,
     ) ->Vec<JsonToken> {
 
