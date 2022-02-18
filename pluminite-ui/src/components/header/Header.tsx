@@ -24,7 +24,7 @@ class Header extends Component {
           </div>
           <div className={`d-flex align-items-center ${styles.buttonWrap}`}>
             <DropdownView
-              colorType={dropdownColors.select}
+              colorType={dropdownColors.selectGray}
               title={'En'}
               onChange={(item) => { console.log(item) }}
               childrens={[
@@ -39,14 +39,13 @@ class Header extends Component {
               ]}
             />
 
-            <span className={styles.separator}></span>
+            <span className={styles.separator} />
 
             <ButtonView
               text={'CONNECT WALLET'}
               onClick={() => {  }}
               color={buttonColors.gray}
             />
-
             <ButtonView
               text={'CREATE'}
               onClick={() => {  }}

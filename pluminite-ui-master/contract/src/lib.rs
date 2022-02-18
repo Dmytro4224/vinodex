@@ -8,6 +8,7 @@ use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
     env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
 };
+use std::collections::HashSet;
 
 /**для регексу */
 extern crate regex;
@@ -76,6 +77,12 @@ pub struct Contract {
     ///власник
     pub owner_id: AccountId,
 
+    //Вподобання токенів
+    pub tokens_users_likes: LookupMap<TokenId, HashSet<AccountId>>,
+
+    //Перегляд токенів
+    pub tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
+
     /// The storage size in bytes for one account.
     pub extra_storage_in_bytes_per_token: StorageUsage,
     ///метадані нфтшки
@@ -112,6 +119,8 @@ pub enum StorageKey {
     TokensPerTypeInner { token_type_hash: CryptoHash },
     TokenTypesLocked,
     Profiles,
+    TokensUsersLikes,
+    TokensUsersViews,
 }
 
 #[near_bindgen]
@@ -126,6 +135,8 @@ impl Contract {
     ) -> Self {
         let mut this = Self {
             tokens_per_owner: LookupMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
+            tokens_users_likes: LookupMap::new(StorageKey::TokensUsersLikes.try_to_vec().unwrap()),
+            tokens_users_views: LookupMap::new(StorageKey::TokensUsersViews.try_to_vec().unwrap()),
             tokens_per_creator: LookupMap::new(StorageKey::TokensPerCreator.try_to_vec().unwrap()),
             tokens_by_id: LookupMap::new(StorageKey::TokensById.try_to_vec().unwrap()),
             token_metadata_by_id: UnorderedMap::new(
@@ -167,6 +178,8 @@ impl Contract {
         #[derive(BorshDeserialize)]
         struct OldContract {
             tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
+            tokens_users_likes: LookupMap<TokenId, HashSet<AccountId>>,
+            tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
             tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
             tokens_by_id: LookupMap<TokenId, Token>,
             token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
@@ -185,6 +198,8 @@ impl Contract {
 
         Self {
             tokens_per_owner: old_contract.tokens_per_owner,
+            tokens_users_likes: old_contract.tokens_users_likes,
+            tokens_users_views: old_contract.tokens_users_views,
             tokens_per_creator: old_contract.tokens_per_creator,
             tokens_by_id: old_contract.tokens_by_id,
             token_metadata_by_id: old_contract.token_metadata_by_id,

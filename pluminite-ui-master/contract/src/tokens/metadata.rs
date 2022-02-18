@@ -52,3 +52,67 @@ impl NonFungibleTokenMetadata for Contract {
         self.metadata.get().unwrap()
     }
 }
+
+//Керуючий елемент для вподобань та переглядів токенів
+#[near_bindgen]
+impl Contract {
+    pub fn token_setLike(&self, token_id: TokenId)
+    {
+        assert!(
+            self.tokens_by_id.get(&token_id).is_none(),
+            "token_setLike: token not found"
+        );
+
+        let user_id = env::predecessor_account_id();
+
+        let mut tokenLikes = self.tokens_users_likes.get(&token_id);
+
+        if(tokenLikes.is_none())
+        {
+            let mut hashSet: HashSet<String> = vec![&user_id];
+
+            self.tokens_users_likes.insert(&token_id, &hashSet);
+        }
+        else
+        {
+            let unwrappedTokenLikes = tokenLikes.unwrap();
+
+            if(unwrappedTokenLikes.contains(&user_id))
+            {
+                unwrappedTokenLikes.remove(&user_id);
+            }
+            else
+            {
+                unwrappedTokenLikes.insert(user_id);
+            }
+        }
+    }
+
+    pub fn token_setView(&self, token_id: TokenId)
+    {
+        assert!(
+            self.tokens_by_id.get(&token_id).is_none(),
+            "token_setView: token not found"
+        );
+
+        let user_id = env::predecessor_account_id();
+
+        let mut tokenViews = self.tokens_users_views.get(&token_id);
+
+        if(tokenViews.is_none())
+        {
+            let mut hashSet: HashSet<String> = vec![&user_id];
+
+            self.tokens_users_views.insert(&token_id, &hashSet);
+        }
+        else
+        {
+            let unwrappedTokenViews = tokenViews.unwrap();
+
+            if(!unwrappedTokenViews.contains(&user_id))
+            {
+                unwrappedTokenViews.insert(user_id);
+            }
+        }
+    }
+}
