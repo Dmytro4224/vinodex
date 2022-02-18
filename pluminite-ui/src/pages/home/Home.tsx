@@ -3,16 +3,16 @@ import { CarouselView } from "../../components/carousel/carouselView";
 import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
 import { TabsView, tabType } from "../../components/common/tabs/TabsView";
-import {ITokenCardView, TokenCardView } from "../../components/tokenCard/tokenCardView";
+import {TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
 import {LabelView} from "../../components/common/label/labelView";
-import { ArtistCard } from "../../components/artistCard/ArtistCard";
+import ArtistCard from "../../components/artistCard/ArtistCard";
 import { withComponent } from '../../utils/withComponent';
 
 class Home extends Component {
   render() {
     return (
-      <div className="mb-5">
+      <div className="my-5 container">
         <div className="d-flex align-items-center justify-content-between">
           <DropdownView
             colorType={dropdownColors.select}
@@ -186,7 +186,7 @@ class Home extends Component {
                         //@ts-ignore
                         console.log(this.props.params);
                          //@ts-ignore
-                        this.props.navigate('/artists/qwe');
+                        this.props.navigate('/userProfile/q874587321JSAHFJHA');
                     }}
             color={buttonColors.select}
           />
