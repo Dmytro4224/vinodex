@@ -4,7 +4,6 @@
   display: flex;
   align-items: center;
   padding: 2px 24px;
-  margin-bottom: 36px;
   border-bottom: 1px solid var(--mercury);
   background-color: var(--white);
   z-index: 10;

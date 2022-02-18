@@ -19,7 +19,7 @@ class App extends Component {
           <Routes>
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Home />} />
-            <Route path="/artists/:id" element={<p>ARTISTS PAGE</p>} />
+            <Route path="/artists" element={<p>ARTISTS PAGE</p>} />
             <Route path="/userProfile/:userId" element={<UserProfile />} />
             <Route path="/token/:tokenId" element={<p>TOKEN PAGE</p>} />
           </Routes>

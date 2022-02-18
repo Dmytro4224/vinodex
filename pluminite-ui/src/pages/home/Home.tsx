@@ -12,7 +12,7 @@ import { withComponent } from '../../utils/withComponent';
 class Home extends Component {
   render() {
     return (
-      <div className="mb-5">
+      <div className="my-5 container">
         <div className="d-flex align-items-center justify-content-between">
           <DropdownView
             colorType={dropdownColors.select}

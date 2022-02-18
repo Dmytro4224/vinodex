@@ -18,7 +18,7 @@ class UserProfile extends Component {
   render() {
     return (
       <>
-        <div className="position-relative container">
+        <div className={`position-relative container ${styles.profileWrap}`}>
           <div className={styles.bgWrap}>
             <div className={styles.bgBlock} />
           </div>
