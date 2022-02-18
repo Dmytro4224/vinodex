@@ -15,7 +15,7 @@ class App extends Component {
       <>
         <Header />
 
-        <main className="container">
+        <main>
           <Routes>
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Home />} />
