@@ -137,7 +137,7 @@ class Home extends Component {
           />
         </div>
 
-        <div className="d-flex flex-wrap flex-gap-36 mt-5 justify-content-between">
+        <div className="d-flex flex-wrap flex-gap-36 mt-3 justify-content-between">
           {[{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}, {id: 8}].map(item => {
             return <ArtistCard
               key={item.id}

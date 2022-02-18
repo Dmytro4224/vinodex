@@ -7,13 +7,6 @@
   border-radius: 4px;
 }
 
-.btnCopy {
-  margin-left: 4px;
-  padding: 0;
-  border: none;
-  background-color: transparent;
-}
-
 .artistWrap {
   display: flex;
   align-items: center;
@@ -22,16 +15,10 @@
 
 .artistName {
   margin: 0;
-}
-
-.artistId {
-  margin: 0 5px 0 0;
-  transition: color 0.4s ease;
-}
-
-.identificationWrap {
-  display: flex;
-  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--black);
 }
 
 .artistAvatar {
@@ -46,8 +33,4 @@
 
 .buttonFollow {
   padding: 6px 12px !important;
-}
-
-.colorCopySuccess {
-  color: var(--limeade);
 }
