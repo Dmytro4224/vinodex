@@ -2,8 +2,13 @@ import { Component } from "react";
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
-
 class UserProfile extends Component {
+  constructor(props) {
+    super(props);
+
+    // const userID = this.props.match.params;
+  }
+
   render() {
     return (
       <div className="position-relative">

@@ -17,7 +17,7 @@ const navigationData = [
   },
 ];
 
-class Navigation extends Component {
+class HeaderNavigation extends Component {
   private getLink({ name, linkClass, path, id }) {
     const setActive = ({ isActive }) => (isActive ? `${linkClass} ${styles.active}` : linkClass);
 
@@ -35,4 +35,4 @@ class Navigation extends Component {
   }
 }
 
-export { Navigation };
+export { HeaderNavigation };
