@@ -49,14 +49,12 @@ class Marketplace2 extends Component {
                                 ]} type={tabType.button}
                                 onClick={(item) => {
 
-                                    context.setUser({ accountId: item.title, balance: item.id.toString() });
+                                    //context.instance!.setUser({ accountId: item.title, balance: item.id.toString() });
 
                                 }}
                                 currentTabIndex={0}
                             />
-                            {/*
-                            // @ts-ignore */}
-                            <span>{context.user ? context.user.accountId : 'NONE'}</span>
+                            
                         </>
                     )}
                 </NearContext.Consumer>

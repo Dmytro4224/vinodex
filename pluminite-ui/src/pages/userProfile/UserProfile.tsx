@@ -4,20 +4,34 @@ import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
 import { withComponent } from "../../utils/withComponent";
 import { TabsView, tabType } from "../../components/common/tabs/TabsView";
+import { Params } from 'react-router-dom';
+import { INftContractContext } from '../../contexts/nftContract';
+import { INftContract } from '../../utils';
 
-class UserProfile extends Component {
+interface IUserProfile {
+    params: Params<string>;
+    nftContractContext: INftContractContext
+}
+
+class UserProfile extends Component<IUserProfile> {
   constructor(props) {
     super(props);
   }
 
   private get getUserId() {
-    // @ts-ignore
-    return this.props.params?.userId;
-  }
+    return this.props.params.userId!;
+    }
+    public componentDidMount() {
+        this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
+            console.log('profile', profile);
+        });
+    }
+
 
   render() {
     return (
-      <>
+        <>
+           
         <div className={`position-relative container ${styles.profileWrap}`}>
           <div className={styles.bgWrap}>
             <div className={styles.bgBlock} />

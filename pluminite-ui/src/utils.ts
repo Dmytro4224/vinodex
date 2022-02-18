@@ -4,6 +4,7 @@ import { getConfig } from './config';
 import { NftMethods, MarketMethods } from './constants/contractMethods';
 import { APP } from './constants';
 import { ICurrentUser } from './types/ICurrentUser';
+import { IProfile } from './types/IProfile';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
@@ -13,6 +14,7 @@ export type INftContract = nearAPI.Contract & {
     nft_token: ({ token_id }: { token_id: string }) => void;
     nft_tokens_from_end: ({ from_index, limit }: { from_index: number, limit: number }) => void;
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
+    get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
 };
 
 export type IMarketContract = nearAPI.Contract & {
