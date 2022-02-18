@@ -1,11 +1,10 @@
-import React, {Component} from "react";
+import { Component } from "react";
+import { LikeView, LikeViewType } from "../like/likeView";
+import { buttonColors, ButtonView } from "../common/button/ButtonView";
+import { NavLink } from 'react-router-dom';
+import { IdentificationCopy } from "../common/identificationCopy/IdentificationCopy";
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
-import copyIcon from '../../assets/icons/copy.svg'
-import {transformArtistId} from "../../utils/sys";
-import {LikeView, LikeViewType} from "../like/likeView";
-import {buttonColors, ButtonView} from "../common/button/ButtonView";
-import {PlacementType, TooltipS} from "../common/tooltip/Tooltip";
 
 interface IArtistCard {
   avatar?: any;
@@ -17,12 +16,8 @@ interface IArtistCard {
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard>> {
-  private readonly _refIdentificationText:  React.RefObject<HTMLParagraphElement>;
-
   constructor(props: IArtistCard) {
     super(props);
-
-    this._refIdentificationText = React.createRef();
   }
 
   private get avatar() {
@@ -51,38 +46,14 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
 
   private btnFollowHandler() {}
 
-  private copyToClipboard() {
-    navigator.clipboard.writeText(this.identification);
-
-    this._refIdentificationText.current?.classList.add(styles.colorCopySuccess);
-
-    const t = setTimeout(() => {
-      this._refIdentificationText.current?.classList.remove(styles.colorCopySuccess);
-      clearTimeout(t);
-    }, 1500);
-  }
-
   render() {
     return (
       <div className={styles.artistCard}>
         <div className={styles.artistWrap}>
           <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar"/>
           <div>
-            <p className={styles.artistName}>{this.name}</p>
-            <div className={styles.identificationWrap}>
-              <p ref={this._refIdentificationText} className={styles.artistId}>{transformArtistId(this.identification)}</p>
-              <TooltipS
-                placement={PlacementType.top}
-                text={`Copy to clipboard`}
-                children={
-                  <button
-                    onClick={() => { this.copyToClipboard() }}
-                    className={styles.btnCopy}>
-                    <img src={copyIcon} alt="copy"/>
-                  </button>
-                }
-              />
-            </div>
+            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
+            <IdentificationCopy id={this.identification} />
           </div>
         </div>
         <div className="d-flex align-center justify-content-between">
