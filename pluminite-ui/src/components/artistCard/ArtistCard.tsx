@@ -14,6 +14,7 @@ interface IArtistCard {
   usersCount: number;
   likesCount: number;
   isFollow: boolean;
+  isCard?: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard>> {
@@ -45,9 +46,13 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
     return this.props.isFollow;
   }
 
+  private get isCard() {
+    return this.props.isCard || true;
+  }
+
   private btnFollowHandler() {}
 
-  render() {
+  isCardType() {
     return (
       <div className={styles.artistCard}>
         <div className={styles.artistWrap}>
@@ -57,14 +62,14 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
-        <div className="d-flex align-center justify-content-between">
+        <div className="d-flex align-items-center justify-content-between">
           <ButtonView
             text={this.isFollow ? "Unfollow" : "Follow"}
             onClick={() => { this.btnFollowHandler() }}
             color={buttonColors.blue}
             customClass={styles.buttonFollow}
           />
-          <div className="d-flex align-center">
+          <div className="d-flex align-items-center">
             <LikeView
               customClass={styles.userInfo}
               isChanged={false}
@@ -82,6 +87,41 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
           </div>
         </div>
       </div>
+    );
+  }
+
+  private oneLineType() {
+    return (
+      <div className="d-flex align-items-center justify-content-between w-100">
+        <div className={styles.artistWrap}>
+          <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar"/>
+          <div>
+            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
+            <IdentificationCopy id={this.identification} />
+          </div>
+        </div>
+        <div className="d-flex align-items-center">
+          <LikeView
+            customClass={`${styles.likes} ${styles.likesCustom}`}
+            isChanged={false}
+            isActive={true}
+            type={LikeViewType.like}
+            count={this.likesCount}
+          />
+          <ButtonView
+            text={this.isFollow ? "Unfollow" : "Follow"}
+            onClick={() => { this.btnFollowHandler() }}
+            color={buttonColors.blue}
+            customClass={styles.buttonFollow}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  render() {
+    return (
+      <>{this.isCard ? this.isCardType() : this.oneLineType()}</>
     );
   }
 }
