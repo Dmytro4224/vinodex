@@ -6,8 +6,8 @@ import { TabsView, tabType } from "../../components/common/tabs/TabsView";
 import {ITokenCardView, TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
 import {LabelView} from "../../components/common/label/labelView";
-import {ArtistCard} from "../../components/artistCard/ArtistCard";
-import { Navigate } from "react-router-dom";
+import { ArtistCard } from "../../components/artistCard/ArtistCard";
+import { withComponent } from '../../utils/withComponent';
 
 class Home extends Component {
   render() {
@@ -179,16 +179,23 @@ class Home extends Component {
         </div>
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
-            <ButtonView
-              text={'Load more'}
-              onClick={() => {  }}
-              color={buttonColors.select}
-            />
-        </div>
+          <ButtonView
+                    text={'Load more'}
+                    onClick={() => {
+                        //@ts-ignore
+                        console.log(this.props.params);
+                         //@ts-ignore
+                        this.props.navigate('/artists/qwe');
+                    }}
+            color={buttonColors.select}
+          />
+            </div>
+
+
 
       </div>
     );
   }
 }
 
-export { Home };
+export default withComponent(Home);
