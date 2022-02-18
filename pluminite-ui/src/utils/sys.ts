@@ -3,8 +3,9 @@ const classList = (...args: string[]) => {
 };
 
 const transformArtistId = (hash: string) => {
-    return `${hash.slice(0, 6)}...${hash.slice(7, 11)}`;
+    return `${hash.slice(0, 6)}...${hash.slice(hash.length - 4)}`;
 };
+
 
 export {
     classList,

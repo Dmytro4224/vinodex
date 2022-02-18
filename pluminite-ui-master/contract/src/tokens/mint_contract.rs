@@ -108,5 +108,55 @@ impl Contract {
 
             refund_deposit(required_storage_in_bytes);
         }
+
+        //Оновлення словників фільтрів
+        for i in 1..9
+        {
+            let mut filterDic = self.tokens_sorted.get(&i);
+
+            let criterion :Option<u128>;
+
+            match i
+            {
+                1 => criterion = metadata.starts_at,
+                2 => criterion =  metadata.issued_at,
+                3 => criterion = metadata.sold_at,
+                4 => criterion = metadata.expires_at,
+                5 => criterion = Some(metadata.price),
+                7 => criterion = Some(0),
+                8 => criterion = Some(0),
+                _ => criterion = None
+            }
+
+            let key = SortedToken{token_id: final_token_id.clone(), criterion: criterion};
+
+            if(filterDic.is_none())
+            {
+                let mut vector :Vec<SortedToken> = Vec::new();
+                vector.push(key);
+
+                self.tokens_sorted.insert(&i, &vector);
+                continue;
+            }
+
+            if(criterion.is_none())
+            {
+                filterDic.unwrap().push(key);
+                continue;
+            }
+
+            //Можливо додати лочку???
+
+            let mut unwraped = filterDic.unwrap();
+
+            let index = SortedToken::binary_search(&key, &unwraped);
+            if(index.is_none())
+            {
+                unwraped.push(key);
+                continue;
+            }
+
+            unwraped.insert(index.unwrap(), key);
+        }
     }
 }
