@@ -40,14 +40,16 @@ class UserProfile extends Component {
                 { title: "Favourites", id: 6, link: "#" },
                 { title: "Following", id: 7, link: "#" },
               ]}
-              type={tabType.button}
+              type={tabType.link}
               onClick={(item) => { console.log(item) }}
               currentTabIndex={0}
             />
           </div>
         </div>
 
-        <div></div>
+        <div className={styles.tabResultContainer}>
+
+        </div>
       </>
     );
   }
