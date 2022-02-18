@@ -58,62 +58,59 @@ impl NonFungibleTokenMetadata for Contract {
 impl Contract {
     pub fn token_setLike(&mut self, token_id: TokenId)
     {
-        assert!(
-            self.tokens_by_id.get(&token_id).is_none(),
-            "token_setLike: token not found"
-        );
+        // assert!(
+        //     self.tokens_by_id.get(&token_id).is_none(),
+        //     "token_setLike: token not found"
+        // );
 
         let user_id = env::predecessor_account_id();
 
-        let tokenLikes = self.tokens_users_likes.get(&token_id);
+        match self.tokens_users_likes.get(&token_id.clone()) {
+            Some(mut likes) => {
 
-        if(tokenLikes.is_none())
-        {
-            let mut hashSet: HashSet<String> = HashSet::new();
-            hashSet.insert(user_id);
+                if(likes.contains(&user_id))
+                {
+                    likes.remove(&user_id);
+                }
+                else
+                {
+                    likes.insert(user_id);
+                }
 
-            self.tokens_users_likes.insert(&token_id, &hashSet);
-        }
-        else
-        {
-            let mut unwrappedTokenLikes = tokenLikes.unwrap();
-
-            if(unwrappedTokenLikes.contains(&user_id))
-            {
-                unwrappedTokenLikes.remove(&user_id);
+                self.tokens_users_likes.insert(&token_id, &likes);
             }
-            else
-            {
-                unwrappedTokenLikes.insert(user_id);
+            None => {
+                let mut hashSet: HashSet<String> = HashSet::new();
+                hashSet.insert(user_id);
+
+                self.tokens_users_likes.insert(&token_id, &hashSet);
             }
         }
     }
 
     pub fn token_setView(&mut self, token_id: TokenId)
     {
-        assert!(
-            self.tokens_by_id.get(&token_id).is_none(),
-            "token_setView: token not found"
-        );
+        // assert!(
+        //     self.tokens_by_id.get(&token_id).is_none(),
+        //     "token_setView: token not found"
+        // );
 
         let user_id = env::predecessor_account_id();
 
-        let tokenViews = self.tokens_users_views.get(&token_id);
+        match self.tokens_users_views.get(&token_id.clone()) {
+            Some(mut views) => {
+                if(!views.contains(&user_id))
+                {
+                    views.insert(user_id);
+                }
 
-        if(tokenViews.is_none())
-        {
-            let mut hashSet: HashSet<String> = HashSet::new();
-            hashSet.insert(user_id);
+                self.tokens_users_views.insert(&token_id, &views);
+            }
+            None => {
+                let mut hashSet: HashSet<String> = HashSet::new();
+                hashSet.insert(user_id);
 
-            self.tokens_users_views.insert(&token_id, &hashSet);
-        }
-        else
-        {
-            let mut unwrappedTokenViews = tokenViews.unwrap();
-
-            if(!unwrappedTokenViews.contains(&user_id))
-            {
-                unwrappedTokenViews.insert(user_id);
+                self.tokens_users_views.insert(&token_id, &hashSet);
             }
         }
     }

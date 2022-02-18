@@ -1,5 +1,10 @@
 use crate::*;
 
+#[path = "../helpers/converters.rs"]
+mod converters;
+
+use converters::Converter;
+
 #[near_bindgen]
 impl Contract {
 
@@ -10,6 +15,15 @@ impl Contract {
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
             .map(|token_id| self.nft_token(token_id.clone()).unwrap())
+            .collect()
+    }
+
+    pub fn nft_tokens_keys(&self, from_index: Option<U128>, limit: Option<u64>) -> Vec<String> {
+        let keys = self.token_metadata_by_id.keys_as_vector();
+        let start = u128::from(from_index.unwrap_or(U128(0)));
+        keys.iter()
+            .skip(start as usize)
+            .take(limit.unwrap_or(0) as usize)
             .collect()
     }
 
@@ -77,61 +91,107 @@ impl Contract {
     pub fn nft_tokens_by_filter(
         &self,
         // каталог або null|none
-        token_type: Option<String>,
+        catalog: Option<String>,
        // order by шось
         sort: u8, 
         //пагінація
-        page_index: U64,
+        page_index: u64,
         //ксть елементів на сторінкі
         mut page_size: u64,
     ) ->Vec<JsonToken> {
 
-        let mut result;
-
-        if(token_type.is_some())
+        let mut token_ids : HashSet<String>;
+        let mut skip = 0;
+        if (page_index >= 1)
         {
-            let tokens = self.tokens_per_type.get(&token_type.unwrap());
+            skip = (page_index - 1) * page_size;
+        }
+
+        if(catalog.is_some())
+        {
+            let tokens = self.tokens_per_type.get(&catalog.unwrap());
             if(tokens.is_none())
             {
                 return Vec::new();
             }
 
-            let unwrapedTokens = tokens.unwrap();
-
-            let skip = (u64::from(page_index) - 1) * page_size;
-            let availableAmount = unwrapedTokens.len() - skip;
-
-            if(availableAmount <= 0)
-            {
-                return Vec::new();
-            }
-
-            if(availableAmount < page_size)
-            {
-                page_size = availableAmount;
-            }
-
-            result = 
-                unwrapedTokens.iter()
-                .skip(skip as usize)
-                .take(page_size as usize)
-                .map(|token_id| self.nft_token(token_id.clone()).unwrap())
-                .collect();
+            token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
         }
         else
         {
-            result = Vec::new();
+            token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+        }
+
+        let mut availableAmount = token_ids.len() - skip as usize;
+
+        if (availableAmount <= 0)
+        {
+            return Vec::new();
+        }
+
+        if (availableAmount > page_size as usize)
+        {
+            availableAmount = page_size as usize;
         }
        
+        let mut is_reverse : bool = false;
+        let sorted : Vec<SortedToken>;
+
+        let mut result : Vec<JsonToken> = Vec::new();
+
         match sort
         {
-            1 =>
+            9 =>
             {
-                //result.sort_by(|a, b| DateTime::b.metadata.issued_at)
+                sorted = self.tokens_sorted.get(&5).unwrap_or(Vec::new());
+                is_reverse = true;
             },
+            10 =>
+            {
+                sorted = self.tokens_sorted.get(&2).unwrap_or(Vec::new());
+                is_reverse = true;
+            }
             _ =>
             {
+                sorted = self.tokens_sorted.get(&sort).unwrap_or(Vec::new());
+            }
+        }
 
+        if (sorted.len() < skip as usize)
+        {
+            return Vec::new();
+        }
+
+        if (is_reverse)
+        {
+            let start_index = (token_ids.len() - skip as usize - 1) as u64;
+            let end_index = start_index + availableAmount as u64;
+
+            for i in (start_index..end_index).rev()
+            {
+                let _index = i as usize;
+
+                if (token_ids.contains(&sorted[_index].token_id))
+                {
+                    result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
+                }
+            }
+        }
+        else
+        {
+            for i in skip..skip + availableAmount as u64
+            {
+                let _index = i as usize;
+                let _token = sorted.get(_index);
+                if (_token.is_none())
+                {
+                    continue;
+                }
+
+                if (token_ids.contains(&_token.unwrap().token_id))
+                {
+                    result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
+                }
             }
         }
 
