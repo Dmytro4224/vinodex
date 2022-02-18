@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import searchIcon from '../../assets/icons/search.svg';
 import { InputView } from "../../components/common/inputView/InputView";
-import { ArtistCard } from "../../components/artistCard/ArtistCard";
+import ArtistCard from "../../components/artistCard/ArtistCard";
 import {ModalSample, ModalSampleSizeType} from "../../components/common/modalSample/ModalSample";
 import {buttonColors, ButtonView} from "../../components/common/button/ButtonView";
 

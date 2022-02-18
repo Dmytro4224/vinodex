@@ -15,6 +15,7 @@ interface ITokenCardView{
     likesCount: number;
     buttonText: string;
     isSmall?: boolean;
+    linkTo?: string;
     onClick: () => void
 }
 

@@ -2,6 +2,8 @@ import { Component } from "react";
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
+import {withComponent} from "../../utils/withComponent";
+
 class UserProfile extends Component {
   constructor(props) {
     super(props);
@@ -10,6 +12,8 @@ class UserProfile extends Component {
   }
 
   render() {
+    // @ts-ignore
+    console.log(this.props.params)
     return (
       <div className="position-relative">
         <div className={styles.bgWrap}>
@@ -27,4 +31,4 @@ class UserProfile extends Component {
   }
 }
 
-export { UserProfile }; 
+export default withComponent(UserProfile);

@@ -5,6 +5,7 @@ import {InputView} from "../common/inputView/InputView";
 import searchIcon from "../../assets/icons/search.svg";
 import {buttonColors, ButtonView} from "../common/button/ButtonView";
 import {dropdownColors, DropdownView} from "../common/dropdown/dropdownView";
+import {withComponent} from "../../utils/withComponent";
 
 class Header extends Component {
   render() {
@@ -58,4 +59,4 @@ class Header extends Component {
   }
 }
 
-export { Header };
+export default withComponent(Header);
