@@ -1,10 +1,11 @@
 import React, {Component} from "react";
 import styles from './header.module.css';
-import { Navigation } from "../navigation/Navigation";
+import { HeaderNavigation } from "../navigation/HeaderNavigation";
 import {InputView} from "../common/inputView/InputView";
 import searchIcon from "../../assets/icons/search.svg";
 import {buttonColors, ButtonView} from "../common/button/ButtonView";
 import {dropdownColors, DropdownView} from "../common/dropdown/dropdownView";
+import {withComponent} from "../../utils/withComponent";
 
 class Header extends Component {
   render() {
@@ -13,7 +14,7 @@ class Header extends Component {
         <div className="container d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
             <h4>Logo</h4>
-            <Navigation />
+            <HeaderNavigation />
           </div>
           <div style={{ maxWidth: '360px', width: '100%' }}>
             <InputView
@@ -58,4 +59,4 @@ class Header extends Component {
   }
 }
 
-export { Header };
+export default withComponent(Header);

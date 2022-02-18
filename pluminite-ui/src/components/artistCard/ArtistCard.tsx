@@ -5,6 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { IdentificationCopy } from "../common/identificationCopy/IdentificationCopy";
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
+import {withComponent} from "../../utils/withComponent";
 
 interface IArtistCard {
   avatar?: any;
@@ -85,4 +86,4 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
   }
 }
 
-export { ArtistCard };
+export default withComponent(ArtistCard);

@@ -3,16 +3,17 @@ import { CarouselView } from "../../components/carousel/carouselView";
 import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
 import { TabsView, tabType } from "../../components/common/tabs/TabsView";
-import {ITokenCardView, TokenCardView } from "../../components/tokenCard/tokenCardView";
+import {TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
 import {LabelView} from "../../components/common/label/labelView";
-import {ArtistCard} from "../../components/artistCard/ArtistCard";
-import { Navigate } from "react-router-dom";
+import ArtistCard from "../../components/artistCard/ArtistCard";
+import { withComponent } from '../../utils/withComponent';
+import {BestArtists} from "../../components/bestArtists/BestArtists";
 
 class Home extends Component {
   render() {
     return (
-      <div className="mb-5">
+      <div className="my-5 container">
         <div className="d-flex align-items-center justify-content-between">
           <DropdownView
             colorType={dropdownColors.select}
@@ -92,9 +93,10 @@ class Home extends Component {
                                                 likesCount={99}
                                                 isSmall={false}
                                                 buttonText={'Place a bid 0.08 ETH'}
-                                                linkTo={`/token/:qwewqq-1231-weq-123`}
+                                                linkTo={`/token/qwewqq-1231-weq-123`}
                                                 onClick={() => {
-                                                  alert('buy Place a bid 0.08 ETH');
+                                                  // @ts-ignore
+                                                  this.props.navigate('/token/qwewqq-1231-weq-123');
                                                 }}/>;
                         })}/>
 
@@ -128,27 +130,7 @@ class Home extends Component {
 
         <p className="separator-horizontal" />
 
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Best Artists'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.white}
-          />
-        </div>
-
-        <div className="d-flex flex-wrap flex-gap-36 mt-3 justify-content-between">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}, {id: 8}].map(item => {
-            return <ArtistCard
-              key={item.id}
-              name={'Artist Name'}
-              identification={'0x0b9D2weq28asdqwe132'}
-              usersCount={22}
-              likesCount={12}
-              isFollow={false}
-            />;
-          })}
-        </div>
+        <BestArtists />
 
         <p className="separator-horizontal" />
 
@@ -180,15 +162,22 @@ class Home extends Component {
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
-            text={'Load more'}
-            onClick={() => {  }}
+                    text={'Load more'}
+                    onClick={() => {
+                        //@ts-ignore
+                        console.log(this.props.params);
+                         //@ts-ignore
+                        this.props.navigate('/userProfile/q874587321JSAHFJHA');
+                    }}
             color={buttonColors.select}
           />
-        </div>
+            </div>
+
+
 
       </div>
     );
   }
 }
 
-export { Home };
+export default withComponent(Home);

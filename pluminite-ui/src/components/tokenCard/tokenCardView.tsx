@@ -3,6 +3,7 @@ import styles from './tokenCardView.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import {buttonColors, ButtonView } from '../common/button/ButtonView';
 import { LikeView, LikeViewType } from '../like/likeView';
+import { NavLink } from 'react-router-dom';
 
 interface ITokenCardView{
     icon?: any;
@@ -15,7 +16,8 @@ interface ITokenCardView{
     likesCount: number;
     buttonText: string;
     isSmall?: boolean;
-    onClick: () => void
+    linkTo?: string;
+    onClick?: () => void
 }
 
 class TokenCardView extends Component<Readonly<ITokenCardView>>{
@@ -31,7 +33,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
     }
 
     private onClick(){
-        this.props.onClick();
+        this.props.onClick && this.props.onClick();
     }
 
     render(){
@@ -50,8 +52,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
                 </div>
                 <div className={styles.cardFooter}>
                     <div className={styles.cardInfo}>
-                        { this.props.name !== '' && <div className={styles.infoName}>{this.props.name}</div> }
-                        { this.props.author !== '' && <div className={styles.authorName}>{this.props.author}</div> }
+                        {this.props.linkTo ? <NavLink to={this.props.linkTo}><div className={styles.infoName}>{this.props.name}</div></NavLink> : <div className={styles.infoName}>{this.props.name}</div> }
+                        <div className={styles.authorName}>{this.props.author}</div>
                     </div>
                     <div className={styles.cardControls}>
                         <LikeView
@@ -73,4 +75,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
         )
     }
 }
-export { TokenCardView }
+
+export {TokenCardView};
+export type { ITokenCardView };
