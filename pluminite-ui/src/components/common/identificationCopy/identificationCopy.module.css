@@ -1,0 +1,20 @@
+.identificationWrap {
+  display: flex;
+  align-items: center;
+}
+
+.btnCopy {
+  margin-left: 4px;
+  padding: 0;
+  border: none;
+  background-color: transparent;
+}
+
+.colorCopySuccess {
+  color: var(--limeade);
+}
+
+.artistId {
+  margin: 0 5px 0 0;
+  transition: color 0.4s ease;
+}

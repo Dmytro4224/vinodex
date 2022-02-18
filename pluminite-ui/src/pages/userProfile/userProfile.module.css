@@ -1,0 +1,34 @@
+.bgBlock {
+  width: 100%;
+  height: 260px;
+  background-image: url("../../assets/images/user-profile-bg.jpg");
+  background-size: cover;
+  border-radius: 10px;
+}
+
+.bgWrap {
+  padding: 0 50px;
+}
+
+.profileInfoWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: -50px;
+}
+
+.avatarWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 120px;
+  background-color: var(--white);
+  border-radius: 100%;
+}
+
+.profileName {
+  font-weight: 400;
+  font-size: 34px;
+}

@@ -3,10 +3,11 @@ import { CarouselView } from "../../components/carousel/carouselView";
 import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
 import { TabsView, tabType } from "../../components/common/tabs/TabsView";
-import { TokenCardView } from "../../components/tokenCard/tokenCardView";
+import {ITokenCardView, TokenCardView } from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
 import {LabelView} from "../../components/common/label/labelView";
 import {ArtistCard} from "../../components/artistCard/ArtistCard";
+import { Navigate } from "react-router-dom";
 
 class Home extends Component {
   render() {
@@ -91,6 +92,7 @@ class Home extends Component {
                                                 likesCount={99}
                                                 isSmall={false}
                                                 buttonText={'Place a bid 0.08 ETH'}
+                                                linkTo={`/token/:qwewqq-1231-weq-123`}
                                                 onClick={() => {
                                                   alert('buy Place a bid 0.08 ETH');
                                                 }}/>;
@@ -135,7 +137,7 @@ class Home extends Component {
           />
         </div>
 
-        <div className="d-flex flex-wrap flex-gap-36 mt-5 justify-content-between">
+        <div className="d-flex flex-wrap flex-gap-36 mt-3 justify-content-between">
           {[{id: 1}, {id: 2}, {id: 3}, {id: 4}, {id: 5}, {id: 6}, {id: 7}, {id: 8}].map(item => {
             return <ArtistCard
               key={item.id}
