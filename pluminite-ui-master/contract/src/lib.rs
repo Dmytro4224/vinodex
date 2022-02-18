@@ -9,6 +9,7 @@ use near_sdk::{
     env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
 };
 use std::collections::HashSet;
+use std::cmp::Ordering;
 
 /**для регексу */
 extern crate regex;
@@ -83,6 +84,22 @@ pub struct Contract {
     //Перегляд токенів
     pub tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
 
+    //Токени впорядковані за фільтром(key - тип фільтру, value - впорядкований ліст)
+
+    //1 - Recently Listed
+    //2 - Recently Created (Oldest цей самий масив)
+    //3 - Recently Sold
+    //4 - Ending Soon
+    //5 - Price Low to High (High to Low цей самий масив)
+    //6 - Highest last sale
+    //7 - Most viewed
+    //8 - Most Favorited
+
+    //9 - Price High to Low - пункт 5
+    //10 - Oldest - пункт 2
+
+    pub tokens_sorted: LookupMap<u8, Vec<SortedToken>>,
+
     /// The storage size in bytes for one account.
     pub extra_storage_in_bytes_per_token: StorageUsage,
     ///метадані нфтшки
@@ -121,6 +138,7 @@ pub enum StorageKey {
     Profiles,
     TokensUsersLikes,
     TokensUsersViews,
+    TokensSorted,
 }
 
 #[near_bindgen]
@@ -137,6 +155,7 @@ impl Contract {
             tokens_per_owner: LookupMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
             tokens_users_likes: LookupMap::new(StorageKey::TokensUsersLikes.try_to_vec().unwrap()),
             tokens_users_views: LookupMap::new(StorageKey::TokensUsersViews.try_to_vec().unwrap()),
+            tokens_sorted: LookupMap::new(StorageKey::TokensSorted.try_to_vec().unwrap()),
             tokens_per_creator: LookupMap::new(StorageKey::TokensPerCreator.try_to_vec().unwrap()),
             tokens_by_id: LookupMap::new(StorageKey::TokensById.try_to_vec().unwrap()),
             token_metadata_by_id: UnorderedMap::new(
@@ -180,6 +199,7 @@ impl Contract {
             tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
             tokens_users_likes: LookupMap<TokenId, HashSet<AccountId>>,
             tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
+            tokens_filtered: LookupMap<u8, Vec<SortedToken>>,
             tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
             tokens_by_id: LookupMap<TokenId, Token>,
             token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
@@ -200,6 +220,7 @@ impl Contract {
             tokens_per_owner: old_contract.tokens_per_owner,
             tokens_users_likes: old_contract.tokens_users_likes,
             tokens_users_views: old_contract.tokens_users_views,
+            tokens_sorted: old_contract.tokens_filtered,
             tokens_per_creator: old_contract.tokens_per_creator,
             tokens_by_id: old_contract.tokens_by_id,
             token_metadata_by_id: old_contract.token_metadata_by_id,
@@ -219,6 +240,11 @@ impl Contract {
 
     pub fn get_version(&self) -> u16 {
         self.version
+    }
+
+    pub fn tokens_sorted_get(&self, filter: u8) -> Option<Vec<SortedToken>>
+    {
+        return self.tokens_sorted.get(&filter);
     }
 
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
