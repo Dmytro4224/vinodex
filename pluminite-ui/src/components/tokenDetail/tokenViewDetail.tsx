@@ -145,7 +145,7 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
               <ButtonView
                 text={'Place a bid 0.08 ETH'}
                 onClick={() => {  }}
-                color={buttonColors.blue}
+                color={buttonColors.goldFill}
                 customClass={styles.button}
               />
             </div>

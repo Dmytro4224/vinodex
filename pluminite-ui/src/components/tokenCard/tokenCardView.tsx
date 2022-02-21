@@ -66,7 +66,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
                         <ButtonView
                             text={this.props.buttonText}
                             onClick={() => { this.onClick() }}
-                            color={buttonColors.blue}
+                            color={buttonColors.goldFill}
                             customClass={styles.button}
                         />
                     </div>

@@ -66,7 +66,7 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
           <ButtonView
             text={this.isFollow ? "Unfollow" : "Follow"}
             onClick={() => { this.btnFollowHandler() }}
-            color={buttonColors.blue}
+            color={buttonColors.goldFill}
             customClass={styles.buttonFollow}
           />
           <div className="d-flex align-items-center">
@@ -111,7 +111,7 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
           <ButtonView
             text={this.isFollow ? "Unfollow" : "Follow"}
             onClick={() => { this.btnFollowHandler() }}
-            color={buttonColors.blue}
+            color={buttonColors.goldFill}
             customClass={styles.buttonFollow}
           />
         </div>
