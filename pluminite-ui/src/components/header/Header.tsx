@@ -13,7 +13,7 @@ class Header extends Component {
       <header className={styles.header}>
         <div className="container d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
-            <h4>Logo</h4>
+            <h4 className={styles.logo}>Logo</h4>
             <HeaderNavigation />
           </div>
           <div style={{ maxWidth: '360px', width: '100%' }}>
