@@ -6,6 +6,7 @@ import { withComponent } from '../../utils/withComponent';
 import {LikeView, LikeViewType } from '../like/likeView';
 import ArtistCard from '../artistCard/ArtistCard';
 import {Tab, Tabs } from 'react-bootstrap';
+import {buttonColors, ButtonView } from '../common/button/ButtonView';
 
 interface ITokenViewDetail{
   hash: string;
@@ -126,19 +127,27 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
                 id="controlled-tab-example"
                 className="mb-3"
               >
-                <Tab eventKey="home" title="DESCRIPTION" className={styles.tabItem}>
-                  <div>text1</div>
+                <Tab eventKey="home" title="DESCRIPTION">
+                  <div className={styles.tabContainer}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat</div>
                 </Tab>
-                <Tab eventKey="profile" title="DETAILS" className={styles.tabItem}>
-                  <div>text2</div>
+                <Tab eventKey="profile" title="DETAILS">
+                  <div className={styles.tabContainer}>text2</div>
                 </Tab>
-                <Tab eventKey="contact" title="HISTORY" className={styles.tabItem}>
-                  <div>text3</div>
+                <Tab eventKey="contact" title="HISTORY">
+                  <div className={styles.tabContainer}>text3</div>
                 </Tab>
-                <Tab eventKey="owners" title="OWNERS" className={styles.tabItem}>
-                  <div>text4</div>
+                <Tab eventKey="owners" title="OWNERS">
+                  <div className={styles.tabContainer}>text4</div>
                 </Tab>
               </Tabs>
+            </div>
+            <div className={styles.buttonWrap}>
+              <ButtonView
+                text={'Place a bid 0.08 ETH'}
+                onClick={() => {  }}
+                color={buttonColors.blue}
+                customClass={styles.button}
+              />
             </div>
           </div>
       </div>
