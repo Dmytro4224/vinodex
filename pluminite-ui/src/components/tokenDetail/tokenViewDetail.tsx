@@ -117,6 +117,7 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
                 identification={'0x0b9D2weq28asdqwe132'}
                 usersCount={22}
                 likesCount={12}
+                isCard={false}
                 isFollow={false}
               />
             </div>
@@ -125,10 +126,10 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
                 id="controlled-tab-example"
                 className="mb-3"
               >
-                <Tab eventKey="home" title="description" className={styles.tabItem}>
+                <Tab eventKey="home" title="DESCRIPTION" className={styles.tabItem}>
                   <div>text1</div>
                 </Tab>
-                <Tab eventKey="profile" title="Details" className={styles.tabItem}>
+                <Tab eventKey="profile" title="DETAILS" className={styles.tabItem}>
                   <div>text2</div>
                 </Tab>
                 <Tab eventKey="contact" title="HISTORY" className={styles.tabItem}>
