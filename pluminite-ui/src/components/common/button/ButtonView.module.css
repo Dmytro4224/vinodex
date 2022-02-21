@@ -62,6 +62,11 @@
     color: var(--denim);
 }
 
+.btnGold {
+    background-color: var(--white);
+    color: var(--pirateCold);
+}
+
 .btnIcon{
     display: flex;
     align-items: center;

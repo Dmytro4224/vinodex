@@ -11,6 +11,7 @@ enum buttonColors {
     primary = 'primary',
     selectGray = 'selectGray',
     darkGray = 'darkGray',
+    gold = 'gold',
 }
 
 interface IButtonView{
@@ -61,6 +62,9 @@ class ButtonView extends Component<Readonly<IButtonView>>{
                 break;
             case 'darkGray':
                 color = styles.btnDarkGray;
+                break;
+            case 'gold':
+                color = styles.btnGold;
                 break;
         }
 
