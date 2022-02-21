@@ -10,7 +10,6 @@ import UserProfile from '../../pages/userProfile/UserProfile';
 import OrderDetail from '../../pages/orderDetail/orderDetail';
   
 class App extends Component {
-  //static contextType = null;
   render() {
     return (
       <>

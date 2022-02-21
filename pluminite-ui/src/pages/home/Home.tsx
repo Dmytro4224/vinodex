@@ -52,14 +52,12 @@ class Home extends Component {
                   ]} type={tabType.button}
                           onClick={(item) => {
 
-                            context.setUser({ accountId: item.title, balance: item.id.toString() });
+                              context.setUser({ accountId: item.title, balance: item.id.toString() });
 
                           }}
                           currentTabIndex={0}
-                />
-                {/*
-                            // @ts-ignore */}
-                {/*<span>{context.user ? context.user.accountId : 'NONE'}</span>*/}
+                            />
+                            <LabelView text={context.user ? context.user.accountId : 'NONE'} />
               </>
             )}
           </NearContext.Consumer>
@@ -181,3 +179,4 @@ class Home extends Component {
 }
 
 export default withComponent(Home);
+
