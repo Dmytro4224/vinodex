@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=C:\work\git\vinodex\pluminite-ui-master\contract\target\wasm32-unknown-unknown\debug\build\typenum-93d24a8c0297b980\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=C:\work\git\vinodex\pluminite-ui-master\contract\target\wasm32-unknown-unknown\debug\build\typenum-93d24a8c0297b980\out\op.rs
