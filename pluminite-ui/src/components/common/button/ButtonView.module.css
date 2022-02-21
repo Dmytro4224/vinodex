@@ -68,7 +68,7 @@
 }
 
 .btnGold {
-    background-color: var(--white);
+    background-color: transparent;
     color: var(--pirateCold);
 }
 

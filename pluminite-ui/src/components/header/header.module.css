@@ -19,3 +19,7 @@
   background-color: var(--mercury);
   margin: 0 15px;
 }
+
+.logo {
+  margin-right: 30px;
+}
