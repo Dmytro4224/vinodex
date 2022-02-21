@@ -11,6 +11,7 @@ import { withComponent } from '../../utils/withComponent';
 import {BestArtists} from "../../components/bestArtists/BestArtists";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
+import TopTokensView from "../../components/topTokens/topTokensView";
 
 interface IHome {
     params: Params<string>;
@@ -18,12 +19,6 @@ interface IHome {
 
 }
 class Home extends Component<IHome> {
-
-    public componentDidMount() {
-        this.props.nftContractContext.nft_tokens_by_filter('art', 1, 10, 7).then(response => {
-            console.log('response', response);
-        });
-    }
   render() {
     return (
       <div className="my-5 container">
@@ -93,23 +88,7 @@ class Home extends Component<IHome> {
           />
         </div>
 
-        <CarouselView customCLass={'carousel-owl-tokens'}
-                        childrens={[{id: 1}, {id: 2}, {id: 3}].map(item => {
-                          return <TokenCardView key={item.id}
-                                                countL={item.id}
-                                                countR={10}
-                                                days={'121 days left'}
-                                                name={'Item Name'}
-                                                author={'Creat name'}
-                                                likesCount={99}
-                                                isSmall={false}
-                                                buttonText={'Place a bid 0.08 ETH'}
-                                                linkTo={`/token/qwewqq-1231-weq-123`}
-                                                onClick={() => {
-                                                  // @ts-ignore
-                                                  this.props.navigate('/token/qwewqq-1231-weq-123');
-                                                }}/>;
-                        })}/>
+        <TopTokensView list={null} />
 
         <p className="separator-horizontal" />
 
