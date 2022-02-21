@@ -50,7 +50,7 @@ class Header extends Component {
             <ButtonView
               text={'CREATE'}
               onClick={() => {  }}
-              color={buttonColors.blue}
+              color={buttonColors.goldFill}
             />
           </div>
         </div>

@@ -1,31 +1,31 @@
-import React, { Component, useCallback } from 'react';
-import PropTypes from 'prop-types';
-import { Contract, transactions } from 'near-api-js';
+import React, { Component } from 'react';
+import * as nearAPI from 'near-api-js';
 
-import { initialNftContractState } from './reducer';
+import { INftContract } from '../../utils';
 
-import { getMarketContractName, INftContract } from '../../utils';
+import { IProfile } from '../../types/IProfile';
 
-import { ReactChildrenTypeRequired } from '../../types/ReactChildrenTypes';
-import { APP, PAYABLE_METHODS, STORAGE } from '../../constants';
+export const initialNftContractState = {
+    nftContract: null
+};
+export const NftContractContext = React.createContext<INftContractContext>(initialNftContractState as INftContractContext);
 
-export const NftContractContext = React.createContext<INftContractContext>(initialNftContractState);
-
-interface INftContractContext {
-    nftContract: Contract | null;
+export interface INftContractContext {
+    nftContract: INftContract | null;
+    getProfile: (accountId: string) => Promise<IProfile>;
 }
 
-interface INftContractContextProvider {
+interface INftContractContextProviderProps {
     nftContract: INftContract;
     children: any
 }
 
-export class NftContractContextProvider extends Component<INftContractContextProvider> {
-    constructor(props: INftContractContextProvider) {
+export class NftContractContextProvider extends Component<INftContractContextProviderProps> implements INftContractContext {
+    constructor(props: INftContractContextProviderProps) {
         super(props);
     }
 
-    private get nftContract() {
+    public get nftContract() {
         return this.props.nftContract;
     }
 
@@ -36,30 +36,37 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     public async getGems(fromIndex: number, limit: number) {
         this.nftContract.nft_tokens_from_end({
             from_index: fromIndex,
-            limit,
-        })
+            limit
+        });
     }
 
     public async getGemsForOwner(accountId: string, fromIndex: number, limit: number) {
         return this.nftContract.nft_tokens_for_owner({
             account_id: accountId,
             from_index: fromIndex,
-            limit: Number(limit),
+            limit: Number(limit)
+        });
+    }
+
+    public getProfile = async (accountId: string) => {
+        return { name: 'user' };
+        return this.nftContract.get_profile({
+            account_id: accountId
         });
     }
 
     public render() {
         const value = {
             nftContract: this.nftContract,
-            getGem: this.getGem,
-            getGems: this.getGems,
+            //getGem: this.getGem,
+            //getGems: this.getGems,
             //getGemsForOwner,
             //getGemsForCreator,
             //getGemsBatch,
             //nftTransfer,
             //listForSale,
             //setProfile,
-            //getProfile,
+            getProfile: this.getProfile,
             //getSupplyForCreator,
             //getIsFreeMintAvailable,
         };

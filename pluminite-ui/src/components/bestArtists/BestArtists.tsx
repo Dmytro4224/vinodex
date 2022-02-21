@@ -14,7 +14,7 @@ class BestArtists extends Component {
           <ButtonView
             text={'More'}
             onClick={() => {  }}
-            color={buttonColors.white}
+            color={buttonColors.gold}
           />
         </div>
 

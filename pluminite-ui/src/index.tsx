@@ -14,7 +14,7 @@ const rootElement = document.getElementById('root');
 initContracts()
     .then(({ nftContract, marketContract, currentUser, nearConfig, walletConnection, near }) => {
         const app = (
-            <NearContextProvider currentUser={currentUser} nearConfig={nearConfig} wallet={walletConnection} near={near}>
+            <NearContextProvider user={currentUser} nearConfig={nearConfig} wallet={walletConnection} near={near}>
                 <NftContractContextProvider nftContract={nftContract}>
                     <MarketContractContextProvider marketContract={marketContract}>
                       <BrowserRouter>

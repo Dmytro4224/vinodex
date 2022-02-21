@@ -1,0 +1,43 @@
+.profileDetailsWrap {
+  margin: 0 auto;
+  padding: 0 0 90px 0;
+  max-width: 640px;
+}
+
+.itemWrap {
+  padding: 10px 18px;
+  background: var(--white);
+  border-radius: 4px;
+  border-bottom: 1px solid rgba(174, 126, 3, 0.2);;
+}
+
+.iconStyle {
+  margin: 0 34px 0 0;
+}
+
+.itemTitle {
+  font-weight: 500;
+  font-size: 16px;
+  color: var(--mineShaftS);
+}
+
+.itemSubTitle {
+  font-weight: 400;
+  font-size: 14px;
+  color: var(--doveGrayS);
+}
+
+.profileBlockTitle {
+  margin-left: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--mineShaftS);
+}
+
+.ulInfoList {
+  margin-bottom: 36px;
+}
+
+.ulSettingsList label {
+  width: 100%;
+}

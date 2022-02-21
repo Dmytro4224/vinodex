@@ -3,7 +3,7 @@
     font-weight: 500;
     color: var(--white);
     background: rgba(0, 0, 0, 0.87);
-    border-radius: 4px;
+    border-radius: 30px;
     outline: none;
     border: none;
     padding: 12px 16px;
@@ -16,6 +16,11 @@
 
 .btnBlue{
     background-color: var(--denim);
+    color: var(--white);
+}
+
+.btnGoldFill{
+    background-color: var(--pirateCold);
     color: var(--white);
 }
 .btnWhite{
@@ -60,6 +65,11 @@
 .btnPrimary{
     background-color: var(--linkWater);
     color: var(--denim);
+}
+
+.btnGold {
+    background-color: transparent;
+    color: var(--pirateCold);
 }
 
 .btnIcon{

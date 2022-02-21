@@ -1,31 +1,31 @@
-import React, { useReducer, useEffect, Component } from 'react';
-
-import { initialNearState, nearReducer } from './reducer';
-import { CLEAR_STATE, LOADING_ERROR, LOADING_START, LOADING_SUCCESS, SET_USER } from './types';
-
-import { ReactChildrenTypeRequired } from '../../types/ReactChildrenTypes';
-import { NearConfigTypeShape, NearTypeShape, UserTypeShape, WalletTypeShape } from '../../types/NearTypes';
-
+import React from 'react';
 import { APP } from '../../constants';
 import { ICurrentUser } from '../../types/ICurrentUser';
 import { Near, WalletConnection } from 'near-api-js';
 import { IConfig } from '../../config';
 
-export const NearContext = React.createContext({
-    ...initialNearState,
-    nearContent: void 0,
-    signIn: () => { },
-    signOut: () => { },
-    startLoading: () => { },
-    setUser: (user: ICurrentUser) => { }
+export const initialNearContext = {
+    user: null,
+    isLoading: true,
+    error: null,
+};
+
+export const NearContext = React.createContext<INearContext>({
+    isLoading: true,
+    error: null,
+    user: null,
+    setUser: () => { }
 });
 
 interface INearContext {
-
+    isLoading: boolean;
+    error: Error | string | null;
+    user: ICurrentUser | null;
+    setUser: (user: ICurrentUser) => void;
 }
 
-interface INearContextProvider {
-    currentUser: ICurrentUser | null;
+interface INearContextProviderProps {
+    user: ICurrentUser | null;
     nearConfig: IConfig;
     wallet: WalletConnection;
     near: Near;
@@ -35,15 +35,32 @@ interface INearContextProvider {
 interface INearContextState {
     user: ICurrentUser | null;
     isLoading: boolean;
-    error: Error | null;
+    error: Error | string | null;
 }
 
-export class NearContextProvider extends Component<INearContextProvider, INearContextState> {
+export class NearContextProvider extends React.Component<INearContextProviderProps, INearContextState> {
+
     public state: INearContextState = {
         user: null,
         isLoading: true,
         error: null
     };
+
+    constructor(props: INearContextProviderProps) {
+        super(props);
+    }
+
+    public get near() {
+        return this.props.near;
+    }
+
+    public get wallet() {
+        return this.props.wallet;
+    }
+
+    public get user() {
+        return this.props.user;
+    }
 
     public setUser = (user: ICurrentUser) => {
         this.setState({
@@ -69,19 +86,11 @@ export class NearContextProvider extends Component<INearContextProvider, INearCo
     }
 
     public clearState() {
-        this.setState({ ...initialNearState });
-    }
-
-    constructor(props: INearContextProvider) {
-        super(props);
+        //this.setState({ ...initialNearState });
     }
 
     private get nearConfig() {
         return this.props.nearConfig;
-    }
-
-    private get wallet() {
-        return this.props.wallet;
     }
 
     public signIn = () => {
@@ -97,19 +106,14 @@ export class NearContextProvider extends Component<INearContextProvider, INearCo
     };
 
     public render() {
+        const value: INearContext = {
+            user: this.state.user,
+            isLoading: this.state.isLoading,
+            error: this.state.error,
+            setUser: this.setUser
+        };
         return (
-            <NearContext.Provider
-                value={{
-                    //@ts-ignore
-                    user: this.state.user,
-                    setUser: this.setUser,
-                    isLoading: this.state.isLoading,
-                    //@ts-ignore
-                    nearContent: this.props.near,
-                    signIn: this.signIn,
-                    signOut: this.signOut
-                }}
-            >
+            <NearContext.Provider value={value}>
                 {this.props.children}
             </NearContext.Provider>
         );
