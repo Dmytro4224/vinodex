@@ -6,8 +6,13 @@ import emailIcon from '../../../assets/icons/mail-gold.svg';
 import listIcon from '../../../assets/icons/list-gold.svg';
 import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
+import {InputView} from "../../common/inputView/InputView";
 
 class InfoDetails extends Component {
+  public state = {
+    isEditForm: false
+  };
+
   private readonly _radioNFTApproveRef:  React.RefObject<HTMLInputElement>;
 
   constructor(props) {
@@ -16,14 +21,28 @@ class InfoDetails extends Component {
     this._radioNFTApproveRef = React.createRef();
   }
 
-  render() {
+  private changeToFormTemplate() {
+    this.setState({
+      ...this.state,
+      isEditForm: true
+    })
+  }
+
+  private changeToInfoTemplate() {
+    this.setState({
+      ...this.state,
+      isEditForm: false
+    })
+  }
+
+  private infoTemplate() {
     return (
       <div className={styles.profileDetailsWrap}>
         <div className="d-flex align-items-center justify-content-between my-3">
           <h3 className={styles.profileBlockTitle}>Profile details</h3>
           <ButtonView
             text={'EDIT'}
-            onClick={() => {  }}
+            onClick={() => { this.changeToFormTemplate() }}
             color={buttonColors.gold}
           />
         </div>
@@ -80,19 +99,78 @@ class InfoDetails extends Component {
                     <p className={styles.itemSubTitle}>Description</p>
                   </div>
 
-                   <Form.Check
-                     type="switch"
-                     id="switch-nft-approve"
-                     label=""
-                     ref={this._radioNFTApproveRef}
-                   />
+                  <Form.Check
+                    type="switch"
+                    id="switch-nft-approve"
+                    label=""
+                    ref={this._radioNFTApproveRef}
+                  />
                 </div>
               </FormCheck.Label>
             </Form>
           </li>
         </ul>
       </div>
-    );
+    )
+  }
+
+  private formSubmitHandler(e) {
+    e.preventDefault();
+
+  }
+
+  private formTemplate() {
+    return (
+      <div className={styles.profileDetailsWrap}>
+        <div className="d-flex align-items-center justify-content-between my-3">
+          <h3 className={styles.profileBlockTitle}>Edit profile</h3>
+        </div>
+
+        <form className={styles.form} onSubmit={(e) => { this.formSubmitHandler(e) }}>
+          <InputView
+            onChange={(e) => { console.log(e) }}
+            placeholder={'User name'}
+            icon={userIcon}
+            customClass={'mb-4'}
+          />
+
+          <InputView
+            onChange={(e) => { console.log(e) }}
+            placeholder={'Email'}
+            icon={emailIcon}
+            customClass={'mb-4'}
+          />
+
+          <InputView
+            onChange={(e) => { console.log(e) }}
+            placeholder={'Bio'}
+            customClass={'mb-4'}
+            isTextarea={true}
+          />
+
+          <div className="d-flex align-items-center justify-content-center">
+            <ButtonView
+              text={'CANCEL'}
+              onClick={() => { this.changeToInfoTemplate() }}
+              color={buttonColors.gold}
+            />
+            <ButtonView
+              text={'SAVE'}
+              onClick={() => { this.changeToInfoTemplate() }}
+              color={buttonColors.goldFill}
+            />
+          </div>
+        </form>
+      </div>
+    )
+  }
+
+  render() {
+    if (this.state.isEditForm) {
+      return this.formTemplate();
+    }
+
+    return this.infoTemplate();
   }
 }
 
