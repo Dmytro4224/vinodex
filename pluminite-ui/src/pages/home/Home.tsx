@@ -9,8 +9,21 @@ import {LabelView} from "../../components/common/label/labelView";
 import ArtistCard from "../../components/artistCard/ArtistCard";
 import { withComponent } from '../../utils/withComponent';
 import {BestArtists} from "../../components/bestArtists/BestArtists";
+import { Params } from 'react-router-dom';
+import { INftContractContext } from '../../contexts/nftContract';
 
-class Home extends Component {
+interface IHome {
+    params: Params<string>;
+    nftContractContext: INftContractContext
+
+}
+class Home extends Component<IHome> {
+
+    public componentDidMount() {
+        this.props.nftContractContext.nft_tokens_by_filter('art', 1, 10, 7).then(response => {
+            console.log('response', response);
+        });
+    }
   render() {
     return (
       <div className="my-5 container">
@@ -52,7 +65,7 @@ class Home extends Component {
                   ]} type={tabType.button}
                           onClick={(item) => {
 
-                              context.setUser({ accountId: item.title, balance: item.id.toString() });
+                              context.setUser({ walletAddress: '', accountId: item.title, balance: item.id.toString() });
 
                           }}
                           currentTabIndex={0}

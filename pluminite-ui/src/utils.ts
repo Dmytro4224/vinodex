@@ -5,16 +5,22 @@ import { NftMethods, MarketMethods } from './constants/contractMethods';
 import { APP } from './constants';
 import { ICurrentUser } from './types/ICurrentUser';
 import { IProfile } from './types/IProfile';
+import { ITokenResponseItem } from './types/ITokenResponseItem';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
-export const getMarketContractName = (nftContractName: string) => `market.${nftContractName}`;
+//export const getMarketContractName = (nftContractName: string) => `market.${nftContractName}`;
+export const getMarketContractName = 'vinodexmarket.testnet';
 
 export type INftContract = nearAPI.Contract & {
     nft_token: ({ token_id }: { token_id: string }) => void;
     nft_tokens_from_end: ({ from_index, limit }: { from_index: number, limit: number }) => void;
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
+
+
+    nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
+    nft_tokens_catalogs: ({ }) => Promise<Array<any>>;
 };
 
 export type IMarketContract = nearAPI.Contract & {
@@ -34,6 +40,7 @@ export async function initContracts() {
     let currentUser: ICurrentUser | null = null;
     if (walletConnection.getAccountId()) {
         currentUser = {
+            walletAddress: null,
             accountId: walletConnection.getAccountId(),
             balance: (await walletConnection.account().state()).amount,
         };
@@ -59,10 +66,10 @@ export async function initContracts() {
     console.log('nftContract ', nftContract);
 
 
-    // Initializing our contract APIs by contract name and configuration
+   // Initializing our contract APIs by contract name and configuration
     const marketContract = await new nearAPI.Contract(
         walletConnection.account(),
-        getMarketContractName(nearConfig.contractName),
+        getMarketContractName,
         {
             // View methods are read only. They don't modify the state, but usually return some value.
             viewMethods: [...MarketMethods.viewMethods],
@@ -75,6 +82,7 @@ export async function initContracts() {
         }
     ) as IMarketContract;
 
+ 
     console.log('marketContract is', marketContract);
 
 

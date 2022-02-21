@@ -1,5 +1,6 @@
 // todo: get contract name from environment variable
-const CONTRACT_NAME = 'ondrashdev.testnet';
+//const CONTRACT_NAME = 'ondrashdev.testnet';
+const CONTRACT_NAME = 'vinodex.testnet';
 
 export interface IConfig {
     networkId: 'production' | 'mainnet' | 'development' | 'testnet' | 'betanet' | 'local' | 'test' | 'ci' | 'ci-betanet' | 'shared-test' | 'shared-test-staging';
