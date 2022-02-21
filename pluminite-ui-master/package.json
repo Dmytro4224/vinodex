@@ -46,6 +46,7 @@
     "axios": "^0.21.1",
     "big.js": "^6.1.1",
     "classnames": "^2.3.1",
+    "deasync": "^0.1.24",
     "near-api-js": "~0.36.3",
     "prop-types": "^15.7.2",
     "react": ">= 17.0.2",
@@ -57,7 +58,8 @@
     "react-router-dom": "^5.2.0",
     "react-toastify": "^7.0.4",
     "regenerator-runtime": "~0.13.7",
-    "styled-components": "^5.3.0"
+    "styled-components": "^5.3.0",
+    "wasm-pack": "^0.10.2"
   },
   "resolutions": {
     "@babel/preset-env": "7.14.1"
