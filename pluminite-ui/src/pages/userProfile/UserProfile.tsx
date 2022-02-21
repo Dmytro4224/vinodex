@@ -56,22 +56,16 @@ class UserProfile extends Component<IUserProfile> {
                 <InfoDetails />
               </Tab>
               <Tab eventKey="sale" title="On sale">
-                <div>text2</div>
               </Tab>
               <Tab eventKey="items" title="Created Items">
-                <div>text3</div>
               </Tab>
               <Tab eventKey="purchases" title="Purchases">
-                <div>text4</div>
               </Tab>
               <Tab eventKey="birds" title="Active Bids">
-                <div>text5</div>
               </Tab>
               <Tab eventKey="favourites" title="Favourites">
-                <div>text6</div>
               </Tab>
               <Tab eventKey="following" title="Following">
-                <div>text7</div>
               </Tab>
             </Tabs>
           </div>
