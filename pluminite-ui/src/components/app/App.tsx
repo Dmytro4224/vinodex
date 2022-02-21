@@ -7,7 +7,7 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from "../../pages/home/Home";
 import Header from "../header/Header";
 import UserProfile from '../../pages/userProfile/UserProfile';
-// import OrderDetail from '../../pages/orderDetail/orderDetail';
+import OrderDetail from '../../pages/orderDetail/orderDetail';
   
 class App extends Component {
   render() {
@@ -21,7 +21,7 @@ class App extends Component {
             <Route path="/" element={<Home />} />
             <Route path="/artists/*" element={<p>ARTISTS PAGE</p>} />
             <Route path="/userProfile/:userId" element={<UserProfile />} />
-            {/*<Route path="/token/:tokenId" element={<OrderDetail />} />*/}
+            <Route path="/token/:tokenId" element={<OrderDetail />} />
           </Routes>
         </main>
 
