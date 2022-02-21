@@ -25,7 +25,7 @@ class Marketplace extends Component {
         <ButtonView
           text={'Show modal'}
           onClick={() => { this.showModal(); }}
-          color={buttonColors.blue}
+          color={buttonColors.goldFill}
         />
 
         <ModalSample
@@ -44,7 +44,7 @@ class Marketplace extends Component {
               <ButtonView
                 text={'Save'}
                 onClick={() => {  }}
-                color={buttonColors.blue}
+                color={buttonColors.goldFill}
               />
             </>
           }

@@ -15,6 +15,11 @@
 }
 
 .btnBlue{
+    background-color: var(--denim);
+    color: var(--white);
+}
+
+.btnGoldFill{
     background-color: var(--pirateCold);
     color: var(--white);
 }
