@@ -86,6 +86,8 @@ impl Contract {
                 self.tokens_users_likes.insert(&token_id, &hashSet);
             }
         }
+
+        ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&env::predecessor_account_id(),1);
     }
 
     pub fn token_setView(&mut self, token_id: TokenId)
@@ -113,5 +115,8 @@ impl Contract {
                 self.tokens_users_views.insert(&token_id, &hashSet);
             }
         }
+
+        ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&env::predecessor_account_id(),3);
     }
+
 }

@@ -1,6 +1,7 @@
 ///випуск токену
 use crate::*;
 
+
 #[near_bindgen]
 impl Contract {
     #[payable]
@@ -157,6 +158,13 @@ impl Contract {
                     continue;
                 }
             }
+
+            //додати запис до profiles_by_tokens_count для статистики
+            ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&owner_id,4);
+            //=======================================================
+
+       
+
         }
     }
 

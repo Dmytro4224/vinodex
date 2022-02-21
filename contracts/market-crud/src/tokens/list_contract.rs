@@ -234,4 +234,6 @@ impl Contract {
             .map(|token_id| self.nft_token(token_id.clone()).unwrap())
             .collect()
     }
+
+   
 }

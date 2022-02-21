@@ -1,6 +1,5 @@
 use std::collections::HashMap;
 use std::cmp::min;
-
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
 use near_sdk::json_types::{Base64VecU8, ValidAccountId, U64, U128};
@@ -10,11 +9,6 @@ use near_sdk::{
 };
 use std::collections::HashSet;
 use std::cmp::Ordering;
-
-/**для регексу */
-extern crate regex;
-use regex::Regex;
-/**для регексу */
 
 #[macro_use]
 extern crate serde_derive;
@@ -113,8 +107,24 @@ pub struct Contract {
     
     ///кмісійні
     pub contract_royalty: u32,
-    pub profiles: LookupMap<AccountId, Profile>,
 
+    pub profiles: LookupMap<AccountId, Profile>,
+   
+    ///загальна статистика по користувачу
+    pub profiles_global_stat: LookupMap<AccountId, ProfileStat>,
+    
+    
+    //likes_count: 0 - кількість лайків аккаунту
+    //tokens_likes_count: 1 -кількість лайків токенів аккаунту
+    //pub views_count: 2 - загальна ксть переглядів аккаунту
+    //pub tokens_views_count: 3 - загальна ксть переглядів токенів аккаунту
+    //pub tokens_count: 4 - загальна ксть токенів
+    //followers_count: 5 - к-сть підписників автора
+    //total_likes_count: 6 - загальна ксть  лайків аккаунт+токени
+    //total_views_count: 7 - загальна ксть  переглядів аккаунт+токени
+    pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<AccountId>>,
+    //==========================================================
+    
     ///чи брати плату за зберігання інфи з юзера
     pub use_storage_fees: bool,
     //к-сть безплатних токенів для юзера
@@ -139,6 +149,8 @@ pub enum StorageKey {
     TokensUsersLikes,
     TokensUsersViews,
     TokensSorted,
+    ProfilesGlobalStat,
+    ProfilesGlobalStatSortedVector
 }
 
 #[near_bindgen]
@@ -175,6 +187,8 @@ impl Contract {
             use_storage_fees,
             free_mints,
             version: 0,
+            profiles_global_stat:LookupMap::new(StorageKey::ProfilesGlobalStat.try_to_vec().unwrap()),
+            profiles_global_stat_sorted_vector:LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -212,6 +226,8 @@ impl Contract {
             contract_royalty: u32,
             profiles: LookupMap<AccountId, Profile>,
             use_storage_fees: bool,
+            profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<AccountId>>,
+            profiles_global_stat: LookupMap<AccountId, ProfileStat>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -235,6 +251,8 @@ impl Contract {
             use_storage_fees: old_contract.use_storage_fees,
             free_mints: 3,
             version: migration_version,
+            profiles_global_stat_sorted_vector:old_contract.profiles_global_stat_sorted_vector,
+            profiles_global_stat: old_contract.profiles_global_stat
         }
     }
 
@@ -303,12 +321,9 @@ impl Contract {
         );
 
         //регулярка для пошти
-        let email_regex = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").unwrap();
+        //let email_regex = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").unwrap();
 
-        assert!(
-            email_regex.is_match(profile.email.as_str())==false,
-            "Please provide a valid email address"
-        );
+
         
         let predecessor_account_id = env::predecessor_account_id();
 
