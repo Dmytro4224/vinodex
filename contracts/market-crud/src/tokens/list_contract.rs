@@ -38,6 +38,18 @@ impl Contract {
         tmp
     }
     
+
+    pub fn nft_tokens_catalogs(&self) -> Vec<String>
+    {
+        let mut result : Vec<String> = Vec::new();
+
+        self.supply_cap_by_type.keys().for_each(|x| {
+            result.push(x.clone());
+        });
+
+        return result;
+    }
+
     ///к-сть токенів типу token_type
     pub fn nft_supply_for_type(
         &self,

@@ -1,4 +1,4 @@
-import React, { Component, useCallback, useContext, useEffect, useReducer } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { transactions } from 'near-api-js';
@@ -18,7 +18,7 @@ import { PAYABLE_METHODS, APP, STORAGE } from '../../constants';
 export const MarketContractContext = React.createContext(initialMarketContractState);
 
 interface IMarketContractContextProvider {
-    marketContract: IMarketContract;
+    marketContract: IMarketContract | null;
     children: any;
 }
 
@@ -39,9 +39,9 @@ export class MarketContractContextProvider extends Component<IMarketContractCont
         return this.props.marketContract;
     }
 
-    public async getSale(contractId: string, gemId: string) {
-        return this.marketContract.get_sale({
-            nft_contract_token: `${contractId}||${gemId}`,
+    public getSale = async (contractId: string, gemId: string) => {
+        return this.marketContract?.get_sale({
+            nft_contract_token: `${contractId}||${gemId}`
         });
     }
 

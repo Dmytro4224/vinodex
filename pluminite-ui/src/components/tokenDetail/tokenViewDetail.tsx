@@ -8,6 +8,8 @@ import ArtistCard from '../artistCard/ArtistCard';
 import {Tab, Tabs } from 'react-bootstrap';
 import {buttonColors, ButtonView } from '../common/button/ButtonView';
 import { DescrtiptionView } from '../description/descrtiptionView';
+import { TokenDetailView } from './tabs/detail/tokenDetailView';
+import { BidsView } from './tabs/bids/bidsView';
 
 interface ITokenViewDetail{
   hash: string;
@@ -77,7 +79,7 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
     console.log(`param`, this.props.params);
 
     return (
-      <div className="d-flex flex-gap-36">
+      <div className="d-flex flex-gap-36 container">
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
               <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'}/>
@@ -134,13 +136,21 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
                     </div>
                 </Tab>
                 <Tab eventKey="profile" title="DETAILS">
-                  <div className={styles.tabContainer}>text2</div>
+                  <div className={styles.tabContainer}>
+                    <TokenDetailView address={'Contract Address'} id={'Tokenld'}/>
+                  </div>
+                </Tab>
+                <Tab eventKey="bids" title="BIDS">
+                  <div className={styles.tabContainer}>
+                    <BidsView items={[{name: "user", identification: "28 September, 2021, 5:51 PM ", price: 12, currency: "ETC"},
+                      {name: "user-2", identification: "2 September, 2021, 3:51 PM ", price: 2, currency: "ETC"}]}/>
+                  </div>
                 </Tab>
                 <Tab eventKey="contact" title="HISTORY">
-                  <div className={styles.tabContainer}>text3</div>
+                  <div className={styles.tabContainer}>text4</div>
                 </Tab>
                 <Tab eventKey="owners" title="OWNERS">
-                  <div className={styles.tabContainer}>text4</div>
+                  <div className={styles.tabContainer}>text5</div>
                 </Tab>
               </Tabs>
             </div>

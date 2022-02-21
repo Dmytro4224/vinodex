@@ -45,7 +45,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
                         { (this.props.countL > 0 || this.props.countR > 0) && <div className={styles.count}>
                             {this.props.countL}/{this.props.countR}
                         </div> }
-                        { this.props.days !== '' && <div className={styles.daysInfo}>
+                        { this.props.days !== '' || this.props.days !== null && <div className={styles.daysInfo}>
                             {this.props.days}
                         </div> }
                     </div>

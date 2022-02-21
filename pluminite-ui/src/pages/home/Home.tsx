@@ -9,8 +9,17 @@ import {LabelView} from "../../components/common/label/labelView";
 import ArtistCard from "../../components/artistCard/ArtistCard";
 import { withComponent } from '../../utils/withComponent';
 import {BestArtists} from "../../components/bestArtists/BestArtists";
+import { Params } from 'react-router-dom';
+import { INftContractContext } from '../../contexts/nftContract';
+import TopTokensView from "../../components/topTokens/topTokensView";
+import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 
-class Home extends Component {
+interface IHome {
+    params: Params<string>;
+    nftContractContext: INftContractContext
+
+}
+class Home extends Component<IHome> {
   render() {
     return (
       <div className="my-5 container">
@@ -35,32 +44,7 @@ class Home extends Component {
             ]}
           />
 
-          <NearContext.Consumer>
-            {context => (
-              <>
-                <TabsView tabItems={
-                  [
-                    { title: "All", id: 1, link: "#" },
-                    { title: "Art", id: 2, link: "#" },
-                    { title: "Music", id: 3, link: "#" },
-                    { title: "Domain Names", id: 4, link: "#" },
-                    { title: "Virtual Worlds", id: 5, link: "#" },
-                    { title: "Trading Cards", id: 6, link: "#" },
-                    { title: "Collectibles", id: 7, link: "#" },
-                    { title: "Sports", id: 8, link: "#" },
-                    { title: "Utility", id: 9, link: "#" },
-                  ]} type={tabType.button}
-                          onClick={(item) => {
-
-                              context.setUser({ accountId: item.title, balance: item.id.toString() });
-
-                          }}
-                          currentTabIndex={0}
-                            />
-                            <LabelView text={context.user ? context.user.accountId : 'NONE'} />
-              </>
-            )}
-          </NearContext.Consumer>
+          <TabsFilterView catalogs={null} />
 
           <ButtonView
             text={"Filter"}
@@ -80,23 +64,7 @@ class Home extends Component {
           />
         </div>
 
-        <CarouselView customCLass={'carousel-owl-tokens'}
-                        childrens={[{id: 1}, {id: 2}, {id: 3}].map(item => {
-                          return <TokenCardView key={item.id}
-                                                countL={item.id}
-                                                countR={10}
-                                                days={'121 days left'}
-                                                name={'Item Name'}
-                                                author={'Creat name'}
-                                                likesCount={99}
-                                                isSmall={false}
-                                                buttonText={'Place a bid 0.08 ETH'}
-                                                linkTo={`/token/qwewqq-1231-weq-123`}
-                                                onClick={() => {
-                                                  // @ts-ignore
-                                                  this.props.navigate('/token/qwewqq-1231-weq-123');
-                                                }}/>;
-                        })}/>
+        <TopTokensView list={null} />
 
         <p className="separator-horizontal" />
 

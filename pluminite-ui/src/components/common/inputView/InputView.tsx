@@ -10,6 +10,7 @@ interface IInputView {
   value?: string;
   alt?: string;
   icon?: any;
+  isTextarea?: boolean;
 };
 
 class InputView extends Component<Readonly<IInputView>> {
@@ -37,20 +38,25 @@ class InputView extends Component<Readonly<IInputView>> {
     return this.props.value;
   }
 
+  private get isTextarea() {
+    return this.props.isTextarea;
+  }
+
   private onChange = async (e: ChangeEvent) => {
     this.props.onChange(e);
   }
 
   public render() {
     return (
-      <div className={styles.inputWrap}>
+      <div className={`${styles.inputWrap} ${this.props.customClass || ''}`}>
         {this.icon && <img className={styles.icon} src={this.icon} alt={this.alt} />}
         <Form.Control
           onChange={this.onChange}
           placeholder={this.placeholder}
-          className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder} ${this.props.customClass || ''}`}
+          className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
           value={this.value}
           type="text"
+          as={this.isTextarea ? 'textarea' : 'input'}
         />
         { this.absPlaceholder && <span className={styles.absPlaceholder}>{this.absPlaceholder}</span> }
       </div>
