@@ -22,7 +22,7 @@ class App extends Component {
             <Route path="/" element={<Home />} />
             <Route path="/artists/*" element={<p>ARTISTS PAGE</p>} />
             <Route path="/userProfile/:userId" element={<UserProfile />} />
-            {/*<Route path="/token/:tokenId" element={<OrderDetail />} />*/}
+            <Route path="/token/:tokenId" element={<OrderDetail />} />
           </Routes>
         </main>
 
