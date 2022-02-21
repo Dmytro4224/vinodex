@@ -14,24 +14,25 @@ interface IUserProfile {
 }
 
 class UserProfile extends Component<IUserProfile> {
-  constructor(props) {
+  private profile;
+
+  constructor(props: IUserProfile) {
     super(props);
   }
 
   private get getUserId() {
     return this.props.params.userId!;
-    }
-    public componentDidMount() {
-        this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-            console.log('profile', profile);
-        });
-    }
+  }
 
+  public componentDidMount() {
+    this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
+      this.profile = profile;
+    });
+  }
 
   render() {
     return (
-        <>
-           
+      <>
         <div className={`position-relative container ${styles.profileWrap}`}>
           <div className={styles.bgWrap}>
             <div className={styles.bgBlock} />
@@ -64,7 +65,7 @@ class UserProfile extends Component<IUserProfile> {
         <div className={styles.tabResultContainer}>
 
         </div>
-      </>
+    </>
     );
   }
 }

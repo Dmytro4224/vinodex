@@ -47,7 +47,7 @@ class ArtistCard extends Component<Readonly<IArtistCard>> {
   }
 
   private get isCard() {
-    return this.props.isCard || true;
+    return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
 
   private btnFollowHandler() {}
