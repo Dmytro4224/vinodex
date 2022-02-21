@@ -39,6 +39,11 @@
 
 .tabsWrap {
   margin-top: 30px;
+  background-color: var(--alabasterapprox);
+}
+
+.tabsWrap ul {
+  background-color: var(--white);
 }
 
 .tabResultContainer {

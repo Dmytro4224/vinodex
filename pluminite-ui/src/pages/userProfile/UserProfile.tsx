@@ -6,7 +6,7 @@ import { withComponent } from "../../utils/withComponent";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import { Tab, Tabs } from "react-bootstrap";
-import { ProfileInfoDetails } from "../../components/profileInfoDetails/ProfileInfoDetails";
+import { InfoDetails } from "../../components/profile/infoDetails/InfoDetails";
 import { INftContract } from '../../utils';
 
 interface IUserProfile {
@@ -34,16 +34,18 @@ class UserProfile extends Component<IUserProfile> {
   render() {
     return (
       <>
-        <div className={`position-relative container ${styles.profileWrap}`}>
-          <div className={styles.bgWrap}>
-            <div className={styles.bgBlock} />
-          </div>
-          <div className={styles.profileInfoWrap}>
-            <div className={styles.avatarWrap}>
-              <img width="100" height="100" src={avatarDefault} alt="avatar" />
+        <div className={`position-relative ${styles.profileWrap}`}>
+          <div className="container">
+            <div className={styles.bgWrap}>
+              <div className={styles.bgBlock} />
             </div>
-            <p className={styles.profileName}>Profile Name</p>
-            <IdentificationCopy id={this.getUserId} />
+            <div className={styles.profileInfoWrap}>
+              <div className={styles.avatarWrap}>
+                <img width="100" height="100" src={avatarDefault} alt="avatar" />
+              </div>
+              <p className={styles.profileName}>Profile Name</p>
+              <IdentificationCopy id={this.getUserId} />
+            </div>
           </div>
           <div className={styles.tabsWrap}>
             <Tabs
@@ -51,7 +53,7 @@ class UserProfile extends Component<IUserProfile> {
               className="mb-3 justify-content-center"
             >
               <Tab eventKey="details" title="Profile details">
-                <ProfileInfoDetails />
+                <InfoDetails />
               </Tab>
               <Tab eventKey="sale" title="On sale">
                 <div>text2</div>
@@ -73,10 +75,6 @@ class UserProfile extends Component<IUserProfile> {
               </Tab>
             </Tabs>
           </div>
-        </div>
-
-        <div className={styles.tabResultContainer}>
-
         </div>
     </>
     );
