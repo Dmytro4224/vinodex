@@ -42,7 +42,7 @@ class TopTokensView extends Component<ITopTokensView>{
                                             likesCount={99}
                                             icon={item.metadata.media}
                                             isSmall={false}
-                                            buttonText={`Place a bid ${item.metadata.price} NIR`}
+                                            buttonText={`Place a bid ${item.metadata.price} NEAR`}
                                             linkTo={`/token/qwewqq-1231-weq-123`}
                                             onClick={() => {
                                               //this.props.navigate('/token/qwewqq-1231-weq-123');

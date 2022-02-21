@@ -79,7 +79,7 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
     console.log(`param`, this.props.params);
 
     return (
-      <div className="d-flex flex-gap-36">
+      <div className="d-flex flex-gap-36 container">
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
               <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'}/>
