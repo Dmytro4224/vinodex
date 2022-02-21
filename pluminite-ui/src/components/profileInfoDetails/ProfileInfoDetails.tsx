@@ -15,9 +15,17 @@ class ProfileInfoDetails extends Component {
             color={buttonColors.gold}
           />
         </div>
-        <div>
+        <ul>
+          <li>
+            <img src="" alt="icon"/>
+            <div>
+              <div>
 
-        </div>
+              </div>
+              <img src="" alt="arrow"/>
+            </div>
+          </li>
+        </ul>
       </div>
     );
   }

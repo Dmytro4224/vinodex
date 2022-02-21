@@ -46,34 +46,32 @@ class UserProfile extends Component<IUserProfile> {
             <IdentificationCopy id={this.getUserId} />
           </div>
           <div className={styles.tabsWrap}>
-            <div className="">
-              <Tabs
-                id="controlled-tab-example"
-                className="mb-3 justify-content-center"
-              >
-                <Tab eventKey="details" title="Profile details">
-                  <ProfileInfoDetails />
-                </Tab>
-                <Tab eventKey="sale" title="On sale">
-                  <div>text2</div>
-                </Tab>
-                <Tab eventKey="items" title="Created Items">
-                  <div>text3</div>
-                </Tab>
-                <Tab eventKey="purchases" title="Purchases">
-                  <div>text4</div>
-                </Tab>
-                <Tab eventKey="birds" title="Active Bids">
-                  <div>text5</div>
-                </Tab>
-                <Tab eventKey="favourites" title="Favourites">
-                  <div>text6</div>
-                </Tab>
-                <Tab eventKey="following" title="Following">
-                  <div>text7</div>
-                </Tab>
-              </Tabs>
-            </div>
+            <Tabs
+              id="controlled-tab-example"
+              className="mb-3 justify-content-center"
+            >
+              <Tab eventKey="details" title="Profile details">
+                <ProfileInfoDetails />
+              </Tab>
+              <Tab eventKey="sale" title="On sale">
+                <div>text2</div>
+              </Tab>
+              <Tab eventKey="items" title="Created Items">
+                <div>text3</div>
+              </Tab>
+              <Tab eventKey="purchases" title="Purchases">
+                <div>text4</div>
+              </Tab>
+              <Tab eventKey="birds" title="Active Bids">
+                <div>text5</div>
+              </Tab>
+              <Tab eventKey="favourites" title="Favourites">
+                <div>text6</div>
+              </Tab>
+              <Tab eventKey="following" title="Following">
+                <div>text7</div>
+              </Tab>
+            </Tabs>
           </div>
         </div>
 

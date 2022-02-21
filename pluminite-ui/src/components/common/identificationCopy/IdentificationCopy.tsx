@@ -4,6 +4,7 @@ import { PlacementType, TooltipS } from "../../common/tooltip/Tooltip";
 import { transformArtistId } from "../../../utils/sys";
 import styles from './identificationCopy.module.css';
 import copyIcon from '../../../assets/icons/copy.svg'
+import {ButtonCopy} from "../buttonCopy/ButtonCopy";
 
 interface IIdentificationCopy {
   id: string;
@@ -22,9 +23,7 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
     return this.props.id;
   }
 
-  private copyToClipboard() {
-    navigator.clipboard.writeText(this.identification);
-
+  private refChangeStyle() {
     this._refIdentificationText.current?.classList.add(styles.colorCopySuccess);
 
     const t = setTimeout(() => {
@@ -37,16 +36,9 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
     return (
       <div className={styles.identificationWrap}>
         <p ref={this._refIdentificationText} className={styles.artistId}>{transformArtistId(this.identification)}</p>
-        <TooltipS
-          placement={PlacementType.top}
-          text={`Copy to clipboard`}
-          children={
-            <button
-              onClick={() => { this.copyToClipboard() }}
-              className={styles.btnCopy}>
-              <img src={copyIcon} alt="copy"/>
-            </button>
-          }
+        <ButtonCopy
+          onClick={() => { this.refChangeStyle() }}
+          copyText={this.identification}
         />
       </div>
     )
