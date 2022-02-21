@@ -4,18 +4,14 @@ import { ICurrentUser } from '../../types/ICurrentUser';
 import { Near, WalletConnection } from 'near-api-js';
 import { IConfig } from '../../config';
 
-export const initialNearContext = {
+const initialNearContext = {
     user: null,
     isLoading: true,
     error: null,
+    setUser: () => { }
 };
 
-export const NearContext = React.createContext<INearContext>({
-    isLoading: true,
-    error: null,
-    user: null,
-    setUser: () => { }
-});
+export const NearContext = React.createContext<INearContext>(initialNearContext);
 
 interface INearContext {
     isLoading: boolean;
@@ -86,7 +82,7 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
     }
 
     public clearState() {
-        //this.setState({ ...initialNearState });
+        this.setState({ ...initialNearContext });
     }
 
     private get nearConfig() {

@@ -13,6 +13,7 @@ export const NftContractContext = React.createContext<INftContractContext>(initi
 export interface INftContractContext {
     nftContract: INftContract | null;
     getProfile: (accountId: string) => Promise<IProfile>;
+    nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
 }
 
 interface INftContractContextProviderProps {
@@ -23,6 +24,10 @@ interface INftContractContextProviderProps {
 export class NftContractContextProvider extends Component<INftContractContextProviderProps> implements INftContractContext {
     constructor(props: INftContractContextProviderProps) {
         super(props);
+    }
+
+    public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
+        return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort });
     }
 
     public get nftContract() {
@@ -58,6 +63,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     public render() {
         const value = {
             nftContract: this.nftContract,
+            nft_tokens_by_filter: this.nft_tokens_by_filter,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,

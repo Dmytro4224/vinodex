@@ -15,6 +15,10 @@ export type INftContract = nearAPI.Contract & {
     nft_tokens_from_end: ({ from_index, limit }: { from_index: number, limit: number }) => void;
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
+
+
+    nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<any>>;
+
 };
 
 export type IMarketContract = nearAPI.Contract & {
@@ -34,6 +38,7 @@ export async function initContracts() {
     let currentUser: ICurrentUser | null = null;
     if (walletConnection.getAccountId()) {
         currentUser = {
+            walletAddress: null,
             accountId: walletConnection.getAccountId(),
             balance: (await walletConnection.account().state()).amount,
         };
@@ -60,20 +65,22 @@ export async function initContracts() {
 
 
     // Initializing our contract APIs by contract name and configuration
-    const marketContract = await new nearAPI.Contract(
-        walletConnection.account(),
-        getMarketContractName(nearConfig.contractName),
-        {
-            // View methods are read only. They don't modify the state, but usually return some value.
-            viewMethods: [...MarketMethods.viewMethods],
-            // Change methods can modify the state. But you don't receive the returned value when called.
-            changeMethods: [...MarketMethods.changeMethods],
-            // Sender is the account ID to initialize transactions.
+    //const marketContract = await new nearAPI.Contract(
+    //    walletConnection.account(),
+    //    getMarketContractName(nearConfig.contractName),
+    //    {
+    //        // View methods are read only. They don't modify the state, but usually return some value.
+    //        viewMethods: [...MarketMethods.viewMethods],
+    //        // Change methods can modify the state. But you don't receive the returned value when called.
+    //        changeMethods: [...MarketMethods.changeMethods],
+    //        // Sender is the account ID to initialize transactions.
 
-            //@ts-ignore
-            sender: walletConnection.getAccountId(),
-        }
-    ) as IMarketContract;
+    //        //@ts-ignore
+    //        sender: walletConnection.getAccountId(),
+    //    }
+    //) as IMarketContract;
+
+    const marketContract: IMarketContract | null = null;
 
     console.log('marketContract is', marketContract);
 
