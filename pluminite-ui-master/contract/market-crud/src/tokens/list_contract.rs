@@ -88,6 +88,7 @@ impl Contract {
         tmp
     }
     
+
     pub fn nft_tokens_by_filter(
         &self,
         // каталог або null|none
@@ -100,17 +101,17 @@ impl Contract {
         mut page_size: u64,
     ) ->Vec<JsonToken> {
 
-        let mut token_ids : HashSet<String>;
+        let token_ids : HashSet<String>;
         let mut skip = 0;
         if (page_index >= 1)
         {
             skip = (page_index - 1) * page_size;
         }
 
-        if(catalog.is_some())
+        if (catalog.is_some())
         {
             let tokens = self.tokens_per_type.get(&catalog.unwrap());
-            if(tokens.is_none())
+            if (tokens.is_none())
             {
                 return Vec::new();
             }
@@ -122,16 +123,16 @@ impl Contract {
             token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
         }
 
-        let mut availableAmount = token_ids.len() - skip as usize;
+        let mut available_amount = token_ids.len() as i64 - skip as i64;
 
-        if (availableAmount <= 0)
+        if (available_amount <= 0)
         {
             return Vec::new();
         }
 
-        if (availableAmount > page_size as usize)
+        if (available_amount > page_size as i64)
         {
-            availableAmount = page_size as usize;
+            available_amount = page_size as i64;
         }
        
         let mut is_reverse : bool = false;
@@ -164,10 +165,13 @@ impl Contract {
 
         if (is_reverse)
         {
-            let start_index = (token_ids.len() - skip as usize - 1) as u64;
-            let end_index = start_index + availableAmount as u64;
+            let mut start_index = 0; 
+            let mut end_index = 0; 
 
-            for i in (start_index..end_index).rev()
+            start_index = token_ids.len() as i64 - skip as i64;
+            end_index = start_index - available_amount;
+
+            for i in (end_index..start_index).rev()
             {
                 let _index = i as usize;
 
@@ -179,7 +183,7 @@ impl Contract {
         }
         else
         {
-            for i in skip..skip + availableAmount as u64
+            for i in skip..skip + available_amount as u64
             {
                 let _index = i as usize;
                 let _token = sorted.get(_index);
