@@ -2,6 +2,7 @@ import React, {Component} from "react";
 import styles from './header.module.css';
 import { HeaderNavigation } from "../navigation/HeaderNavigation";
 import InputView from "../common/inputView/InputView";
+import LoginButton  from "../header/loginButton";
 import searchIcon from "../../assets/icons/search.svg";
 import ButtonView, {buttonColors} from "../common/button/ButtonView";
 import {dropdownColors, DropdownView} from "../common/dropdown/dropdownView";
@@ -50,12 +51,8 @@ class Header extends Component<IHeader & IBaseComponentProps> {
             />
 
             <span className={styles.separator} />
+            <LoginButton user={this.props.near.user} />
 
-            <ButtonView
-              text={'CONNECT WALLET'}
-              onClick={() => {  }}
-              color={buttonColors.gray}
-            />
             <ButtonView
               text={'CREATE'}
               onClick={() => {  }}

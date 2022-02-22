@@ -15,15 +15,44 @@ import TopTokensView from "../../components/topTokens/topTokensView";
 import PopularTokensView from "../../components/popularTokens/popularTokensView";
 import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
+import Loader from "../../components/common/loader/loader";
 
 interface IHome extends IProps{
 
 }
 class Home extends Component<IHome & IBaseComponentProps> {
+  public state = {
+    catalogs: new Array<any>(),
+    currentCatalog: 0,
+    isLoading: true
+  };
+
   constructor(props: IHome & IBaseComponentProps) {
     super(props);
   }
+
+  public componentDidMount() {
+    // @ts-ignore
+    this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      this.setState({...this.state, catalogs: response, currentCatalog: 0, isLoading: false });
+    });
+  }
+
+  private set catalog(catalog){
+    this.setState({...this.state, currentCatalog: catalog});
+  }
+
+  private get catalog(){
+    return this.state.catalogs[this.state.currentCatalog];
+  }
+
   render() {
+    console.log(`current`, this.state.catalogs[this.state.currentCatalog]);
+
+    if(this.state.isLoading){
+      return <Loader />
+    }
+
     return (
       <div className="my-5 container">
         <div className="d-flex align-items-center justify-content-between">
@@ -47,7 +76,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
             ]}
           />
 
-          <TabsFilterView />
+          <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => { this.catalog = index }} />
 
           <ButtonView
             text={"Filter"}
@@ -58,7 +87,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <p className="separator-horizontal" />
 
-        <TopTokensView />
+        <TopTokensView catalog={this.catalog}  />
 
         <p className="separator-horizontal" />
 
