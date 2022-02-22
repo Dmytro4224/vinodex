@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import CarouselView from "../carousel/carouselView";
@@ -30,12 +31,15 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   render(){
 
     if(this.state.isLoading){
-      return <Loader />
+      return <div className="d-flex align-items-center flex-gap-36">
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+      </div>
     }
 
     return (
       <div>
-        <div className="d-flex align-items-center justify-content-between mt-3">
+        <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
           <LabelView  text={'Top 10'}/>
           <ButtonView
             text={'More'}

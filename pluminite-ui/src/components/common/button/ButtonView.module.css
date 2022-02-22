@@ -45,7 +45,7 @@
 
 .btnSelectGray{
     background-color: #F6F6F6;
-    color: var(--black);
+    color: var(--mineShaftS);
     font-weight: 500;
 }
 
@@ -57,8 +57,10 @@
 
 .btnSelect{
     background-color: var(--white);
-    color: var(--denim);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    color: var(--pirateCold);
+    font-size: 14px;
+    font-weight: normal;
+    border: 1px solid var(--pirateCold);
     text-transform: uppercase;
 }
 
