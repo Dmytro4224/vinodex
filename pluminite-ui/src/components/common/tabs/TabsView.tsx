@@ -16,7 +16,7 @@ interface ITabsView extends IProps{
   onClick: (item: ITabsViewItem) => void;
 }
 
-interface ITabsViewItem{
+export interface ITabsViewItem{
   title: string;
   link: string;
   id: number;

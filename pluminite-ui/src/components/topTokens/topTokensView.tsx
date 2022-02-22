@@ -9,6 +9,7 @@ import TokenCardView from "../tokenCard/tokenCardView";
 
 interface ITopTokensView extends IProps {
     list?: Array<ITokenResponseItem>;
+    catalog: string;
 }
 
 class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, any> {
@@ -19,7 +20,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.nft_tokens_by_filter('art', 1, 10, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
       console.log(`response`, response);
 
       this.setState({...this.state, list: response, isLoading: false });

@@ -8,14 +8,18 @@ const initialNearContext = {
     user: null,
     isLoading: true,
     error: null,
+    signIn: () => { },
+    signOut: () => { },
     setUser: () => { }
 };
 
 export const NearContext = React.createContext<INearContext>(initialNearContext);
 
-interface INearContext {
+export interface INearContext {
     isLoading: boolean;
     error: Error | string | null;
+    signIn: () => void;
+    signOut: () => void;
     user: ICurrentUser | null;
     setUser: (user: ICurrentUser) => void;
 }
@@ -44,6 +48,8 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
 
     constructor(props: INearContextProviderProps) {
         super(props);
+
+        this.state.user = this.props.user || null;
     }
 
     public get near() {
@@ -104,6 +110,8 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
     public render() {
         const value: INearContext = {
             user: this.state.user,
+            signIn: this.signIn,
+            signOut: this.signOut,
             isLoading: this.state.isLoading,
             error: this.state.error,
             setUser: this.setUser
