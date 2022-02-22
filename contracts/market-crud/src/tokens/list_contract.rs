@@ -275,14 +275,14 @@ impl Contract {
             return Vec::new();
         }
 
-        let authors_ids : Vec<String>;
+        let authors_ids : Vec<ProfileStatCriterion>;
         let mut skip = 0;
         if page_index >= 1
         {
             skip = (page_index - 1) * page_size;
         }
 
-        authors_ids=self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new()).to_vec();
+        authors_ids=self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new());
 
         let mut available_amount = authors_ids.len() as i64 - skip as i64;
 
@@ -315,7 +315,7 @@ impl Contract {
                     
                 if _author_id.is_some() && !_author_id.is_none()
                 {
-                  result.push(self.profiles.get(_author_id.unwrap()).unwrap());
+                  result.push(self.profiles.get(&_author_id.unwrap().account_id).unwrap());
                 }
             }
         }
@@ -331,7 +331,7 @@ impl Contract {
                     continue;
                 }
 
-                 result.push(self.profiles.get(_author_id.unwrap()).unwrap());
+                 result.push(self.profiles.get(&_author_id.unwrap().account_id).unwrap());
             }
         }
 

@@ -160,7 +160,10 @@ impl Contract {
             }
 
             //додати запис до profiles_by_tokens_count для статистики
-            ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&owner_id,4);
+            ProfileStatCriterion::profile_stat_inc(
+                &mut self.profiles_global_stat,
+                &mut self.profiles_global_stat_sorted_vector,
+                &owner_id,4);
             //=======================================================
 
        
