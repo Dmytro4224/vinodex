@@ -47,14 +47,14 @@ impl ProfileStatCriterion{
     pub  fn profile_stat_inc(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId, parameter:u8){
-
+        user_id:&AccountId, 
+        parameter:u8)
+        {
         let mut stat:ProfileStat;
     
         match profiles_global_stat.get(&user_id.clone()) {
             Some(mut _profile_stat) => {stat=_profile_stat}
             None => {
-               
                 stat=ProfileStat{
                     likes_count:0,
                      tokens_likes_count: 0,
@@ -133,6 +133,12 @@ impl ProfileStatCriterion{
                     //сортуємо і шукаємо нову позицію
                     let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
                     
+                    match _new_position
+                    {
+                            Some(_new_position)=> _vector.insert(_new_position,_sort_element),
+                            None=> _vector.push(_sort_element)
+                    }
+                    
                 }else{
 
                     _vector.push(_sort_element);
@@ -141,9 +147,6 @@ impl ProfileStatCriterion{
                 profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
             }
             //===========================
-
-
-
 
             profiles_global_stat.insert(&user_id, &stat);
         }
