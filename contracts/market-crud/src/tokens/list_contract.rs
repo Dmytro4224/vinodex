@@ -110,20 +110,20 @@ impl Contract {
         //пагінація
         page_index: u64,
         //ксть елементів на сторінкі
-        mut page_size: u64,
+        page_size: u64,
     ) ->Vec<JsonToken> {
 
         let token_ids : HashSet<String>;
         let mut skip = 0;
-        if (page_index >= 1)
+        if page_index >= 1
         {
             skip = (page_index - 1) * page_size;
         }
 
-        if (catalog.is_some())
+        if catalog.is_some()
         {
             let tokens = self.tokens_per_type.get(&catalog.unwrap());
-            if (tokens.is_none())
+            if tokens.is_none()
             {
                 return Vec::new();
             }
@@ -137,12 +137,12 @@ impl Contract {
 
         let mut available_amount = token_ids.len() as i64 - skip as i64;
 
-        if (available_amount <= 0)
+        if available_amount <= 0
         {
             return Vec::new();
         }
 
-        if (available_amount > page_size as i64)
+        if available_amount > page_size as i64
         {
             available_amount = page_size as i64;
         }
@@ -170,24 +170,21 @@ impl Contract {
             }
         }
 
-        if (sorted.len() < skip as usize)
+        if sorted.len() < skip as usize
         {
             return Vec::new();
         }
 
-        if (is_reverse)
+        if is_reverse
         {
-            let mut start_index = 0; 
-            let mut end_index = 0; 
-
-            start_index = token_ids.len() as i64 - skip as i64;
-            end_index = start_index - available_amount;
+            let start_index = token_ids.len() as i64 - skip as i64;
+            let end_index = start_index - available_amount;
 
             for i in (end_index..start_index).rev()
             {
                 let _index = i as usize;
 
-                if (token_ids.contains(&sorted[_index].token_id))
+                if token_ids.contains(&sorted[_index].token_id)
                 {
                     result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
                 }
@@ -199,12 +196,12 @@ impl Contract {
             {
                 let _index = i as usize;
                 let _token = sorted.get(_index);
-                if (_token.is_none())
+                if _token.is_none()
                 {
                     continue;
                 }
 
-                if (token_ids.contains(&_token.unwrap().token_id))
+                if token_ids.contains(&_token.unwrap().token_id)
                 {
                     result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
                 }
@@ -238,6 +235,7 @@ impl Contract {
         }
     }
 
+    ///токени власника
     pub fn nft_tokens_for_owner(
         &self,
         account_id: AccountId,
@@ -259,5 +257,84 @@ impl Contract {
             .collect()
     }
 
-   
+    //списки авторів
+    pub fn authors_by_filter(
+        &self,
+        //по чому сортувати
+        parameter: u8, 
+       // true = asc
+       is_reverse: bool, 
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+    ) ->Vec<Profile> {
+
+        if !self.profiles_global_stat_sorted_vector.contains_key(&parameter)
+        {
+            return Vec::new();
+        }
+
+        let authors_ids : Vec<String>;
+        let mut skip = 0;
+        if page_index >= 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        authors_ids=self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new()).to_vec();
+
+        let mut available_amount = authors_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        if authors_ids.len() < skip as usize
+        {
+            return Vec::new();
+        }
+
+        let mut result : Vec<Profile> = Vec::new();
+
+        if is_reverse
+        {
+            let start_index = authors_ids.len() as i64 - skip as i64;
+            let end_index = start_index - available_amount;
+
+            for i in (end_index..start_index).rev()
+            {
+                let _index = i as usize;
+                let _author_id=authors_ids.get(_index);
+                    
+                if _author_id.is_some() && !_author_id.is_none()
+                {
+                  result.push(self.profiles.get(_author_id.unwrap()).unwrap());
+                }
+            }
+        }
+        else
+        {
+            for i in skip..skip + available_amount as u64
+            {
+                let _index = i as usize;
+                let _author_id = authors_ids.get(_index);
+
+                if !_author_id.is_some() || _author_id.is_none()
+                {
+                    continue;
+                }
+
+                 result.push(self.profiles.get(_author_id.unwrap()).unwrap());
+            }
+        }
+
+        return result;
+    }
 }

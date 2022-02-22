@@ -355,29 +355,29 @@ impl NonFungibleTokenCore for Contract {
 
     fn get_token_likes_count(&self, token_id: TokenId) -> usize
     {
-        let hashSet = self.tokens_users_likes.get(&token_id);
+        let hash_set = self.tokens_users_likes.get(&token_id);
 
-        if(hashSet.is_none())
+        if hash_set.is_none()
         {
             return 0;
         }
         else
         {
-            return hashSet.unwrap().len();
+            return hash_set.unwrap().len();
         }
     }
 
     fn get_token_views_count(&self, token_id: TokenId) -> usize
     {
-        let hashSet = self.tokens_users_views.get(&token_id);
+        let hash_set = self.tokens_users_views.get(&token_id);
 
-        if(hashSet.is_none())
+        if hash_set.is_none()
         {
             return 0;
         }
         else
         {
-            return hashSet.unwrap().len();
+            return hash_set.unwrap().len();
         }
     }
 }

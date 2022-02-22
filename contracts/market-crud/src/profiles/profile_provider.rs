@@ -37,11 +37,11 @@ pub followers_count: u32,
 }
 
 impl ProfileStat{
-    pub  fn profile_stat_inc(profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, userId:&AccountId, parameter:u8){
+    pub  fn profile_stat_inc(profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, user_id:&AccountId, parameter:u8){
 
         let mut stat:ProfileStat;
     
-        match profiles_global_stat.get(&userId.clone()) {
+        match profiles_global_stat.get(&user_id.clone()) {
             Some(mut _profile_stat) => {stat=_profile_stat}
             None => {
                
@@ -85,7 +85,7 @@ impl ProfileStat{
                 _=>{}
             }
             
-            profiles_global_stat.insert(&userId, &stat);
+            profiles_global_stat.insert(&user_id, &stat);
         }
 
 }

@@ -132,7 +132,7 @@ impl Contract {
             match self.tokens_sorted.get(&i) {
                 Some(mut tokens) => {
 
-                    if (criterion.is_none())
+                    if criterion.is_none()
                     {
                         tokens.push(key);
                         self.tokens_sorted.insert(&i, &tokens);
@@ -140,7 +140,7 @@ impl Contract {
                     }
 
                     let index = SortedToken::binary_search(&key, &tokens);
-                    if (index.is_none())
+                    if index.is_none()
                     {
                         tokens.push(key);
                         self.tokens_sorted.insert(&i, &tokens);
@@ -195,7 +195,7 @@ impl Contract {
             match self.tokens_sorted.get(&i) {
                 Some(mut tokens) => {
 
-                    if (criterion.is_none())
+                    if criterion.is_none()
                     {
                         tokens.push(key);
                         self.tokens_sorted.insert(&i, &tokens);
@@ -203,7 +203,7 @@ impl Contract {
                     }
 
                     let index = SortedToken::binary_search(&key, &tokens);
-                    if (index.is_none())
+                    if index.is_none()
                     {
                         tokens.push(key);
                         self.tokens_sorted.insert(&i, &tokens);
