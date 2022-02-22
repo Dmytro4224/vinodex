@@ -24,7 +24,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    // @ts-ignore
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
       this.setState({...this.state, catalogs: response, currentCatalog: 0, isLoading: false });
     });
