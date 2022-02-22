@@ -1,8 +1,9 @@
 import {Component} from "react";
 import {Modal} from "react-bootstrap";
+import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './modalSample.module.css';
 
-interface IModalSample {
+interface IModalSample extends IProps{
   modalTitle: string
   children: any;
   isShow: boolean;
@@ -17,8 +18,8 @@ enum ModalSampleSizeType {
   sm = "sm",
 }
 
-class ModalSample extends Component<Readonly<IModalSample>> {
-  constructor(props: IModalSample) {
+class ModalSample extends Component<IModalSample & IBaseComponentProps> {
+  constructor(props: IModalSample & IBaseComponentProps) {
     super(props);
   }
 
@@ -71,5 +72,5 @@ class ModalSample extends Component<Readonly<IModalSample>> {
     );
   }
 }
-
-export { ModalSample, ModalSampleSizeType };
+export default withComponent(ModalSample);
+export { ModalSampleSizeType };

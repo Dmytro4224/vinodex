@@ -1,18 +1,24 @@
 import { Component, useRef } from 'react';
 import styles from './carouselView.module.css';
-import { TokenCardView } from '../tokenCard/tokenCardView';
+import TokenCardView from '../tokenCard/tokenCardView';
 import next from '../../assets/icons/arrow-slider-right.svg';
 import prev from '../../assets/icons/arrow-slider-left.svg';
-// @ts-ignore
 import Slider from "react-slick";
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-interface ICarouselView{
+interface ICarouselView extends IProps{
   customCLass: string,
   childrens: any[]
 }
 
-class SampleNextArrow extends Component<Readonly<any>>{
-  constructor(props: any) {
+interface ISampleNextArrow extends IProps{
+  className: string;
+  style: {[key: string]:string};
+  onClick: () => void
+}
+
+class SampleNextArrow extends Component<ISampleNextArrow & IBaseComponentProps>{
+  constructor(props: ISampleNextArrow & IBaseComponentProps) {
     super(props);
   }
 
@@ -24,8 +30,8 @@ class SampleNextArrow extends Component<Readonly<any>>{
   }
 }
 
-class SamplePrevArrow extends Component<Readonly<any>>{
-  constructor(props: any) {
+class SamplePrevArrow extends Component<ISampleNextArrow & IBaseComponentProps>{
+  constructor(props: ISampleNextArrow & IBaseComponentProps) {
     super(props);
   }
 
@@ -37,8 +43,8 @@ class SamplePrevArrow extends Component<Readonly<any>>{
   }
 }
 
-class CarouselView extends Component<Readonly<ICarouselView>>{
-  constructor(props: ICarouselView) {
+class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
+  constructor(props: ICarouselView & IBaseComponentProps) {
     super(props);
   }
 
@@ -49,8 +55,8 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
       slidesToShow: this.props.childrens.length > 1 ? 2 : 1,
       currentslide: 1,
       dots: false,
-      nextArrow: <SampleNextArrow {...this.props} />, //this.SampleNextArrow(),
-      prevArrow: <SamplePrevArrow {...this.props} /> //this.SamplePrevArrow()
+      nextArrow: <SampleNextArrow {...(this.props as any)} />, //this.SampleNextArrow(),
+      prevArrow: <SamplePrevArrow {...(this.props as any)} /> //this.SamplePrevArrow()
     };
 
     return settings;
@@ -67,4 +73,4 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
   }
 }
 
-export {CarouselView};
+export default withComponent(CarouselView);

@@ -4,8 +4,9 @@ import styles from './likeView.module.css';
 import userIcon from '../../assets/icons/user-icon.svg';
 import likeIcon from '../../assets/icons/favorite-icon.svg';
 import likeIconFill from '../../assets/icons/favorite-icon-fill.svg';
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-interface ILikeView{
+interface ILikeView extends IProps{
     isChanged: boolean;
     isActive: boolean;
     customClass?: string,
@@ -18,13 +19,13 @@ enum LikeViewType {
     user = 'user'
 }
 
-class LikeView extends Component<Readonly<ILikeView>>{
+class LikeView extends Component<ILikeView & IBaseComponentProps>{
     private _refImg: React.RefObject<HTMLImageElement>;
     private _refCount: React.RefObject<HTMLSpanElement>;
     private _count: number;
     private _isChanged: boolean;
 
-    constructor(props: ILikeView) {
+    constructor(props: ILikeView & IBaseComponentProps) {
         super(props);
 
         this._isChanged = this.props.isChanged || false;
@@ -86,4 +87,5 @@ class LikeView extends Component<Readonly<ILikeView>>{
     }
 }
 
-export { LikeView, LikeViewType }
+export default withComponent(LikeView);
+export { LikeViewType }

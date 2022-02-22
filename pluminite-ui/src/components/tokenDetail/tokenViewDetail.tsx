@@ -3,13 +3,13 @@ import styles from './tokenViewDetail.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import {LikeView, LikeViewType } from '../like/likeView';
+import LikeView, {LikeViewType } from '../like/likeView';
 import ArtistCard from '../artistCard/ArtistCard';
 import {Tab, Tabs } from 'react-bootstrap';
-import {buttonColors, ButtonView } from '../common/button/ButtonView';
-import { DescrtiptionView } from '../description/descrtiptionView';
-import { TokenDetailView } from './tabs/detail/tokenDetailView';
-import { BidsView } from './tabs/bids/bidsView';
+import ButtonView, {buttonColors } from '../common/button/ButtonView';
+import DescrtiptionView  from '../description/descrtiptionView';
+import TokenDetailView  from './tabs/detail/tokenDetailView';
+import BidsView  from './tabs/bids/bidsView';
 
 interface ITokenViewDetail extends IProps {
   hash: string;

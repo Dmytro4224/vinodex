@@ -1,6 +1,7 @@
 import styles from './ButtonView.module.css';
 import React, {MouseEvent, Component} from "react";
 import {classList} from "../../../utils/sys";
+import {IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 
 enum buttonColors {
     blue = 'blue',
@@ -15,7 +16,7 @@ enum buttonColors {
     goldFill = 'goldFill',
 }
 
-interface IButtonView{
+interface IButtonView extends IProps{
     text: string;
     onClick: (event: MouseEvent) => void;
     color: buttonColors;
@@ -23,10 +24,10 @@ interface IButtonView{
     icon?: any;
 }
 
-class ButtonView extends Component<Readonly<IButtonView>>{
+class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
     private readonly _ref:  React.RefObject<HTMLButtonElement>;
 
-    constructor(props: IButtonView) {
+    constructor(props: IButtonView & IBaseComponentProps) {
         super(props);
 
         this._ref = React.createRef();
@@ -86,12 +87,11 @@ class ButtonView extends Component<Readonly<IButtonView>>{
                 onClick={this.onClick}
                 className={`${styles.buttonView} ${this.buttonColor} ${this.props.icon && styles.btnIcon} ${this.props.customClass || ''}`}>
                 <span className={styles.btnText}>{this.text}</span>
-                {this.props.icon && <i style={{
-                    backgroundImage: `url(${this.props.icon})`
-                }} className={`${styles.icon}`}></i>}
+                {this.props.icon && <i style={{backgroundImage: `url(${this.props.icon})`}} className={`${styles.icon}`}/>}
             </button>
         )
     }
 }
 
-export { ButtonView, buttonColors }
+export default withComponent(ButtonView);
+export { buttonColors }

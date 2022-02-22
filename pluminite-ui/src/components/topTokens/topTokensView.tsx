@@ -1,11 +1,11 @@
 import { Component } from "react";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
-import { CarouselView } from "../carousel/carouselView";
-import {buttonColors, ButtonView } from "../common/button/ButtonView";
-import { LabelView } from "../common/label/labelView";
-import { Loader } from "../common/loader/loader";
-import { TokenCardView } from "../tokenCard/tokenCardView";
+import CarouselView from "../carousel/carouselView";
+import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import LabelView from "../common/label/labelView";
+import Loader from "../common/loader/loader";
+import TokenCardView from "../tokenCard/tokenCardView";
 
 interface ITopTokensView extends IProps {
     list?: Array<ITokenResponseItem>;
@@ -65,4 +65,3 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
 }
 
 export default withComponent(TopTokensView);
- 

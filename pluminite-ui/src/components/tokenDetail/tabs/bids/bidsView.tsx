@@ -1,9 +1,10 @@
 import { Component } from "react";
 import styles from './bidsView.module.css';
 import defaultAvatar from '../../../../assets/images/avatar-def.png';
-import { ButtonCopy } from "../../../common/buttonCopy/ButtonCopy";
+import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
+import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
 
-interface IBidsItemView{
+interface IBidsItemView extends IProps{
   avatar?: any;
   name: string;
   identification: string;
@@ -11,12 +12,12 @@ interface IBidsItemView{
   currency: string
 }
 
-interface IBidsView{
+interface IBidsView extends IProps{
   items: IBidsItemView[]
 }
 
-class BidsItemView extends Component<IBidsItemView>{
-  constructor(props: IBidsItemView) {
+class BidsItemView extends Component<IBidsItemView & IBaseComponentProps>{
+  constructor(props: IBidsItemView & IBaseComponentProps) {
     super(props);
   }
 
@@ -64,8 +65,10 @@ class BidsItemView extends Component<IBidsItemView>{
   }
 }
 
-class BidsView extends Component<IBidsView>{
-  constructor(props: IBidsView) {
+const BidsItem = withComponent(BidsItemView);
+
+class BidsView extends Component<IBidsView & IBaseComponentProps>{
+  constructor(props: IBidsView & IBaseComponentProps) {
     super(props);
   }
 
@@ -78,7 +81,7 @@ class BidsView extends Component<IBidsView>{
       <>
         {
           this.childrens.map(child => {
-            return <BidsItemView name={child.name} identification={child.identification} price={child.price} currency={child.currency}/>
+            return <BidsItem name={child.name} identification={child.identification} price={child.price} currency={child.currency}/>
           })
         }
       </>
@@ -86,4 +89,4 @@ class BidsView extends Component<IBidsView>{
   }
 }
 
-export { BidsView }
+export default withComponent(BidsView);

@@ -1,26 +1,28 @@
 import React, {Component} from "react";
-import { CarouselView } from "../../components/carousel/carouselView";
-import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
+import CarouselView  from "../../components/carousel/carouselView";
+import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
-import { TabsView, tabType } from "../../components/common/tabs/TabsView";
-import {TokenCardView } from "../../components/tokenCard/tokenCardView";
+import TabsView, { tabType } from "../../components/common/tabs/TabsView";
+import TokenCardView  from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
-import {LabelView} from "../../components/common/label/labelView";
+import LabelView from "../../components/common/label/labelView";
 import ArtistCard from "../../components/artistCard/ArtistCard";
-import { withComponent } from '../../utils/withComponent';
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import {BestArtists} from "../../components/bestArtists/BestArtists";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import TopTokensView from "../../components/topTokens/topTokensView";
 import PopularTokensView from "../../components/popularTokens/popularTokensView";
+import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 
-interface IHome {
-    params: Params<string>;
-    nftContractContext: INftContractContext
+interface IHome extends IProps{
 
 }
-class Home extends Component<IHome> {
+class Home extends Component<IHome & IBaseComponentProps> {
+  constructor(props: IHome & IBaseComponentProps) {
+    super(props);
+  }
   render() {
     return (
       <div className="my-5 container">
@@ -45,7 +47,7 @@ class Home extends Component<IHome> {
             ]}
           />
 
-          <TabsFilterView catalogs={null} />
+          <TabsFilterView />
 
           <ButtonView
             text={"Filter"}
@@ -56,11 +58,11 @@ class Home extends Component<IHome> {
 
         <p className="separator-horizontal" />
 
-        <TopTokensView list={[]} />
+        <TopTokensView />
 
         <p className="separator-horizontal" />
 
-        <PopularTokensView />
+        <PopularTokensView/>
 
         <p className="separator-horizontal" />
 

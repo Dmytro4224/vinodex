@@ -1,19 +1,19 @@
 import { Component } from "react";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
-import { withComponent } from "../../utils/withComponent";
-import {buttonColors, ButtonView } from "../common/button/ButtonView";
-import { LabelView } from "../common/label/labelView";
-import { Loader } from "../common/loader/loader";
-import { TokenCardView } from "../tokenCard/tokenCardView";
+import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import LabelView from "../common/label/labelView";
+import Loader from "../common/loader/loader";
+import TokenCardView from "../tokenCard/tokenCardView";
 
-interface IPopularTokensView{
-  list: Array<ITokenResponseItem> | null
+interface IPopularTokensView extends IProps{
+  list?: Array<ITokenResponseItem>
 }
 
-class AllTokensView extends Component<IPopularTokensView>{
+class AllTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
   public state = { list: new Array<ITokenResponseItem>(), isLoading: true };
 
-  constructor(props: IPopularTokensView) {
+  constructor(props: IPopularTokensView & IBaseComponentProps) {
     super(props);
   }
 

@@ -1,7 +1,12 @@
 import { Component } from "react";
+import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
-class Loader extends Component{
-  constructor(props: any) {
+interface ILoader extends IProps{
+
+}
+
+class Loader extends Component<ILoader & IBaseComponentProps>{
+  constructor(props: ILoader & IBaseComponentProps) {
     super(props);
   }
 
@@ -11,4 +16,4 @@ class Loader extends Component{
 
 }
 
-export { Loader }
+export default withComponent(Loader);

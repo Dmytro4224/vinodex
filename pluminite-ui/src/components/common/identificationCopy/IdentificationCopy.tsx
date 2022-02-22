@@ -1,10 +1,10 @@
 import React from "react";
 import { Component } from "react";
-import { PlacementType, TooltipS } from "../../common/tooltip/Tooltip";
+import TooltipS, { PlacementType } from "../../common/tooltip/Tooltip";
 import { transformArtistId } from "../../../utils/sys";
 import styles from './identificationCopy.module.css';
 import copyIcon from '../../../assets/icons/copy.svg'
-import {ButtonCopy} from "../buttonCopy/ButtonCopy";
+import ButtonCopy from "../buttonCopy/ButtonCopy";
 
 interface IIdentificationCopy {
   id: string;

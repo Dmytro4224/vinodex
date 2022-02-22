@@ -1,21 +1,26 @@
 import React, {Component} from "react";
-import {buttonColors, ButtonView} from "../../common/button/ButtonView";
+import ButtonView, {buttonColors} from "../../common/button/ButtonView";
 import styles from './infoDetails.module.css';
 import userIcon from '../../../assets/icons/user-gold.svg';
 import emailIcon from '../../../assets/icons/mail-gold.svg';
 import listIcon from '../../../assets/icons/list-gold.svg';
 import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
-import {InputView} from "../../common/inputView/InputView";
+import InputView from "../../common/inputView/InputView";
+import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
-class InfoDetails extends Component {
+ interface IInfoDetails extends IProps{
+
+ }
+
+class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   public state = {
     isEditForm: false
   };
 
   private readonly _radioNFTApproveRef:  React.RefObject<HTMLInputElement>;
 
-  constructor(props) {
+  constructor(props: IInfoDetails & IBaseComponentProps) {
     super(props);
 
     this._radioNFTApproveRef = React.createRef();
@@ -174,4 +179,4 @@ class InfoDetails extends Component {
   }
 }
 
-export { InfoDetails };
+export default withComponent(InfoDetails);

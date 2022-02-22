@@ -1,8 +1,9 @@
 import {ChangeEvent, Component} from "react";
 import { Form } from "react-bootstrap";
+import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './inputView.module.css';
 
-interface IInputView {
+interface IInputView extends IProps{
   onChange: (e: ChangeEvent) => void;
   absPlaceholder?: string;
   placeholder: string;
@@ -13,8 +14,8 @@ interface IInputView {
   isTextarea?: boolean;
 };
 
-class InputView extends Component<Readonly<IInputView>> {
-  constructor(props: IInputView) {
+class InputView extends Component<IInputView & IBaseComponentProps> {
+  constructor(props: IInputView & IBaseComponentProps) {
     super(props);
   }
 
@@ -64,4 +65,4 @@ class InputView extends Component<Readonly<IInputView>> {
   }
 }
 
-export { InputView };
+export default withComponent(InputView);

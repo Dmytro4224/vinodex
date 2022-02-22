@@ -6,7 +6,7 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import { Tab, Tabs } from "react-bootstrap";
-import { InfoDetails } from "../../components/profile/infoDetails/InfoDetails";
+import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
 import { INftContract } from '../../utils';
 
 interface IUserProfile extends IProps {
