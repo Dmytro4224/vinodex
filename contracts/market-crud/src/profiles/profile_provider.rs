@@ -17,8 +17,90 @@ pub struct Profile {
     pub image: String,
     ///електропошта
     #[validate(email)]
-    pub email:String
+    pub email:String,
+    pub account_id:AccountId
 }
+impl Profile {
+    ///Отримати дані профілю для юзера AccountId
+    pub fn get_profile(profiles: &mut LookupMap<AccountId, Profile>, account_id: AccountId) -> Option<Profile> {
+        let account_id: AccountId = account_id.into();
+        return profiles.get(&account_id);
+    }
+
+    pub fn get_default_data(account_id: AccountId) -> Profile{
+        return Profile{
+            account_id:account_id,
+            bio:String::from(""),
+            email:String::from(""),
+            image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
+            name:String::from("")
+        }
+    }
+
+    ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
+    pub fn check_default(profiles: &mut LookupMap<AccountId, Profile>, account_id: &AccountId){
+        let _profile=Profile::get_profile(profiles, account_id.clone());
+        if _profile.is_none(){
+            profiles.insert(
+                &account_id, 
+                &Profile::get_default_data(account_id.clone())
+            );
+        }
+    }
+
+
+    pub fn set_profile_bio(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.bio=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_image(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.image=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_name(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.name=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_email(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.email=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_account_id(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.account_id=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    ///Встановити дані профілю
+    pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, profile: Profile, account_id: &AccountId) {
+        let mut _profile=Profile::get_profile(profiles, account_id.clone());
+        profiles.insert(&account_id, &profile);
+    }
+
+
+
+    
+}
+
+
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 ///структура для статистики
@@ -257,5 +339,3 @@ pub fn profile_stat_check_for_default_stat(
         }
 
     }
-
-
