@@ -56,7 +56,7 @@ impl NonFungibleTokenMetadata for Contract {
 //Керуючий елемент для вподобань та переглядів токенів
 #[near_bindgen]
 impl Contract {
-    pub fn token_setLike(&mut self, token_id: TokenId)
+    pub fn token_set_like(&mut self, token_id: TokenId)
     {
         // assert!(
         //     self.tokens_by_id.get(&token_id).is_none(),
@@ -68,7 +68,7 @@ impl Contract {
         match self.tokens_users_likes.get(&token_id.clone()) {
             Some(mut likes) => {
 
-                if(likes.contains(&user_id))
+                if likes.contains(&user_id)
                 {
                     likes.remove(&user_id);
                 }
@@ -80,28 +80,23 @@ impl Contract {
                 self.tokens_users_likes.insert(&token_id, &likes);
             }
             None => {
-                let mut hashSet: HashSet<String> = HashSet::new();
-                hashSet.insert(user_id);
+                let mut hash_set: HashSet<String> = HashSet::new();
+                hash_set.insert(user_id);
 
-                self.tokens_users_likes.insert(&token_id, &hashSet);
+                self.tokens_users_likes.insert(&token_id, &hash_set);
             }
         }
 
         ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&env::predecessor_account_id(),1);
     }
 
-    pub fn token_setView(&mut self, token_id: TokenId)
+    pub fn token_set_view(&mut self, token_id: TokenId)
     {
-        // assert!(
-        //     self.tokens_by_id.get(&token_id).is_none(),
-        //     "token_setView: token not found"
-        // );
-
         let user_id = env::predecessor_account_id();
 
         match self.tokens_users_views.get(&token_id.clone()) {
             Some(mut views) => {
-                if(!views.contains(&user_id))
+                if !views.contains(&user_id)
                 {
                     views.insert(user_id);
                 }
@@ -109,10 +104,10 @@ impl Contract {
                 self.tokens_users_views.insert(&token_id, &views);
             }
             None => {
-                let mut hashSet: HashSet<String> = HashSet::new();
-                hashSet.insert(user_id);
+                let mut hash_set: HashSet<String> = HashSet::new();
+                hash_set.insert(user_id);
 
-                self.tokens_users_views.insert(&token_id, &hashSet);
+                self.tokens_users_views.insert(&token_id, &hash_set);
             }
         }
 

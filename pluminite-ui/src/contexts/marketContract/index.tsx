@@ -1,19 +1,10 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { parseNearAmount } from 'near-api-js/lib/utils/format';
-import { transactions } from 'near-api-js';
-
-import { initialMarketContractState, marketContractReducer } from './reducer';
-import { GOT_MIN_STORAGE } from './types';
-
-import { ReactChildrenTypeRequired } from '../../types/ReactChildrenTypes';
-
-import { NearContext } from '../near';
 import { NftContractContext } from '../../contexts';
+import { IMarketContract } from '../../utils';
 
-import { getMarketContractName, IMarketContract } from '../../utils';
-
-import { PAYABLE_METHODS, APP, STORAGE } from '../../constants';
+const initialMarketContractState = {
+    minStorage: null
+};
 
 export const MarketContractContext = React.createContext(initialMarketContractState);
 
