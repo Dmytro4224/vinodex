@@ -6,6 +6,7 @@ import { APP } from './constants';
 import { ICurrentUser } from './types/ICurrentUser';
 import { IProfile } from './types/IProfile';
 import { ITokenResponseItem } from './types/ITokenResponseItem';
+import { IAuthorResponseItem } from './types/IAuthorResponseItem';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
@@ -18,7 +19,7 @@ export type INftContract = nearAPI.Contract & {
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
 
-
+    authors_by_filter: ({ parameter, is_reverse, page_index, page_size }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number }) => Promise<Array<IAuthorResponseItem>>;
     nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
 };

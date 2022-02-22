@@ -159,6 +159,25 @@ impl Contract {
                 }
             }
 
+            //створюємо профіль, якшо нема
+    
+            let _profile_data=self.profiles.get(&owner_id);
+            if _profile_data.is_none()
+            {
+                //дефолтні значення
+                //виправити перед релізом!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                self.set_profile(Profile{
+                    bio:String::from(""),
+                    email:String::from(""),
+                    image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
+                    name:owner_id.to_string(),
+                });
+
+            }
+
+
+            //=======================================================
+
             //додати запис до profiles_by_tokens_count для статистики
             ProfileStatCriterion::profile_stat_inc(
                 &mut self.profiles_global_stat,

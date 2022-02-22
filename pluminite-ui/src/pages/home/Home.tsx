@@ -1,16 +1,8 @@
 import React, {Component} from "react";
-import CarouselView  from "../../components/carousel/carouselView";
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
-import TabsView, { tabType } from "../../components/common/tabs/TabsView";
-import TokenCardView  from "../../components/tokenCard/tokenCardView";
-import { NearContext } from "../../contexts";
-import LabelView from "../../components/common/label/labelView";
-import ArtistCard from "../../components/artistCard/ArtistCard";
 import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import {BestArtists} from "../../components/bestArtists/BestArtists";
-import { Params } from 'react-router-dom';
-import { INftContractContext } from '../../contexts/nftContract';
+import BestArtists from "../../components/bestArtists/BestArtists";
 import TopTokensView from "../../components/topTokens/topTokensView";
 import PopularTokensView from "../../components/popularTokens/popularTokensView";
 import AllTokensView from "../../components/allTokens/allTokensView";
