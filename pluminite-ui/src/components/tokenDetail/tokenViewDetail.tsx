@@ -117,15 +117,15 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             </div>
             <div className={styles.creator}>
               <p className={styles.title}>Creator</p>
-              <ArtistCard
-                key={12}
-                name={'Artist Name'}
-                identification={'0x0b9D2weq28asdqwe132'}
-                usersCount={22}
-                likesCount={12}
-                isCard={false}
-                isFollow={false}
-              />
+              {/*<ArtistCard*/}
+              {/*  key={12}*/}
+              {/*  name={'Artist Name'}*/}
+              {/*  identification={'0x0b9D2weq28asdqwe132'}*/}
+              {/*  usersCount={22}*/}
+              {/*  likesCount={12}*/}
+              {/*  isCard={false}*/}
+              {/*  isFollow={false}*/}
+              {/*/>*/}
             </div>
             <div className={styles.tabsWrap}>
               <Tabs

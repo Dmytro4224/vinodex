@@ -17,23 +17,105 @@ pub struct Profile {
     pub image: String,
     ///електропошта
     #[validate(email)]
-    pub email:String
+    pub email:String,
+    pub account_id:AccountId
 }
+impl Profile {
+    ///Отримати дані профілю для юзера AccountId
+    pub fn get_profile(profiles: &mut LookupMap<AccountId, Profile>, account_id: AccountId) -> Option<Profile> {
+        let account_id: AccountId = account_id.into();
+        return profiles.get(&account_id);
+    }
+
+    pub fn get_default_data(account_id: AccountId) -> Profile{
+        return Profile{
+            account_id:account_id,
+            bio:String::from(""),
+            email:String::from(""),
+            image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
+            name:String::from("")
+        }
+    }
+
+    ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
+    pub fn check_default(profiles: &mut LookupMap<AccountId, Profile>, account_id: &AccountId){
+        let _profile=Profile::get_profile(profiles, account_id.clone());
+        if _profile.is_none(){
+            profiles.insert(
+                &account_id, 
+                &Profile::get_default_data(account_id.clone())
+            );
+        }
+    }
+
+
+    pub fn set_profile_bio(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.bio=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_image(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.image=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_name(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.name=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_email(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.email=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_account_id(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
+        Profile::check_default(profiles,account_id);
+
+        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        _profile.account_id=value.clone();
+        profiles.insert(&account_id, &_profile);
+    }
+
+    ///Встановити дані профілю
+    pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, profile: Profile, account_id: &AccountId) {
+        let mut _profile=Profile::get_profile(profiles, account_id.clone());
+        profiles.insert(&account_id, &profile);
+    }
+
+
+
+    
+}
+
+
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 ///структура для статистики
 pub struct ProfileStat{
-///кількість лайків аккаунту
+///0  - кількість лайків аккаунту
 pub likes_count: u32,
-///кількість лайків токенів аккаунту
+///1 - кількість лайків токенів аккаунту
 pub tokens_likes_count: u32,
-//загальна ксть переглядів аккаунту
+//2 - загальна ксть переглядів аккаунту
 pub views_count: u32,
-//загальна ксть переглядів токенів аккаунту
+//3 - загальна ксть переглядів токенів аккаунту
 pub tokens_views_count: u32,
-///загальна ксть токенів
+///4 - загальна ксть токенів
 pub tokens_count: u32,
-//к-сть підписників автора
+//5 - к-сть підписників автора
 pub followers_count: u32,
 }
 
@@ -44,6 +126,7 @@ pub struct ProfileStatCriterion{
 }
 
 impl ProfileStatCriterion{
+    ///збільшити значення статистики
     pub  fn profile_stat_inc(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
@@ -151,6 +234,75 @@ impl ProfileStatCriterion{
             profiles_global_stat.insert(&user_id, &stat);
         }
 
+///перевірити чи встановленні дефолтні значення статистистики для юзера
+pub fn profile_stat_check_for_default_stat(
+    profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+    profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
+    user_id:&AccountId){
+ 
+        //якшо по юзеру немає фільтрів
+        if profiles_global_stat.get(&user_id.clone()).is_none() {
+                let stat=ProfileStat{
+                    likes_count:0,
+                     tokens_likes_count: 0,
+                     views_count: 0,
+                     tokens_views_count: 0,
+                     tokens_count: 0,
+                     followers_count: 0
+                };
+                profiles_global_stat.insert(&user_id, &stat);
+            }
+
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,&user_id,profiles_global_stat_sorted_vector);
+            
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,&user_id,profiles_global_stat_sorted_vector);
+    }
+
+
+        pub fn profile_stat_check_for_default_stat_one_parameter(
+    parameter:u8,
+    user_id:&AccountId,
+    profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>)
+    {
+       
+        let mut _vector
+        = profiles_global_stat_sorted_vector.get(&parameter);
+
+        if _vector.is_none()
+        {
+            let mut _empty_vector:Vec<ProfileStatCriterion>=Vec::new();
+            _empty_vector.push(
+                 ProfileStatCriterion{
+                                     account_id:user_id.to_string(),
+                                     criterion:Some(0)
+             });
+             profiles_global_stat_sorted_vector.insert(&parameter,&_empty_vector);
+          
+
+        }else{
+
+            let mut _new_vector 
+            = profiles_global_stat_sorted_vector.get(&parameter).unwrap();
+
+            let _current_position 
+            = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
+            
+            if _current_position.is_none()
+            {
+                _new_vector.push(
+                    ProfileStatCriterion{
+                    account_id:user_id.to_string(),
+                    criterion:Some(0)
+                });
+                profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
+            }
+        }
+    }
+
         pub fn cmp(&self, obj: &ProfileStatCriterion) -> Ordering
         {
             if self.criterion.is_none() && !obj.criterion.is_none()
@@ -187,5 +339,3 @@ impl ProfileStatCriterion{
         }
 
     }
-
-

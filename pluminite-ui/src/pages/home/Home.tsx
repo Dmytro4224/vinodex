@@ -8,6 +8,7 @@ import PopularTokensView from "../../components/popularTokens/popularTokensView"
 import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 import Loader from "../../components/common/loader/loader";
+import Skeleton from "react-loading-skeleton";
 
 interface IHome extends IProps{
 
@@ -38,10 +39,9 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   render() {
-    console.log(`current`, this.state.catalogs[this.state.currentCatalog]);
 
     if(this.state.isLoading){
-      return <Loader />
+      return null;
     }
 
     return (

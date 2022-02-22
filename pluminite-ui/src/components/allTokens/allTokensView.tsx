@@ -1,4 +1,5 @@
 import { Component } from "react";
+import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import ButtonView, {buttonColors} from "../common/button/ButtonView";
@@ -19,7 +20,7 @@ class AllTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
 
   public componentDidMount() {
     // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter('art', 1, 10, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter('art', 1, 4, 7).then(response => {
 
       this.setState({...this.state, list: response, isLoading: false });
     });
@@ -27,11 +28,16 @@ class AllTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
 
   render(){
     if(this.state.isLoading){
-      return <Loader />
+      return <div className="d-flex align-items-center flex-gap-36">
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+      </div>
     }
 
     return <div>
-          <div className="d-flex align-items-center justify-content-between mt-3">
+          <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
             <LabelView  text={'All'}/>
             <ButtonView
               text={'More'}

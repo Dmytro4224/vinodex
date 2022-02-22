@@ -38,6 +38,10 @@ a {
     gap: 30px;
 }
 
+.slick-slider .slick-slide div:first-child{
+    height: 100%;
+}
+
 .separator-horizontal {
     margin: 24px 0;
     width: 100%;
@@ -78,4 +82,8 @@ a {
     border-color: var(--pirateCold);
     outline: 0;
     box-shadow: unset;
+}
+
+a:hover {
+    color: var(--pirateCold);
 }

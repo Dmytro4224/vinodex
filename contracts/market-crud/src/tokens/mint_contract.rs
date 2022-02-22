@@ -166,16 +166,17 @@ impl Contract {
             {
                 //дефолтні значення
                 //виправити перед релізом!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                self.set_profile(Profile{
-                    bio:String::from(""),
-                    email:String::from(""),
-                    image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
-                    name:owner_id.to_string(),
-                });
-
+                Profile::set_profile(
+                    &mut self.profiles,
+                    Profile::get_default_data(owner_id.clone()),
+                    &owner_id);
             }
 
-
+            //=
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                 &mut self.profiles_global_stat,
+                &mut self.profiles_global_stat_sorted_vector,
+                &owner_id);
             //=======================================================
 
             //додати запис до profiles_by_tokens_count для статистики

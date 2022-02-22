@@ -2,11 +2,14 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+
+.inputDefault {
   border-radius: 4px;
   background: var(--wildSand);
 }
 
-.inputView {
+.inputDefault input {
   padding: 5px 10px;
   width: 100%;
   min-height: 44px;
@@ -19,6 +22,24 @@
   background-color: var(--wildSand);
 }
 
+.inputRound {
+  border: 1px solid rgba(174, 126, 3, 0.6);
+  border-radius: 30px;
+}
+
+.inputRound input {
+  padding: 5px 10px;
+  width: 100%;
+  min-height: 44px;
+  font-size: 14px;
+  font-weight: 500;
+  outline: none;
+  border: none;
+  color: var(--mineShaftS);
+  background-color: var(--white);
+  border-radius: 30px;
+}
+
 .inputView:focus {
   color: unset;
   background-color: unset;
@@ -28,7 +49,7 @@
 }
 
 .inputView::placeholder {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: var(--doveGray);
 }

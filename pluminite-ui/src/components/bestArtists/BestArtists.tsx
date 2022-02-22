@@ -35,7 +35,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   }
 
   private get parameter() {
-    return this.props.parameter || BestArtistsParameter.followers_count;
+    return this.props.parameter || BestArtistsParameter.likes_count;
   }
 
   private get isReverse() {
@@ -100,7 +100,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
           {this.list.map((item, index) => {
             return <ArtistCard
               key={index}
-              name={'Artist Name'}
+              info={item}
               identification={'0x0b9D2weq28asdqwe132'}
               usersCount={22}
               likesCount={12}

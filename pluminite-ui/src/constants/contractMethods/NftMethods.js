@@ -8,6 +8,7 @@ const NftMethods = {
         'nft_tokens_batch',
     'nft_tokens_by_filter',
     'nft_tokens_catalogs',
+    'nft_token_get',
     'authors_by_filter',
     'get_profile',
     'nft_supply_for_creator',
