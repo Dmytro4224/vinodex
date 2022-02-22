@@ -39,17 +39,17 @@ impl SortedToken
 {
     pub fn cmp(&self, obj: &SortedToken) -> Ordering
     {
-        if(self.criterion.is_none() && !obj.criterion.is_none())
+        if self.criterion.is_none() && !obj.criterion.is_none()
         {
             return Ordering::Less;
         }
 
-        if(self.criterion.is_none() && obj.criterion.is_none())
+        if self.criterion.is_none() && obj.criterion.is_none()
         {
             return Ordering::Equal;
         }
 
-        if(!self.criterion.is_none() && obj.criterion.is_none())
+        if !self.criterion.is_none() && obj.criterion.is_none()
         {
             return Ordering::Greater;
         }

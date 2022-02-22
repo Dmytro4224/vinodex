@@ -10,10 +10,7 @@ use near_sdk::{
 use std::collections::HashSet;
 use std::cmp::Ordering;
 
-#[macro_use]
 extern crate serde_derive;
-
-use serde_json::Result;
 
 use crate::internal::*;
 
@@ -367,18 +364,6 @@ impl Contract {
                 self.token_types_locked.insert(&token_type);
             }
             self.supply_cap_by_type.insert(token_type.to_string(), *hard_cap);
-
-            // // // if token_type == "HipHopHeadsFirstEditionMedley" {
-            // // //     let keys = self.token_metadata_by_id.keys_as_vector();
-            // // //     for i in 0..keys.len() {
-            // // //         let token_id = keys.get(i).unwrap();
-            // // //         if let Some(token) = self.tokens_by_id.get(&token_id) {
-            // // //             let mut token_2 = token;
-            // // //             token_2.royalty.insert("edyoung.near".to_string(), 200);
-            // // //             self.tokens_by_id.insert(&token_id, &token_2);
-            // // //         }
-            // // //     }
-            // // // }
         }
     }
 
@@ -389,8 +374,6 @@ impl Contract {
             self.token_types_locked.remove(&token_type);
         }
     }
-
-    /// CUSTOM - views
 
     pub fn get_contract_royalty(&self) -> u32 {
         self.contract_royalty
