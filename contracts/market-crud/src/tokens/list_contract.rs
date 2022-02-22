@@ -100,7 +100,7 @@ impl Contract {
         tmp
     }
     
-
+///колекція токенів по фільтру
     pub fn nft_tokens_by_filter(
         &self,
         // каталог або null|none
@@ -214,6 +214,18 @@ impl Contract {
         return result;
     }
     
+
+    ///отримати дані по токену
+    pub fn nft_token_get(
+        &self,
+        // id токену
+        token_id: TokenId,
+    ) -> JsonToken {
+
+        return self.nft_token(token_id).unwrap();
+    }
+    
+
     pub fn nft_supply_for_owner(
         &self,
         account_id: AccountId,
