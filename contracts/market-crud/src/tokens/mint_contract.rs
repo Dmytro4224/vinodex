@@ -175,7 +175,11 @@ impl Contract {
 
             }
 
-
+            //=
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                 &mut self.profiles_global_stat,
+                &mut self.profiles_global_stat_sorted_vector,
+                &owner_id);
             //=======================================================
 
             //додати запис до profiles_by_tokens_count для статистики
