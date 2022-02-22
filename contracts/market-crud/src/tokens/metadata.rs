@@ -87,7 +87,10 @@ impl Contract {
             }
         }
 
-        ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&env::predecessor_account_id(),1);
+        ProfileStatCriterion::profile_stat_inc(
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
+            &env::predecessor_account_id(),1);
     }
 
     pub fn token_set_view(&mut self, token_id: TokenId)
@@ -111,7 +114,10 @@ impl Contract {
             }
         }
 
-        ProfileStat::profile_stat_inc(&mut self.profiles_global_stat,&env::predecessor_account_id(),3);
+        ProfileStatCriterion::profile_stat_inc(
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
+            &env::predecessor_account_id(),3);
     }
 
 }

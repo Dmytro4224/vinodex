@@ -119,7 +119,7 @@ pub struct Contract {
     //followers_count: 5 - к-сть підписників автора
     //total_likes_count: 6 - загальна ксть  лайків аккаунт+токени
     //total_views_count: 7 - загальна ксть  переглядів аккаунт+токени
-    pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<AccountId>>,
+    pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
     //==========================================================
     
     ///чи брати плату за зберігання інфи з юзера
@@ -223,7 +223,7 @@ impl Contract {
             contract_royalty: u32,
             profiles: LookupMap<AccountId, Profile>,
             use_storage_fees: bool,
-            profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<AccountId>>,
+            profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
             profiles_global_stat: LookupMap<AccountId, ProfileStat>,
         }
 
