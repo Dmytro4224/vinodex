@@ -6,7 +6,7 @@ import emailIcon from '../../../assets/icons/mail-gold.svg';
 import listIcon from '../../../assets/icons/list-gold.svg';
 import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
-import InputView from "../../common/inputView/InputView";
+import InputView, {ViewType} from "../../common/inputView/InputView";
 import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
  interface IInfoDetails extends IProps{
@@ -150,7 +150,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             onChange={(e) => { console.log(e) }}
             placeholder={'Bio'}
             customClass={'mb-4'}
-            isTextarea={true}
+            viewType={ViewType.textarea}
           />
 
           <div className="d-flex align-items-center justify-content-center">

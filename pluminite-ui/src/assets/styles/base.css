@@ -79,3 +79,7 @@ a {
     outline: 0;
     box-shadow: unset;
 }
+
+a:hover {
+    color: var(--pirateCold);
+}
