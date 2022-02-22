@@ -3,6 +3,7 @@ import React, { Component } from "react"
 import { NftContractContext } from '../../contexts';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import 'react-loading-skeleton/dist/skeleton.css'
 import { Navigate, Route, Routes } from 'react-router-dom';
 import Home from "../../pages/home/Home";
 import Header from "../header/Header";

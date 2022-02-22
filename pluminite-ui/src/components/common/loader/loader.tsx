@@ -11,7 +11,7 @@ class Loader extends Component<ILoader & IBaseComponentProps>{
   }
 
   render(){
-    return <p>is loading</p>
+    return <p className="w-100 text-center">is loading</p>
   }
 
 }
