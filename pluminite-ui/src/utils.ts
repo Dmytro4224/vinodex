@@ -20,7 +20,7 @@ export type INftContract = nearAPI.Contract & {
 
 
     nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
-    nft_tokens_catalogs: ({ }) => Promise<Array<any>>;
+    nft_tokens_catalogs: () => Promise<Array<any>>;
 };
 
 export type IMarketContract = nearAPI.Contract & {

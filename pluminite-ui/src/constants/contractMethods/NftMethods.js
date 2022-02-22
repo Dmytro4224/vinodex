@@ -7,6 +7,7 @@ const NftMethods = {
     'nft_tokens_for_creator',
         'nft_tokens_batch',
     'nft_tokens_by_filter',
+    'nft_tokens_catalogs',
     'get_profile',
     'nft_supply_for_creator',
     'is_free_mint_available',

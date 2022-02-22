@@ -46,7 +46,7 @@ class CarouselView extends Component<Readonly<ICarouselView>>{
     let settings = {
       infinite: true,
       speed: 500,
-      slidesToShow: 2,
+      slidesToShow: this.props.childrens.length > 1 ? 2 : 1,
       currentslide: 1,
       dots: false,
       nextArrow: <SampleNextArrow {...this.props} />, //this.SampleNextArrow(),

@@ -12,6 +12,7 @@ import {BestArtists} from "../../components/bestArtists/BestArtists";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import TopTokensView from "../../components/topTokens/topTokensView";
+import PopularTokensView from "../../components/popularTokens/popularTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 
 interface IHome {
@@ -54,45 +55,12 @@ class Home extends Component<IHome> {
         </div>
 
         <p className="separator-horizontal" />
-        
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Top 10'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
 
         <TopTokensView list={null} />
 
         <p className="separator-horizontal" />
 
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Popular'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
-
-        <div className="d-flex flex-wrap flex-gap-36 mt-3">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
-            return <TokenCardView key={item.id}
-                                  countL={item.id}
-                                  countR={10}
-                                  days={'121 days left'}
-                                  name={'Item Name'}
-                                  author={'Creat name'}
-                                  likesCount={99}
-                                  isSmall={true}
-                                  buttonText={'Place a bid 0.08 ETH'}
-                                  onClick={() => {
-                                    alert('buy Place a bid 0.08 ETH');
-                                  }}/>;
-          })}
-        </div>
+        <PopularTokensView />
 
         <p className="separator-horizontal" />
 
@@ -100,31 +68,7 @@ class Home extends Component<IHome> {
 
         <p className="separator-horizontal" />
 
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'All'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
-
-        <div className="d-flex flex-wrap flex-gap-36 mt-3">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
-            return <TokenCardView key={item.id}
-                                  countL={item.id}
-                                  countR={10}
-                                  days={'121 days left'}
-                                  name={'Item Name'}
-                                  author={'Creat name'}
-                                  likesCount={99}
-                                  isSmall={true}
-                                  buttonText={'Place a bid 0.08 ETH'}
-                                  onClick={() => {
-                                    alert('buy Place a bid 0.08 ETH');
-                                  }}/>;
-          })}
-        </div>
+        <AllTokensView />
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
