@@ -6,10 +6,10 @@ import { IdentificationCopy } from "../common/identificationCopy/IdentificationC
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
 import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
+import {IAuthorResponseItem} from "../../types/IAuthorResponseItem";
 
 interface IArtistCard extends IProps{
-  avatar?: any;
-  name: string;
+  info: IAuthorResponseItem;
   identification: string;
   usersCount: number;
   likesCount: number;
@@ -23,11 +23,11 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get avatar() {
-    return this.props.avatar;
+    return this.props.info?.image;
   }
 
   private get name() {
-    return this.props.name;
+    return this.props.info?.name;
   }
 
   private get identification() {

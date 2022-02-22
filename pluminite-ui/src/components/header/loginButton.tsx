@@ -1,7 +1,9 @@
 import { Component } from "react";
+import { Dropdown } from "react-bootstrap";
 import { ICurrentUser } from "../../types/ICurrentUser";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import ButtonView, { buttonColors } from "../common/button/ButtonView";
+import UserDropdown from "../header/userDropdown/userDropdown";
 import {dropdownColors, DropdownView } from "../common/dropdown/dropdownView";
 
 interface ILoginButton extends IProps{
@@ -24,19 +26,7 @@ class LoginButton extends Component<ILoginButton & IBaseComponentProps>{
       />
     }
 
-    return (
-      <DropdownView
-        colorType={dropdownColors.select}
-        title={'0x0b9D…2e14'}
-        onChange={(item) => { this.props.near.signOut(); }}
-        childrens={[
-          {
-            id: 1,
-            title: 'Sign out'
-          }
-        ]}
-      />
-    )
+    return <UserDropdown user={this.props.user} />
   }
 }
 

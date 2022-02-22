@@ -21,13 +21,13 @@ class HeaderNavigation extends Component {
   private getLink({ name, linkClass, path, id }) {
     const setActive = ({ isActive }) => (isActive ? `${linkClass} ${styles.active}` : linkClass);
 
-    return <NavLink key={id} className={setActive} to={path}>{name}</NavLink>;
+    return <li key={id} className={styles.navItem}><NavLink className={setActive} to={path}>{name}</NavLink></li>;
   }
 
   render() {
     return (
       <nav>
-        <ul>
+        <ul className="d-flex align-items-center">
           {navigationData.map(this.getLink)}
         </ul>
       </nav>

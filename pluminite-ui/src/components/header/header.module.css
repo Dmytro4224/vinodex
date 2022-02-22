@@ -3,7 +3,7 @@
   top: 0;
   display: flex;
   align-items: center;
-  padding: 2px 24px;
+  padding: 15px 24px;
   border-bottom: 1px solid var(--mercury);
   background-color: var(--white);
   z-index: 10;
@@ -21,5 +21,5 @@
 }
 
 .logo {
-  margin-right: 30px;
+  margin-right: 40px;
 }

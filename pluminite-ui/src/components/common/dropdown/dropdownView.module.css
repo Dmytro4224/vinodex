@@ -3,9 +3,9 @@
 }
 .dropdownSelect{
     background-color: var(--white);
-    color: var(--denim);
-    border: 1px solid rgba(0, 0, 0, 0.12);
+    border: 1px solid var(--pirateCold);
     text-transform: uppercase;
+    border-radius: 30px;
     font-size: 16px;
 }
 
@@ -14,8 +14,7 @@
 }
 
 .customDropdown .dropdownSelect:hover, .customDropdown .dropdownSelect:focus{
-    background-color: var(--linkWater);
-    color: var(--denim);
+    background-color: rgba(174, 126, 3, 0.2);;
     text-transform: uppercase;
     box-shadow: none;
 }
@@ -29,4 +28,18 @@
 
 .dropdownSelectGray {
     background-color: var(--wildSand);
+}
+.userDropdownButton{
+    display: flex;
+    align-items: center;
+    color: var(--mineShaftS);
+    font-size: 14px;
+}
+.userDropdownButton img{
+    height: 24px;
+    width: 24px;
+    margin-right: 8px;
+}
+.userDropdown{
+    margin-right: 8px;
 }

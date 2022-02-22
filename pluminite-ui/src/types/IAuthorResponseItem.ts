@@ -23,5 +23,8 @@ export interface IRoyalty{
 }
 
 export interface IAuthorResponseItem {
-
+  bio: string;
+  email: string;
+  image: string;
+  name: string;
 }

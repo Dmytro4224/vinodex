@@ -3,20 +3,19 @@ import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
-import { Params } from 'react-router-dom';
-import { INftContractContext } from '../../contexts/nftContract';
 import { Tab, Tabs } from "react-bootstrap";
 import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
-import { INftContract } from '../../utils';
 
 interface IUserProfile extends IProps {
-    
+
 }
 
-class UserProfile extends Component<IUserProfile & IBaseComponentProps, {}, any> {
-  private profile;
+class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
+  // public state = {
+  //   profile:
+  // }
 
-    constructor(props: IUserProfile & IBaseComponentProps) {
+  constructor(props: IUserProfile & IBaseComponentProps) {
     super(props);
   }
 
@@ -26,11 +25,23 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps, {}, any>
 
   public componentDidMount() {
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-      this.profile = profile;
+      // this.userProfile = profile;
+      console.log('getProfile', profile);
     });
   }
 
-  render() {
+  private set userProfile(profile) {
+    // this.setState({
+    //   ...this.state,
+    //   profile: profile
+    // })
+  }
+
+  // private get profile() {
+  //   return this.state.profile;
+  // }
+
+  public render() {
     return (
       <>
         <div className={`position-relative ${styles.profileWrap}`}>
@@ -42,7 +53,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps, {}, any>
               <div className={styles.avatarWrap}>
                 <img width="100" height="100" src={avatarDefault} alt="avatar" />
               </div>
-              <p className={styles.profileName}>Profile Name</p>
+              <p className={styles.profileName}>{'Profile Name'}</p>
               <IdentificationCopy id={this.getUserId} />
             </div>
           </div>
