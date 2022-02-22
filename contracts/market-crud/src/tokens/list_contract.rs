@@ -257,6 +257,11 @@ impl Contract {
             .collect()
     }
 
+    //словник авторів
+    pub fn authors_by_storage_para(&self,parameter: u8)->Vec<ProfileStatCriterion>{
+        return self.profiles_global_stat_sorted_vector.get(&parameter).unwrap();
+    }
+
     //списки авторів
     pub fn authors_by_filter(
         &self,
