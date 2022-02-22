@@ -124,11 +124,19 @@ impl ProfileStatCriterion{
             else{
                 let mut _vector=profiles_global_stat_sorted_vector.get(&parameter).unwrap();
                 //видаляємо старий елемент
-                let _current_position = _vector.iter().position(|x|x.account_id  == user_id.to_string()).unwrap();
-                _vector.remove(_current_position);
+                let _current_position = _vector.iter().position(|x|x.account_id  == user_id.to_string());
+                
+                if !_current_position.is_none()
+                {
+                    _vector.remove(_current_position.unwrap());
+    
+                    //сортуємо і шукаємо нову позицію
+                    let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
+                    
+                }else{
 
-                //сортуємо і шукаємо нову позицію
-                let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
+                    _vector.push(_sort_element);
+                }
                 //вставляємо
                 profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
             }
