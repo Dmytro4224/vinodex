@@ -15,6 +15,7 @@ export interface INftContractContext {
     getProfile: (accountId: string) => Promise<IProfile>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
+    authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
 }
 
 interface INftContractContextProviderProps {
@@ -25,6 +26,10 @@ interface INftContractContextProviderProps {
 export class NftContractContextProvider extends Component<INftContractContextProviderProps> implements INftContractContext {
     constructor(props: INftContractContextProviderProps) {
         super(props);
+    }
+
+    public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
+        return this.props.nftContract.authors_by_filter({ parameter, is_reverse, page_index, page_size });
     }
 
     public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
@@ -66,10 +71,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public render() {
-        const value = {
+        const value: INftContractContext = {
             nftContract: this.nftContract,
             nft_tokens_by_filter: this.nft_tokens_by_filter,
             nft_tokens_catalogs: this.nft_tokens_catalogs,
+            authors_by_filter: this.authors_by_filter,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,
