@@ -64,7 +64,7 @@ class Home extends Component<IHome> {
           />
         </div>
 
-        <TopTokensView list={null} />
+        <TopTokensView list={[]} />
 
         <p className="separator-horizontal" />
 

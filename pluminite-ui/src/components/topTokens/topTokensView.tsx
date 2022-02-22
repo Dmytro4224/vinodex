@@ -1,22 +1,21 @@
 import { Component } from "react";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
-import { withComponent } from "../../utils/withComponent";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { CarouselView } from "../carousel/carouselView";
 import { TokenCardView } from "../tokenCard/tokenCardView";
 
-interface ITopTokensView{
-  list: Array<ITokenResponseItem> | null
+interface ITopTokensView extends IProps {
+    list?: Array<ITokenResponseItem>;
 }
 
-class TopTokensView extends Component<ITopTokensView>{
+class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, any> {
   public state = { list: new Array<ITokenResponseItem>(), isLoading: true };
 
-  constructor(props: ITopTokensView) {
+    constructor(props: ITopTokensView & IBaseComponentProps) {
     super(props);
   }
 
   public componentDidMount() {
-    // @ts-ignore
     this.props.nftContractContext.nft_tokens_by_filter('art', 1, 10, 7).then(response => {
       console.log(`response`, response);
 
@@ -45,7 +44,7 @@ class TopTokensView extends Component<ITopTokensView>{
                                             buttonText={`Place a bid ${item.metadata.price} NEAR`}
                                             linkTo={`/token/qwewqq-1231-weq-123`}
                                             onClick={() => {
-                                              //this.props.navigate('/token/qwewqq-1231-weq-123');
+                                              this.props.navigate('/token/qwewqq-1231-weq-123');
                                             }}/>;
                     })}/>
     )
@@ -53,3 +52,4 @@ class TopTokensView extends Component<ITopTokensView>{
 }
 
 export default withComponent(TopTokensView);
+ 
