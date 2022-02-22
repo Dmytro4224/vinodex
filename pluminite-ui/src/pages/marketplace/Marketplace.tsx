@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 
 import searchIcon from '../../assets/icons/search.svg';
-import { InputView } from "../../components/common/inputView/InputView";
+import InputView  from "../../components/common/inputView/InputView";
 import ArtistCard from "../../components/artistCard/ArtistCard";
-import {ModalSample, ModalSampleSizeType} from "../../components/common/modalSample/ModalSample";
-import {buttonColors, ButtonView} from "../../components/common/button/ButtonView";
+import ModalSample, {ModalSampleSizeType} from "../../components/common/modalSample/ModalSample";
+import ButtonView, {buttonColors} from "../../components/common/button/ButtonView";
 
 class Marketplace extends Component {
   state = {

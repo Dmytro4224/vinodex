@@ -2,13 +2,14 @@ import styles from './tabsView.module.css';
 import React, {Component, MouseEvent, useState} from "react";
 import {buttonColors} from "../button/ButtonView";
 import {classList} from "../../../utils/sys";
+import {IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 
 enum tabType {
   button = 'button',
   link = 'link',
 }
 
-interface ITabsView{
+interface ITabsView extends IProps{
   tabItems: ITabsViewItem[];
   type: tabType;
   currentTabIndex: number;
@@ -21,12 +22,12 @@ interface ITabsViewItem{
   id: number;
 }
 
-class TabsView extends Component<Readonly<ITabsView>>{
+class TabsView extends Component<ITabsView & IBaseComponentProps>{
   private readonly _refs: React.RefObject<HTMLLIElement>[];
   private _currentTab: ITabsViewItem | null;
   private readonly _currentTabIndex: number;
 
-  constructor(props: ITabsView) {
+  constructor(props: ITabsView & IBaseComponentProps) {
     super(props);
 
     this._refs = this.props.tabItems.map(tab => React.createRef());
@@ -110,5 +111,5 @@ class TabsView extends Component<Readonly<ITabsView>>{
     )
   }
 }
-
-export { TabsView, tabType }
+export default withComponent(TabsView);
+export { tabType }

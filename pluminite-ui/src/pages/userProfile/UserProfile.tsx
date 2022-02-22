@@ -2,22 +2,21 @@ import React, { Component } from "react";
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
-import { withComponent } from "../../utils/withComponent";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import { Tab, Tabs } from "react-bootstrap";
-import { InfoDetails } from "../../components/profile/infoDetails/InfoDetails";
+import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
 import { INftContract } from '../../utils';
 
-interface IUserProfile {
-    params: Params<string>;
-    nftContractContext: INftContractContext
+interface IUserProfile extends IProps {
+    
 }
 
-class UserProfile extends Component<IUserProfile> {
+class UserProfile extends Component<IUserProfile & IBaseComponentProps, {}, any> {
   private profile;
 
-  constructor(props: IUserProfile) {
+    constructor(props: IUserProfile & IBaseComponentProps) {
     super(props);
   }
 

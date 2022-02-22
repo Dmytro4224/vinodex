@@ -1,15 +1,16 @@
 import React, {Component} from "react";
-import {PlacementType, TooltipS} from "../tooltip/Tooltip";
+import TooltipS, {PlacementType} from "../tooltip/Tooltip";
 import styles from "../identificationCopy/identificationCopy.module.css";
 import copyIcon from "../../../assets/icons/copy.svg";
+import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
-interface IButtonCopy {
+interface IButtonCopy extends IProps{
   copyText: string;
   onClick?: () => void;
 }
 
-class ButtonCopy extends Component<IButtonCopy> {
-  constructor(props: IButtonCopy) {
+class ButtonCopy extends Component<IButtonCopy & IBaseComponentProps> {
+  constructor(props: IButtonCopy & IBaseComponentProps) {
     super(props);
   }
 
@@ -43,4 +44,4 @@ class ButtonCopy extends Component<IButtonCopy> {
   }
 }
 
-export { ButtonCopy };
+export default withComponent(ButtonCopy);

@@ -1,11 +1,12 @@
 import { Component } from 'react';
 import styles from './tokenCardView.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
-import {buttonColors, ButtonView } from '../common/button/ButtonView';
-import { LikeView, LikeViewType } from '../like/likeView';
+import ButtonView, {buttonColors} from '../common/button/ButtonView';
+import LikeView, { LikeViewType } from '../like/likeView';
 import { NavLink } from 'react-router-dom';
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-interface ITokenCardView{
+interface ITokenCardView extends IProps{
     icon?: any;
     alt?: string;
     countL: number;
@@ -20,9 +21,9 @@ interface ITokenCardView{
     onClick?: () => void
 }
 
-class TokenCardView extends Component<Readonly<ITokenCardView>>{
+class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>>{
     private readonly isSmall: boolean
-    constructor(props: ITokenCardView) {
+    constructor(props: ITokenCardView & IBaseComponentProps) {
         super(props);
 
         this.isSmall = this.props?.isSmall || false;
@@ -76,5 +77,5 @@ class TokenCardView extends Component<Readonly<ITokenCardView>>{
     }
 }
 
-export {TokenCardView};
+export default withComponent(TokenCardView);
 export type { ITokenCardView };

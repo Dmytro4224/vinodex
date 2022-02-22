@@ -1,13 +1,22 @@
 import React, {Component} from "react";
 import styles from './header.module.css';
 import { HeaderNavigation } from "../navigation/HeaderNavigation";
-import {InputView} from "../common/inputView/InputView";
+import InputView from "../common/inputView/InputView";
 import searchIcon from "../../assets/icons/search.svg";
-import {buttonColors, ButtonView} from "../common/button/ButtonView";
+import ButtonView, {buttonColors} from "../common/button/ButtonView";
 import {dropdownColors, DropdownView} from "../common/dropdown/dropdownView";
-import {withComponent} from "../../utils/withComponent";
+import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
 
-class Header extends Component {
+interface IHeader extends IProps{
+
+}
+
+class Header extends Component<IHeader & IBaseComponentProps> {
+  constructor(props: IHeader & IBaseComponentProps) {
+    super(props);
+
+  }
+
   render() {
     return (
       <header className={styles.header}>

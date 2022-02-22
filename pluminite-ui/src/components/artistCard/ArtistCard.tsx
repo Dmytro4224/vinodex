@@ -1,13 +1,13 @@
 import { Component } from "react";
-import { LikeView, LikeViewType } from "../like/likeView";
-import { buttonColors, ButtonView } from "../common/button/ButtonView";
+import LikeView, {LikeViewType } from "../like/likeView";
+import ButtonView, {buttonColors} from "../common/button/ButtonView";
 import { NavLink } from 'react-router-dom';
 import { IdentificationCopy } from "../common/identificationCopy/IdentificationCopy";
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
-import {withComponent} from "../../utils/withComponent";
+import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
 
-interface IArtistCard {
+interface IArtistCard extends IProps{
   avatar?: any;
   name: string;
   identification: string;
@@ -17,8 +17,8 @@ interface IArtistCard {
   isCard?: boolean;
 }
 
-class ArtistCard extends Component<Readonly<IArtistCard>> {
-  constructor(props: IArtistCard) {
+class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
+  constructor(props: IArtistCard & IBaseComponentProps) {
     super(props);
   }
 

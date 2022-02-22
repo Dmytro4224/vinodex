@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {LabelView} from "../common/label/labelView";
-import {buttonColors, ButtonView} from "../common/button/ButtonView";
+import LabelView from "../common/label/labelView";
+import ButtonView, {buttonColors} from "../common/button/ButtonView";
 import ArtistCard from "../artistCard/ArtistCard";
 
 class BestArtists extends Component {

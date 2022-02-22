@@ -1,9 +1,13 @@
 import { Component } from "react";
 import TokenViewDetail from "../../components/tokenDetail/tokenViewDetail";
-import { withComponent } from "../../utils/withComponent";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 
-class OrderDetail extends Component{
-    render(){
+interface IOrderDetail extends IProps {
+    
+}
+
+class OrderDetail extends Component<IOrderDetail & IBaseComponentProps, {}, any> {
+    public render(){
       //const { tokenHash } = this.props.match.params;
 
       return (

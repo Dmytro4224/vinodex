@@ -1,13 +1,14 @@
 import { Component } from 'react';
+import {IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import styles from './labelView.module.css';
 
-interface ILableView{
+interface ILableView extends IProps{
   text: string;
   customClass?: string
 }
 
-class LabelView extends Component<Readonly<ILableView>>{
-    constructor(props: ILableView) {
+class LabelView extends Component<Readonly<ILableView & IBaseComponentProps>>{
+    constructor(props: ILableView & IBaseComponentProps) {
       super(props);
     }
 
@@ -24,4 +25,4 @@ class LabelView extends Component<Readonly<ILableView>>{
     }
 }
 
-export { LabelView };
+export  default withComponent(LabelView);

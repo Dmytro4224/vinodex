@@ -1,25 +1,28 @@
 import React, {Component} from "react";
-import { CarouselView } from "../../components/carousel/carouselView";
-import { buttonColors, ButtonView } from "../../components/common/button/ButtonView";
+import CarouselView  from "../../components/carousel/carouselView";
+import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
-import { TabsView, tabType } from "../../components/common/tabs/TabsView";
-import {TokenCardView } from "../../components/tokenCard/tokenCardView";
+import TabsView, { tabType } from "../../components/common/tabs/TabsView";
+import TokenCardView  from "../../components/tokenCard/tokenCardView";
 import { NearContext } from "../../contexts";
-import {LabelView} from "../../components/common/label/labelView";
+import LabelView from "../../components/common/label/labelView";
 import ArtistCard from "../../components/artistCard/ArtistCard";
-import { withComponent } from '../../utils/withComponent';
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import {BestArtists} from "../../components/bestArtists/BestArtists";
 import { Params } from 'react-router-dom';
 import { INftContractContext } from '../../contexts/nftContract';
 import TopTokensView from "../../components/topTokens/topTokensView";
+import PopularTokensView from "../../components/popularTokens/popularTokensView";
+import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 
-interface IHome {
-    params: Params<string>;
-    nftContractContext: INftContractContext
+interface IHome extends IProps{
 
 }
-class Home extends Component<IHome> {
+class Home extends Component<IHome & IBaseComponentProps> {
+  constructor(props: IHome & IBaseComponentProps) {
+    super(props);
+  }
   render() {
     return (
       <div className="my-5 container">
@@ -44,7 +47,7 @@ class Home extends Component<IHome> {
             ]}
           />
 
-          <TabsFilterView catalogs={null} />
+          <TabsFilterView />
 
           <ButtonView
             text={"Filter"}
@@ -54,45 +57,12 @@ class Home extends Component<IHome> {
         </div>
 
         <p className="separator-horizontal" />
-        
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Top 10'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
 
-        <TopTokensView list={null} />
+        <TopTokensView />
 
         <p className="separator-horizontal" />
 
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Popular'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
-
-        <div className="d-flex flex-wrap flex-gap-36 mt-3">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
-            return <TokenCardView key={item.id}
-                                  countL={item.id}
-                                  countR={10}
-                                  days={'121 days left'}
-                                  name={'Item Name'}
-                                  author={'Creat name'}
-                                  likesCount={99}
-                                  isSmall={true}
-                                  buttonText={'Place a bid 0.08 ETH'}
-                                  onClick={() => {
-                                    alert('buy Place a bid 0.08 ETH');
-                                  }}/>;
-          })}
-        </div>
+        <PopularTokensView/>
 
         <p className="separator-horizontal" />
 
@@ -100,31 +70,7 @@ class Home extends Component<IHome> {
 
         <p className="separator-horizontal" />
 
-        <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'All'}/>
-          <ButtonView
-            text={'More'}
-            onClick={() => {  }}
-            color={buttonColors.gold}
-          />
-        </div>
-
-        <div className="d-flex flex-wrap flex-gap-36 mt-3">
-          {[{id: 1}, {id: 2}, {id: 3}, {id: 4}].map(item => {
-            return <TokenCardView key={item.id}
-                                  countL={item.id}
-                                  countR={10}
-                                  days={'121 days left'}
-                                  name={'Item Name'}
-                                  author={'Creat name'}
-                                  likesCount={99}
-                                  isSmall={true}
-                                  buttonText={'Place a bid 0.08 ETH'}
-                                  onClick={() => {
-                                    alert('buy Place a bid 0.08 ETH');
-                                  }}/>;
-          })}
-        </div>
+        <AllTokensView />
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView

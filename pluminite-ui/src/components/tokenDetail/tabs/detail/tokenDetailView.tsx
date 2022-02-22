@@ -1,15 +1,16 @@
 import { Component } from "react";
-import { ButtonCopy } from "../../../common/buttonCopy/ButtonCopy";
+import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
+import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
 import { IdentificationCopy } from "../../../common/identificationCopy/IdentificationCopy";
 import styles from './tokenDetailView.module.css';
 
-interface ITokenDetailView{
+interface ITokenDetailView extends IProps{
   address: string,
   id: string
 }
 
-class TokenDetailView extends Component<ITokenDetailView>{
-  constructor(props: ITokenDetailView) {
+class TokenDetailView extends Component<ITokenDetailView & IBaseComponentProps>{
+  constructor(props: ITokenDetailView & IBaseComponentProps) {
     super(props);
   }
 
@@ -49,4 +50,4 @@ class TokenDetailView extends Component<ITokenDetailView>{
   }
 }
 
-export { TokenDetailView }
+export default withComponent(TokenDetailView);

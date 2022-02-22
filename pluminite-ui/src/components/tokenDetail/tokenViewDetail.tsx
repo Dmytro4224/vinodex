@@ -2,27 +2,27 @@ import { Component } from 'react';
 import styles from './tokenViewDetail.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import { ITokenCardView } from '../tokenCard/tokenCardView';
-import { withComponent } from '../../utils/withComponent';
-import {LikeView, LikeViewType } from '../like/likeView';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import LikeView, {LikeViewType } from '../like/likeView';
 import ArtistCard from '../artistCard/ArtistCard';
 import {Tab, Tabs } from 'react-bootstrap';
-import {buttonColors, ButtonView } from '../common/button/ButtonView';
-import { DescrtiptionView } from '../description/descrtiptionView';
-import { TokenDetailView } from './tabs/detail/tokenDetailView';
-import { BidsView } from './tabs/bids/bidsView';
+import ButtonView, {buttonColors } from '../common/button/ButtonView';
+import DescrtiptionView  from '../description/descrtiptionView';
+import TokenDetailView  from './tabs/detail/tokenDetailView';
+import BidsView  from './tabs/bids/bidsView';
 
-interface ITokenViewDetail{
+interface ITokenViewDetail extends IProps {
   hash: string;
   icon?: any;
   alt?: string;
 }
 
-interface ICategory{
+interface ICategory extends IProps {
   text: string
 }
 
-class Category extends Component<ICategory>{
-  constructor(props: ICategory) {
+class Category extends Component<ICategory & IBaseComponentProps, {}, any>{
+    constructor(props: ICategory & IBaseComponentProps) {
     super(props);
   }
 
@@ -37,10 +37,12 @@ class Category extends Component<ICategory>{
   }
 }
 
-class TokenViewDetail extends Component<ITokenViewDetail>{
+const CategoryView = withComponent(Category);
+
+class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, {}, any> {
   private readonly _token: ITokenCardView;
 
-  constructor(props: ITokenViewDetail) {
+    constructor(props: ITokenViewDetail & IBaseComponentProps) {
     super(props);
 
     this._token = {
@@ -75,7 +77,7 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
   }
 
   render(){
-    // @ts-ignore
+
     console.log(`param`, this.props.params);
 
     return (
@@ -110,8 +112,8 @@ class TokenViewDetail extends Component<ITokenViewDetail>{
               </div>
             </div>
             <div className={styles.categoriesList}>
-              <Category text={'Category 1'} />
-              <Category text={'Category 2'} />
+                    <CategoryView text={'Category 1'} />
+                    <CategoryView text={'Category 2'} />
             </div>
             <div className={styles.creator}>
               <p className={styles.title}>Creator</p>

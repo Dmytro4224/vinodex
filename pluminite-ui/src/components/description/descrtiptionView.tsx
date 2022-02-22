@@ -1,11 +1,12 @@
 import { Component } from "react";
+import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 
-interface IDescriptionView{
+interface IDescriptionView extends IProps{
   text: string
 }
 
-class DescrtiptionView extends Component<IDescriptionView>{
-  constructor(props: IDescriptionView) {
+class DescrtiptionView extends Component<IDescriptionView & IBaseComponentProps>{
+  constructor(props: IDescriptionView & IBaseComponentProps) {
     super(props);
   }
 
@@ -20,4 +21,4 @@ class DescrtiptionView extends Component<IDescriptionView>{
   }
 }
 
-export { DescrtiptionView }
+export default withComponent(DescrtiptionView);
