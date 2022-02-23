@@ -18,12 +18,16 @@ export type INftContract = nearAPI.Contract & {
     nft_tokens_from_end: ({ from_index, limit }: { from_index: number, limit: number }) => void;
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
+    set_profile: ({ bio, name, image, email, accountId }: { bio: string, name: string, image: string, email: string, accountId: string }) => Promise<IProfile>;
 
     authors_by_filter: ({ parameter, is_reverse, page_index, page_size }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number }) => Promise<Array<IAuthorResponseItem>>;
     nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
     nft_token_get: ({ token_id }: { token_id: string}) => Promise<ITokenResponseItem>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     like_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
+    nft_mint: (data: any) => Promise<any>;
+    follow_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
+    view_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
 };
 
 export type IMarketContract = nearAPI.Contract & {

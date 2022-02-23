@@ -14,11 +14,15 @@ export const NftContractContext = React.createContext<INftContractContext>(initi
 export interface INftContractContext {
     nftContract: INftContract | null;
     getProfile: (accountId: string) => Promise<IProfile>;
+    set_profile: (bio: string, name: string, image: string, email: string, accountId: string) => Promise<IProfile>;
     like_artist_account: (accountId: string) => Promise<any>;
+    follow_artist_account: (accountId: string) => Promise<any>;
+    view_artist_account: (accountId: string) => Promise<any>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
     authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
+    nft_mint: (data: any) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -76,8 +80,30 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         });
     }
 
+    public set_profile = async (bio: string, name: string, image: string, email: string, accountId: string) => {
+        return this.nftContract.set_profile({
+            bio: bio,
+            name: name,
+            image: image,
+            email: email,
+            accountId: accountId
+        });
+    }
+
     public like_artist_account = async (accountId: string) => {
         return this.nftContract.like_artist_account({
+            accountId: accountId
+        });
+    }
+
+    public view_artist_account = async (accountId: string) => {
+        return this.nftContract.view_artist_account({
+            accountId: accountId
+        });
+    }
+
+    public follow_artist_account = async (accountId: string) => {
+        return this.nftContract.follow_artist_account({
             accountId: accountId
         });
     }
@@ -90,7 +116,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             nft_token_get: this.nft_token_get,
             authors_by_filter: this.authors_by_filter,
             getProfile: this.getProfile,
+            set_profile: this.set_profile,
             like_artist_account: this.like_artist_account,
+            nft_mint: this.nft_mint,
+            follow_artist_account: this.follow_artist_account,
+            view_artist_account: this.view_artist_account,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,
@@ -108,6 +138,10 @@ export class NftContractContextProvider extends Component<INftContractContextPro
                 {this.props.children}
             </NftContractContext.Provider>
         );
+    }
+
+    nft_mint = (data: any) => {
+        return this.nftContract.nft_mint(data);
     }
 }
 /*

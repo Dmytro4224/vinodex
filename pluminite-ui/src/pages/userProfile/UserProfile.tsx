@@ -25,6 +25,10 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidMount() {
+    this.props.nftContractContext.view_artist_account(this.getUserId).then(res => {
+      console.log('view_artist_account success', res);
+    })
+
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       // this.userProfile = profile;
       console.log('getProfile', profile);

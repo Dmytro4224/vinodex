@@ -25,17 +25,21 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+    /*this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      this.props.near.setCatalogs(response);
+
       this.setState({...this.state, catalogs: response, currentCatalog: 0, sort: 7, isLoading: false });
-    });
+    });*/
+
+    this.setState({...this.state, currentCatalog: 0, sort: 7, isLoading: false });
   }
 
-  private set catalog(catalog){
+  private setCatalog(catalog: number){
     this.setState({...this.state, currentCatalog: catalog});
   }
 
   private get catalog(){
-    return this.state.catalogs[this.state.currentCatalog];
+    return this.props.near.catalogs[this.state.currentCatalog];
   }
 
   render() {
@@ -67,7 +71,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           />
 
           <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-            this.catalog = index
+            this.setCatalog(index)
           }} />
 
           <ButtonView

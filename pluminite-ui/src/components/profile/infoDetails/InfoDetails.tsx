@@ -9,7 +9,7 @@ import { Form, FormCheck } from "react-bootstrap";
 import InputView, {ViewType} from "../../common/inputView/InputView";
 import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
- interface IInfoDetails extends IProps{
+ interface IInfoDetails extends IProps {
 
  }
 
@@ -18,12 +18,18 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     isEditForm: false
   };
 
-  private readonly _radioNFTApproveRef:  React.RefObject<HTMLInputElement>;
+  private readonly _radioNFTApproveRef: any;
+  private _refInputUserName: any;
+  private _refInputUserEmail: any;
+  private _refInputUserBio: any;
 
   constructor(props: IInfoDetails & IBaseComponentProps) {
     super(props);
 
-    this._radioNFTApproveRef = React.createRef();
+    this._radioNFTApproveRef = null;
+    this._refInputUserName = null;
+    this._refInputUserEmail = null;
+    this._refInputUserBio = null;
   }
 
   private changeToFormTemplate() {
@@ -119,9 +125,18 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     )
   }
 
-  private formSubmitHandler(e) {
-    e.preventDefault();
+  private formSubmitHandler = async () => {
+    console.table({
+      name: this._refInputUserName.value,
+      email: this._refInputUserEmail.value,
+      bio: this._refInputUserBio.value,
+    });
 
+    // this.props.nftContractContext.set_profile('bio', 'name', '', 'email@gmail.com', this.getUserId).then(profile => {
+    //   debugger
+    //   // this.userProfile = profile;
+    //   console.log('setProfile', profile);
+    // });
   }
 
   private formTemplate() {
@@ -131,26 +146,26 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
           <h3 className={styles.profileBlockTitle}>Edit profile</h3>
         </div>
 
-        <form className={styles.form} onSubmit={(e) => { this.formSubmitHandler(e) }}>
+        <div className={styles.form}>
           <InputView
-            onChange={(e) => { console.log(e) }}
             placeholder={'User name'}
             icon={userIcon}
             customClass={'mb-4'}
+            setRef={(ref) => {this._refInputUserName = ref;}}
           />
 
           <InputView
-            onChange={(e) => { console.log(e) }}
             placeholder={'Email'}
             icon={emailIcon}
             customClass={'mb-4'}
+            setRef={(ref) => {this._refInputUserEmail = ref;}}
           />
 
           <InputView
-            onChange={(e) => { console.log(e) }}
             placeholder={'Bio'}
             customClass={'mb-4'}
             viewType={ViewType.textarea}
+            setRef={(ref) => {this._refInputUserBio = ref;}}
           />
 
           <div className="d-flex align-items-center justify-content-center">
@@ -161,11 +176,11 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             />
             <ButtonView
               text={'SAVE'}
-              onClick={() => { this.changeToInfoTemplate() }}
+              onClick={this.formSubmitHandler}
               color={buttonColors.goldFill}
             />
           </div>
-        </form>
+        </div>
       </div>
     )
   }

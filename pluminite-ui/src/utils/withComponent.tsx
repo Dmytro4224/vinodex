@@ -10,7 +10,7 @@ export interface IBaseComponentProps extends IProps {
 	navigate: NavigateFunction;
 	params: Readonly<Params<string>>;
 	nftContractContext: INftContractContext;
-	near: INearContext
+	near: INearContext;
 }
 
 export function withComponent<P extends React.Props<any>>(Component: new (props: P & IBaseComponentProps) => React.Component<P & IBaseComponentProps, {}, any>) {
@@ -22,3 +22,5 @@ export function withComponent<P extends React.Props<any>>(Component: new (props:
 		near={useContext(NearContext)}
 	/>;
 }
+
+

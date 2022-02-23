@@ -1,11 +1,12 @@
-import {ChangeEvent, Component} from "react";
+import React, {ChangeEvent, Component} from "react";
 import { Form } from "react-bootstrap";
 import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './inputView.module.css';
 
-interface IInputView extends IProps{
-  onChange: (e: ChangeEvent) => void;
+interface IInputView extends IProps {
   placeholder: string;
+  onChange?: (e: ChangeEvent) => void;
+  setRef?: any;
   absPlaceholder?: string;
   customClass?: string;
   value?: string;
@@ -26,8 +27,13 @@ export enum ViewType {
 }
 
 class InputView extends Component<IInputView & IBaseComponentProps> {
+  private _ref: any;
+
   constructor(props: IInputView & IBaseComponentProps) {
     super(props);
+
+    this._ref = React.createRef();
+    this.props.setRef && this.props.setRef(this);
   }
 
   private get inputType() {
@@ -50,8 +56,12 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     return this.props.alt;
   }
 
-  private get value() {
+  private get initialValue() {
     return this.props.value;
+  }
+
+  private get ref() {
+    return this._ref;
   }
 
   private get isTextAreaType() {
@@ -59,7 +69,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   private onChange = async (e: ChangeEvent) => {
-    this.props.onChange(e);
+    this.props.onChange && this.props.onChange(e);
   }
 
   private getInputTypeStyle() {
@@ -69,6 +79,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
       case InputType.round:
         return styles.inputRound
     }
+  }
+
+  public get value() {
+    return this.ref.current?.value;
   }
 
   public render() {
@@ -81,9 +95,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
           onChange={this.onChange}
           placeholder={this.placeholder}
           className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-          value={this.value}
+          value={this.initialValue}
           type="text"
           as={this.isTextAreaType ? 'textarea' : 'input'}
+          ref={this.ref}
         />
 
         { this.absPlaceholder && <span className={styles.absPlaceholder}>{this.absPlaceholder}</span> }

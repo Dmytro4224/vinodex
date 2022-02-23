@@ -79,6 +79,10 @@ class PinataAPI {
             reader.readAsDataURL(blob);
         });
     }
+
+    public createUrl(hash: string){
+        return `${this.HREF_ENDPOINT}/${hash}`
+    }
 }
 
 export const pinataAPI = new PinataAPI();
