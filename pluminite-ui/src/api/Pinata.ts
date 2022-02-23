@@ -8,22 +8,22 @@ export interface IUploadFileResponse {
 class PinataAPI {
     public HREF_ENDPOINT = 'https://gateway.pinata.cloud/ipfs';
     public UPLOAD_ENDPOINT = 'https://api.pinata.cloud';
-    public API_KEY = '5dcb14db05598d190af4';
-    public API_SECRET = '5d87c217d4ca0ff1c802c2a796494f00ca61c859ab4ceb26c3613826ead26551';
-    public JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2NzdmYjE1MC01NDgzLTQ0NWMtODRjNi0xMjhkNDk5YTIyMDEiLCJlbWFpbCI6Im9uZHJhc2hkZXZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZX0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6IjVkY2IxNGRiMDU1OThkMTkwYWY0Iiwic2NvcGVkS2V5U2VjcmV0IjoiNWQ4N2MyMTdkNGNhMGZmMWM4MDJjMmE3OTY0OTRmMDBjYTYxYzg1OWFiNGNlYjI2YzM2MTM4MjZlYWQyNjU1MSIsImlhdCI6MTY0NTYwOTgwMX0.pSurVga-_iIrQGX7Wm4hbYbIdgaeQlsDdPlw-zpLzj4';
+    public API_KEY = 'b391ea1f5c61778f58ef';
+    public API_SECRET = 'cfd0c6e2e2cb4770aa2ac9d32cc1b6a78b8bb87622e8365293c0b55557aa36da';
+    public JWT = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI2NzdmYjE1MC01NDgzLTQ0NWMtODRjNi0xMjhkNDk5YTIyMDEiLCJlbWFpbCI6Im9uZHJhc2hkZXZAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsInBpbl9wb2xpY3kiOnsicmVnaW9ucyI6W3siaWQiOiJGUkExIiwiZGVzaXJlZFJlcGxpY2F0aW9uQ291bnQiOjF9XSwidmVyc2lvbiI6MX0sIm1mYV9lbmFibGVkIjpmYWxzZX0sImF1dGhlbnRpY2F0aW9uVHlwZSI6InNjb3BlZEtleSIsInNjb3BlZEtleUtleSI6ImIzOTFlYTFmNWM2MTc3OGY1OGVmIiwic2NvcGVkS2V5U2VjcmV0IjoiY2ZkMGM2ZTJlMmNiNDc3MGFhMmFjOWQzMmNjMWI2YTc4YjhiYjg3NjIyZTgzNjUyOTNjMGI1NTU1N2FhMzZkYSIsImlhdCI6MTY0NTYyMTA4NH0.DE40HejBbPA_4eqGE8xNmlzNGQz8dxog_49Qfx-3iz4';
 
     public async uploadFile(file: File) {
         const url = `${this.UPLOAD_ENDPOINT}/pinning/pinFileToIPFS`;
 
         const formData: FormData = new FormData();
         formData.append('file', file);
+        //@ts-ignore
+        console.log('formData._boundary', formData);
 
         const response = await fetch(url, {
             method: 'POST',
             body: formData,
             headers: {
-                //@ts-ignore
-                'Content-Type': `multipart/form-data; boundary=${formData._boundary}`,
                 pinata_api_key: this.API_KEY,
                 pinata_secret_api_key: this.API_SECRET,
             }
