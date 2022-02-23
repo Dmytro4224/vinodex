@@ -75,6 +75,14 @@ pub struct Contract {
     //Перегляд токенів
     pub tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
 
+
+    ///мій список токенів, яким я поставив лайки
+    pub my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
+    ///список токенів, на які я підписався
+    pub my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
+
+
+
     //Токени впорядковані за фільтром(key - тип фільтру, value - впорядкований ліст)
 
     //1 - Recently Listed
@@ -171,7 +179,9 @@ pub enum StorageKey {
     AutorsFollowers,
     MyAuthorsLikes,
     MyAutorsViews,
-    MyAutorsFollowed
+    MyAutorsFollowed,
+    MyTokensLikes,
+    MyTokensFollowed
 }
 
 #[near_bindgen]
@@ -216,6 +226,8 @@ impl Contract {
             my_authors_likes:LookupMap::new (StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
             my_autors_views:LookupMap::new (StorageKey::MyAutorsViews.try_to_vec().unwrap()),
             my_autors_followed:LookupMap::new (StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
+            my_tokens_likes:LookupMap::new (StorageKey::MyTokensLikes.try_to_vec().unwrap()),
+            my_tokens_followed:LookupMap::new (StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -261,6 +273,8 @@ impl Contract {
             my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
             my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
             my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
+            my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
+            my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -292,6 +306,8 @@ impl Contract {
             my_authors_likes: old_contract.my_authors_likes,
             my_autors_views: old_contract.my_autors_views,
             my_autors_followed: old_contract.my_autors_followed,
+            my_tokens_likes: old_contract.my_tokens_likes,
+            my_tokens_followed: old_contract.my_tokens_followed
         }
     }
 
