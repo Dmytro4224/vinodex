@@ -1,0 +1,55 @@
+.container{
+    padding: 40px 72px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.containerWrap{
+    width: 100%;
+    max-width: 560px;
+}
+.title{
+    font-weight: 600;
+    font-size: 34px;
+    text-align: center;
+    color: var(--mineShaftS);
+    margin-bottom: 40px;
+}
+.label{
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--mineShaftS);
+    margin-bottom: 20px;
+}
+.customDropzone{
+    border: 2px dashed rgba(174, 126, 3, 0.6);
+    border-radius: 8px;
+    padding: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 560px;
+}
+.dropzoneControls{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+.dropzoneTitle{
+    font-weight: 500;
+    font-size: 14px;
+    color: var(--doveGrayS);
+}
+.titleInpWrap{
+    margin-top: 16px;
+}
+.titleInpWrap input{
+    padding: 16px;
+}
+.itemTitle{
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--mineShaftS);
+}
