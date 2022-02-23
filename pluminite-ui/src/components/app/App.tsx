@@ -10,8 +10,20 @@ import Header from "../header/Header";
 import UserProfile from '../../pages/userProfile/UserProfile';
 import OrderDetail from '../../pages/orderDetail/orderDetail';
 import CreateToken from '../../pages/createToken/createToken';
+import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-class App extends Component {
+interface IApp extends IProps{
+
+}
+
+class App extends Component<IApp & IBaseComponentProps> {
+
+  public componentDidMount() {
+    this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      this.props.near.setCatalogs(response);
+    });
+  }
+
   render() {
     return (
       <>
@@ -38,4 +50,4 @@ class App extends Component {
   }
 }
 
-export { App }
+export default withComponent(App);
