@@ -10,7 +10,9 @@ const initialNearContext = {
     error: null,
     signIn: () => { },
     signOut: () => { },
-    setUser: () => { }
+    setUser: () => { },
+    catalogs: [],
+    setCatalogs: () => {}
 };
 
 export const NearContext = React.createContext<INearContext>(initialNearContext);
@@ -22,6 +24,8 @@ export interface INearContext {
     signOut: () => void;
     user: ICurrentUser | null;
     setUser: (user: ICurrentUser) => void;
+    catalogs: Array<string>,
+    setCatalogs: (catalogs: Array<string>) => void
 }
 
 interface INearContextProviderProps {
@@ -36,6 +40,7 @@ interface INearContextState {
     user: ICurrentUser | null;
     isLoading: boolean;
     error: Error | string | null;
+    catalogs: Array<string>;
 }
 
 export class NearContextProvider extends React.Component<INearContextProviderProps, INearContextState> {
@@ -43,7 +48,8 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
     public state: INearContextState = {
         user: null,
         isLoading: true,
-        error: null
+        error: null,
+        catalogs: []
     };
 
     constructor(props: INearContextProviderProps) {
@@ -68,6 +74,13 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
         this.setState({
             ...this.state,
             user
+        });
+    }
+
+    public setCatalogs = (catalogs: Array<string>) => {
+        this.setState({
+            ...this.state,
+            catalogs
         });
     }
 
@@ -114,7 +127,9 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
             signOut: this.signOut,
             isLoading: this.state.isLoading,
             error: this.state.error,
-            setUser: this.setUser
+            setUser: this.setUser,
+            catalogs: this.state.catalogs,
+            setCatalogs: this.setCatalogs,
         };
         return (
             <NearContext.Provider value={value}>
