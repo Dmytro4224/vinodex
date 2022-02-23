@@ -9,7 +9,8 @@
   background: var(--wildSand);
 }
 
-.inputDefault input {
+.inputDefault input,
+.inputDefault textarea {
   padding: 5px 10px;
   width: 100%;
   min-height: 44px;
@@ -27,7 +28,8 @@
   border-radius: 30px;
 }
 
-.inputRound input {
+.inputRound input,
+.inputRound textarea{
   padding: 5px 10px;
   width: 100%;
   min-height: 44px;

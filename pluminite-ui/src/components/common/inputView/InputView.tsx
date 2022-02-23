@@ -55,7 +55,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   private get isTextAreaType() {
-    return this.props.viewType === ViewType.input;
+    return this.props.viewType === ViewType.textarea;
   }
 
   private onChange = async (e: ChangeEvent) => {
@@ -68,7 +68,6 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
         return styles.inputDefault
       case InputType.round:
         return styles.inputRound
-        break;
     }
   }
 
