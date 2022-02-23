@@ -8,6 +8,7 @@ import ButtonCopy from "../buttonCopy/ButtonCopy";
 
 interface IIdentificationCopy {
   id: string;
+  idCustomClass?: string;
 }
 
 class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
@@ -23,6 +24,10 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
     return this.props.id;
   }
 
+  private get idCustomClass() {
+    return this.props.idCustomClass;
+  }
+
   private refChangeStyle() {
     this._refIdentificationText.current?.classList.add(styles.colorCopySuccess);
 
@@ -35,7 +40,7 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
   render() {
     return (
       <div className={styles.identificationWrap}>
-        <p ref={this._refIdentificationText} className={styles.artistId}>{transformArtistId(this.identification)}</p>
+        <p ref={this._refIdentificationText} className={`${this.idCustomClass || ''} ${styles.artistId}`}>{transformArtistId(this.identification)}</p>
         <ButtonCopy
           onClick={() => { this.refChangeStyle() }}
           copyText={this.identification}

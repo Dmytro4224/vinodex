@@ -320,6 +320,7 @@ impl Contract {
         return self.tokens_sorted.get(&filter);
     }
 
+    
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
         assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
         self.use_storage_fees = use_storage_fees;
