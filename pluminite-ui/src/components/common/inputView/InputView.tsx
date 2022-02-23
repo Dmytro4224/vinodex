@@ -68,7 +68,6 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
         return styles.inputDefault
       case InputType.round:
         return styles.inputRound
-        break;
     }
   }
 
