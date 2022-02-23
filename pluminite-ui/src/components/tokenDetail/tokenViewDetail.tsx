@@ -10,11 +10,10 @@ import ButtonView, {buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 
 interface ITokenViewDetail extends IProps {
-  hash: string;
-  icon?: any;
-  alt?: string;
+  hash?: string;
 }
 
 interface ICategory extends IProps {
@@ -39,55 +38,42 @@ class Category extends Component<ICategory & IBaseComponentProps, {}, any>{
 
 const CategoryView = withComponent(Category);
 
-class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, {}, any> {
-  private readonly _token: ITokenCardView;
+interface ITokenViewState{
+  order?: ITokenResponseItem | null;
+  isLoading: boolean;
+}
+
+class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
+    public state:ITokenViewState = { order: null, isLoading: true };
 
     constructor(props: ITokenViewDetail & IBaseComponentProps) {
     super(props);
-
-    this._token = {
-      countL: 1,
-      countR: 3,
-      days: '123 left',
-      name: 'test a',
-      author: 'tester',
-      likesCount: 1,
-      buttonText: '111'
-    }
   }
 
-  private get icon(){
-    return this.props.icon || cardPreview
+  public componentDidMount() {
+    this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
+      console.log(`d response`, response);
+      this.setState({...this.state, order: response, isLoading: false });
+    });
   }
 
-  private get days(){
-    return this._token.days;
-  }
-
-  private get name(){
-    return this._token.name;
-  }
-
-  private get countL(){
-    return this._token.countL;
-  }
-
-  private get countR(){
-    return this._token.countR;
+  private get tokenId() {
+    return this.props.params.tokenId!;
   }
 
   render(){
-
-    console.log(`param`, this.props.params);
+    if(this.state.isLoading){
+      return <p>sad</p>
+    }
 
     return (
       <div className="d-flex flex-gap-36 container">
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
-              <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'}/>
+              <img className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
               <div className={styles.cardDetail}>
-                { this.days !== '' && <div className={styles.daysInfo}>
-                  {this.days}
+                { (this.state.order?.metadata.expires_at !== '' && this.state.order?.metadata.expires_at !== null) && <div className={styles.daysInfo}>
+                  {this.state.order?.metadata.expires_at}
                 </div> }
               </div>
             </div>
@@ -95,10 +81,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <div className={styles.tokenInfo}>
             <div className={styles.titleWrap}>
               <div className={styles.titleInfo}>
-                <h3>{this.name}</h3>
+                <h3>{this.state.order?.metadata.title}</h3>
                 <div className={styles.avalialbeItems}>
                   <p className={styles.title}>Available items:</p>
-                  <span className={styles.counts}>{this.countL}/{this.countR}</span>
+                  <span className={styles.counts}>{1}/{2}</span>
                 </div>
               </div>
               <div className={styles.likesInfo}>
@@ -112,20 +98,23 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               </div>
             </div>
             <div className={styles.categoriesList}>
-                    <CategoryView text={'Category 1'} />
-                    <CategoryView text={'Category 2'} />
+              {this.state.order?.token_type && <CategoryView text={this.state.order?.token_type} />}
             </div>
             <div className={styles.creator}>
               <p className={styles.title}>Creator</p>
-              {/*<ArtistCard*/}
-              {/*  key={12}*/}
-              {/*  name={'Artist Name'}*/}
-              {/*  identification={'0x0b9D2weq28asdqwe132'}*/}
-              {/*  usersCount={22}*/}
-              {/*  likesCount={12}*/}
-              {/*  isCard={false}*/}
-              {/*  isFollow={false}*/}
-              {/*/>*/}
+              <ArtistCard
+                info={{
+                  bio: '',
+                  email: '',
+                  image: '',
+                  name: this.state.order?.owner_id!,
+                }}
+                identification={'0x0b9D2weq28asdqwe132'}
+                usersCount={22}
+                likesCount={12}
+                isCard={false}
+                isFollow={false}
+              />
             </div>
             <div className={styles.tabsWrap}>
               <Tabs
@@ -134,7 +123,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               >
                 <Tab eventKey="home" title="DESCRIPTION">
                     <div className={styles.tabContainer}>
-                      <DescrtiptionView text={'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat  Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat'}/>
+                      <DescrtiptionView text={this.state.order?.metadata.description!}/>
                     </div>
                 </Tab>
                 <Tab eventKey="profile" title="DETAILS">
@@ -149,10 +138,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   </div>
                 </Tab>
                 <Tab eventKey="contact" title="HISTORY">
-                  <div className={styles.tabContainer}>text4</div>
+                  <div className={styles.tabContainer}>Empty result</div>
                 </Tab>
                 <Tab eventKey="owners" title="OWNERS">
-                  <div className={styles.tabContainer}>text5</div>
+                  <div className={styles.tabContainer}>Empty result</div>
                 </Tab>
               </Tabs>
             </div>
