@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { App } from './components/app/App';
+import  App  from './components/app/App';
 import { initContracts } from './utils';
 import { NearContextProvider, NftContractContextProvider, MarketContractContextProvider } from './contexts';
 import { BrowserRouter } from "react-router-dom";
