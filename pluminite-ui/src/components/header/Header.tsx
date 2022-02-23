@@ -56,11 +56,14 @@ class Header extends Component<IHeader & IBaseComponentProps> {
             <span className={styles.separator} />
             <LoginButton user={this.props.near.user} />
 
-            <ButtonView
-              text={'CREATE'}
-              onClick={() => {  }}
-              color={buttonColors.goldFill}
-            />
+            <NavLink to={"/create"}>
+              <ButtonView
+                text={'CREATE'}
+                onClick={() => {  }}
+                color={buttonColors.goldFill}
+              />
+            </NavLink>
+
           </div>
         </div>
       </header>
