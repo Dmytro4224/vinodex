@@ -5,6 +5,7 @@ import { IdentificationCopy } from "../../components/common/identificationCopy/I
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { Tab, Tabs } from "react-bootstrap";
 import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
+import {EmptyListView} from "../../components/common/emptyList/emptyListView";
 
 interface IUserProfile extends IProps {
 
@@ -66,16 +67,22 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
                 <InfoDetails />
               </Tab>
               <Tab eventKey="sale" title="On sale">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
               <Tab eventKey="items" title="Created Items">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
               <Tab eventKey="purchases" title="Purchases">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
               <Tab eventKey="birds" title="Active Bids">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
               <Tab eventKey="favourites" title="Favourites">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
               <Tab eventKey="following" title="Following">
+                <div style={{ minHeight: '300px' }}><EmptyListView /></div>
               </Tab>
             </Tabs>
           </div>

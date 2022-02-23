@@ -9,6 +9,27 @@ use near_sdk::serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
 #[serde(crate = "near_sdk::serde")]
+pub struct JsonProfile {
+    ///коротка інфа
+    pub bio: String,
+    //ім'я юзера
+    pub name:String,
+    ///фотка
+    pub image: String,
+    ///електропошта
+    #[validate(email)]
+    pub email:String,
+    pub account_id:AccountId,
+    
+    pub is_following:bool,
+    pub followers_count:u32,
+
+    pub is_like:bool,
+    pub likes_count:u32,
+}
+
+#[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
+#[serde(crate = "near_sdk::serde")]
 pub struct Profile {
     ///коротка інфа
     pub bio: String,
@@ -28,6 +49,50 @@ impl Profile {
         return profiles.get(&account_id);
     }
 
+    pub fn get_full_profile(
+        profiles: &LookupMap<AccountId, Profile>,
+        account_id: &AccountId,
+        asked_account_id: &Option<AccountId>,
+        autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
+        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>,
+       ) -> Option<JsonProfile> {
+       let account_id: AccountId = account_id.into();
+
+       if let Some(_profile) = profiles.get(&account_id) {
+           let mut result=JsonProfile 
+           {
+               account_id:_profile.account_id,
+               bio:_profile.bio,
+               name:_profile.name,
+               image:_profile.image,
+               email:_profile.email,
+               is_following:false,
+               is_like:false,
+               followers_count:Profile::get_profile_followers_count(&autors_followers,&account_id),
+               likes_count:Profile::get_profile_like_count(&autors_likes,&account_id)
+           };
+
+           if let Some(_asked_account_id)=asked_account_id
+           {
+            result.is_following=Profile::is_profile_followind(
+                &autors_followers,
+                &account_id,
+                &_asked_account_id
+            );
+
+            result.is_like=Profile::is_profile_liked(
+                autors_followers,
+                &account_id,
+                _asked_account_id);
+           }
+
+           return  Some(result);
+           }
+        
+        else {
+           return  None
+       }
+   }
     pub fn get_default_data(account_id: AccountId) -> Profile{
         return Profile{
             account_id:account_id,
@@ -37,6 +102,7 @@ impl Profile {
             name:String::from("")
         }
     }
+
 
     ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
     pub fn check_default(profiles: &mut LookupMap<AccountId, Profile>, account_id: &AccountId){
@@ -116,7 +182,7 @@ impl Profile {
 
     ///кількість поставлених лайків
     pub fn get_profile_like_count(
-     autors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+     autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
      account_id: &AccountId)->u32{
 
         if !autors_likes.contains_key(account_id)
@@ -127,9 +193,28 @@ impl Profile {
         return autors_likes.get(&account_id).unwrap().len() as u32;
     }
 
+    pub fn is_profile_liked(
+        autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
+        sourse_account_id: &AccountId,
+        asked_account_id: &AccountId)->bool{
+   
+           if !autors_likes.contains_key(sourse_account_id)
+           {
+               return  false;
+           }
+   
+           let _tmp= autors_likes.get(&sourse_account_id).unwrap();
+           if _tmp.contains(asked_account_id)
+           {
+               return true;
+           } 
+           
+           return  false;
+       }
+
     ///кількість людей, які підписалися на автора
     pub fn get_profile_followers_count(
-        autors_followers:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
         account_id: &AccountId)->u32{
    
            if !autors_followers.contains_key(account_id)
@@ -138,6 +223,25 @@ impl Profile {
            }
    
            return autors_followers.get(&account_id).unwrap().len() as u32;
+       }
+
+       pub fn is_profile_followind(
+        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
+        sourse_account_id: &AccountId,
+        asked_account_id: &AccountId)->bool{
+   
+           if !autors_followers.contains_key(sourse_account_id)
+           {
+               return  false;
+           }
+   
+           let _tmp= autors_followers.get(&sourse_account_id).unwrap();
+           if _tmp.contains(asked_account_id)
+           {
+               return true;
+           } 
+           
+           return  false;
        }
 
     ///поставити відмітку, хто відвідував сторінку користувачем
