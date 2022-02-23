@@ -9,6 +9,8 @@ const NftMethods = {
     'nft_tokens_by_filter',
     'nft_tokens_catalogs',
     'like_artist_account',
+    'follow_artist_account',
+    'view_artist_account',
     'nft_token_get',
     'authors_by_filter',
     'get_profile',
