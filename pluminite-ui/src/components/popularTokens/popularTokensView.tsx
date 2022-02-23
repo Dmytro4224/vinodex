@@ -3,12 +3,14 @@ import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import ButtonView, {buttonColors } from "../common/button/ButtonView";
+import { EmptyListView } from "../common/emptyList/emptyListView";
 import LabelView  from "../common/label/labelView";
 import Loader  from "../common/loader/loader";
 import TokenCardView  from "../tokenCard/tokenCardView";
 
 interface IPopularTokensView extends IProps{
-  list?: Array<ITokenResponseItem>
+  list?: Array<ITokenResponseItem>;
+  catalog: string;
 }
 
 class PopularTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
@@ -20,10 +22,19 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
 
   public componentDidMount() {
     // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter('art', 1, 4, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
 
       this.setState({...this.state, list: response, isLoading: false });
     });
+  }
+
+  public componentDidUpdate(prevProps: IPopularTokensView, prevState: any) {
+    if(prevProps.catalog !== this.props.catalog){
+      this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
+
+        this.setState({...this.state, list: response, isLoading: false });
+      });
+    }
   }
 
   render(){
@@ -34,6 +45,15 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
       </div>
+    }
+
+    if (!this.state.list.length) {
+      return (
+        <>
+          <LabelView  text={'Popular'}/>
+          <EmptyListView/>
+        </>
+      )
     }
 
     return <div>

@@ -273,7 +273,8 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
-    ) ->Vec<Profile> {
+        asked_account_id:Option<AccountId>
+    ) ->Vec<Option<JsonProfile>> {
 
         if !self.profiles_global_stat_sorted_vector.contains_key(&parameter)
         {
@@ -306,7 +307,7 @@ impl Contract {
             return Vec::new();
         }
 
-        let mut result : Vec<Profile> = Vec::new();
+        let mut result : Vec<Option<JsonProfile>> = Vec::new();
 
         if is_reverse
         {
@@ -320,7 +321,14 @@ impl Contract {
                     
                 if _author_id.is_some() && !_author_id.is_none()
                 {
-                  result.push(self.profiles.get(&_author_id.unwrap().account_id).unwrap());
+                  result.push (
+                    Profile::get_full_profile(
+                        &self.profiles,
+                        &_author_id.unwrap().account_id,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers
+                    ));
                 }
             }
         }
@@ -336,7 +344,14 @@ impl Contract {
                     continue;
                 }
 
-                 result.push(self.profiles.get(&_author_id.unwrap().account_id).unwrap());
+                result.push (
+                    Profile::get_full_profile(
+                        &self.profiles,
+                        &_author_id.unwrap().account_id,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers
+                  ));
             }
         }
 

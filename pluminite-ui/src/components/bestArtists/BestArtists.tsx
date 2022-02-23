@@ -5,6 +5,7 @@ import ArtistCard from "../artistCard/ArtistCard";
 import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
 import {IAuthorResponseItem} from "../../types/IAuthorResponseItem";
 import Loader from "../common/loader/loader";
+import { EmptyListView } from "../common/emptyList/emptyListView";
 
 interface IBestArtists extends IProps {
   parameter?: BestArtistsParameter;
@@ -80,7 +81,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
       return (
         <>
           <LabelView  text={'Best Artists'}/>
-          <p className="mt-3">No items found</p>
+          <EmptyListView/>
         </>
       )
     }

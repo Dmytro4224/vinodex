@@ -26,7 +26,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
   public componentDidMount() {
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-      this.setState({...this.state, catalogs: response, currentCatalog: 0, isLoading: false });
+      this.setState({...this.state, catalogs: response, currentCatalog: 0, sort: 7, isLoading: false });
     });
   }
 
@@ -39,7 +39,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   render() {
-
     if(this.state.isLoading){
       return null;
     }
@@ -67,7 +66,9 @@ class Home extends Component<IHome & IBaseComponentProps> {
             ]}
           />
 
-          <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => { this.catalog = index }} />
+          <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
+            this.catalog = index
+          }} />
 
           <ButtonView
             text={"Filter"}
@@ -82,7 +83,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <p className="separator-horizontal" />
 
-        <PopularTokensView/>
+        <PopularTokensView catalog={this.catalog}/>
 
         <p className="separator-horizontal" />
 
@@ -90,7 +91,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <p className="separator-horizontal" />
 
-        <AllTokensView />
+        <AllTokensView catalog={this.catalog} />
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
