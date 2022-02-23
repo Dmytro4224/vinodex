@@ -142,7 +142,7 @@ pub struct Contract {
   ///аккаунти, які я переглянув
   pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
   ///список аккаунтів, на які я підписався
-  pub my_autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+  pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
 
 
 }
@@ -171,7 +171,7 @@ pub enum StorageKey {
     AutorsFollowers,
     MyAuthorsLikes,
     MyAutorsViews,
-    MyAutorsFollowers
+    MyAutorsFollowed
 }
 
 #[near_bindgen]
@@ -215,7 +215,7 @@ impl Contract {
             autors_followers:LookupMap::new (StorageKey::AutorsFollowers.try_to_vec().unwrap()),
             my_authors_likes:LookupMap::new (StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
             my_autors_views:LookupMap::new (StorageKey::MyAutorsViews.try_to_vec().unwrap()),
-            my_autors_followers:LookupMap::new (StorageKey::MyAutorsFollowers.try_to_vec().unwrap()),
+            my_autors_followed:LookupMap::new (StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -260,7 +260,7 @@ impl Contract {
             autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
             my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
             my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-            my_autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+            my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -291,7 +291,7 @@ impl Contract {
             autors_followers: old_contract.autors_followers,
             my_authors_likes: old_contract.my_authors_likes,
             my_autors_views: old_contract.my_autors_views,
-            my_autors_followers: old_contract.my_autors_followers,
+            my_autors_followed: old_contract.my_autors_followed,
         }
     }
 

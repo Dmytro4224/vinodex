@@ -299,7 +299,6 @@ impl Profile {
             );
     }
 
-
     pub fn change_dictionary_state(
         dictionary:&mut LookupMap<AccountId, HashSet<AccountId>>, 
         //аккаунт, до якого відноситься помітка

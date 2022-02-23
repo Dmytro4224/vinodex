@@ -357,4 +357,143 @@ impl Contract {
 
         return result;
     }
+
+    ///список улюблений авторів
+    pub fn liked_authors_for_account(
+        &self,
+        account_id: AccountId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64
+    ) ->Vec<Option<JsonProfile>> {
+
+        if !self.my_authors_likes.contains_key(&account_id)
+        {
+            return Vec::new();
+        }
+
+        let _accoutn_id=Some(account_id.clone());
+        let authors_ids : Vec<AccountId>;
+        let mut skip = 0;
+        if page_index >= 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        authors_ids=(self.my_authors_likes.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
+
+        let mut available_amount = authors_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        if authors_ids.len() < skip as usize
+        {
+            return Vec::new();
+        }
+
+        let mut result : Vec<Option<JsonProfile>> = Vec::new();
+
+       
+            for i in skip..skip + available_amount as u64
+            {
+                let _index = i as usize;
+                let _author_id = authors_ids.get(_index);
+
+                if !_author_id.is_some() || _author_id.is_none()
+                {
+                    continue;
+                }
+
+                result.push (
+                    Profile::get_full_profile(
+                        &self.profiles,
+                        &_author_id.unwrap(),
+                        &_accoutn_id,
+                        &self.autors_likes,
+                        &self.autors_followers
+                  ));
+            }
+        
+
+        return result;
+    }
+
+
+    ///список авторів, які відслідковуються
+    pub fn followed_authors_for_account(
+        &self,
+        account_id: AccountId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64
+    ) ->Vec<Option<JsonProfile>> {
+
+        if !self.my_autors_followed.contains_key(&account_id)
+        {
+            return Vec::new();
+        }
+
+        let _accoutn_id=Some(account_id.clone());
+        let authors_ids : Vec<AccountId>;
+        let mut skip = 0;
+        if page_index >= 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        authors_ids=(self.my_autors_followed.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
+
+        let mut available_amount = authors_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        if authors_ids.len() < skip as usize
+        {
+            return Vec::new();
+        }
+
+        let mut result : Vec<Option<JsonProfile>> = Vec::new();
+
+       
+            for i in skip..skip + available_amount as u64
+            {
+                let _index = i as usize;
+                let _author_id = authors_ids.get(_index);
+
+                if !_author_id.is_some() || _author_id.is_none()
+                {
+                    continue;
+                }
+
+                result.push (
+                    Profile::get_full_profile(
+                        &self.profiles,
+                        &_author_id.unwrap(),
+                        &_accoutn_id,
+                        &self.autors_likes,
+                        &self.autors_followers
+                  ));
+            }
+        
+
+        return result;
+    }
 }

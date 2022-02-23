@@ -1,8 +1,8 @@
 
 export interface IUploadFileResponse {
-    data: {
-        IpfsHash: string;
-    }
+    IpfsHash: string;
+    PinSize: number;
+    Timestamp: string;
 }
 
 class PinataAPI {
@@ -17,8 +17,6 @@ class PinataAPI {
 
         const formData: FormData = new FormData();
         formData.append('file', file);
-        //@ts-ignore
-        console.log('formData._boundary', formData);
 
         const response = await fetch(url, {
             method: 'POST',
@@ -29,11 +27,7 @@ class PinataAPI {
             }
         });
 
-        const data = await response.json();
-
-        console.log('uploadFile response data', data);
-
-        return data;
+        return await response.json() as IUploadFileResponse;
     }
 
     public async getFileData(hash: string) {

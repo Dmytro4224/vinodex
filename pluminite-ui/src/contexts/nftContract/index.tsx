@@ -70,7 +70,6 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public getProfile = async (accountId: string) => {
-        return { name: 'user' };
         return this.nftContract.get_profile({
             account_id: accountId
         });
@@ -83,6 +82,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             nft_tokens_catalogs: this.nft_tokens_catalogs,
             nft_token_get: this.nft_token_get,
             authors_by_filter: this.authors_by_filter,
+            getProfile: this.getProfile,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,
@@ -91,7 +91,6 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             //nftTransfer,
             //listForSale,
             //setProfile,
-            getProfile: this.getProfile,
             //getSupplyForCreator,
             //getIsFreeMintAvailable,
         };
