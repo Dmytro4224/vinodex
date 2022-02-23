@@ -9,16 +9,21 @@ interface ISelectViewItem{
 interface ISelectView{
   options: Array<ISelectViewItem>;
   placeholder?: string;
+  setRef?: any;
   onChange?: (item: ISelectViewItem) => void;
 }
 
 class SelectView extends Component<ISelectView>{
+  private _ref: any;
+
   public state = {
     selectedOption: null,
   };
 
   constructor(props: ISelectView) {
     super(props);
+
+    this.props.setRef && this.props.setRef(this);
   }
 
   handleChange = (selectedOption) => {
@@ -29,6 +34,10 @@ class SelectView extends Component<ISelectView>{
     this.setState({ selectedOption }, () =>
       console.log(`Option selected:`, this.state.selectedOption)
     );
+  }
+
+  public get selectedOption(){
+    return this.state.selectedOption;
   }
 
   render() {

@@ -20,6 +20,7 @@ export interface INftContractContext {
     nft_tokens_catalogs: () => Promise<Array<any>>;
     nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
     authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
+    nft_mint: (data: any) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -103,6 +104,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             getProfile: this.getProfile,
             set_profile: this.set_profile,
             like_artist_account: this.like_artist_account,
+            nft_mint: this.nft_mint,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,
@@ -120,6 +122,10 @@ export class NftContractContextProvider extends Component<INftContractContextPro
                 {this.props.children}
             </NftContractContext.Provider>
         );
+    }
+
+    nft_mint = (data: any) => {
+        return this.nftContract.nft_mint(data);
     }
 }
 /*

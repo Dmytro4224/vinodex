@@ -16,38 +16,17 @@ interface ICreateToken extends IProps{
 
 class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _ref: React.RefObject<DropzoneRef>;
+  private _refInputTitle: any;
+  private _refInputDescription: any;
+  private _refPriceSelect: any;
+  private _refCatalogSelect: any;
+  private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
-  private _tokenObj: ITokenCreateItem;
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
 
     this._ref = React.createRef<DropzoneRef>();
-
-    this._tokenObj = {
-      metadata: {
-        copies: '',
-        description: '',
-        expires_at: '',
-        extra: 0,
-        issued_at: '',
-        likes_count: 0,
-        media: '',
-        media_hash: '',
-        price: 0,
-        reference: 0,
-        reference_hash: '',
-        sold_at: '',
-        starts_at: '',
-        title: '',
-        updated_at: '',
-        views_count: 0
-      },
-      receiver_id: '',
-      perpetual_royalties: null,
-      token_id: '',
-      token_type: ''
-    }
   }
 
   private openDialog = () => {
@@ -94,6 +73,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               placeholder={'Title*'}
               customClass={`mb-4 ${styles.titleInpWrap}`}
               viewType={ViewType.input}
+              setRef={(ref) => {this._refInputTitle = ref;}}
             />
             <p></p>
             <Form>
@@ -115,19 +95,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <Form className="d-flex align-items-center flex-gap-36">
                 <div key={1} className="mb-3">
                   <Form.Check type={'radio'} id={`check-fixed`} name='checkbox'>
-                    <Form.Check.Input type={'radio'} name='checkbox' />
+                    <Form.Check.Input ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label>{`Fixed price`}</Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={2} className="mb-3">
                   <Form.Check type={'radio'} id={`check-auction`} name='checkbox'>
-                    <Form.Check.Input type={'radio'} name='checkbox' />
+                    <Form.Check.Input ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label>{`Timed auction`}</Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={3} className="mb-3">
                   <Form.Check type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                    <Form.Check.Input type={'radio'} name='checkbox' />
+                    <Form.Check.Input ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label>{`Unlimited auction`}</Form.Check.Label>
                   </Form.Check>
                 </div>
@@ -139,7 +119,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 { value: '1', label: '1' },
                 { value: '2', label: '2' },
                 { value: '3', label: '3' }
-              ]} placeholder={'Number of copies*'} onChange={(opt) => { console.log(opt) }} />
+              ]} placeholder={'Number of copies*'}
+                 onChange={(opt) => { console.log(opt) }}
+                 setRef={(ref) => {this._refPriceSelect = ref;}}
+              />
             </div>
             <div>
               <InputView
@@ -156,7 +139,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     value: catalog,
                     label: catalog
                   }
-                })} placeholder={'Number of copies*'} onChange={(opt) => { console.log(opt) }} />
+                })}
+                placeholder={'Number of copies*'}
+                onChange={(opt) => { console.log(opt) }}
+                setRef={(ref) => {this._refCatalogSelect = ref;}}
+              />
             </div>
             <div>
               <InputView
@@ -164,6 +151,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 placeholder={'Description*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
+                setRef={(ref) => {this._refInputDescription = ref;}}
               />
             </div>
           </div>
@@ -187,13 +175,49 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
 
   private submit = async () => {
+    debugger
       if(this._selectFile === undefined){
         return;
       }
 
+      const title = this._refInputTitle.value;
+      const description = this._refInputDescription.value;
+      const catalog = this._refCatalogSelect.value;
+
       const response = await pinataAPI.uploadFile(this._selectFile as File);
 
       console.log(`response`, response);
+
+      const url = pinataAPI.createUrl(response.IpfsHash);
+
+      const model = {
+        metadata: {
+          copies: '1',
+          description: description,
+          expires_at: null,
+          extra: 0,
+          issued_at: null,
+          likes_count: 0,
+          media: url,
+          media_hash: response.IpfsHash,
+          price: 0,
+          reference: 0,
+          reference_hash: null,
+          sold_at: null,
+          starts_at: null,
+          title: title,
+          updated_at: null,
+          views_count: 0
+        },
+        receiver_id: null,
+        perpetual_royalties: null,
+        token_id: response.IpfsHash,
+        token_type: catalog
+      }
+
+      const resp = await this.props.nftContractContext.nft_mint(model);
+
+      console.log(`create response`, resp);
   }
 }
 
