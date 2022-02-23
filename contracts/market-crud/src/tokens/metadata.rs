@@ -83,6 +83,24 @@ impl Contract {
             }
         }
 
+        if let Some(mut _my_liked_tokens)=self.my_tokens_likes.get(&env::predecessor_account_id()){
+
+            if _my_liked_tokens.contains(&token_id)
+            {
+                _my_liked_tokens.remove(&token_id);
+
+            }else{
+                _my_liked_tokens.insert(token_id.clone());
+            }
+
+            self.my_tokens_likes.insert(&env::predecessor_account_id(), &_my_liked_tokens);
+
+        }else{
+            let mut hash_set: HashSet<String> = HashSet::new();
+            hash_set.insert(token_id);
+            self.my_tokens_likes.insert(&env::predecessor_account_id(), &hash_set);
+        }
+
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
@@ -91,6 +109,8 @@ impl Contract {
             ,1
             ,true);
     }
+
+
 
     pub fn token_set_view(&mut self, token_id: TokenId)
     {

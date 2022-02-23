@@ -211,6 +211,7 @@ impl Contract {
         return result;
     }
     
+    
 
     ///отримати дані по токену
     pub fn nft_token_get(
@@ -256,6 +257,32 @@ impl Contract {
             .map(|token_id| self.nft_token(token_id.clone()).unwrap())
             .collect()
     }
+
+
+    pub fn nft_liked_for_account(
+        &self,
+        account_id: AccountId,
+        from_index: Option<U128>,
+        limit: Option<u64>,
+    ) -> Vec<Option<JsonToken>> {
+
+       
+        if let Some(_liked_tokens)=self.my_tokens_likes.get(&account_id){
+
+            let keys:Vec<TokenId> = _liked_tokens.into_iter().collect();
+            let start = u128::from(from_index.unwrap_or(U128(0)));
+            keys.iter()
+                .skip(start as usize)
+                .take(limit.unwrap_or(0) as usize)
+                .map(|token_id| self.nft_token(token_id.clone()))
+                .collect()
+
+        }else{
+            return vec![];
+        }
+    }
+
+    
 
     //словник авторів
     pub fn authors_by_storage_para(&self,parameter: u8)->Vec<ProfileStatCriterion>{
