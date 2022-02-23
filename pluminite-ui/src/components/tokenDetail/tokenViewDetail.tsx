@@ -128,7 +128,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 </Tab>
                 <Tab eventKey="profile" title="DETAILS">
                   <div className={styles.tabContainer}>
-                    <TokenDetailView address={'Contract Address'} id={'Tokenld'}/>
+                    <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!}/>
                   </div>
                 </Tab>
                 <Tab eventKey="bids" title="BIDS">

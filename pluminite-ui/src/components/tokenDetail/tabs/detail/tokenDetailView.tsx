@@ -27,8 +27,8 @@ class TokenDetailView extends Component<ITokenDetailView & IBaseComponentProps>{
         <div className={styles.detailWrap}>
           <div className={styles.detailItem}>
             <div className={styles.info}>
-                <h5 className={styles.title}>{this.address}</h5>
-                <p className={styles.ex}>example</p>
+                <h5 className={styles.title}>Contract Address</h5>
+                <p className={styles.ex}>{this.address}</p>
             </div>
             <ButtonCopy
               onClick={() => { }}
@@ -37,8 +37,8 @@ class TokenDetailView extends Component<ITokenDetailView & IBaseComponentProps>{
           </div>
           <div className={styles.detailItem}>
             <div className={styles.info}>
-              <h5 className={styles.title}>{this.id}</h5>
-              <p className={styles.ex}>example</p>
+              <h5 className={styles.title}>Tokenld</h5>
+              <p className={styles.ex}>{this.id}</p>
             </div>
             <ButtonCopy
               onClick={() => { }}
