@@ -130,18 +130,18 @@ pub struct Contract {
 
 
   //===========лакйи, фоловери, перегляди авторів======
-  //відмітки подобається у розрізі юзерів
+  ///список користувачів, яким сподобався аккаунт AccountId
   pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  //перегляди у розрізі юзерів
+  ///список користувачів, які дивилися аккаунт AccountId
   pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  //ті, хто відстежує автора
+  ///список користувачів, які відстежуються аккаунт AccountId
   pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
   //===========мої лакйи, фоловери, перегляди авторів======
-  //відмітки "подобаються мені"
+  ///мій список користувачів, яким я поставив лайки
   pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  //відмітки "я переглянув"
+  ///аккаунти, які я переглянув
   pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  //відмітки "я відслідковую"
+  ///список аккаунтів, на які я підписався
   pub my_autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
 
 

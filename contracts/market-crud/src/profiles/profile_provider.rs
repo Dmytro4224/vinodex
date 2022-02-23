@@ -1,7 +1,8 @@
-use std::cmp::Ordering;
+use std::cmp::{Ordering};
 use near_sdk::{AccountId};
 use near_sdk::collections::{LookupMap};
 use validator::Validate;
+use std::collections::HashSet;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
@@ -90,15 +91,143 @@ impl Profile {
     }
 
     ///Встановити дані профілю
-    pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, profile: Profile, account_id: &AccountId) {
+    pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, 
+        profile: Profile, 
+        account_id: &AccountId) {
         let mut _profile=Profile::get_profile(profiles, account_id.clone());
         profiles.insert(&account_id, &profile);
     }
 
 
+    ///поставити лайк юзеру
+    pub fn set_profile_like(
+        autors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId){
 
-    
-}
+            Profile::change_dictionary_state(
+                autors_likes,
+                sourse_account_id,
+                target_account_id,
+            true
+            );
+
+    }
+
+    ///кількість поставлених лайків
+    pub fn get_profile_like_count(
+     autors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+     account_id: &AccountId)->u32{
+
+        if !autors_likes.contains_key(account_id)
+        {
+            return  0;
+        }
+
+        return autors_likes.get(&account_id).unwrap().len() as u32;
+    }
+
+    ///кількість людей, які підписалися на автора
+    pub fn get_profile_followers_count(
+        autors_followers:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        account_id: &AccountId)->u32{
+   
+           if !autors_followers.contains_key(account_id)
+           {
+               return  0;
+           }
+   
+           return autors_followers.get(&account_id).unwrap().len() as u32;
+       }
+
+    ///поставити відмітку, хто відвідував сторінку користувачем
+    pub fn set_profile_view(
+        autors_view:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId){
+
+            Profile::change_dictionary_state(
+                autors_view,
+                sourse_account_id,
+                target_account_id,
+            false
+            );
+    }
+
+    ///Додати користувача в список відстеження
+    pub fn set_profile_follow(
+        autors_following_list:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId){
+
+            Profile::change_dictionary_state(
+                autors_following_list,
+                sourse_account_id,
+                target_account_id,
+            true
+            );
+    }
+
+    ///додати юзера до мого списку вподобань
+    pub fn add_profile_to_my_like_list(
+        my_authors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        my_account_id: &AccountId,
+        like_account_id: &AccountId){
+
+            Profile::change_dictionary_state(
+                my_authors_likes,
+                my_account_id,
+                like_account_id,
+            true
+            );
+    }
+
+    pub fn add_profile_to_my_followers_list(
+        my_autors_followers:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        my_account_id: &AccountId,
+        follower_account_id: &AccountId){
+
+            Profile::change_dictionary_state(
+                my_autors_followers,
+                my_account_id,
+                follower_account_id,
+            true
+            );
+    }
+
+
+    pub fn change_dictionary_state(
+        dictionary:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        //аккаунт, до якого відноситься помітка
+        sourse_account_id: &AccountId,
+        //аккаунт, який робить помітку
+        target_account_id: &AccountId,
+        //вказує на те, чи потрібно робити зворотню дію: чек-анчек
+        need_reverse:bool){
+
+        if !dictionary.contains_key(sourse_account_id)
+        {
+            let mut _fitst_record:HashSet<AccountId>=HashSet::new();
+            _fitst_record.insert(target_account_id.to_string());
+            dictionary.insert(&sourse_account_id, &_fitst_record);
+        }else{
+            if need_reverse
+            {
+            let mut _account_list=dictionary.get(&sourse_account_id).unwrap();
+            
+            if _account_list.contains(target_account_id){
+                _account_list.remove(target_account_id);
+            }else{
+                _account_list.insert(target_account_id.clone());
+            }
+
+            dictionary.insert(&sourse_account_id, &_account_list);
+            }
+        }
+
+    }
+
+} 
 
 
 
@@ -125,114 +254,225 @@ pub struct ProfileStatCriterion{
     pub criterion:Option<u32>
 }
 
+
 impl ProfileStatCriterion{
+
+pub fn __increment(sourse :u32,increment:u32,is_add:bool)->u32
+{
+    if sourse==0 && !is_add { 
+         return 0;
+  }
+
+    if is_add{
+        return sourse+increment;
+    }
+    else{
+        return sourse-increment;
+    }
+
+}
+    //встановити значення параметру статистики
+    pub fn set_profile_stat_val(
+        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
+        user_id:&AccountId, 
+        parameter:u8,
+        value:u32){
+            let mut stat:ProfileStat;
+        
+            match profiles_global_stat.get(&user_id.clone()) {
+                Some(mut _profile_stat) => {stat=_profile_stat}
+                None => {
+                    stat=ProfileStat{
+                        likes_count:0,
+                         tokens_likes_count: 0,
+                         views_count: 0,
+                         tokens_views_count: 0,
+                         tokens_count: 0,
+                         followers_count: 0
+                    };
+                }
+            }
+                
+            let mut _criterion:u32=0;
+    
+                match parameter
+                {
+                    //0 - кількість лайків аккаунту
+                    0=>{
+                        
+                        stat.likes_count=value;
+                        _criterion=stat.likes_count;
+                    },
+                    //1 -кількість лайків токенів аккаунту
+                    1=>{
+                        stat.tokens_likes_count = value;
+                        _criterion=stat.tokens_likes_count;
+                    },
+                    //2 - загальна ксть переглядів аккаунту
+                    2=>{
+                        stat.views_count=value;
+                        _criterion=stat.views_count;
+                    },
+                    //3 - загальна ксть переглядів токенів аккаунту
+                    3=>{
+                        stat.tokens_views_count=value;
+                        _criterion=stat.tokens_views_count;
+                    },
+                    //4 - загальна ксть токенів
+                    4=>{
+                        stat.tokens_count=value;
+                        _criterion=stat.tokens_count;
+                    },
+                    // 5 - к-сть підписників автора
+                    5=>{
+                        stat.followers_count=value;
+                        _criterion=stat.followers_count;
+                    },
+                    _=>{}
+                }
+    
+                let _sorted_list_item = profiles_global_stat_sorted_vector.get(&parameter);
+    
+                let _sort_element=ProfileStatCriterion {
+                    account_id: user_id.to_string(),
+                    criterion:Some(_criterion)
+                };
+    
+                //якшо ще немає сортування для цього параметру
+                // створюємо запис
+                if !_sorted_list_item.is_some() || _sorted_list_item.is_none(){
+                    let mut _insert_vec:Vec<ProfileStatCriterion>=Vec::new();
+                    _insert_vec.push(
+                        _sort_element
+                    );
+    
+                    profiles_global_stat_sorted_vector.insert(&parameter,&_insert_vec);
+                }
+                //якшо вже шось є, пробуємо відсортувати 
+                else{
+                    let mut _vector=profiles_global_stat_sorted_vector.get(&parameter).unwrap();
+                    //видаляємо старий елемент
+                    let _current_position = _vector.iter().position(|x|x.account_id  == user_id.to_string());
+                    
+                    if !_current_position.is_none()
+                    {
+                        _vector.remove(_current_position.unwrap());
+        
+                        //сортуємо і шукаємо нову позицію
+                        let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
+                        
+                        match _new_position
+                        {
+                                Some(_new_position)=> _vector.insert(_new_position,_sort_element),
+                                None=> _vector.push(_sort_element)
+                        }
+                        
+                    }else{
+    
+                        _vector.push(_sort_element);
+                    }
+                    //вставляємо
+                    profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
+                }
+                //===========================
+    
+                profiles_global_stat.insert(&user_id, &stat);
+            }
+
     ///збільшити значення статистики
     pub  fn profile_stat_inc(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
         user_id:&AccountId, 
-        parameter:u8)
+        parameter:u8,
+        increment:u32,
+        need_add:bool)
         {
-        let mut stat:ProfileStat;
+
+            let stat:ProfileStat;
     
-        match profiles_global_stat.get(&user_id.clone()) {
-            Some(mut _profile_stat) => {stat=_profile_stat}
-            None => {
-                stat=ProfileStat{
-                    likes_count:0,
-                     tokens_likes_count: 0,
-                     views_count: 0,
-                     tokens_views_count: 0,
-                     tokens_count: 0,
-                     followers_count: 0
-                };
-            }
-        }
+            match profiles_global_stat.get(&user_id.clone()) {
+                Some(mut _profile_stat) => {stat=_profile_stat}
+                None => {
+                    stat=ProfileStat{
+                        likes_count:0,
+                         tokens_likes_count: 0,
+                         views_count: 0,
+                         tokens_views_count: 0,
+                         tokens_count: 0,
+                         followers_count: 0
+                    };
+                }
+            }        
             
-        let mut _criterion:u32=0;
+        let mut _value:u32=0;
 
             match parameter
             {
                 //0 - кількість лайків аккаунту
                 0=>{
-                    stat.likes_count=stat.likes_count+1;
-                    _criterion=stat.likes_count;
+                    
+                    _value= ProfileStatCriterion::__increment(stat.likes_count,increment,need_add);
                 },
                 //1 -кількість лайків токенів аккаунту
                 1=>{
-                    stat.tokens_likes_count=stat.tokens_likes_count+1;
-                    _criterion=stat.tokens_likes_count;
+                    _value=ProfileStatCriterion::__increment(stat.tokens_likes_count,increment,need_add);
                 },
                 //2 - загальна ксть переглядів аккаунту
                 2=>{
-                    stat.views_count=stat.views_count+1;
-                    _criterion=stat.views_count;
+                    _value=ProfileStatCriterion::__increment(stat.views_count,increment,need_add);
                 },
                 //3 - загальна ксть переглядів токенів аккаунту
                 3=>{
-                    stat.tokens_views_count=stat.tokens_views_count+1;
-                    _criterion=stat.tokens_views_count;
+                    _value=
+                    ProfileStatCriterion::__increment(stat.tokens_views_count,increment,need_add);
                 },
                 //4 - загальна ксть токенів
                 4=>{
-                    stat.tokens_count=stat.tokens_count+1;
-                    _criterion=stat.tokens_count;
+                    _value=
+                    ProfileStatCriterion::__increment(stat.tokens_count,increment,need_add);
                 },
                 // 5 - к-сть підписників автора
                 5=>{
-                    stat.followers_count=stat.followers_count+1;
-                    _criterion=stat.followers_count;
+                    _value=ProfileStatCriterion::__increment(stat.followers_count,increment,need_add);
                 },
                 _=>{}
             }
 
-            let _sorted_list_item = profiles_global_stat_sorted_vector.get(&parameter);
+            ProfileStatCriterion::set_profile_stat_val(
+                profiles_global_stat,
+                profiles_global_stat_sorted_vector,
+                &user_id,
+                parameter,
+            _value);
 
-            let _sort_element=ProfileStatCriterion {
-                account_id: user_id.to_string(),
-                criterion:Some(_criterion)
-            };
-
-            //якшо ще немає сортування для цього параметру
-            // створюємо запис
-            if !_sorted_list_item.is_some() || _sorted_list_item.is_none(){
-                let mut _insert_vec:Vec<ProfileStatCriterion>=Vec::new();
-                _insert_vec.push(
-                    _sort_element
-                );
-
-                profiles_global_stat_sorted_vector.insert(&parameter,&_insert_vec);
-            }
-            //якшо вже шось є, пробуємо відсортувати 
-            else{
-                let mut _vector=profiles_global_stat_sorted_vector.get(&parameter).unwrap();
-                //видаляємо старий елемент
-                let _current_position = _vector.iter().position(|x|x.account_id  == user_id.to_string());
-                
-                if !_current_position.is_none()
-                {
-                    _vector.remove(_current_position.unwrap());
-    
-                    //сортуємо і шукаємо нову позицію
-                    let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
-                    
-                    match _new_position
-                    {
-                            Some(_new_position)=> _vector.insert(_new_position,_sort_element),
-                            None=> _vector.push(_sort_element)
-                    }
-                    
-                }else{
-
-                    _vector.push(_sort_element);
-                }
-                //вставляємо
-                profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
-            }
-            //===========================
-
-            profiles_global_stat.insert(&user_id, &stat);
         }
+
+        ///отримати дані по статистиці профілю
+   pub fn profile_stat(
+    profiles_global_stat: LookupMap<AccountId, ProfileStat>,
+       user_id:&AccountId
+    )->ProfileStat
+   {
+    let stat:ProfileStat;
+        
+    match profiles_global_stat.get(&user_id.clone()) {
+        Some(mut _profile_stat) => {stat=_profile_stat}
+        None => {
+            stat=ProfileStat{
+                likes_count:0,
+                 tokens_likes_count: 0,
+                 views_count: 0,
+                 tokens_views_count: 0,
+                 tokens_count: 0,
+                 followers_count: 0
+            };
+        }
+    }
+
+    return  stat;
+}
 
 ///перевірити чи встановленні дефолтні значення статистистики для юзера
 pub fn profile_stat_check_for_default_stat(

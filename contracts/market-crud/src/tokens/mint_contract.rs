@@ -183,7 +183,7 @@ impl Contract {
             ProfileStatCriterion::profile_stat_inc(
                 &mut self.profiles_global_stat,
                 &mut self.profiles_global_stat_sorted_vector,
-                &owner_id,4);
+                &owner_id,4,1,true);
             //=======================================================
 
        
