@@ -127,6 +127,24 @@ pub struct Contract {
     //к-сть безплатних токенів для юзера
     pub free_mints: u64,
     pub version: u16,
+
+
+  //===========лакйи, фоловери, перегляди авторів======
+  ///список користувачів, яким сподобався аккаунт AccountId
+  pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+  ///список користувачів, які дивилися аккаунт AccountId
+  pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+  ///список користувачів, які відстежуються аккаунт AccountId
+  pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+  //===========мої лакйи, фоловери, перегляди авторів======
+  ///мій список користувачів, яким я поставив лайки
+  pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+  ///аккаунти, які я переглянув
+  pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+  ///список аккаунтів, на які я підписався
+  pub my_autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+
+
 }
 
 /// Helper structure to for keys of the persistent collections.
@@ -147,7 +165,13 @@ pub enum StorageKey {
     TokensUsersViews,
     TokensSorted,
     ProfilesGlobalStat,
-    ProfilesGlobalStatSortedVector
+    ProfilesGlobalStatSortedVector,
+    AutorsLikes,
+    AutorsViews,
+    AutorsFollowers,
+    MyAuthorsLikes,
+    MyAutorsViews,
+    MyAutorsFollowers
 }
 
 #[near_bindgen]
@@ -186,6 +210,12 @@ impl Contract {
             version: 0,
             profiles_global_stat:LookupMap::new(StorageKey::ProfilesGlobalStat.try_to_vec().unwrap()),
             profiles_global_stat_sorted_vector:LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap()),
+            autors_likes:LookupMap::new (StorageKey::AutorsLikes.try_to_vec().unwrap()),
+            autors_views:LookupMap::new (StorageKey::AutorsViews.try_to_vec().unwrap()),
+            autors_followers:LookupMap::new (StorageKey::AutorsFollowers.try_to_vec().unwrap()),
+            my_authors_likes:LookupMap::new (StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
+            my_autors_views:LookupMap::new (StorageKey::MyAutorsViews.try_to_vec().unwrap()),
+            my_autors_followers:LookupMap::new (StorageKey::MyAutorsFollowers.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -225,6 +255,12 @@ impl Contract {
             use_storage_fees: bool,
             profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
             profiles_global_stat: LookupMap<AccountId, ProfileStat>,
+            autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+            autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+            autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+            my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+            my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+            my_autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -249,7 +285,13 @@ impl Contract {
             free_mints: 3,
             version: migration_version,
             profiles_global_stat_sorted_vector:old_contract.profiles_global_stat_sorted_vector,
-            profiles_global_stat: old_contract.profiles_global_stat
+            profiles_global_stat: old_contract.profiles_global_stat,
+            autors_likes: old_contract.autors_likes,
+            autors_views: old_contract.autors_views,
+            autors_followers: old_contract.autors_followers,
+            my_authors_likes: old_contract.my_authors_likes,
+            my_autors_views: old_contract.my_autors_views,
+            my_autors_followers: old_contract.my_autors_followers,
         }
     }
 
@@ -294,39 +336,7 @@ impl Contract {
         self.use_storage_fees
     }
     
-    ///Отримати дані профілю для юзера AccountId
-    pub fn get_profile(&self, account_id: ValidAccountId) -> Option<Profile> {
-        let account_id: AccountId = account_id.into();
-        self.profiles.get(&account_id)
-    }
-
-    ///Встановити дані профілю
-    pub fn set_profile(&mut self, profile: Profile) {
-        assert!(
-            profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
-            "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-
-        assert!(
-            profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile image length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-
-        assert!(
-            profile.name.len() < MAX_PROFILE_NAME_LENGTH,
-            "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-
-        //регулярка для пошти
-        //let email_regex = Regex::new(r"^([a-z0-9_+]([a-z0-9_+.]*[a-z0-9_+])?)@([a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,6})").unwrap();
-
-
-        
-        let predecessor_account_id = env::predecessor_account_id();
-
-        self.profiles.insert(&predecessor_account_id, &profile);
-    }
-    
+   
  
     fn measure_min_token_storage_cost(&mut self) {
         let initial_storage_usage = env::storage_usage();
