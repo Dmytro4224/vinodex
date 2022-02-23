@@ -25,10 +25,10 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    // this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-    //   // this.userProfile = profile;
-    //   console.log('getProfile', profile);
-    // });
+    this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
+      // this.userProfile = profile;
+      console.log('getProfile', profile);
+    });
   }
 
   private set userProfile(profile) {

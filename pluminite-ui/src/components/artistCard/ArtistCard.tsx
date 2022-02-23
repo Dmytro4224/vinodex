@@ -18,6 +18,10 @@ interface IArtistCard extends IProps{
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
+  public state = {
+    isLike: false
+  }
+
   constructor(props: IArtistCard & IBaseComponentProps) {
     super(props);
   }
@@ -52,6 +56,15 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   private btnFollowHandler() {}
 
+  private toggleLikeAccount() {
+    this.props.nftContractContext.like_artist_account(this.identification).then(res => {
+      this.setState({
+        ...this.state,
+        isLike: !this.state.isLike
+      })
+    })
+  }
+
   isCardType() {
     return (
       <div className={styles.artistCard}>
@@ -78,8 +91,9 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
               count={this.usersCount}
             />
             <LikeView
+              onClick={() => { this.toggleLikeAccount() }}
               customClass={styles.likes}
-              isChanged={false}
+              isChanged={this.state.isLike}
               isActive={true}
               type={LikeViewType.like}
               count={this.likesCount}
@@ -102,6 +116,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         </div>
         <div className="d-flex align-items-center">
           <LikeView
+            onClick={() => { this.toggleLikeAccount() }}
             customClass={`${styles.likes} ${styles.likesCustom}`}
             isChanged={false}
             isActive={true}

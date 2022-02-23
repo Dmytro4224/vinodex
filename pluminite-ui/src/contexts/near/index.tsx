@@ -6,6 +6,7 @@ import { IConfig } from '../../config';
 
 const initialNearContext = {
     user: null,
+    isAuth: false,
     isLoading: true,
     error: null,
     signIn: () => { },
@@ -21,6 +22,7 @@ export interface INearContext {
     signIn: () => void;
     signOut: () => void;
     user: ICurrentUser | null;
+    isAuth: boolean,
     setUser: (user: ICurrentUser) => void;
 }
 
@@ -62,6 +64,10 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
 
     public get user() {
         return this.props.user;
+    }
+
+    public get isAuth() {
+        return typeof this.props.user !== 'undefined' && this.props.user !== null;
     }
 
     public setUser = (user: ICurrentUser) => {
@@ -110,6 +116,7 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
     public render() {
         const value: INearContext = {
             user: this.state.user,
+            isAuth: this.isAuth,
             signIn: this.signIn,
             signOut: this.signOut,
             isLoading: this.state.isLoading,

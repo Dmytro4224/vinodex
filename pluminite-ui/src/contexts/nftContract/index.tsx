@@ -14,6 +14,7 @@ export const NftContractContext = React.createContext<INftContractContext>(initi
 export interface INftContractContext {
     nftContract: INftContract | null;
     getProfile: (accountId: string) => Promise<IProfile>;
+    like_artist_account: (accountId: string) => Promise<any>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
@@ -75,6 +76,12 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         });
     }
 
+    public like_artist_account = async (accountId: string) => {
+        return this.nftContract.like_artist_account({
+            accountId: accountId
+        });
+    }
+
     public render() {
         const value: INftContractContext = {
             nftContract: this.nftContract,
@@ -83,6 +90,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             nft_token_get: this.nft_token_get,
             authors_by_filter: this.authors_by_filter,
             getProfile: this.getProfile,
+            like_artist_account: this.like_artist_account,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,
