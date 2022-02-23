@@ -77,7 +77,9 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public like_artist_account = async (accountId: string) => {
-        return this.nftContract.like_artist_account(accountId);
+        return this.nftContract.like_artist_account({
+            accountId: accountId
+        });
     }
 
     public render() {
