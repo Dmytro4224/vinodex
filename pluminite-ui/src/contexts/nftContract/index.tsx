@@ -4,6 +4,7 @@ import * as nearAPI from 'near-api-js';
 import { INftContract } from '../../utils';
 
 import { IProfile } from '../../types/IProfile';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 
 export const initialNftContractState = {
     nftContract: null
@@ -15,7 +16,7 @@ export interface INftContractContext {
     getProfile: (accountId: string) => Promise<IProfile>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
-    nft_token_get: (token_id: string) => Promise<Array<any>>;
+    nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
     authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
 }
 

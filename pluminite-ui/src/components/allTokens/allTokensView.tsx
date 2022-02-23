@@ -3,27 +3,38 @@ import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import { EmptyListView } from "../common/emptyList/emptyListView";
 import LabelView from "../common/label/labelView";
 import Loader from "../common/loader/loader";
 import TokenCardView from "../tokenCard/tokenCardView";
 
-interface IPopularTokensView extends IProps{
-  list?: Array<ITokenResponseItem>
+interface IAllTokensView extends IProps{
+  list?: Array<ITokenResponseItem>;
+  catalog: string;
 }
 
-class AllTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
+class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
   public state = { list: new Array<ITokenResponseItem>(), isLoading: true };
 
-  constructor(props: IPopularTokensView & IBaseComponentProps) {
+  constructor(props: IAllTokensView & IBaseComponentProps) {
     super(props);
   }
 
   public componentDidMount() {
     // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter('art', 1, 4, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
 
       this.setState({...this.state, list: response, isLoading: false });
     });
+  }
+
+  public componentDidUpdate(prevProps: IAllTokensView, prevState: any) {
+    if(prevProps.catalog !== this.props.catalog){
+      this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
+
+        this.setState({...this.state, list: response, isLoading: false });
+      });
+    }
   }
 
   render(){
@@ -34,6 +45,15 @@ class AllTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
       </div>
+    }
+
+    if (!this.state.list.length) {
+      return (
+        <>
+          <LabelView  text={'All'}/>
+          <EmptyListView/>
+        </>
+      )
     }
 
     return <div>

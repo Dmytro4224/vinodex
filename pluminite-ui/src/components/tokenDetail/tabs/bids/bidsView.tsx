@@ -80,8 +80,8 @@ class BidsView extends Component<IBidsView & IBaseComponentProps>{
     return(
       <>
         {
-          this.childrens.map(child => {
-            return <BidsItem name={child.name} identification={child.identification} price={child.price} currency={child.currency}/>
+          this.childrens.map((child, i) => {
+            return <BidsItem key={i} name={child.name} identification={child.identification} price={child.price} currency={child.currency}/>
           })
         }
       </>
