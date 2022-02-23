@@ -46,12 +46,7 @@ pub type TypeSupplyCaps = HashMap<TokenType, U64>;
 
 pub const CONTRACT_ROYALTY_CAP: u32 = 1000;
 pub const MINTER_ROYALTY_CAP: u32 = 9000;
-///максимальна довжина імені користувача
-pub const MAX_PROFILE_NAME_LENGTH: usize = 256;
-///максимальна довжина опису профілю
-pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
-///максимальна величина картинки
-pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
+
 
 near_sdk::setup_alloc!();
 
@@ -151,9 +146,7 @@ pub struct Contract {
   pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
   ///список аккаунтів, на які я підписався
   pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
-
-
-}
+  }
 
 /// Helper structure to for keys of the persistent collections.
 #[derive(BorshSerialize)]
