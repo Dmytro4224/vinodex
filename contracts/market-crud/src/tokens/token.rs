@@ -26,6 +26,8 @@ pub struct JsonToken {
     // CUSTOM - fields
     pub royalty: HashMap<AccountId, u32>,
     pub token_type: Option<String>,
+    ///чи поставив лайк той, хто переглядає
+    pub is_like:bool
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]

@@ -336,9 +336,17 @@ impl NonFungibleTokenCore for Contract {
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
         if let Some(token) = self.tokens_by_id.get(&token_id) {
             let mut metadata = self.token_metadata_by_id.get(&token_id).unwrap();
-
+            let predecessor_account_id = env::predecessor_account_id();
+            
             metadata.likes_count = self.get_token_likes_count(token_id.clone()) as u64;
             metadata.views_count = self.get_token_views_count(token_id.clone()) as u64;
+
+            let mut _is_like=false;
+
+            if let Some(_users_like_list)=self.tokens_users_likes.get(&token_id){
+                    _is_like= _users_like_list.contains(&predecessor_account_id);
+            }
+
 
             Some(JsonToken {
                 token_id,
@@ -347,6 +355,7 @@ impl NonFungibleTokenCore for Contract {
                 royalty: token.royalty,
                 approved_account_ids: token.approved_account_ids,
                 token_type: token.token_type,
+                is_like:_is_like
             })
         } else {
             None

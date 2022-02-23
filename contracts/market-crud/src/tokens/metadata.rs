@@ -56,13 +56,9 @@ impl NonFungibleTokenMetadata for Contract {
 //Керуючий елемент для вподобань та переглядів токенів
 #[near_bindgen]
 impl Contract {
+    ///поставити лайк токену
     pub fn token_set_like(&mut self, token_id: TokenId)
     {
-        // assert!(
-        //     self.tokens_by_id.get(&token_id).is_none(),
-        //     "token_setLike: token not found"
-        // );
-
         let user_id = env::predecessor_account_id();
 
         match self.tokens_users_likes.get(&token_id.clone()) {
