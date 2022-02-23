@@ -39,29 +39,37 @@ mod nft_core;
 #[path = "profiles/profile_provider.rs"]
 mod profile;
 
-///тип токену
+//тип токену
 pub type TokenType = String;
 //типи токенів
 pub type TypeSupplyCaps = HashMap<TokenType, U64>;
 
 pub const CONTRACT_ROYALTY_CAP: u32 = 1000;
 pub const MINTER_ROYALTY_CAP: u32 = 9000;
+//максимальна довжина імені користувача
+pub const MAX_PROFILE_NAME_LENGTH: usize = 256;
+//максимальна довжина опису профілю
+pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
+//максимальна величина картинки
+pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
 
+
+    //==================
 
 near_sdk::setup_alloc!();
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-    ///токени власника
+    //токени власника
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
-    ///токени автора
+    //токени автора
     pub tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
-    ///токени по ідентифікатру
+    //токени по ідентифікатру
     pub tokens_by_id: LookupMap<TokenId, Token>,
-    ///метадані токену по ідентифікатору токена
+    //метадані токену по ідентифікатору токена
     pub token_metadata_by_id: UnorderedMap<TokenId, TokenMetadata>,
-    ///власник
+    //власник
     pub owner_id: AccountId,
 
     //Вподобання токенів
@@ -71,9 +79,9 @@ pub struct Contract {
     pub tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
 
 
-    ///мій список токенів, яким я поставив лайки
+    //мій список токенів, яким я поставив лайки
     pub my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
-    ///список токенів, на які я підписався
+    //список токенів, на які я підписався
     pub my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
 
 
@@ -94,23 +102,23 @@ pub struct Contract {
 
     pub tokens_sorted: LookupMap<u8, Vec<SortedToken>>,
 
-    /// The storage size in bytes for one account.
+    // The storage size in bytes for one account.
     pub extra_storage_in_bytes_per_token: StorageUsage,
-    ///метадані нфтшки
+    //метадані нфтшки
     pub metadata: LazyOption<NFTMetadata>,
 
-    /// CUSTOM fields
+    // CUSTOM fields
     pub supply_cap_by_type: TypeSupplyCaps,
     //токени по типу
     pub tokens_per_type: LookupMap<TokenType, UnorderedSet<TokenId>>,
     pub token_types_locked: UnorderedSet<TokenType>,
     
-    ///кмісійні
+    //кмісійні
     pub contract_royalty: u32,
 
     pub profiles: LookupMap<AccountId, Profile>,
    
-    ///загальна статистика по користувачу
+    //загальна статистика по користувачу
     pub profiles_global_stat: LookupMap<AccountId, ProfileStat>,
     
     
@@ -125,7 +133,7 @@ pub struct Contract {
     pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
     //==========================================================
     
-    ///чи брати плату за зберігання інфи з юзера
+    //чи брати плату за зберігання інфи з юзера
     pub use_storage_fees: bool,
     //к-сть безплатних токенів для юзера
     pub free_mints: u64,
@@ -133,22 +141,22 @@ pub struct Contract {
 
 
   //===========лакйи, фоловери, перегляди авторів======
-  ///список користувачів, яким сподобався аккаунт AccountId
+  //список користувачів, яким сподобався аккаунт AccountId
   pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  ///список користувачів, які дивилися аккаунт AccountId
+  //список користувачів, які дивилися аккаунт AccountId
   pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  ///список користувачів, які відстежуються аккаунт AccountId
+  //список користувачів, які відстежуються аккаунт AccountId
   pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
   //===========мої лакйи, фоловери, перегляди авторів======
-  ///мій список користувачів, яким я поставив лайки
+  //мій список користувачів, яким я поставив лайки
   pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  ///аккаунти, які я переглянув
+  //аккаунти, які я переглянув
   pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  ///список аккаунтів, на які я підписався
+  //список аккаунтів, на які я підписався
   pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
   }
 
-/// Helper structure to for keys of the persistent collections.
+// Helper structure to for keys of the persistent collections.
 #[derive(BorshSerialize)]
 pub enum StorageKey {
     TokensPerOwner,
@@ -308,6 +316,10 @@ impl Contract {
         self.version
     }
 
+    pub fn get_version1(&self) -> u16 {
+        123
+    }
+
     pub fn tokens_sorted_get(&self, filter: u8) -> Option<Vec<SortedToken>>
     {
         return self.tokens_sorted.get(&filter);
@@ -369,7 +381,7 @@ impl Contract {
         self.tokens_per_owner.remove(&tmp_account_id);
     }
 
-    /// CUSTOM - setters for owner
+    // CUSTOM - setters for owner
 
     pub fn set_contract_royalty(&mut self, contract_royalty: u32) {
         self.assert_owner();
@@ -413,4 +425,129 @@ impl Contract {
         let token_type = token.token_type.unwrap();
         self.token_types_locked.contains(&token_type)
     }
+
+    //Отримати дані профілю для юзера AccountId
+    pub fn get_profile(&self, account_id: AccountId) -> Option<Profile> {
+        let account_id: AccountId = account_id.into();
+        return self.profiles.get(&account_id);
+    }
+
+    //Встановити дані профілю
+    pub fn set_profile(&mut self, mut profile: Profile) {
+        assert!(
+            profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
+            "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+        );
+
+        assert!(
+            profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
+            "Profile image length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+        );
+
+        assert!(
+            profile.name.len() <MAX_PROFILE_NAME_LENGTH,
+            "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+        );
+        
+        let predecessor_account_id = env::predecessor_account_id();
+
+        profile.account_id=predecessor_account_id;
+
+        Profile::set_profile(&mut self.profiles,
+            profile,
+            &env::predecessor_account_id());
+    }
+
+    //лайкнути карточку користувача
+    // працює дзеркально: лайк або ставиться/або знімається
+    pub fn like_artist_account(&mut self,accountId:AccountId)
+    {
+        let predecessor_account_id = env::predecessor_account_id();  
+
+        //додаємо запис до списку лайків аккаунту, який лайкнули
+        Profile::set_profile_like(
+            &mut self.autors_likes,
+            &accountId,
+            &predecessor_account_id
+        );
+
+        //додаємо запис до списку мого списку лайків
+        Profile::add_profile_to_my_like_list(
+            &mut self.my_authors_likes,
+            &predecessor_account_id,
+            &accountId
+        );
+
+        //збільнуємо статистику лайків
+        ProfileStatCriterion::set_profile_stat_val(
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
+            &accountId,
+            0,
+            Profile::get_profile_like_count(
+               &mut self.autors_likes,
+                &accountId
+            )
+        );
+    }
+
+    
+    //поставити помітку про відвідання карточки користувача
+    pub fn view_artist_account(&mut self, accountId:AccountId) {
+        let predecessor_account_id = env::predecessor_account_id();  
+
+        Profile::set_profile_view (
+            &mut self.autors_views,
+            &accountId,
+            &predecessor_account_id
+        );
+
+        let _new_val=ProfileStatCriterion::profile_stat(
+            &self.profiles_global_stat,
+            &accountId).views_count+1;
+
+                //змінюємо статистику переглядів
+                ProfileStatCriterion::set_profile_stat_val(
+                    &mut self.profiles_global_stat,
+                    &mut self.profiles_global_stat_sorted_vector,
+                    &accountId,
+                    2,
+                    _new_val
+                );
+    }
+
+      //додати користувача до стписку відстеження
+      // працює дзеркально: ставить або знімає
+    pub fn follow_artist_account(&mut self, accountId:AccountId){
+        let predecessor_account_id = env::predecessor_account_id();  
+
+        //додаємо запис до списку підписників аккаунту, на який підписалися
+        Profile::set_profile_follow(
+            &mut self.autors_followers,
+            &accountId,
+            &predecessor_account_id
+        );
+
+        //додаємо запис до списку мого списку лайків
+        Profile::add_profile_to_my_followers_list(
+            &mut self.my_autors_followed,
+            &predecessor_account_id,
+            &accountId
+        );
+
+        //збільнуємо статистику лайків
+        ProfileStatCriterion::set_profile_stat_val(
+           &mut self.profiles_global_stat,
+           &mut self.profiles_global_stat_sorted_vector,
+            &accountId,
+            5,
+            Profile::get_profile_followers_count(
+                &mut self.autors_followers,
+                &accountId
+            )
+        );
+
+    }
+
+
 }

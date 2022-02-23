@@ -42,9 +42,10 @@ pub struct Profile {
     pub email:String,
     pub account_id:AccountId
 }
+
 impl Profile {
     ///Отримати дані профілю для юзера AccountId
-    pub fn get_profile(profiles: &mut LookupMap<AccountId, Profile>, account_id: AccountId) -> Option<Profile> {
+    pub fn get_profile_inner(profiles: &mut LookupMap<AccountId, Profile>, account_id: AccountId) -> Option<Profile> {
         let account_id: AccountId = account_id.into();
         return profiles.get(&account_id);
     }
@@ -106,7 +107,7 @@ impl Profile {
 
     ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
     pub fn check_default(profiles: &mut LookupMap<AccountId, Profile>, account_id: &AccountId){
-        let _profile=Profile::get_profile(profiles, account_id.clone());
+        let _profile=Profile::get_profile_inner(profiles, account_id.clone());
         if _profile.is_none(){
             profiles.insert(
                 &account_id, 
@@ -119,7 +120,7 @@ impl Profile {
     pub fn set_profile_bio(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
         Profile::check_default(profiles,account_id);
 
-        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
         _profile.bio=value.clone();
         profiles.insert(&account_id, &_profile);
     }
@@ -127,7 +128,7 @@ impl Profile {
     pub fn set_profile_image(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
         Profile::check_default(profiles,account_id);
 
-        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
         _profile.image=value.clone();
         profiles.insert(&account_id, &_profile);
     }
@@ -135,7 +136,7 @@ impl Profile {
     pub fn set_profile_name(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
         Profile::check_default(profiles,account_id);
 
-        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
         _profile.name=value.clone();
         profiles.insert(&account_id, &_profile);
     }
@@ -143,7 +144,7 @@ impl Profile {
     pub fn set_profile_email(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
         Profile::check_default(profiles,account_id);
 
-        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
         _profile.email=value.clone();
         profiles.insert(&account_id, &_profile);
     }
@@ -151,7 +152,7 @@ impl Profile {
     pub fn set_profile_account_id(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
         Profile::check_default(profiles,account_id);
 
-        let mut _profile=Profile::get_profile(profiles, account_id.clone()).unwrap();
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
         _profile.account_id=value.clone();
         profiles.insert(&account_id, &_profile);
     }
@@ -160,7 +161,7 @@ impl Profile {
     pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, 
         profile: Profile, 
         account_id: &AccountId) {
-        let mut _profile=Profile::get_profile(profiles, account_id.clone());
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone());
         profiles.insert(&account_id, &profile);
     }
 
@@ -684,146 +685,3 @@ pub fn profile_stat_check_for_default_stat(
     }
 
 
-    use crate::*;
-use near_sdk::{
-    env, near_bindgen, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
-};
-
-
-///максимальна довжина імені користувача
-pub const MAX_PROFILE_NAME_LENGTH: usize = 256;
-///максимальна довжина опису профілю
-pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
-///максимальна величина картинки
-pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
-
-#[near_bindgen]
-impl Contract {
-    ///Отримати дані профілю для юзера AccountId
-    pub fn get_profile(&self, account_id: AccountId) -> Option<Profile> {
-        let account_id: AccountId = account_id.into();
-        self.profiles.get(&account_id)
-    }
-
-    ///Встановити дані профілю
-    pub fn set_profile(&mut self, mut profile: Profile) {
-        assert!(
-            profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
-            "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-
-        assert!(
-            profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile image length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-
-        assert!(
-            profile.name.len() <MAX_PROFILE_NAME_LENGTH,
-            "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
-        );
-        
-        let predecessor_account_id = env::predecessor_account_id();
-
-        profile.account_id=predecessor_account_id;
-
-        Profile::set_profile(&mut self.profiles,
-            profile,
-            &env::predecessor_account_id());
-    }
-
-    ///лайкнути карточку користувача
-    /// працює дзеркально: лайк або ставиться/або знімається
-    pub fn like_artist_account(&mut self,accountId:AccountId)
-    {
-        let predecessor_account_id = env::predecessor_account_id();  
-
-        //додаємо запис до списку лайків аккаунту, який лайкнули
-        Profile::set_profile_like(
-            &mut self.autors_likes,
-            &accountId,
-            &predecessor_account_id
-        );
-
-        //додаємо запис до списку мого списку лайків
-        Profile::add_profile_to_my_like_list(
-            &mut self.my_authors_likes,
-            &predecessor_account_id,
-            &accountId
-        );
-
-        ///збільнуємо статистику лайків
-        ProfileStatCriterion::set_profile_stat_val(
-            &mut self.profiles_global_stat,
-            &mut self.profiles_global_stat_sorted_vector,
-            &accountId,
-            0,
-            Profile::get_profile_like_count(
-               &mut self.autors_likes,
-                &accountId
-            )
-        );
-    }
-
-    
-    ///поставити помітку про відвідання карточки користувача
-    pub fn view_artist_account(&mut self, accountId:AccountId){
-        let predecessor_account_id = env::predecessor_account_id();  
-
-        Profile::set_profile_view (
-            &mut self.autors_views,
-            &accountId,
-            &predecessor_account_id
-        );
-
-let _new_val=ProfileStatCriterion::profile_stat(
-    &self.profiles_global_stat,
-    &accountId).views_count+1;
-
-        //змінюємо статистику переглядів
-        ProfileStatCriterion::set_profile_stat_val(
-            &mut self.profiles_global_stat,
-            &mut self.profiles_global_stat_sorted_vector,
-            &accountId,
-            2,
-            _new_val
-        );
-    }
-
-      ///додати користувача до стписку відстеження
-      /// працює дзеркально: ставить або знімає
-    pub fn follow_artist_account(&mut self, accountId:AccountId){
-        let predecessor_account_id = env::predecessor_account_id();  
-
-        //додаємо запис до списку підписників аккаунту, на який підписалися
-        Profile::set_profile_follow(
-            &mut self.autors_followers,
-            &accountId,
-            &predecessor_account_id
-        );
-
-        //додаємо запис до списку мого списку лайків
-        Profile::add_profile_to_my_followers_list(
-            &mut self.my_autors_followed,
-            &predecessor_account_id,
-            &accountId
-        );
-
-        ///збільнуємо статистику лайків
-        ProfileStatCriterion::set_profile_stat_val(
-           &mut self.profiles_global_stat,
-           &mut self.profiles_global_stat_sorted_vector,
-            &accountId,
-            5,
-            Profile::get_profile_followers_count(
-                &mut self.autors_followers,
-                &accountId
-            )
-        );
-
-    }
-
-
-
-}
-
-    //==================

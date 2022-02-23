@@ -1,6 +1,6 @@
 use crate::*;
 use near_sdk::json_types::{ValidAccountId, U64};
-use near_sdk::{ext_contract, log, Gas, PromiseResult};
+use near_sdk::{ext_contract, env, log, Gas, PromiseResult};
 
 const GAS_FOR_NFT_APPROVE: Gas = 25_000_000_000_000;
 const GAS_FOR_RESOLVE_TRANSFER: Gas = 10_000_000_000_000;
@@ -336,16 +336,16 @@ impl NonFungibleTokenCore for Contract {
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
         if let Some(token) = self.tokens_by_id.get(&token_id) {
             let mut metadata = self.token_metadata_by_id.get(&token_id).unwrap();
-            let predecessor_account_id = env::predecessor_account_id();
+            //let predecessor_account_id = env::predecessor_account_id();
             
             metadata.likes_count = self.get_token_likes_count(token_id.clone()) as u64;
             metadata.views_count = self.get_token_views_count(token_id.clone()) as u64;
 
             let mut _is_like=false;
 
-            if let Some(_users_like_list)=self.tokens_users_likes.get(&token_id){
-                    _is_like= _users_like_list.contains(&predecessor_account_id);
-            }
+            // if let Some(_users_like_list)=self.tokens_users_likes.get(&token_id){
+            //         _is_like= _users_like_list.contains(&predecessor_account_id);
+            // }
 
 
             Some(JsonToken {
