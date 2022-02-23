@@ -16,6 +16,8 @@ export interface INftContractContext {
     getProfile: (accountId: string) => Promise<IProfile>;
     set_profile: (bio: string, name: string, image: string, email: string, accountId: string) => Promise<IProfile>;
     like_artist_account: (accountId: string) => Promise<any>;
+    follow_artist_account: (accountId: string) => Promise<any>;
+    view_artist_account: (accountId: string) => Promise<any>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
@@ -94,6 +96,18 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         });
     }
 
+    public view_artist_account = async (accountId: string) => {
+        return this.nftContract.view_artist_account({
+            accountId: accountId
+        });
+    }
+
+    public follow_artist_account = async (accountId: string) => {
+        return this.nftContract.follow_artist_account({
+            accountId: accountId
+        });
+    }
+
     public render() {
         const value: INftContractContext = {
             nftContract: this.nftContract,
@@ -105,6 +119,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             set_profile: this.set_profile,
             like_artist_account: this.like_artist_account,
             nft_mint: this.nft_mint,
+            follow_artist_account: this.follow_artist_account,
+            view_artist_account: this.view_artist_account,
             //getGem: this.getGem,
             //getGems: this.getGems,
             //getGemsForOwner,

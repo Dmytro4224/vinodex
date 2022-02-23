@@ -19,7 +19,8 @@ interface IArtistCard extends IProps{
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
   public state = {
-    isLike: false
+    isLike: false,
+    isFollow: this.props.isFollow
   }
 
   constructor(props: IArtistCard & IBaseComponentProps) {
@@ -47,14 +48,21 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get isFollow() {
-    return this.props.isFollow;
+    return this.state.isFollow;
   }
 
   private get isCard() {
     return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
 
-  private btnFollowHandler() {}
+  private btnFollowHandler() {
+    this.props.nftContractContext.follow_artist_account(this.identification).then(res => {
+      this.setState({
+        ...this.state,
+        isFollow: !this.state.isFollow
+      })
+    })
+  }
 
   private toggleLikeAccount() {
     this.props.nftContractContext.like_artist_account(this.identification).then(res => {
