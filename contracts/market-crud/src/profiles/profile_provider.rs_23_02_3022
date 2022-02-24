@@ -159,11 +159,10 @@ impl Profile {
 
     ///Встановити дані профілю
     pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, 
-        profile: &Profile, 
-        account_id: &AccountId) 
-    {
-        //let mut _profile=Profile::get_profile_inner(profiles, account_id.clone());
-        profiles.insert(&account_id, profile);
+        profile: Profile, 
+        account_id: &AccountId) {
+        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone());
+        profiles.insert(&account_id, &profile);
     }
 
 
@@ -362,32 +361,27 @@ pub struct ProfileStatCriterion{
 
 impl ProfileStatCriterion{
 
-    pub fn __increment(sourse :u32,increment:u32,is_add:bool)->u32
-    {
-        if sourse==0 && !is_add 
-        { 
-            return 0;
-        }
+pub fn __increment(sourse :u32,increment:u32,is_add:bool)->u32
+{
+    if sourse==0 && !is_add { 
+         return 0;
+  }
 
-        if is_add
-        {
-            return sourse+increment;
-        }
-        else
-        {
-            return sourse-increment;
-        }
-
+    if is_add{
+        return sourse+increment;
+    }
+    else{
+        return sourse-increment;
     }
 
+}
     //встановити значення параметру статистики
     pub fn set_profile_stat_val(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
         user_id:&AccountId, 
         parameter:u8,
-        value:u32)
-    {
+        value:u32){
             let mut stat:ProfileStat;
         
             match profiles_global_stat.get(&user_id.clone()) {
@@ -488,7 +482,7 @@ impl ProfileStatCriterion{
                 //===========================
     
                 profiles_global_stat.insert(&user_id, &stat);
-    }
+            }
 
     ///збільшити значення статистики
     pub  fn profile_stat_inc(
@@ -498,7 +492,7 @@ impl ProfileStatCriterion{
         parameter:u8,
         increment:u32,
         need_add:bool)
-    {
+        {
 
             let stat:ProfileStat;
     
@@ -557,108 +551,101 @@ impl ProfileStatCriterion{
                 parameter,
             _value);
 
-    }
+        }
 
         ///отримати дані по статистиці профілю
-    pub fn profile_stat(
-        profiles_global_stat: &LookupMap<AccountId, ProfileStat>,
-        user_id:&AccountId
-        )->ProfileStat
-    {
-            let stat:ProfileStat;
-                
-            match profiles_global_stat.get(&user_id.clone()) {
-                Some(mut _profile_stat) => {stat=_profile_stat}
-                None => {
-                    stat=ProfileStat{
-                        likes_count:0,
-                        tokens_likes_count: 0,
-                        views_count: 0,
-                        tokens_views_count: 0,
-                        tokens_count: 0,
-                        followers_count: 0
-                    };
-                }
+   pub fn profile_stat(
+    profiles_global_stat: &LookupMap<AccountId, ProfileStat>,
+       user_id:&AccountId
+    )->ProfileStat
+   {
+    let stat:ProfileStat;
+        
+    match profiles_global_stat.get(&user_id.clone()) {
+        Some(mut _profile_stat) => {stat=_profile_stat}
+        None => {
+            stat=ProfileStat{
+                likes_count:0,
+                 tokens_likes_count: 0,
+                 views_count: 0,
+                 tokens_views_count: 0,
+                 tokens_count: 0,
+                 followers_count: 0
+            };
+        }
+    }
+
+    return  stat;
+}
+
+///перевірити чи встановленні дефолтні значення статистистики для юзера
+pub fn profile_stat_check_for_default_stat(
+    profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+    profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
+    user_id:&AccountId){
+ 
+        //якшо по юзеру немає фільтрів
+        if profiles_global_stat.get(&user_id.clone()).is_none() {
+                let stat=ProfileStat{
+                    likes_count:0,
+                     tokens_likes_count: 0,
+                     views_count: 0,
+                     tokens_views_count: 0,
+                     tokens_count: 0,
+                     followers_count: 0
+                };
+                profiles_global_stat.insert(&user_id, &stat);
             }
 
-            return  stat;
-        }
-
-    ///перевірити чи встановленні дефолтні значення статистистики для юзера
-    pub fn profile_stat_check_for_default_stat(
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
-        profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId){
-    
-            //якшо по юзеру немає фільтрів
-            if profiles_global_stat.get(&user_id.clone()).is_none() {
-                    let stat=ProfileStat{
-                        likes_count:0,
-                        tokens_likes_count: 0,
-                        views_count: 0,
-                        tokens_views_count: 0,
-                        tokens_count: 0,
-                        followers_count: 0
-                    };
-                    profiles_global_stat.insert(&user_id, &stat);
-                }
-
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,&user_id,profiles_global_stat_sorted_vector);
-                
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,&user_id,profiles_global_stat_sorted_vector);
-        }
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,&user_id,profiles_global_stat_sorted_vector);
+            
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,&user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,&user_id,profiles_global_stat_sorted_vector);
+    }
 
 
         pub fn profile_stat_check_for_default_stat_one_parameter(
-            parameter:u8,
-            user_id:&AccountId,
-            profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>)
+    parameter:u8,
+    user_id:&AccountId,
+    profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>)
+    {
+       
+        let mut _vector
+        = profiles_global_stat_sorted_vector.get(&parameter);
+
+        if _vector.is_none()
         {
-        
-            let mut _vector
-            = profiles_global_stat_sorted_vector.get(&parameter);
+            let mut _empty_vector:Vec<ProfileStatCriterion>=Vec::new();
+            _empty_vector.push(
+                 ProfileStatCriterion{
+                                     account_id:user_id.to_string(),
+                                     criterion:Some(0)
+             });
+             profiles_global_stat_sorted_vector.insert(&parameter,&_empty_vector);
+          
 
-            if _vector.is_none()
-            {
-                let mut _empty_vector:Vec<ProfileStatCriterion>=Vec::new();
-                _empty_vector.push(
-                    ProfileStatCriterion{
-                                        account_id:user_id.to_string(),
-                                        criterion:Some(0)
-                });
-                profiles_global_stat_sorted_vector.insert(&parameter,&_empty_vector);
+        }else{
+
+            let mut _new_vector 
+            = profiles_global_stat_sorted_vector.get(&parameter).unwrap();
+
+            let _current_position 
+            = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
             
-
-            }
-            else
+            if _current_position.is_none()
             {
-                let mut _new_vector 
-                = profiles_global_stat_sorted_vector.get(&parameter).unwrap();
-
-                let _current_position 
-                = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
-                
-                let emty_value = ProfileStatCriterion{
+                _new_vector.push(
+                    ProfileStatCriterion{
                     account_id:user_id.to_string(),
                     criterion:Some(0)
-                };
-
-                if _current_position.is_none()
-                {
-                    _new_vector.push(emty_value);
-                }
-                else
-                {
-                    _new_vector.insert(_current_position.unwrap(), emty_value);
-                }
-
+                });
                 profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
             }
         }
+    }
 
         pub fn cmp(&self, obj: &ProfileStatCriterion) -> Ordering
         {
@@ -666,20 +653,20 @@ impl ProfileStatCriterion{
             {
                 return Ordering::Less;
             }
-
+    
             if self.criterion.is_none() && obj.criterion.is_none()
             {
                 return Ordering::Equal;
             }
-
+    
             if !self.criterion.is_none() && obj.criterion.is_none()
             {
                 return Ordering::Greater;
             }
-
+    
             return self.criterion.cmp(&obj.criterion);
         }
-        
+    
         pub fn binary_search(k: &ProfileStatCriterion, items: &Vec<ProfileStatCriterion>) -> Option<usize> {
             let mut low: usize = 0;
             let mut high: usize = items.len();

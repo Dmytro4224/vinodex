@@ -433,7 +433,8 @@ impl Contract {
     }
 
     //Встановити дані профілю
-    pub fn set_profile(&mut self, mut profile: Profile) {
+    pub fn set_profile(&mut self, mut profile: Profile) 
+    {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
             "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
@@ -454,20 +455,20 @@ impl Contract {
         profile.account_id=predecessor_account_id;
 
         Profile::set_profile(&mut self.profiles,
-            profile,
+            &profile,
             &env::predecessor_account_id());
     }
 
     //лайкнути карточку користувача
     // працює дзеркально: лайк або ставиться/або знімається
-    pub fn like_artist_account(&mut self,accountId:AccountId)
+    pub fn like_artist_account(&mut self,account_id:AccountId)
     {
         let predecessor_account_id = env::predecessor_account_id();  
 
         //додаємо запис до списку лайків аккаунту, який лайкнули
         Profile::set_profile_like(
             &mut self.autors_likes,
-            &accountId,
+            &account_id,
             &predecessor_account_id
         );
 
@@ -475,42 +476,42 @@ impl Contract {
         Profile::add_profile_to_my_like_list(
             &mut self.my_authors_likes,
             &predecessor_account_id,
-            &accountId
+            &account_id
         );
 
         //збільнуємо статистику лайків
         ProfileStatCriterion::set_profile_stat_val(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &accountId,
+            &account_id,
             0,
             Profile::get_profile_like_count(
                &mut self.autors_likes,
-                &accountId
+                &account_id
             )
         );
     }
 
     
     //поставити помітку про відвідання карточки користувача
-    pub fn view_artist_account(&mut self, accountId:AccountId) {
+    pub fn view_artist_account(&mut self, account_id:AccountId) {
         let predecessor_account_id = env::predecessor_account_id();  
 
         Profile::set_profile_view (
             &mut self.autors_views,
-            &accountId,
+            &account_id,
             &predecessor_account_id
         );
 
         let _new_val=ProfileStatCriterion::profile_stat(
             &self.profiles_global_stat,
-            &accountId).views_count+1;
+            &account_id).views_count+1;
 
                 //змінюємо статистику переглядів
                 ProfileStatCriterion::set_profile_stat_val(
                     &mut self.profiles_global_stat,
                     &mut self.profiles_global_stat_sorted_vector,
-                    &accountId,
+                    &account_id,
                     2,
                     _new_val
                 );
@@ -518,13 +519,13 @@ impl Contract {
 
       //додати користувача до стписку відстеження
       // працює дзеркально: ставить або знімає
-    pub fn follow_artist_account(&mut self, accountId:AccountId){
+    pub fn follow_artist_account(&mut self, account_id:AccountId){
         let predecessor_account_id = env::predecessor_account_id();  
 
         //додаємо запис до списку підписників аккаунту, на який підписалися
         Profile::set_profile_follow(
             &mut self.autors_followers,
-            &accountId,
+            &account_id,
             &predecessor_account_id
         );
 
@@ -532,18 +533,18 @@ impl Contract {
         Profile::add_profile_to_my_followers_list(
             &mut self.my_autors_followed,
             &predecessor_account_id,
-            &accountId
+            &account_id
         );
 
         //збільнуємо статистику лайків
         ProfileStatCriterion::set_profile_stat_val(
            &mut self.profiles_global_stat,
            &mut self.profiles_global_stat_sorted_vector,
-            &accountId,
+            &account_id,
             5,
             Profile::get_profile_followers_count(
                 &mut self.autors_followers,
-                &accountId
+                &account_id
             )
         );
 

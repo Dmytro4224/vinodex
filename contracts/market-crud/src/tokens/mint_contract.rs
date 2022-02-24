@@ -158,37 +158,36 @@ impl Contract {
                     continue;
                 }
             }
-
-            //створюємо профіль, якшо нема
-    
-            let _profile_data=self.profiles.get(&owner_id);
-            if _profile_data.is_none()
-            {
-                //дефолтні значення
-                //виправити перед релізом!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                Profile::set_profile(
-                    &mut self.profiles,
-                    Profile::get_default_data(owner_id.clone()),
-                    &owner_id);
-            }
-
-            //=
-            ProfileStatCriterion::profile_stat_check_for_default_stat(
-                 &mut self.profiles_global_stat,
-                &mut self.profiles_global_stat_sorted_vector,
-                &owner_id);
-            //=======================================================
-
-            //додати запис до profiles_by_tokens_count для статистики
-            ProfileStatCriterion::profile_stat_inc(
-                &mut self.profiles_global_stat,
-                &mut self.profiles_global_stat_sorted_vector,
-                &owner_id,4,1,true);
-            //=======================================================
-
-       
-
         }
+
+        //створюємо профіль, якшо нема
+    
+        let _profile_data=self.profiles.get(&owner_id);
+        if _profile_data.is_none()
+        {
+            //дефолтні значення
+            //виправити перед релізом!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Profile::set_profile
+            (
+                &mut self.profiles,
+                &Profile::get_default_data(owner_id.clone()),
+                &owner_id
+            );
+        }
+
+        //=
+        ProfileStatCriterion::profile_stat_check_for_default_stat(
+             &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
+            &owner_id);
+        //=======================================================
+
+        //додати запис до profiles_by_tokens_count для статистики
+        ProfileStatCriterion::profile_stat_inc(
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
+            &owner_id,4,1,true);
+        //=======================================================
     }
 
     pub fn tokens_fix(&mut self)

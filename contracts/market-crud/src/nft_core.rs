@@ -45,6 +45,7 @@ pub trait NonFungibleTokenCore {
     fn nft_total_supply(&self) -> U64;
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken>;
+    fn nft_token_for_account(&self, token_id: TokenId,account_id: Option<AccountId>)->Option<JsonToken>;
 
     fn get_token_likes_count(&self, token_id: TokenId) -> usize;
     fn get_token_views_count(&self, token_id: TokenId) -> usize;
@@ -334,18 +335,25 @@ impl NonFungibleTokenCore for Contract {
     }
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
+        return self.nft_token_for_account(token_id, None);
+    }
+
+    fn nft_token_for_account(&self, token_id: TokenId,account_id: Option<AccountId>)
+     -> Option<JsonToken> {
         if let Some(token) = self.tokens_by_id.get(&token_id) {
             let mut metadata = self.token_metadata_by_id.get(&token_id).unwrap();
-            //let predecessor_account_id = env::predecessor_account_id();
-            
             metadata.likes_count = self.get_token_likes_count(token_id.clone()) as u64;
             metadata.views_count = self.get_token_views_count(token_id.clone()) as u64;
 
             let mut _is_like=false;
 
-            // if let Some(_users_like_list)=self.tokens_users_likes.get(&token_id){
-            //         _is_like= _users_like_list.contains(&predecessor_account_id);
-            // }
+             if let Some(_users_like_list)
+             =self.tokens_users_likes.get(&token_id){
+
+                if account_id.is_some(){
+                    _is_like= _users_like_list.contains(&account_id.unwrap());
+                }
+             }
 
 
             Some(JsonToken {

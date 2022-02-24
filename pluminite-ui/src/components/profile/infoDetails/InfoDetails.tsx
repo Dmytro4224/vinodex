@@ -9,13 +9,14 @@ import { Form, FormCheck } from "react-bootstrap";
 import InputView, {ViewType} from "../../common/inputView/InputView";
 import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 
- interface IInfoDetails extends IProps {
-
- }
+interface IInfoDetails extends IProps {
+  userId: string;
+  isMyProfile: boolean;
+}
 
 class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   public state = {
-    isEditForm: false
+    isEditForm: false,
   };
 
   private readonly _radioNFTApproveRef: any;
@@ -46,20 +47,46 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     })
   }
 
+  private get getUserId() {
+    return this.props.userId;
+  }
+
+  private get isMyProfile() {
+    return this.props.isMyProfile;
+  }
+
+  private formSubmitHandler = async () => {
+    const result = {
+      name: this._refInputUserName.value,
+      email: this._refInputUserEmail.value,
+      bio: this._refInputUserBio.value,
+    };
+
+    console.table(result);
+    this.changeToInfoTemplate();
+
+    return
+
+    this.props.nftContractContext.set_profile(result.bio, result.name, '', result.email, this.getUserId).then(profile => {
+      // this.userProfile = profile;
+      console.log('setProfile', profile);
+    });
+  }
+
   private infoTemplate() {
     return (
       <div className={styles.profileDetailsWrap}>
         <div className="d-flex align-items-center justify-content-between my-3">
           <h3 className={styles.profileBlockTitle}>Profile details</h3>
-          <ButtonView
-            text={'EDIT'}
-            onClick={() => { this.changeToFormTemplate() }}
-            color={buttonColors.gold}
-          />
+          {this.isMyProfile && <ButtonView
+              text={'EDIT'}
+              onClick={() => { this.changeToFormTemplate() }}
+              color={buttonColors.gold}
+          />}
         </div>
         <ul className={styles.ulInfoList}>
           <li>
-            <div className={`d-flex align-items-center w-100 cursor-pointer ${styles.itemWrap}`}>
+            <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
               <img className={styles.iconStyle} width="20" height="20" src={userIcon} alt="icon"/>
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
@@ -71,7 +98,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             </div>
           </li>
           <li>
-            <div className={`d-flex align-items-center w-100 cursor-pointer ${styles.itemWrap}`}>
+            <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
               <img className={styles.iconStyle} width="20" height="20" src={emailIcon} alt="icon"/>
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
@@ -83,7 +110,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             </div>
           </li>
           <li>
-            <div className={`d-flex align-items-center w-100 cursor-pointer ${styles.itemWrap}`}>
+            <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
               <img className={styles.iconStyle} width="20" height="20" src={listIcon} alt="icon"/>
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
@@ -115,6 +142,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
                     id="switch-nft-approve"
                     label=""
                     ref={this._radioNFTApproveRef}
+                    disabled={!this.isMyProfile}
                   />
                 </div>
               </FormCheck.Label>
@@ -123,20 +151,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         </ul>
       </div>
     )
-  }
-
-  private formSubmitHandler = async () => {
-    console.table({
-      name: this._refInputUserName.value,
-      email: this._refInputUserEmail.value,
-      bio: this._refInputUserBio.value,
-    });
-
-    // this.props.nftContractContext.set_profile('bio', 'name', '', 'email@gmail.com', this.getUserId).then(profile => {
-    //   debugger
-    //   // this.userProfile = profile;
-    //   console.log('setProfile', profile);
-    // });
   }
 
   private formTemplate() {
