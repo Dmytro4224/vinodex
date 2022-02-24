@@ -190,59 +190,59 @@ impl Contract {
         //=======================================================
     }
 
-    pub fn tokens_fix(&mut self)
-    {
-        //Оновлення словників фільтрів
-        for i in 1..9
-        {
-            let final_token_id = String::from("3");
-            let metadata = self.token_metadata_by_id.get(&final_token_id).unwrap();
+    // pub fn tokens_fix(&mut self)
+    // {
+    //     //Оновлення словників фільтрів
+    //     for i in 1..9
+    //     {
+    //         let final_token_id = String::from("3");
+    //         let metadata = self.token_metadata_by_id.get(&final_token_id).unwrap();
 
-            let criterion :Option<u128>;
+    //         let criterion :Option<u128>;
 
-            match i
-            {
-                1 => criterion = metadata.starts_at,
-                2 => criterion =  metadata.issued_at,
-                3 => criterion = metadata.sold_at,
-                4 => criterion = metadata.expires_at,
-                5 => criterion = Some(metadata.price),
-                7 => criterion = Some(0),
-                8 => criterion = Some(0),
-                _ => criterion = None
-            }
+    //         match i
+    //         {
+    //             1 => criterion = metadata.starts_at,
+    //             2 => criterion =  metadata.issued_at,
+    //             3 => criterion = metadata.sold_at,
+    //             4 => criterion = metadata.expires_at,
+    //             5 => criterion = Some(metadata.price),
+    //             7 => criterion = Some(0),
+    //             8 => criterion = Some(0),
+    //             _ => criterion = None
+    //         }
 
-            let key = SortedToken{token_id: final_token_id.clone(), criterion: criterion};
+    //         let key = SortedToken{token_id: final_token_id.clone(), criterion: criterion};
 
-            match self.tokens_sorted.get(&i) {
-                Some(mut tokens) => {
+    //         match self.tokens_sorted.get(&i) {
+    //             Some(mut tokens) => {
 
-                    if criterion.is_none()
-                    {
-                        tokens.push(key);
-                        self.tokens_sorted.insert(&i, &tokens);
-                        continue;
-                    }
+    //                 if criterion.is_none()
+    //                 {
+    //                     tokens.push(key);
+    //                     self.tokens_sorted.insert(&i, &tokens);
+    //                     continue;
+    //                 }
 
-                    let index = SortedToken::binary_search(&key, &tokens);
-                    if index.is_none()
-                    {
-                        tokens.push(key);
-                        self.tokens_sorted.insert(&i, &tokens);
-                        continue;
-                    }
+    //                 let index = SortedToken::binary_search(&key, &tokens);
+    //                 if index.is_none()
+    //                 {
+    //                     tokens.push(key);
+    //                     self.tokens_sorted.insert(&i, &tokens);
+    //                     continue;
+    //                 }
 
-                    tokens.insert(index.unwrap(), key);
-                    self.tokens_sorted.insert(&i, &tokens);
-                }
-                None => {
-                    let mut vector :Vec<SortedToken> = Vec::new();
-                    vector.push(key);
+    //                 tokens.insert(index.unwrap(), key);
+    //                 self.tokens_sorted.insert(&i, &tokens);
+    //             }
+    //             None => {
+    //                 let mut vector :Vec<SortedToken> = Vec::new();
+    //                 vector.push(key);
 
-                    self.tokens_sorted.insert(&i, &vector);
-                    continue;
-                }
-            }
-        }
-    }
+    //                 self.tokens_sorted.insert(&i, &vector);
+    //                 continue;
+    //             }
+    //         }
+    //     }
+    // }
 }

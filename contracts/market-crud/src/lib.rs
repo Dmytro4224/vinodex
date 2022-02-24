@@ -358,8 +358,6 @@ impl Contract {
         self.use_storage_fees
     }
     
-   
- 
     fn measure_min_token_storage_cost(&mut self) {
         let initial_storage_usage = env::storage_usage();
         let tmp_account_id = "a".repeat(64);
