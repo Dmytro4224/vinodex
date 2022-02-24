@@ -316,6 +316,10 @@ impl Contract {
         self.version
     }
 
+    pub fn get_version1(&self) -> u16 {
+        123
+    }
+
     pub fn tokens_sorted_get(&self, filter: u8) -> Option<Vec<SortedToken>>
     {
         return self.tokens_sorted.get(&filter);
@@ -429,9 +433,8 @@ impl Contract {
     }
 
     //Встановити дані профілю
-    pub fn set_profile(&mut self, 
-        mut profile: Profile,
-        account_id:AccountId) {
+    pub fn set_profile(&mut self, mut profile: Profile) 
+    {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
             "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
@@ -447,12 +450,13 @@ impl Contract {
             "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
         );
         
+        let predecessor_account_id = env::predecessor_account_id();
 
-        profile.account_id=account_id.clone();
+        profile.account_id=predecessor_account_id;
 
         Profile::set_profile(&mut self.profiles,
-            profile,
-            &account_id);
+            &profile,
+            &env::predecessor_account_id());
     }
 
     //лайкнути карточку користувача
