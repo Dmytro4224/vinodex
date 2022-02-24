@@ -8,13 +8,17 @@ use converters::Converter;
 #[near_bindgen]
 impl Contract {
 
-    pub fn nft_tokens(&self, from_index: Option<U128>, limit: Option<u64>) -> Vec<JsonToken> {
+    pub fn nft_tokens(
+        &self,
+        from_index: Option<U128>, 
+        limit: Option<u64>,
+        account_id:Option<AccountId>) -> Vec<JsonToken> {
         let keys = self.token_metadata_by_id.keys_as_vector();
         let start = u128::from(from_index.unwrap_or(U128(0)));
         keys.iter()
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
-            .map(|token_id| self.nft_token(token_id.clone()).unwrap())
+            .map(|token_id| self.nft_token_for_account(token_id.clone(),account_id.clone()).unwrap())
             .collect()
     }
 
@@ -111,6 +115,7 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
+        account_id:Option<AccountId>
     ) ->Vec<JsonToken> {
 
         let token_ids : HashSet<String>;
@@ -186,7 +191,13 @@ impl Contract {
 
                 if token_ids.contains(&sorted[_index].token_id)
                 {
-                    result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
+                    result.push(
+                        self.nft_token_for_account
+                        (
+                            sorted[_index].token_id.clone(),
+                            account_id.clone()).unwrap()
+                                )
+                                
                 }
             }
         }
@@ -203,7 +214,12 @@ impl Contract {
 
                 if token_ids.contains(&_token.unwrap().token_id)
                 {
-                    result.push(self.nft_token(sorted[_index].token_id.clone()).unwrap());
+                    result.push(
+                        self.nft_token_for_account
+                        (
+                            sorted[_index].token_id.clone(),
+                            account_id.clone()).unwrap()
+                                );
                 }
             }
         }
@@ -218,9 +234,10 @@ impl Contract {
         &self,
         // id токену
         token_id: TokenId,
+        account_id:Option<AccountId>
     ) -> JsonToken {
 
-        return self.nft_token(token_id).unwrap();
+        return self.nft_token_for_account(token_id,account_id.clone()).unwrap();
     }
     
 
@@ -254,7 +271,7 @@ impl Contract {
         keys.iter()
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
-            .map(|token_id| self.nft_token(token_id.clone()).unwrap())
+            .map(|token_id| self.nft_token_for_account(token_id.clone(),Some(account_id.clone())).unwrap())
             .collect()
     }
 
@@ -274,7 +291,7 @@ impl Contract {
             keys.iter()
                 .skip(start as usize)
                 .take(limit.unwrap_or(0) as usize)
-                .map(|token_id| self.nft_token(token_id.clone()))
+                .map(|token_id| self.nft_token_for_account(token_id.clone(),Some(account_id.clone())))
                 .collect()
 
         }else{
