@@ -24,10 +24,14 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     return this.props.params.userId!;
   }
 
+  private get isMyProfile() {
+    return this.props.near.user?.accountId === this.getUserId;
+  }
+
   public componentDidMount() {
-    this.props.nftContractContext.view_artist_account(this.getUserId).then(res => {
-      console.log('view_artist_account success', res);
-    })
+    // this.props.nftContractContext.view_artist_account(this.getUserId).then(res => {
+    //   // console.log('view_artist_account success', res);
+    // })
 
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       // this.userProfile = profile;
@@ -68,7 +72,10 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
               className="mb-3 justify-content-center"
             >
               <Tab eventKey="details" title="Profile details">
-                <InfoDetails />
+                <InfoDetails
+                  isMyProfile={this.isMyProfile}
+                  userId={this.getUserId}
+                />
               </Tab>
               <Tab eventKey="sale" title="On sale">
                 <div style={{ minHeight: '300px' }}><EmptyListView /></div>
