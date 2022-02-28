@@ -321,8 +321,8 @@ impl Profile {
         //аккаунт, який робить помітку
         target_account_id: &AccountId,
         //вказує на те, чи потрібно робити зворотню дію: чек-анчек
-        need_reverse:bool){
-
+        need_reverse:bool)
+    {
         let mut _account_list = dictionary.get(&sourse_account_id);
         match _account_list
         {
@@ -351,8 +351,6 @@ impl Profile {
         }
     }
 } 
-
-
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 ///структура для статистики
