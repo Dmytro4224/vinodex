@@ -62,14 +62,14 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       bio: this._refInputUserBio.value,
     };
 
-    console.table(result);
-    this.changeToInfoTemplate();
+    console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
 
-    return
+    // return
 
     this.props.nftContractContext.set_profile(result.bio, result.name, '', result.email, this.getUserId).then(profile => {
+      console.log("🚀 ~ file: InfoDetails.tsx ~ line 74 ~ InfoDetails ~ this.props.nftContractContext.set_profile ~ profile", profile);
       // this.userProfile = profile;
-      console.log('setProfile', profile);
+      // this.changeToInfoTemplate();
     });
   }
 
