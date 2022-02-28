@@ -75,16 +75,16 @@ impl Profile {
 
            if let Some(_asked_account_id)=asked_account_id
            {
-            result.is_following=Profile::is_profile_followind(
-                &autors_followers,
-                &account_id,
-                &_asked_account_id
-            );
+                result.is_following=Profile::is_profile_followind(
+                    &autors_followers,
+                    &account_id,
+                    &_asked_account_id
+                );
 
-            result.is_like=Profile::is_profile_liked(
-                autors_followers,
-                &account_id,
-                _asked_account_id);
+                result.is_like=Profile::is_profile_liked(
+                    &autors_likes,
+                    &account_id,
+                    &_asked_account_id);
            }
 
            return  Some(result);
@@ -200,18 +200,24 @@ impl Profile {
         sourse_account_id: &AccountId,
         asked_account_id: &AccountId)->bool{
    
-           if !autors_likes.contains_key(sourse_account_id)
-           {
-               return  false;
-           }
-   
-           let _tmp= autors_likes.get(&sourse_account_id).unwrap();
-           if _tmp.contains(asked_account_id)
-           {
-               return true;
-           } 
-           
-           return  false;
+            let likes =  autors_likes.get(&sourse_account_id);
+
+            match likes
+            {
+                Some(tmp) =>
+                {
+                    if tmp.contains(asked_account_id)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                },
+                None =>
+                {
+                    return false;
+                }
+            }
        }
 
     ///кількість людей, які підписалися на автора
@@ -230,20 +236,27 @@ impl Profile {
        pub fn is_profile_followind(
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
-        asked_account_id: &AccountId)->bool{
+        asked_account_id: &AccountId)->bool
+        {
    
-           if !autors_followers.contains_key(sourse_account_id)
-           {
-               return  false;
-           }
-   
-           let _tmp= autors_followers.get(&sourse_account_id).unwrap();
-           if _tmp.contains(asked_account_id)
-           {
-               return true;
-           } 
-           
-           return  false;
+            let follows = autors_followers.get(&sourse_account_id);
+
+            match follows
+            {
+                Some(tmp) =>
+                {
+                    if tmp.contains(asked_account_id)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                },
+                None =>
+                {
+                    return false;
+                }
+            }
        }
 
     ///поставити відмітку, хто відвідував сторінку користувачем
@@ -310,28 +323,33 @@ impl Profile {
         //вказує на те, чи потрібно робити зворотню дію: чек-анчек
         need_reverse:bool){
 
-        if !dictionary.contains_key(sourse_account_id)
+        let mut _account_list = dictionary.get(&sourse_account_id);
+        match _account_list
         {
-            let mut _fitst_record:HashSet<AccountId>=HashSet::new();
-            _fitst_record.insert(target_account_id.to_string());
-            dictionary.insert(&sourse_account_id, &_fitst_record);
-        }else{
-            if need_reverse
+            Some(mut value) =>
             {
-            let mut _account_list=dictionary.get(&sourse_account_id).unwrap();
-            
-            if _account_list.contains(target_account_id){
-                _account_list.remove(target_account_id);
-            }else{
-                _account_list.insert(target_account_id.clone());
-            }
+                if need_reverse
+                {
+                    if value.contains(target_account_id)
+                    {
+                        value.remove(target_account_id);
+                    }
+                    else
+                    {
+                        value.insert(target_account_id.clone());
+                    }
 
-            dictionary.insert(&sourse_account_id, &_account_list);
+                    dictionary.insert(&sourse_account_id, &value);
+                }
+            },
+            None =>
+            {
+                let mut _fitst_record:HashSet<AccountId>=HashSet::new();
+                _fitst_record.insert(target_account_id.to_string());
+                dictionary.insert(&sourse_account_id, &_fitst_record);
             }
         }
-
     }
-
 } 
 
 
@@ -463,25 +481,18 @@ impl ProfileStatCriterion{
         {
             Some(mut _vector) =>
             {
-                //видаляємо старий елемент
-                let _current_position = _vector.iter().position(|x| x.account_id.eq(user_id));
-                
-                if _current_position.is_none()
-                {
-                    _vector.push(_sort_element);
-                }
-                else
-                {
-                    _vector.remove(_current_position.unwrap());
 
-                    //сортуємо і шукаємо нову позицію
-                    let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
+                if let Some(_current_position) = _vector.iter().position(|x| x.account_id == *user_id) {
+                    _vector.remove(_current_position);
+                }
+
+                //сортуємо і шукаємо нову позицію
+                let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
                     
-                    match _new_position
-                    {
-                        Some(_new_position)=> _vector.insert(_new_position,_sort_element),
-                        None=> _vector.push(_sort_element)
-                    }
+                match _new_position
+                {
+                    Some(_new_position)=> _vector.insert(_new_position,_sort_element),
+                    None=> _vector.push(_sort_element)
                 }
 
                 //вставляємо
@@ -584,51 +595,54 @@ impl ProfileStatCriterion{
         user_id:&AccountId
         )->ProfileStat
     {
-            let stat:ProfileStat;
-                
-            match profiles_global_stat.get(&user_id.clone()) {
-                Some(mut _profile_stat) => {stat=_profile_stat}
-                None => {
-                    stat=ProfileStat{
-                        likes_count:0,
-                        tokens_likes_count: 0,
-                        views_count: 0,
-                        tokens_views_count: 0,
-                        tokens_count: 0,
-                        followers_count: 0
-                    };
-                }
+        let stat:ProfileStat;
+            
+        match profiles_global_stat.get(&user_id.clone()) {
+            Some(mut _profile_stat) => {stat=_profile_stat}
+            None => {
+                stat=ProfileStat{
+                    likes_count:0,
+                    tokens_likes_count: 0,
+                    views_count: 0,
+                    tokens_views_count: 0,
+                    tokens_count: 0,
+                    followers_count: 0
+                };
             }
-
-            return  stat;
         }
+
+        return  stat;
+    }
 
     ///перевірити чи встановленні дефолтні значення статистистики для юзера
     pub fn profile_stat_check_for_default_stat(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId){
+        user_id:&AccountId)
+        {
     
             //якшо по юзеру немає фільтрів
-            if profiles_global_stat.get(&user_id.clone()).is_none() {
-                    let stat=ProfileStat{
-                        likes_count:0,
-                        tokens_likes_count: 0,
-                        views_count: 0,
-                        tokens_views_count: 0,
-                        tokens_count: 0,
-                        followers_count: 0
-                    };
-                    profiles_global_stat.insert(&user_id, &stat);
-                }
+            if profiles_global_stat.get(&user_id.clone()).is_none() 
+            {
+                let stat=ProfileStat{
+                    likes_count:0,
+                    tokens_likes_count: 0,
+                    views_count: 0,
+                    tokens_views_count: 0,
+                    tokens_count: 0,
+                    followers_count: 0
+                };
+                profiles_global_stat.insert(&user_id, &stat);
+            }
 
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
-                
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
+            //Не потрібно
+
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
+            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
         }
 
 
