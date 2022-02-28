@@ -20,7 +20,8 @@ interface IArtistCard extends IProps{
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
   public state = {
     isLike: false,
-    isFollow: this.props.isFollow
+    likesCount: this.likesCount,
+    isFollow: this.isFollow
   }
 
   constructor(props: IArtistCard & IBaseComponentProps) {
@@ -48,7 +49,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get isFollow() {
-    return this.state.isFollow;
+    return this.props.isFollow;
   }
 
   private get isCard() {
@@ -66,9 +67,18 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   private toggleLikeAccount() {
     this.props.nftContractContext.like_artist_account(this.identification).then(res => {
+      let likes = this.state.likesCount
+
+      if (this.state.isLike) {
+        likes -= 1;
+      } else {
+        likes += 1;
+      }
+
       this.setState({
         ...this.state,
-        isLike: !this.state.isLike
+        isLike: !this.state.isLike,
+        likesCount: likes
       })
     })
   }
@@ -77,15 +87,19 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return (
       <div className={styles.artistCard}>
         <div className={styles.artistWrap}>
-          <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar"/>
+          <NavLink to={`/userProfile/${this.identification}`}>
+            <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+          </NavLink>
           <div>
-            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
+            <NavLink to={`/userProfile/${this.identification}`}>
+              <p className={styles.artistName}>{this.name}</p>
+            </NavLink>
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
         <div className="d-flex align-items-center justify-content-between">
           <ButtonView
-            text={this.isFollow ? "Unfollow" : "Follow"}
+            text={this.state.isFollow ? "Unfollow" : "Follow"}
             onClick={() => { this.btnFollowHandler() }}
             color={buttonColors.goldFill}
             customClass={styles.buttonFollow}
@@ -100,11 +114,11 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             />
             <LikeView
               onClick={() => { this.toggleLikeAccount() }}
-              customClass={styles.likes}
               isChanged={this.state.isLike}
+              customClass={styles.likes}
               isActive={true}
               type={LikeViewType.like}
-              count={this.likesCount}
+              count={this.state.likesCount}
             />
           </div>
         </div>
@@ -132,7 +146,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             count={this.likesCount}
           />
           <ButtonView
-            text={this.isFollow ? "Unfollow" : "Follow"}
+            text={this.state.isFollow ? "Unfollow" : "Follow"}
             onClick={() => { this.btnFollowHandler() }}
             color={buttonColors.goldFill}
             customClass={styles.buttonFollow}

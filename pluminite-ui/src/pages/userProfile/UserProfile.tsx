@@ -7,9 +7,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
 import {EmptyListView} from "../../components/common/emptyList/emptyListView";
 
-interface IUserProfile extends IProps {
-
-}
+interface IUserProfile extends IProps {}
 
 class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   // public state = {
@@ -29,13 +27,15 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    // this.props.nftContractContext.view_artist_account(this.getUserId).then(res => {
-    //   // console.log('view_artist_account success', res);
-    // })
+    if (!this.isMyProfile) {
+      this.props.nftContractContext.view_artist_account(this.getUserId).then(res => {
+        console.log("🚀 ~ file: UserProfile.tsx ~ line 31 ~ UserProfile ~ this.props.nftContractContext.view_artist_account ~ res", res)
+      })
+    }
 
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       // this.userProfile = profile;
-      console.log('getProfile', profile);
+      console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
     });
   }
 
@@ -45,11 +45,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     //   profile: profile
     // })
   }
-
-  // private get profile() {
-  //   return this.state.profile;
-  // }
-
+  
   public render() {
     return (
       <>

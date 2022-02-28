@@ -97,7 +97,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
           />
         </div>
 
-        <div className="d-flex flex-wrap flex-gap-36 mt-3 justify-content-between">
+        <div className="d-flex flex-wrap flex-gap-36 mt-3">
           {this.list.map((item, index) => {
             return <ArtistCard
               key={index}
