@@ -13,10 +13,11 @@ interface IInputView extends IProps {
   alt?: string;
   icon?: any;
   viewType?: ViewType;
+  inputStyleType?: InputStyleType;
   inputType?: InputType;
 };
 
-export enum InputType {
+export enum InputStyleType {
   default = 'default',
   round = 'round'
 }
@@ -24,6 +25,12 @@ export enum InputType {
 export enum ViewType {
   input = 'input',
   textarea = 'textarea'
+}
+
+export enum InputType {
+  text = 'text',
+  number = 'number',
+  email = 'email'
 }
 
 class InputView extends Component<IInputView & IBaseComponentProps> {
@@ -36,8 +43,18 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     this.props.setRef && this.props.setRef(this);
   }
 
+  public componentDidMount() {
+    if (this.initialValue) {
+      this.ref.current.value = this.initialValue;
+    }
+  }
+
+  private get inputStyleType() {
+    return typeof this.props.inputStyleType === 'undefined' ? InputStyleType.default : this.props.inputStyleType;
+  }
+
   private get inputType() {
-    return typeof this.props.inputType === 'undefined' ? InputType.default : this.props.inputType;
+    return typeof this.props.inputType === 'undefined' ? InputType.text : this.props.inputType;
   }
 
   private get placeholder() {
@@ -73,10 +90,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   private getInputTypeStyle() {
-    switch (this.inputType) {
-      case InputType.default:
+    switch (this.inputStyleType) {
+      case InputStyleType.default:
         return styles.inputDefault
-      case InputType.round:
+      case InputStyleType.round:
         return styles.inputRound
     }
   }
@@ -95,8 +112,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
           onChange={this.onChange}
           placeholder={this.placeholder}
           className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-          value={this.initialValue}
-          type="text"
+          type={this.inputType}
           as={this.isTextAreaType ? 'textarea' : 'input'}
           ref={this.ref}
         />
