@@ -7,9 +7,7 @@ import { Tab, Tabs } from "react-bootstrap";
 import InfoDetails  from "../../components/profile/infoDetails/InfoDetails";
 import {EmptyListView} from "../../components/common/emptyList/emptyListView";
 
-interface IUserProfile extends IProps {
-
-}
+interface IUserProfile extends IProps {}
 
 class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   // public state = {

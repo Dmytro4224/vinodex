@@ -10,14 +10,11 @@ import {IBaseComponentProps, IProps, withComponent} from "../../utils/withCompon
 import {NavLink} from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 
-interface IHeader extends IProps{
-
-}
+interface IHeader extends IProps{}
 
 class Header extends Component<IHeader & IBaseComponentProps> {
   constructor(props: IHeader & IBaseComponentProps) {
     super(props);
-
   }
 
   render() {
@@ -54,9 +51,12 @@ class Header extends Component<IHeader & IBaseComponentProps> {
             />
 
             <span className={styles.separator} />
+
             <LoginButton user={this.props.near.user} />
 
-            <NavLink to={"/create"}>
+            <NavLink
+              className={styles.linkCreate}
+              to={"/create"}>
               <ButtonView
                 text={'CREATE'}
                 onClick={() => {  }}
