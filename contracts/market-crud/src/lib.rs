@@ -545,8 +545,5 @@ impl Contract {
                 &account_id
             )
         );
-
     }
-
-
 }

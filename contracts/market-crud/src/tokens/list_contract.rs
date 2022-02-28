@@ -104,7 +104,7 @@ impl Contract {
         tmp
     }
     
-///колекція токенів по фільтру
+    ///колекція токенів по фільтру
     pub fn nft_tokens_by_filter(
         &self,
         // каталог або null|none
@@ -299,8 +299,6 @@ impl Contract {
         }
     }
 
-    
-
     //словник авторів
     pub fn authors_by_storage_para(&self,parameter: u8)->Vec<ProfileStatCriterion>{
         return self.profiles_global_stat_sorted_vector.get(&parameter).unwrap();
@@ -485,8 +483,8 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64
-    ) ->Vec<Option<JsonProfile>> {
-
+    ) ->Vec<Option<JsonProfile>> 
+    {
         if !self.my_autors_followed.contains_key(&account_id)
         {
             return Vec::new();
@@ -520,29 +518,35 @@ impl Contract {
         }
 
         let mut result : Vec<Option<JsonProfile>> = Vec::new();
-
        
-            for i in skip..skip + available_amount as u64
-            {
-                let _index = i as usize;
-                let _author_id = authors_ids.get(_index);
+        for i in skip..skip + available_amount as u64
+        {
+            let _index = i as usize;
+            let _author_id = authors_ids.get(_index);
 
-                if !_author_id.is_some() || _author_id.is_none()
+            match _author_id
+            {
+                Some(author_id) =>
+                {
+                    result.push
+                    (
+                        Profile::get_full_profile
+                        (
+                            &self.profiles,
+                            &author_id,
+                            &_accoutn_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        )
+                    );
+                },
+                None =>
                 {
                     continue;
                 }
-
-                result.push (
-                    Profile::get_full_profile(
-                        &self.profiles,
-                        &_author_id.unwrap(),
-                        &_accoutn_id,
-                        &self.autors_likes,
-                        &self.autors_followers
-                  ));
             }
+        }
         
-
         return result;
     }
 }
