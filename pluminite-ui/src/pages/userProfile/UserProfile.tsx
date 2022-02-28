@@ -41,7 +41,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
 
-      this.userProfile = profile;
+      if (profile) {
+        this.userProfile = profile;
+      }
     });
   }
 
