@@ -14,7 +14,7 @@ export const NftContractContext = React.createContext<INftContractContext>(initi
 export interface INftContractContext {
     nftContract: INftContract | null;
     getProfile: (accountId: string) => Promise<IProfile>;
-    set_profile: (bio: string, name: string, image: string, email: string, accountId: string) => Promise<IProfile>;
+    set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
     like_artist_account: (accountId: string) => Promise<any>;
     follow_artist_account: (accountId: string) => Promise<any>;
     view_artist_account: (accountId: string) => Promise<any>;
@@ -80,13 +80,15 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         });
     }
 
-    public set_profile = async (bio: string, name: string, image: string, email: string, accountId: string) => {
+    public set_profile = async ({ profile: { name, bio, image, email, accountId } }) => {
         return this.nftContract.set_profile({
-            bio: bio,
-            name: name,
-            image: image,
-            email: email,
-            accountId: accountId
+            profile: {
+              bio: bio,
+              name: name,
+              image: image,
+              email: email,
+              account_id: accountId
+            }
         });
     }
 
