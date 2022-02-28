@@ -1,6 +1,5 @@
-import React, {ChangeEvent, Component} from "react";
-import { Form } from "react-bootstrap";
-import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import React, { ChangeEvent, Component } from "react";
+import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './inputView.module.css';
 
 interface IInputView extends IProps {
@@ -15,6 +14,9 @@ interface IInputView extends IProps {
   viewType?: ViewType;
   inputStyleType?: InputStyleType;
   inputType?: InputType;
+  isError?: boolean;
+  errorMessage?: string;
+  disabled?: boolean;
 };
 
 export enum InputStyleType {
@@ -44,6 +46,12 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   public componentDidMount() {
+    if (this.initialValue) {
+      this.ref.current.value = this.initialValue;
+    }
+  }
+
+  public componentDidUpdate() {
     if (this.initialValue) {
       this.ref.current.value = this.initialValue;
     }
@@ -81,6 +89,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     return this._ref;
   }
 
+  private get disabled() {
+    return this.props.disabled;
+  }
+
   private get isTextAreaType() {
     return this.props.viewType === ViewType.textarea;
   }
@@ -102,23 +114,43 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     return this.ref.current?.value;
   }
 
+  private get isError() {
+    return typeof this.props.isError === 'undefined' ? false : this.props.isError;
+  }
+
+  private get errorMessage() {
+    return typeof this.props.errorMessage === 'undefined' ? '' : this.props.errorMessage;
+  }
+
   public render() {
     return (
       <div className={`${styles.inputWrap} ${this.getInputTypeStyle()} ${this.props.customClass || ''}`}>
 
         {this.icon && <img className={styles.icon} src={this.icon} alt={this.alt} />}
 
-        <Form.Control
-          onChange={this.onChange}
-          placeholder={this.placeholder}
-          className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-          type={this.inputType}
-          as={this.isTextAreaType ? 'textarea' : 'input'}
-          ref={this.ref}
-        />
+        <div className={styles.inputBox}>
+          {!this.isTextAreaType ?
+            <input
+              onChange={this.onChange}
+              placeholder={this.placeholder}
+              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+              type={this.inputType}
+              ref={this.ref}
+              disabled={this.disabled ? true : false}
+            />
+            :
+            <textarea
+              onChange={this.onChange}
+              placeholder={this.placeholder}
+              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+              ref={this.ref}
+              disabled={this.disabled ? true : false}
+            />
+          }
 
-        { this.absPlaceholder && <span className={styles.absPlaceholder}>{this.absPlaceholder}</span> }
+          {this.absPlaceholder && <label className={styles.absPlaceholder}>{this.absPlaceholder}</label>}
 
+        </div>
       </div>
     )
   }
