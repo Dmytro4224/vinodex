@@ -6,33 +6,50 @@ import emailIcon from '../../../assets/icons/mail-gold.svg';
 import listIcon from '../../../assets/icons/list-gold.svg';
 import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
-import InputView, {ViewType} from "../../common/inputView/InputView";
-import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import InputView, {InputType, ViewType} from "../../common/inputView/InputView";
+import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import { isEqual } from "../../../utils/sys";
 
 interface IInfoDetails extends IProps {
-  userId: string;
+  updateUserInfo: (profile) => void;
   isMyProfile: boolean;
+  userId: string;
+  profile: {
+    name: string,
+    email: string,
+    bio: string,
+  };
 }
 
 class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   public state = {
     isEditForm: false,
+    profile: {
+      name: this.profile.name,
+      email: this.profile.email,
+      bio: this.profile.bio,
+    }
   };
 
-  private readonly _radioNFTApproveRef: any;
+  private _radioNFTApproveRef: any;
   private _refInputUserName: any;
   private _refInputUserEmail: any;
   private _refInputUserBio: any;
 
   constructor(props: IInfoDetails & IBaseComponentProps) {
     super(props);
-
-    this._radioNFTApproveRef = null;
-    this._refInputUserName = null;
-    this._refInputUserEmail = null;
-    this._refInputUserBio = null;
   }
 
+  public componentDidUpdate(prevState, currentState) {
+    if (!isEqual(prevState.profile, currentState.profile)) {
+      this.setProfileInfo({
+        name: prevState.profile.name,
+        email: prevState.profile.email,
+        bio: prevState.profile.bio,
+      });
+    }
+  }
+ 
   private changeToFormTemplate() {
     this.setState({
       ...this.state,
@@ -55,21 +72,47 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     return this.props.isMyProfile;
   }
 
+  private get profile() {
+    return this.props.profile;
+  }
+
+  private updateUserInfo(profile: { name: string, email: string, bio: string,  }) {
+    this.props.updateUserInfo && this.props.updateUserInfo(profile);
+  }
+
   private formSubmitHandler = async () => {
     const result = {
-      name: this._refInputUserName.value,
-      email: this._refInputUserEmail.value,
-      bio: this._refInputUserBio.value,
+      profile: {
+        name: this._refInputUserName.value,
+        email: this._refInputUserEmail.value,
+        bio: this._refInputUserBio.value,
+        accountId: this.getUserId,
+        image: ''
+      }
     };
 
     console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
 
-    // return
+    this.props.nftContractContext.set_profile(result)
+      .then(res => {
+        this.updateUserInfo({
+          name: result.profile.name,
+          email: result.profile.email,
+          bio: result.profile.bio,
+        })
 
-    this.props.nftContractContext.set_profile(result.bio, result.name, '', result.email, this.getUserId).then(profile => {
-      console.log("🚀 ~ file: InfoDetails.tsx ~ line 74 ~ InfoDetails ~ this.props.nftContractContext.set_profile ~ profile", profile);
-      // this.userProfile = profile;
-      // this.changeToInfoTemplate();
+        this.changeToInfoTemplate();
+      });
+  }
+
+  private setProfileInfo({ name, email, bio }) {
+    this.setState({
+      ...this.state,
+      profile: {
+        name: name,
+        email: email,
+        bio: bio,
+      }
     });
   }
 
@@ -91,7 +134,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>User Name</p>
-                  <p className={styles.itemSubTitle}>User Name Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.name}</p>
                 </div>
                 <img src={arrowIcon} alt="arrow"/>
               </div>
@@ -103,7 +146,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>Email</p>
-                  <p className={styles.itemSubTitle}>Email Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.email}</p>
                 </div>
                 <img src={arrowIcon} alt="arrow"/>
               </div>
@@ -115,7 +158,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>Bio</p>
-                  <p className={styles.itemSubTitle}>Bio Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.bio}</p>
                 </div>
                 <img src={arrowIcon} alt="arrow"/>
               </div>
@@ -165,6 +208,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             placeholder={'User name'}
             icon={userIcon}
             customClass={'mb-4'}
+            value={this.state.profile.name}
             setRef={(ref) => {this._refInputUserName = ref;}}
           />
 
@@ -172,6 +216,8 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             placeholder={'Email'}
             icon={emailIcon}
             customClass={'mb-4'}
+            inputType={InputType.email}
+            value={this.state.profile.email}
             setRef={(ref) => {this._refInputUserEmail = ref;}}
           />
 
@@ -179,6 +225,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             placeholder={'Bio'}
             customClass={'mb-4'}
             viewType={ViewType.textarea}
+            value={this.state.profile.bio}
             setRef={(ref) => {this._refInputUserBio = ref;}}
           />
 

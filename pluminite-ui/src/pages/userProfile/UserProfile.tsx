@@ -10,9 +10,14 @@ import {EmptyListView} from "../../components/common/emptyList/emptyListView";
 interface IUserProfile extends IProps {}
 
 class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
-  // public state = {
-  //   profile:
-  // }
+  public state = {
+    image: avatarDefault,
+    profile: {
+      bio: 'Bio Example',
+      email: 'User Name Example',
+      name: 'User Name Example',
+    }
+  }
 
   constructor(props: IUserProfile & IBaseComponentProps) {
     super(props);
@@ -34,18 +39,35 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     }
 
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-      // this.userProfile = profile;
       console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
+
+      this.userProfile = profile;
     });
   }
 
   private set userProfile(profile) {
-    // this.setState({
-    //   ...this.state,
-    //   profile: profile
-    // })
+    this.setState({
+      ...this.state,
+      image: profile.image || avatarDefault,
+      profile: {
+        bio: profile.bio,
+        email: profile.email,
+        name: profile.name
+      }
+    })
   }
-  
+
+  public updateUserInfo(profile) {
+    this.setState({
+      ...this.state,
+      profile: {
+        bio: profile.bio,
+        email: profile.email,
+        name: profile.name
+      }
+    })
+  }
+
   public render() {
     return (
       <>
@@ -56,9 +78,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             </div>
             <div className={styles.profileInfoWrap}>
               <div className={styles.avatarWrap}>
-                <img width="100" height="100" src={avatarDefault} alt="avatar" />
+                <img width="100" height="100" src={this.state.image} alt="avatar" />
               </div>
-              <p className={styles.profileName}>{'Profile Name'}</p>
+              <p className={styles.profileName}>{this.state.profile.name}</p>
               <IdentificationCopy id={this.getUserId} />
             </div>
           </div>
@@ -71,6 +93,8 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
                 <InfoDetails
                   isMyProfile={this.isMyProfile}
                   userId={this.getUserId}
+                  profile={this.state.profile}
+                  updateUserInfo={(profile) => { this.updateUserInfo(profile) }}
                 />
               </Tab>
               <Tab eventKey="sale" title="On sale">
