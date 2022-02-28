@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import styles from './header.module.css';
 import {HeaderNavigation} from "../navigation/HeaderNavigation";
-import InputView, {InputType} from "../common/inputView/InputView";
+import InputView, {InputStyleType} from "../common/inputView/InputView";
 import LoginButton from "../header/loginButton";
 import searchIcon from "../../assets/icons/search.svg";
 import ButtonView, {buttonColors} from "../common/button/ButtonView";
@@ -30,7 +30,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
               onChange={(e) => { console.log(e) }}
               placeholder={'Search'}
               icon={searchIcon}
-              inputType={InputType.round}
+              inputStyleType={InputStyleType.round}
             />
           </div>
           <div className={`d-flex align-items-center ${styles.buttonWrap}`}>
