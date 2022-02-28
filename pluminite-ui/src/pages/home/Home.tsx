@@ -99,19 +99,11 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
-                    text={'Load more'}
-                    onClick={() => {
-                        //@ts-ignore
-                        console.log(this.props.params);
-                         //@ts-ignore
-                        this.props.navigate('/userProfile/q874587321JSAHFJHA');
-                    }}
+            text={'Load more'}
+            onClick={() => {}}
             color={buttonColors.select}
           />
-            </div>
-
-
-
+        </div>
       </div>
     );
   }

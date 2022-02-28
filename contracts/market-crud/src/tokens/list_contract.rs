@@ -306,6 +306,11 @@ impl Contract {
         return self.profiles_global_stat_sorted_vector.get(&parameter).unwrap();
     }
 
+    pub fn authors_clear(&mut self)
+    {
+        self.profiles_global_stat_sorted_vector = LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap());
+    }
+
     //списки авторів
     pub fn authors_by_filter(
         &self,

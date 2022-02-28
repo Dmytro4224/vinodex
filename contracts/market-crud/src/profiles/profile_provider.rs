@@ -381,142 +381,160 @@ impl ProfileStatCriterion{
     }
 
     //встановити значення параметру статистики
-    pub fn set_profile_stat_val(
+    pub fn set_profile_stat_val
+    (
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
         user_id:&AccountId, 
         parameter:u8,
-        value:u32)
+        value:u32
+    )
     {
-            let mut stat:ProfileStat;
-        
-            match profiles_global_stat.get(&user_id.clone()) {
-                Some(mut _profile_stat) => {stat=_profile_stat}
-                None => {
-                    stat=ProfileStat{
-                        likes_count:0,
-                         tokens_likes_count: 0,
-                         views_count: 0,
-                         tokens_views_count: 0,
-                         tokens_count: 0,
-                         followers_count: 0
-                    };
-                }
+        let mut stat:ProfileStat;
+    
+        match profiles_global_stat.get(&user_id.clone()) 
+        {
+            Some(mut _profile_stat) => 
+            {
+                stat = _profile_stat
             }
-                
-            let mut _criterion:u32=0;
-    
-                match parameter
+            None => 
+            {
+                stat = ProfileStat
                 {
-                    //0 - кількість лайків аккаунту
-                    0=>{
-                        
-                        stat.likes_count=value;
-                        _criterion=stat.likes_count;
-                    },
-                    //1 -кількість лайків токенів аккаунту
-                    1=>{
-                        stat.tokens_likes_count = value;
-                        _criterion=stat.tokens_likes_count;
-                    },
-                    //2 - загальна ксть переглядів аккаунту
-                    2=>{
-                        stat.views_count=value;
-                        _criterion=stat.views_count;
-                    },
-                    //3 - загальна ксть переглядів токенів аккаунту
-                    3=>{
-                        stat.tokens_views_count=value;
-                        _criterion=stat.tokens_views_count;
-                    },
-                    //4 - загальна ксть токенів
-                    4=>{
-                        stat.tokens_count=value;
-                        _criterion=stat.tokens_count;
-                    },
-                    // 5 - к-сть підписників автора
-                    5=>{
-                        stat.followers_count=value;
-                        _criterion=stat.followers_count;
-                    },
-                    _=>{}
-                }
-    
-                let _sorted_list_item = profiles_global_stat_sorted_vector.get(&parameter);
-    
-                let _sort_element=ProfileStatCriterion {
-                    account_id: user_id.to_string(),
-                    criterion:Some(_criterion)
+                    likes_count:0,
+                    tokens_likes_count: 0,
+                    views_count: 0,
+                    tokens_views_count: 0,
+                    tokens_count: 0,
+                    followers_count: 0
                 };
-    
-                //якшо ще немає сортування для цього параметру
-                // створюємо запис
-                if !_sorted_list_item.is_some() || _sorted_list_item.is_none(){
-                    let mut _insert_vec:Vec<ProfileStatCriterion>=Vec::new();
-                    _insert_vec.push(
-                        _sort_element
-                    );
-    
-                    profiles_global_stat_sorted_vector.insert(&parameter,&_insert_vec);
+            }
+        }
+            
+        let mut _criterion:u32=0;
+
+        match parameter
+        {
+            //0 - кількість лайків аккаунту
+            0=>{
+                
+                stat.likes_count=value;
+                _criterion=stat.likes_count;
+            },
+            //1 -кількість лайків токенів аккаунту
+            1=>{
+                stat.tokens_likes_count = value;
+                _criterion=stat.tokens_likes_count;
+            },
+            //2 - загальна ксть переглядів аккаунту
+            2=>{
+                stat.views_count=value;
+                _criterion=stat.views_count;
+            },
+            //3 - загальна ксть переглядів токенів аккаунту
+            3=>{
+                stat.tokens_views_count=value;
+                _criterion=stat.tokens_views_count;
+            },
+            //4 - загальна ксть токенів
+            4=>{
+                stat.tokens_count=value;
+                _criterion=stat.tokens_count;
+            },
+            // 5 - к-сть підписників автора
+            5=>{
+                stat.followers_count=value;
+                _criterion=stat.followers_count;
+            },
+            _=>{}
+        }
+
+        let _sorted_list_item = profiles_global_stat_sorted_vector.get(&parameter);
+
+        let _sort_element=ProfileStatCriterion {
+            account_id: user_id.to_string(),
+            criterion:Some(_criterion)
+        };
+
+        //якшо ще немає сортування для цього параметру
+        // створюємо запис
+        match _sorted_list_item
+        {
+            Some(mut _vector) =>
+            {
+                //видаляємо старий елемент
+                let _current_position = _vector.iter().position(|x| x.account_id.eq(user_id));
+                
+                if _current_position.is_none()
+                {
+                    _vector.push(_sort_element);
                 }
-                //якшо вже шось є, пробуємо відсортувати 
-                else{
-                    let mut _vector=profiles_global_stat_sorted_vector.get(&parameter).unwrap();
-                    //видаляємо старий елемент
-                    let _current_position = _vector.iter().position(|x|x.account_id  == user_id.to_string());
+                else
+                {
+                    _vector.remove(_current_position.unwrap());
+
+                    //сортуємо і шукаємо нову позицію
+                    let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
                     
-                    if !_current_position.is_none()
+                    match _new_position
                     {
-                        _vector.remove(_current_position.unwrap());
-        
-                        //сортуємо і шукаємо нову позицію
-                        let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
-                        
-                        match _new_position
-                        {
-                                Some(_new_position)=> _vector.insert(_new_position,_sort_element),
-                                None=> _vector.push(_sort_element)
-                        }
-                        
-                    }else{
-    
-                        _vector.push(_sort_element);
+                        Some(_new_position)=> _vector.insert(_new_position,_sort_element),
+                        None=> _vector.push(_sort_element)
                     }
-                    //вставляємо
-                    profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
                 }
-                //===========================
+
+                //вставляємо
+                profiles_global_stat_sorted_vector.insert(&parameter, &_vector);
+            },
+            None =>
+            {
+                let mut _insert_vec:Vec<ProfileStatCriterion>=Vec::new();
+                _insert_vec.push(
+                    _sort_element
+                );
     
-                profiles_global_stat.insert(&user_id, &stat);
+                profiles_global_stat_sorted_vector.insert(&parameter,&_insert_vec);
+            }
+        }
+
+        profiles_global_stat.insert(&user_id, &stat);
     }
 
     ///збільшити значення статистики
-    pub  fn profile_stat_inc(
+    pub  fn profile_stat_inc
+    (
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
         user_id:&AccountId, 
         parameter:u8,
         increment:u32,
-        need_add:bool)
-    {
-
+        need_add:bool
+    )
+        {
             let stat:ProfileStat;
     
-            match profiles_global_stat.get(&user_id.clone()) {
-                Some(mut _profile_stat) => {stat=_profile_stat}
-                None => {
-                    stat=ProfileStat{
+            match profiles_global_stat.get(&user_id.clone()) 
+            {
+                Some(mut _profile_stat) => 
+                {
+                    stat = _profile_stat
+                },
+                None => 
+                {
+                    stat = ProfileStat
+                    {
                         likes_count:0,
-                         tokens_likes_count: 0,
-                         views_count: 0,
-                         tokens_views_count: 0,
-                         tokens_count: 0,
-                         followers_count: 0
+                        tokens_likes_count: 0,
+                        views_count: 0,
+                        tokens_views_count: 0,
+                        tokens_count: 0,
+                        followers_count: 0
                     };
                 }
             }        
             
-        let mut _value:u32=0;
+            let mut _value:u32=0;
 
             match parameter
             {
@@ -550,14 +568,15 @@ impl ProfileStatCriterion{
                 _=>{}
             }
 
-            ProfileStatCriterion::set_profile_stat_val(
+            ProfileStatCriterion::set_profile_stat_val
+            (
                 profiles_global_stat,
                 profiles_global_stat_sorted_vector,
-                &user_id,
+                user_id,
                 parameter,
-            _value);
-
-    }
+                _value
+            );
+        }
 
         ///отримати дані по статистиці профілю
     pub fn profile_stat(
@@ -603,13 +622,13 @@ impl ProfileStatCriterion{
                     profiles_global_stat.insert(&user_id, &stat);
                 }
 
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,&user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
                 
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,&user_id,profiles_global_stat_sorted_vector);
-                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,&user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
+                ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
         }
 
 
@@ -622,41 +641,39 @@ impl ProfileStatCriterion{
             let mut _vector
             = profiles_global_stat_sorted_vector.get(&parameter);
 
-            if _vector.is_none()
+            match _vector
             {
-                let mut _empty_vector:Vec<ProfileStatCriterion>=Vec::new();
-                _empty_vector.push(
-                    ProfileStatCriterion{
-                                        account_id:user_id.to_string(),
-                                        criterion:Some(0)
-                });
-                profiles_global_stat_sorted_vector.insert(&parameter,&_empty_vector);
-            
-
-            }
-            else
-            {
-                let mut _new_vector 
-                = profiles_global_stat_sorted_vector.get(&parameter).unwrap();
-
-                let _current_position 
-                = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
-                
-                let emty_value = ProfileStatCriterion{
-                    account_id:user_id.to_string(),
-                    criterion:Some(0)
-                };
-
-                if _current_position.is_none()
+                Some(mut _new_vector) =>
                 {
-                    _new_vector.push(emty_value);
-                }
-                else
-                {
-                    _new_vector.insert(_current_position.unwrap(), emty_value);
-                }
+                    let _current_position 
+                    = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
+                    
+                    let emty_value = ProfileStatCriterion{
+                        account_id:user_id.to_string(),
+                        criterion:Some(0)
+                    };
 
-                profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
+                    if _current_position.is_none()
+                    {
+                        _new_vector.push(emty_value);
+                    }
+                    else
+                    {
+                        _new_vector.insert(_current_position.unwrap(), emty_value);
+                    }
+
+                    profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
+                },
+                None =>
+                {
+                    let mut _empty_vector:Vec<ProfileStatCriterion>=Vec::new();
+                    _empty_vector.push(
+                        ProfileStatCriterion{
+                                            account_id:user_id.to_string(),
+                                            criterion:Some(0)
+                    });
+                    profiles_global_stat_sorted_vector.insert(&parameter,&_empty_vector);
+                }
             }
         }
 
