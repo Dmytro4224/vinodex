@@ -51,11 +51,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     private onClick(){
         this.props.onClick && this.props.onClick();
     }
-    public changeLikeCount(count: number,isLike: boolean){
+    public changeLikeCount(){
         this.setState({
             ...this.state,
-            isLike: isLike,
-            likesCount: count
+            isLike: !this.state.isLike,
+            likesCount:  !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
         })
     }
     private  toggleLikeToken = async () => {
@@ -64,13 +64,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 return
             }
             this._isProcessLike = true;
-             this.changeLikeCount(!this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,!this.state.isLike);
+             this.changeLikeCount();
             await this.props.nftContractContext.token_set_like(this.tokenID);
             this._isProcessLike = false;
-            console.log('this.tate',this.state)
         } catch(ex) {
             this._isProcessLike = false;
-           this.changeLikeCount( this.state.likesCount,this.state.isLike);
+           this.changeLikeCount();
             showToast({
                 message: `Error! Please try again later`,
                 type: EShowTost.error

@@ -61,18 +61,18 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private get isCard() {
     return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
-  public changeLikeCount(count: number,isLike: boolean){
+  public changeLikeCount(){
     this.setState({
       ...this.state,
-      isLike: isLike,
-      likesCount: count
+      isLike: !this.state.isLike,
+      likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
     })
   }
-  public changeFollow(count: number,isFollow: boolean){
+  public changeFollow(){
     this.setState({
       ...this.state,
       isFollow: !this.state.isFollow,
-      usersCount:count
+      usersCount: !this.state.isFollow ? this.state.usersCount + 1 : this.state.usersCount - 1,
     })
   }
   private btnFollowHandler = async () => {
@@ -81,12 +81,12 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         return
       }
       this.state.isProcessFollow = true;
-      this.changeFollow(!this.state.isFollow ? this.state.usersCount + 1 : this.state.usersCount - 1,!this.state.isFollow);
-      await this.props.nftContractContext.follow_artist_account(this.identification)
+      this.changeFollow();
+      await this.props.nftContractContext.follow_artist_account(this.identification);
       this.state.isProcessFollow = false;
     }catch (ex) {
       this.state.isProcessFollow = false;
-      this.changeLikeCount( this.state.usersCount,this.state.isFollow);
+      this.changeFollow();
       console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", ex)
       showToast({
         message: `Error! Please try again later`,
@@ -101,12 +101,13 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         return
       }
       this.state.isProcessLike = true;
-      this.changeLikeCount(!this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,!this.state.isLike);
+      this.changeLikeCount();
       await this.props.nftContractContext.like_artist_account(this.identification);
       this.state.isProcessLike = false;
     } catch(ex) {
       this.state.isProcessLike = false;
-      this.changeLikeCount( this.state.likesCount,this.state.isLike);
+      console.warn('error',this.state.isLike)
+      this.changeLikeCount();
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error
