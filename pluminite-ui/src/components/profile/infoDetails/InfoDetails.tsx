@@ -8,7 +8,8 @@ import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
 import InputView, { InputType, ViewType } from "../../common/inputView/InputView";
 import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
-import { isEqual } from "../../../utils/sys";
+import { isEqual, showToast } from "../../../utils/sys";
+import { EShowTost } from "../../../types/ISysTypes";
 
 interface IInfoDetails extends IProps {
   updateUserInfo: (profile) => void;
@@ -42,8 +43,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   }
 
   public componentDidUpdate(prevState, currentState) {
-    console.log("🚀 ~ file: InfoDetails.tsx ~ line 44 ~ InfoDetails ~ componentDidUpdate ~ componentDidUpdate")
-
     if (!isEqual(prevState.profile, currentState.profile)) {
       this.setProfileInfo({
         name: prevState.profile.name,
@@ -108,6 +107,11 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
 
     this.props.nftContractContext.set_profile(result)
       .then(res => {
+        showToast({
+          message: `Data saved successfully.`,
+          type: EShowTost.success
+        });
+
         this.setState({
           ...this.state,
           isLoading: false
@@ -120,7 +124,13 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         })
 
         this.changeToInfoTemplate();
-      });
+      })
+      .catch(error => {
+        showToast({
+          message: `Error! Please try again later`,
+          type: EShowTost.error
+        });
+      })
   }
 
   private setProfileInfo({ name, email, bio }) {
