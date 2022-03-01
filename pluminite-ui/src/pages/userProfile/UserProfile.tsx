@@ -53,6 +53,40 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     this._inputFile = React.createRef<HTMLInputElement>();
   }
 
+  public componentDidMount() {
+    console.log("🚀 ~ file: UserProfile.tsx ~ line 57 ~ UserProfile ~ componentDidMount ~ componentDidMount")
+
+    if (!this.isMyProfile) {
+      this.props.nftContractContext.view_artist_account(this.getUserId)
+        .then(res => {
+          console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ view_artist_account ~ success", res)
+        })
+        .catch(error => {
+          console.warn("🚀 ~ file: UserProfile.tsx ~ line 41 ~ UserProfile ~ view_artist_account ~ error", error)
+        })
+    }
+
+    this.getData();
+  }
+
+  public componentDidUpdate(prevState, currentState) {
+    console.log("🚀 ~ file: UserProfile.tsx ~ line 77 ~ UserProfile ~ componentDidUpdate ~ componentDidUpdate")
+
+    if (prevState.params.userId !== window.location.href.split('/userProfile/')[1]) {
+      this.getData();
+    }
+  }
+
+  private getData() {
+    this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
+      console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
+
+      if (profile) {
+        this.userProfile = profile;
+      }
+    });
+  }
+
   private get getUserId() {
     return this.props.params.userId!;
   }
@@ -91,26 +125,6 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         isLoadAvatar: false
       })
     }
-  }
-
-  public componentDidMount() {
-    if (!this.isMyProfile) {
-      this.props.nftContractContext.view_artist_account(this.getUserId)
-        .then(res => {
-          console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ view_artist_account ~ success", res)
-        })
-        .catch(error => {
-          console.warn("🚀 ~ file: UserProfile.tsx ~ line 41 ~ UserProfile ~ view_artist_account ~ error", error)
-        })
-    }
-
-    this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-      console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
-
-      if (profile) {
-        this.userProfile = profile;
-      }
-    });
   }
 
   private set userProfile(profile) {
