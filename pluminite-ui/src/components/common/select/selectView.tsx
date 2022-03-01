@@ -47,6 +47,7 @@ class SelectView extends Component<ISelectView>{
     const customStyles = {
       option: (provided, state) => ({
         ...provided,
+        cursor: 'pointer'
       }),
       valueContainer: (provided, state) => ({
         ...provided,
