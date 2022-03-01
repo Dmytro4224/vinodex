@@ -75,6 +75,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private toggleLikeAccount() {
+    console.log('this.identification',this.identification)
     this.props.nftContractContext.like_artist_account(this.identification)
       .then(res => {
         let likes = this.state.likesCount
