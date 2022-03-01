@@ -74,11 +74,13 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
                                     days={item.metadata.expires_at}
                                     name={item.metadata.title}
                                     author={item.owner_id}
-                                    likesCount={99}
+                                    likesCount={item.metadata.likes_count}
                                     icon={item.metadata.media}
                                     isSmall={false}
                                     buttonText={`Place a bid ${item.metadata.price} NEAR`}
                                     linkTo={`/token/${item.token_id}`}
+                                    tokenID={item.token_id}
+                                    isLike={item.is_like}
                                     onClick={() => {
                                       //this.props.navigate('/token/qwewqq-1231-weq-123');
                                     }}/>;

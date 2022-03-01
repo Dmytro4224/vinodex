@@ -29,4 +29,5 @@ export interface ITokenResponseItem {
   royalty: any;
   token_id: string;
   token_type: string;
+  is_like: boolean;
 }

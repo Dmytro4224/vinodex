@@ -104,10 +104,10 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
               key={index}
               info={item}
               identification={item.account_id}
-              usersCount={0}
+              usersCount={item.followers_count}
               likesCount={item.likes_count}
               isLike={item.is_like}
-              isFollow={false}
+              isFollow={item.is_following}
             />;
           })}
         </div>

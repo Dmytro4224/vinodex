@@ -49,14 +49,10 @@ class LikeView extends Component<ILikeView & IBaseComponentProps>{
     if(this._refImg.current == null) { return }
 
     if(this._isChanged){
-      let c = this._count + 1;
-      this.count = c;
-
+      this.count = this._count + 1;
       this._refImg.current.src = likeIconFill;
     }else{
-      let c = this._count > 0 ? this._count - 1 : 0;
-      this.count = c;
-
+      this.count  = this._count > 0 ? this._count - 1 : 0;
       this._refImg.current.src = likeIcon;
     }
   }

@@ -126,4 +126,10 @@
 .priceTypeInput:checked ~ .priceTyleLabel .unlimitedAuctionIcon{
     background-image: url('../../assets/icons/unlimitedAuction-active.svg');
 }
-
+.selectStyle{
+    background: var(--alabasterapprox);
+}
+/*
+.titleInpWrap input{
+    margin-top: 0;
+}*/

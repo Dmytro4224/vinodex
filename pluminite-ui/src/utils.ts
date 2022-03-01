@@ -21,12 +21,13 @@ export type INftContract = nearAPI.Contract & {
     set_profile: ({ profile: { bio, name, image, email, account_id } }: { profile: { bio: string, name: string, image: string, email: string, account_id: string } }) => Promise<IProfile>;
 
     authors_by_filter: ({ parameter, is_reverse, page_index, page_size,asked_account_id }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number,asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
-    nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
+    nft_tokens_by_filter: ({ catalog, page_index, page_size, sort, asked_account_id}: { catalog: string, page_index: number, page_size: number, sort: number,asked_account_id:string }) => Promise<Array<ITokenResponseItem>>;
     nft_token_get: ({ token_id }: { token_id: string}) => Promise<ITokenResponseItem>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     like_artist_account: ({account_id }: {account_id:string}) => Promise<any>;
+    token_set_like: ({token_id }: {token_id:string}) => Promise<any>;
     nft_mint: (data: any) => Promise<any>;
-    follow_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
+    follow_artist_account: ({ account_id }: { account_id: string }) => Promise<any>;
     view_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
 };
 

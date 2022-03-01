@@ -92,6 +92,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <InputView
               onChange={(e) => { }}
               placeholder={'Title*'}
+              absPlaceholder={'Title*'}
               customClass={`mb-4 ${styles.titleInpWrap}`}
               viewType={ViewType.input}
               setRef={(ref) => {this._refInputTitle = ref;}}
@@ -153,15 +154,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <InputView
                 onChange={(e) => { console.log(e) }}
                 placeholder={'Price*'}
+                absPlaceholder={'Price*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
                 setRef={(ref) => {this._refInputPrice = ref;}}
               />
+              <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
             </div>
             <div>
               <InputView
                 onChange={(e) => { console.log(e) }}
                 placeholder={'Royalties*'}
+                absPlaceholder={'Royalties*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
               />
@@ -174,7 +178,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     label: catalog
                   }
                 })}
-                placeholder={'Number of copies*'}
+                          customCLass={styles.selectStyle}
+                placeholder={'Category'}
                 onChange={(opt) => { console.log(opt) }}
                 setRef={(ref) => {this._refCatalogSelect = ref;}}
               />
@@ -183,6 +188,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <InputView
                 onChange={(e) => { console.log(e) }}
                 placeholder={'Description*'}
+                absPlaceholder={'Description*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
                 setRef={(ref) => {this._refInputDescription = ref;}}
@@ -209,13 +215,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
 
   private submit = async () => {
-      if(this._selectFile === undefined){
-        return;
-      }
-
       const title = this._refInputTitle.value;
       const description = this._refInputDescription.value;
       const catalog = this._refCatalogSelect.value;
+      const price = this._refInputPrice.value;
 
       if(this._fileResponse === undefined) { return }
 
@@ -231,7 +234,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           likes_count: 0,
           media: url,
           media_hash: this._fileResponse.IpfsHash,
-          price: 0,
+          price: price,
           reference: 0,
           reference_hash: null,
           sold_at: null,
