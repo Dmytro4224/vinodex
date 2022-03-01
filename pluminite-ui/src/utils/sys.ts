@@ -1,3 +1,6 @@
+import { toast } from "react-toastify";
+import { IShowToast, EShowTost } from "../types/ISysTypes";
+
 const classList = (...args: string[]) => {
     return args.join(' ');
 };
@@ -27,8 +30,22 @@ const isEqual = (object1, object2) => {
   return true;
 }
 
+const showToast = (params: IShowToast) => {
+  toast(params.message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: true,
+    pauseOnHover: true,
+    draggable: true,
+    progress: undefined,
+    type: params.type,
+  });
+}
+
 export {
   classList,
   transformArtistId,
-  isEqual
+  isEqual,
+  showToast
 };

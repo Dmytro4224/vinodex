@@ -136,7 +136,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
               className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
               type={this.inputType}
               ref={this.ref}
-              disabled={this.disabled ? true : false}
+              disabled={this.disabled}
             />
             :
             <textarea
@@ -144,7 +144,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
               placeholder={this.placeholder}
               className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
               ref={this.ref}
-              disabled={this.disabled ? true : false}
+              disabled={this.disabled}
             />
           }
 
