@@ -12,7 +12,8 @@ import { isEqual, showToast } from "../../../utils/sys";
 import { EShowTost } from "../../../types/ISysTypes";
 
 interface IInfoDetails extends IProps {
-  updateUserInfo: (profile) => void;
+  updateUserInfo: (profile) => Promise<any>;
+  updateStateUserInfo: (profile) => void;
   isMyProfile: boolean;
   userId: string;
   profile: {
@@ -78,8 +79,8 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     return this.props.profile;
   }
 
-  private updateUserInfo(profile: { name: string, email: string, bio: string, }) {
-    this.props.updateUserInfo && this.props.updateUserInfo(profile);
+  private updateUserInfo(profile: { name: string, email: string, bio: string, image: string, accountId: string }) {
+    return this.props.updateUserInfo && this.props.updateUserInfo(profile);
   }
 
   private formSubmitHandler = async () => {
@@ -105,37 +106,41 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
 
     console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
 
-    this.props.nftContractContext.set_profile(result)
-      .then(res => {
-        showToast({
-          message: `Data saved successfully.`,
-          type: EShowTost.success
-        });
+    this.updateUserInfo({
+      name: result.profile.name,
+      email: result.profile.email,
+      bio: result.profile.bio,
+      image: '',
+      accountId: this.getUserId
+    }).then(res => {
+      showToast({
+        message: `Data saved successfully.`,
+        type: EShowTost.success
+      });
 
-        this.setState({
-          ...this.state,
-          isLoading: false
-        })
-
-        this.updateUserInfo({
-          name: result.profile.name,
-          email: result.profile.email,
-          bio: result.profile.bio,
-        })
-
-        this.changeToInfoTemplate();
+      this.setState({
+        ...this.state,
+        isLoading: false
       })
-      .catch(error => {
-        this.setState({
-          ...this.state,
-          isLoading: false
-        })
 
-        showToast({
-          message: `Error! Please try again later`,
-          type: EShowTost.error
-        });
+      this.changeToInfoTemplate();
+      this.props.updateStateUserInfo && this.props.updateStateUserInfo({
+        name: result.profile.name,
+        email: result.profile.email,
+        bio: result.profile.bio,
+        image: '',
+      });
+    }).catch(error => {
+      this.setState({
+        ...this.state,
+        isLoading: false
       })
+
+      showToast({
+        message: `Error! Please try again later`,
+        type: EShowTost.error
+      });
+    })
   }
 
   private setProfileInfo({ name, email, bio }) {
