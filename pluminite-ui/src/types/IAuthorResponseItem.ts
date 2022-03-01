@@ -27,6 +27,7 @@ export interface IAuthorResponseItem {
   email: string;
   image: string;
   name: string;
-  account_id:string
-  likes_count:number
+  account_id: string
+  likes_count: number
+  is_like: boolean
 }

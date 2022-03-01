@@ -14,8 +14,8 @@ export interface INftContractContext {
     nftContract: INftContract | null;
     getProfile: (accountId: string) => Promise<IProfile>;
     set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
-    like_artist_account: (accountId: string) => Promise<any>;
-    follow_artist_account: (accountId: string) => Promise<any>;
+    like_artist_account: (account_id: string) => Promise<any>;
+    follow_artist_account: (account_id: string) => Promise<any>;
     view_artist_account: (accountId: string) => Promise<any>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
@@ -34,8 +34,17 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         super(props);
     }
 
+    public get myAccountId () {
+      return this.nftContract.account.accountId
+    }
     public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
-        return this.props.nftContract.authors_by_filter({ parameter, is_reverse, page_index, page_size });
+        return this.props.nftContract.authors_by_filter({
+            parameter,
+            is_reverse,
+            page_index,
+            page_size,
+            asked_account_id: this.myAccountId
+        });
     }
 
     public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
@@ -92,12 +101,10 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public like_artist_account = async (accountId: string) => {
-
-        let res = await this.nftContract.like_artist_account({
-            accountId: accountId
+        console.log('accountId',accountId)
+        return this.nftContract.like_artist_account({
+            account_id: accountId
         });
-        console.log('this.nftContract res',res)
-        return  res;
     }
 
     public view_artist_account = async (accountId: string) => {

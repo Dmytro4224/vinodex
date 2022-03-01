@@ -112,16 +112,16 @@ pub struct Contract {
     //токени по типу
     pub tokens_per_type: LookupMap<TokenType, UnorderedSet<TokenId>>,
     pub token_types_locked: UnorderedSet<TokenType>,
-    
+
     //кмісійні
     pub contract_royalty: u32,
 
     pub profiles: LookupMap<AccountId, Profile>,
-   
+
     //загальна статистика по користувачу
     pub profiles_global_stat: LookupMap<AccountId, ProfileStat>,
-    
-    
+
+
     //likes_count: 0 - кількість лайків аккаунту
     //tokens_likes_count: 1 -кількість лайків токенів аккаунту
     //pub views_count: 2 - загальна ксть переглядів аккаунту
@@ -132,7 +132,7 @@ pub struct Contract {
     //total_views_count: 7 - загальна ксть  переглядів аккаунт+токени
     pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
     //==========================================================
-    
+
     //чи брати плату за зберігання інфи з юзера
     pub use_storage_fees: bool,
     //к-сть безплатних токенів для юзера
@@ -325,7 +325,7 @@ impl Contract {
         return self.tokens_sorted.get(&filter);
     }
 
-    
+
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
         assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
         self.use_storage_fees = use_storage_fees;
@@ -357,7 +357,7 @@ impl Contract {
     pub fn get_use_storage_fees(&self) -> bool {
         self.use_storage_fees
     }
-    
+
     fn measure_min_token_storage_cost(&mut self) {
         let initial_storage_usage = env::storage_usage();
         let tmp_account_id = "a".repeat(64);
@@ -397,7 +397,7 @@ impl Contract {
         }
     }
 
-    
+
 
     pub fn unlock_token_types(&mut self, token_types: Vec<String>) {
         for token_type in &token_types {
@@ -431,7 +431,7 @@ impl Contract {
     }
 
     //Встановити дані профілю
-    pub fn set_profile(&mut self, mut profile: Profile) 
+    pub fn set_profile(&mut self, mut profile: Profile)
     {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
@@ -447,7 +447,7 @@ impl Contract {
             profile.name.len() <MAX_PROFILE_NAME_LENGTH,
             "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
         );
-        
+
         let predecessor_account_id = env::predecessor_account_id();
 
         profile.account_id=predecessor_account_id;
@@ -461,7 +461,7 @@ impl Contract {
     // працює дзеркально: лайк або ставиться/або знімається
     pub fn like_artist_account(&mut self,account_id:AccountId)
     {
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку лайків аккаунту, який лайкнули
         Profile::set_profile_like(
@@ -490,10 +490,10 @@ impl Contract {
         );
     }
 
-    
+
     //поставити помітку про відвідання карточки користувача
     pub fn view_artist_account(&mut self, account_id:AccountId) {
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         Profile::set_profile_view (
             &mut self.autors_views,
@@ -518,7 +518,7 @@ impl Contract {
       //додати користувача до стписку відстеження
       // працює дзеркально: ставить або знімає
     pub fn follow_artist_account(&mut self, account_id:AccountId){
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку підписників аккаунту, на який підписалися
         Profile::set_profile_follow(

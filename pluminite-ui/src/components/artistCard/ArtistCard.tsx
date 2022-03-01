@@ -17,13 +17,15 @@ interface IArtistCard extends IProps {
   likesCount: number;
   isFollow: boolean;
   isCard?: boolean;
+  isLike: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
   public state = {
-    isLike: false,
+    isLike: this.props.isLike,
     likesCount: this.likesCount,
-    isFollow: this.isFollow
+    isFollow: this.isFollow,
+    isProcess: false
   }
 
   constructor(props: IArtistCard & IBaseComponentProps) {
@@ -77,6 +79,10 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   private  toggleLikeAccount = async() => {
     try {
+      if (this.state.isProcess){
+        return
+      }
+      this.state.isProcess = true;
       const result = await this.props.nftContractContext.like_artist_account(this.identification);
       console.log('toggleLikeAccount result',result)
       this.state.likesCount = !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1;
@@ -85,7 +91,9 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         isLike: !this.state.isLike,
         likesCount: this.state.likesCount
       })
+      this.state.isProcess = false;
     } catch(ex) {
+      this.state.isProcess = false;
       console.log('toggleLikeAccount ex',ex)
       showToast({
         message: `Error! Please try again later`,
@@ -149,7 +157,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         </div>
         <div className="d-flex align-items-center">
           <LikeView
-            onClick={() => { this.toggleLikeAccount() }}
+            onClick={this.toggleLikeAccount}
             customClass={`${styles.likes} ${styles.likesCustom}`}
             isChanged={false}
             isActive={true}
