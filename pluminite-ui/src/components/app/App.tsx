@@ -10,9 +10,10 @@ import Header from "../header/Header";
 import UserProfile from '../../pages/userProfile/UserProfile';
 import OrderDetail from '../../pages/orderDetail/orderDetail';
 import CreateToken from '../../pages/createToken/createToken';
-import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import { ToastContainer } from 'react-toastify';
 
-interface IApp extends IProps{
+interface IApp extends IProps {
 
 }
 
@@ -33,12 +34,24 @@ class App extends Component<IApp & IBaseComponentProps> {
           <Routes>
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Home />} />
-            <Route path="/artists/*" element={<p>ARTISTS PAGE</p>} />
+            <Route path="/artists/*" element={<p>ARTISTS PAGE </p>} />
             <Route path="/userProfile/:userId" element={<UserProfile />} />
             <Route path="/token/:tokenId" element={<OrderDetail />} />
             <Route path="/create/" element={<CreateToken />} />
           </Routes>
         </main>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
         {/*<NftContractContext.Consumer>
             {context => (

@@ -7,7 +7,8 @@ import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
-
+import { showToast } from "../../utils/sys";
+import { EShowTost } from "../../types/ISysTypes";
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
   identification: string;
@@ -66,10 +67,15 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       })
       .catch(error => {
         console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", error)
+        showToast({
+          message: `Error! Please try again later`,
+          type: EShowTost.error
+        });
       })
   }
 
   private toggleLikeAccount() {
+    console.log('this.identification',this.identification)
     this.props.nftContractContext.like_artist_account(this.identification)
       .then(res => {
         let likes = this.state.likesCount
@@ -87,7 +93,11 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         })
       })
       .catch(error => {
-        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 90 ~ ArtistCard ~ toggleLikeAccount ~ error", error)
+        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 90 ~ ArtistCard ~ toggleLikeAccount ~ error", error);
+        showToast({
+          message: `Error! Please try again later`,
+          type: EShowTost.error
+        });
       })
   }
 

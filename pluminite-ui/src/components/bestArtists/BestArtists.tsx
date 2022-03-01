@@ -54,7 +54,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   public componentDidMount() {
       this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
         this.list = response;
-        
+
         console.log("🚀 ~ file: BestArtists.tsx ~ line 57 ~ BestArtists ~ this.props.nftContractContext.authors_by_filter ~ response", response)
       });
   }
@@ -102,8 +102,8 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
               key={index}
               info={item}
               identification={'0x0b9D2weq28asdqwe132'}
-              usersCount={22}
-              likesCount={12}
+              usersCount={0}
+              likesCount={0}
               isFollow={false}
             />;
           })}

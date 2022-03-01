@@ -2,12 +2,13 @@ import React from "react";
 import { Component } from "react";
 import { Form, FormCheck } from "react-bootstrap";
 import Dropzone, { DropzoneRef } from "react-dropzone";
-import { pinataAPI } from "../../api/Pinata";
+import {IUploadFileResponse, pinataAPI } from "../../api/Pinata";
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import InputView, { ViewType } from "../../components/common/inputView/InputView";
 import { SelectView } from "../../components/common/select/selectView";
 import { ITokenCreateItem } from "../../types/ITokenCreateItem";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import defaultImage from '../../assets/icons/card-preview.jpg';
 import styles from './createToken.module.css';
 
 interface ICreateToken extends IProps{
@@ -18,15 +19,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _ref: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
   private _refInputDescription: any;
+  private _refInputPrice: any;
   private _refPriceSelect: any;
   private _refCatalogSelect: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
+  private _fileResponse: IUploadFileResponse | undefined
+  private _imageRef: React.RefObject<HTMLImageElement>;
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
 
     this._ref = React.createRef<DropzoneRef>();
+    this._imageRef = React.createRef<HTMLImageElement>();
   }
 
   private openDialog = () => {
@@ -37,7 +42,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
   public setSelectFile = async (files) => {
     this._selectFile = files[0];
-    console.log(`this._selectFile`, this._selectFile);
+
+    if(this._selectFile === undefined){ return }
+
+    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+
+    if(this._fileResponse && this._imageRef?.current){
+      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash!);
+    }
   }
 
   render(){
@@ -49,18 +61,27 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <div className={styles.dropzone}>
               <Dropzone onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
                 {({getRootProps, getInputProps, acceptedFiles}) => {
+
+                  if(acceptedFiles.length > 0){
+                      this.setSelectFile(acceptedFiles[0]);
+                  }
+
                   return (
                     <div>
-                      <div {...getRootProps({className: `dropzone ${styles.customDropzone}`})}>
+                      <div {...getRootProps({className: `dropzone ${styles.customDropzone} ${styles.uploadForm}`})}>
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
-                          <p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
-                          <ButtonView
-                            text={'Upload file'}
-                            onClick={() => { this.openDialog() }}
-                            color={buttonColors.goldFill}
-                            customClass={styles.button}
-                          />
+                          {acceptedFiles.length > 0 ?
+                            <img ref={this._imageRef} src={defaultImage} /> :
+                            <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p><ButtonView
+                              text={'Upload file'}
+                              onClick={() => {
+                                this.openDialog();
+                              }}
+                              color={buttonColors.goldFill}
+                              customClass={styles.button}/></>
+                          }
+
                         </div>
                       </div>
                     </div>
@@ -77,7 +98,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             />
             <p></p>
             <Form>
-              <FormCheck.Label htmlFor="switch-nft-approve" className="w-100">
+              <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor="switch-nft-approve">
                 <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
                   <div>
                     <p className={styles.itemTitle}>Put on marketplace</p>
@@ -94,34 +115,47 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <div className={styles.checkboxes}>
               <Form className="d-flex align-items-center flex-gap-36">
                 <div key={1} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-fixed`} name='checkbox'>
-                    <Form.Check.Input ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label>{`Fixed price`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
+                    <Form.Check.Input id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
+                        <p className="mt-1">Fixed price</p>
+                      </div>
+                    </Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={2} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-auction`} name='checkbox'>
-                    <Form.Check.Input ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label>{`Timed auction`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
+                        <p className="mt-1">Timed auction</p>
+                      </div>
+                    </Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={3} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                    <Form.Check.Input ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label>{`Unlimited auction`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
+                        <p className="mt-1">Unlimited auction</p>
+                      </div></Form.Check.Label>
                   </Form.Check>
                 </div>
               </Form>
             </div>
             <div className={styles.copies}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
-              <SelectView options={[
-                { value: '1', label: '1' },
-                { value: '2', label: '2' },
-                { value: '3', label: '3' }
-              ]} placeholder={'Number of copies*'}
-                 onChange={(opt) => { console.log(opt) }}
-                 setRef={(ref) => {this._refPriceSelect = ref;}}
+              <InputView
+                onChange={(e) => { console.log(e) }}
+                placeholder={'Price*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+                setRef={(ref) => {this._refInputPrice = ref;}}
               />
             </div>
             <div>
@@ -175,7 +209,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
 
   private submit = async () => {
-    debugger
       if(this._selectFile === undefined){
         return;
       }
@@ -184,11 +217,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       const description = this._refInputDescription.value;
       const catalog = this._refCatalogSelect.value;
 
-      const response = await pinataAPI.uploadFile(this._selectFile as File);
+      if(this._fileResponse === undefined) { return }
 
-      console.log(`response`, response);
-
-      const url = pinataAPI.createUrl(response.IpfsHash);
+      const url = pinataAPI.createUrl(this._fileResponse.IpfsHash);
 
       const model = {
         metadata: {
@@ -199,7 +230,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           issued_at: null,
           likes_count: 0,
           media: url,
-          media_hash: response.IpfsHash,
+          media_hash: this._fileResponse.IpfsHash,
           price: 0,
           reference: 0,
           reference_hash: null,
@@ -211,7 +242,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         },
         receiver_id: null,
         perpetual_royalties: null,
-        token_id: response.IpfsHash,
+        token_id: this._fileResponse.IpfsHash,
         token_type: catalog
       }
 
