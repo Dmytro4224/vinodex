@@ -37,7 +37,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     private  _isProcessLike: boolean
     constructor(props: ITokenCardView & IBaseComponentProps) {
         super(props);
-        console.log('TokenCardView props',props)
         this.isSmall = this.props?.isSmall || false;
         this._isProcessLike = false
     }
@@ -85,9 +84,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                         { (this.props.countL > 0 || this.props.countR > 0) && <div className={styles.count}>
                             {this.props.countL}/{this.props.countR}
                         </div> }
-                        { this.props.days !== '' || this.props.days !== null && <div className={styles.daysInfo}>
-                            {this.props.days}
-                        </div> }
+                        {this.props.days !== '' && this.props.days !== null && (
+                            <div className={styles.daysInfo}>
+                                {this.props.days}
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className={styles.cardFooter}>

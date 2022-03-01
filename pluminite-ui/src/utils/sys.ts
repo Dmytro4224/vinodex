@@ -1,5 +1,5 @@
 import { toast } from "react-toastify";
-import { IShowToast, EShowTost } from "../types/ISysTypes";
+import { IShowToast } from "../types/ISysTypes";
 
 const classList = (...args: string[]) => {
     return args.join(' ');
