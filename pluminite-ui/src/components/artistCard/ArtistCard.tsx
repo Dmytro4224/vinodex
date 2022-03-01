@@ -9,6 +9,7 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
 import { showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
+import {APP} from "../../constants";
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
   identification: string;
@@ -74,31 +75,23 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       })
   }
 
-  private toggleLikeAccount() {
-    console.log('this.identification',this.identification)
-    this.props.nftContractContext.like_artist_account(this.identification)
-      .then(res => {
-        let likes = this.state.likesCount
-
-        if (this.state.isLike) {
-          likes -= 1;
-        } else {
-          likes += 1;
-        }
-
-        this.setState({
-          ...this.state,
-          isLike: !this.state.isLike,
-          likesCount: likes
-        })
+  private  toggleLikeAccount = async() => {
+    try {
+      const result = await this.props.nftContractContext.like_artist_account(this.identification);
+      console.log('toggleLikeAccount result',result)
+      this.state.likesCount = !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1;
+      this.setState({
+        ...this.state,
+        isLike: !this.state.isLike,
+        likesCount: this.state.likesCount
       })
-      .catch(error => {
-        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 90 ~ ArtistCard ~ toggleLikeAccount ~ error", error);
-        showToast({
-          message: `Error! Please try again later`,
-          type: EShowTost.error
-        });
-      })
+    } catch(ex) {
+      console.log('toggleLikeAccount ex',ex)
+      showToast({
+        message: `Error! Please try again later`,
+        type: EShowTost.error
+      });
+    }
   }
 
   isCardType() {
@@ -131,7 +124,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
               count={this.usersCount}
             />
             <LikeView
-              onClick={() => { this.toggleLikeAccount() }}
+              onClick={this.toggleLikeAccount}
               isChanged={this.state.isLike}
               customClass={styles.likes}
               isActive={true}

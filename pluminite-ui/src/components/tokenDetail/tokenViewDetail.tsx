@@ -108,6 +108,8 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   email: '',
                   image: '',
                   name: this.state.order?.owner_id!,
+                  account_id: '',
+                  likes_count: 0
                 }}
                 identification={'0x0b9D2weq28asdqwe132'}
                 usersCount={22}

@@ -56,7 +56,7 @@ export async function initContracts() {
     console.log('currentUser is: ', currentUser);
 
     // Initializing our contract APIs by contract name and configuration
-    const nftContract = await new nearAPI.Contract(
+        const nftContract = await new nearAPI.Contract(
         walletConnection.account(),
         nearConfig.contractName,
         {
@@ -89,7 +89,7 @@ export async function initContracts() {
         }
     ) as IMarketContract;
 
- 
+
     console.log('marketContract is', marketContract);
 
 

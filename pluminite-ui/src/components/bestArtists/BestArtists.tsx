@@ -53,7 +53,8 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
 
   public componentDidMount() {
       this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
-        this.list = response;
+        console.log('componentDidMount response',response)
+        this.list = response.filter(el => el  !== null);
 
         console.log("🚀 ~ file: BestArtists.tsx ~ line 57 ~ BestArtists ~ this.props.nftContractContext.authors_by_filter ~ response", response)
       });
@@ -98,12 +99,13 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
 
         <div className="d-flex flex-wrap flex-gap-36 mt-3">
           {this.list.map((item, index) => {
+
             return <ArtistCard
               key={index}
               info={item}
-              identification={'0x0b9D2weq28asdqwe132'}
+              identification={item.account_id}
               usersCount={0}
-              likesCount={0}
+              likesCount={item.likes_count}
               isFollow={false}
             />;
           })}
