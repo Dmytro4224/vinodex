@@ -76,25 +76,25 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         });
       })
   }
-
+  public changeLikeCount(count: number,isLike: boolean){
+    this.setState({
+      ...this.state,
+      isLike: isLike,
+      likesCount: count
+    })
+  }
   private  toggleLikeAccount = async() => {
     try {
       if (this.state.isProcess){
         return
       }
       this.state.isProcess = true;
-      const result = await this.props.nftContractContext.like_artist_account(this.identification);
-      console.log('toggleLikeAccount result',result)
-      this.state.likesCount = !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1;
-      this.setState({
-        ...this.state,
-        isLike: !this.state.isLike,
-        likesCount: this.state.likesCount
-      })
+      this.changeLikeCount(!this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,!this.state.isLike);
+      await this.props.nftContractContext.like_artist_account(this.identification);
       this.state.isProcess = false;
     } catch(ex) {
       this.state.isProcess = false;
-      console.log('toggleLikeAccount ex',ex)
+      this.changeLikeCount( this.state.likesCount,this.state.isLike);
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error
