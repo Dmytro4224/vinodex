@@ -78,12 +78,52 @@
 .checkboxes{
 
 }
-/*
+.uploadForm{
+    min-height: 157px;
+}
+.imageDefault{
+    height: 157px;
+}
 .checkboxes .priceTyleLabel{
     padding: 36px;
-    border: 1px solid #737373;
+    border: 1px solid var(--doveGrayS);
     border-radius: 4px;
-    white-space: nowrap;
+    color: var(--doveGrayS);;
     height: 120px;
-    width: 173px;
-}*/
+    min-width: 164px;
+    text-align: center;
+    cursor: pointer;
+}
+.priceTypeInput:checked ~ .priceTyleLabel{
+    border: 1px solid var(--pirateCold);
+    color: var(--pirateCold);
+}
+
+.icon{
+    width: 20px;
+    height: 20px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.fixedPriceIcon{
+    background-image: url('../../assets/icons/fixedPriceIcon.svg');
+}
+.priceTypeInput:checked ~ .priceTyleLabel .fixedPriceIcon{
+    background-image: url('../../assets/icons/fixedPriceIcon-active.svg');
+}
+
+.timedAuctionIcon{
+    background-image: url('../../assets/icons/timedAuction.svg');
+}
+.priceTypeInput:checked ~ .priceTyleLabel .timedAuctionIcon{
+    background-image: url('../../assets/icons/timedAuction-active.svg');
+}
+
+.unlimitedAuctionIcon{
+    background-image: url('../../assets/icons/unlimitedAuction.svg');
+}
+.priceTypeInput:checked ~ .priceTyleLabel .unlimitedAuctionIcon{
+    background-image: url('../../assets/icons/unlimitedAuction-active.svg');
+}
+

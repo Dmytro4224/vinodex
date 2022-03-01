@@ -19,6 +19,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _ref: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
   private _refInputDescription: any;
+  private _refInputPrice: any;
   private _refPriceSelect: any;
   private _refCatalogSelect: any;
   private _refTypePrice: Array<any> = [];
@@ -67,7 +68,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
                   return (
                     <div>
-                      <div {...getRootProps({className: `dropzone ${styles.customDropzone}`})}>
+                      <div {...getRootProps({className: `dropzone ${styles.customDropzone} ${styles.uploadForm}`})}>
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
                           {acceptedFiles.length > 0 ?
@@ -97,7 +98,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             />
             <p></p>
             <Form>
-              <FormCheck.Label htmlFor="switch-nft-approve" className="w-100">
+              <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor="switch-nft-approve">
                 <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
                   <div>
                     <p className={styles.itemTitle}>Put on marketplace</p>
@@ -114,34 +115,47 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <div className={styles.checkboxes}>
               <Form className="d-flex align-items-center flex-gap-36">
                 <div key={1} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-fixed`} name='checkbox'>
-                    <Form.Check.Input className={`${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label className={styles.priceTyleLabel}>{`Fixed price`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
+                    <Form.Check.Input id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
+                        <p className="mt-1">Fixed price</p>
+                      </div>
+                    </Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={2} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-auction`} name='checkbox'>
-                    <Form.Check.Input className={`${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label className={styles.priceTyleLabel}>{`Timed auction`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
+                        <p className="mt-1">Timed auction</p>
+                      </div>
+                    </Form.Check.Label>
                   </Form.Check>
                 </div>
                 <div key={3} className="mb-3">
-                  <Form.Check type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                    <Form.Check.Input className={`${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
-                    <Form.Check.Label className={styles.priceTyleLabel}>{`Unlimited auction`}</Form.Check.Label>
+                  <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
+                        <p className="mt-1">Unlimited auction</p>
+                      </div></Form.Check.Label>
                   </Form.Check>
                 </div>
               </Form>
             </div>
             <div className={styles.copies}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
-              <SelectView options={[
-                { value: '1', label: '1' },
-                { value: '2', label: '2' },
-                { value: '3', label: '3' }
-              ]} placeholder={'Number of copies*'}
-                 onChange={(opt) => { console.log(opt) }}
-                 setRef={(ref) => {this._refPriceSelect = ref;}}
+              <InputView
+                onChange={(e) => { console.log(e) }}
+                placeholder={'Price*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+                setRef={(ref) => {this._refInputPrice = ref;}}
               />
             </div>
             <div>

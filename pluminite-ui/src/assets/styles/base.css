@@ -92,7 +92,9 @@ a {
 a:hover {
   color: var(--pirateCold);
 }
-
+.pl-0{
+  padding-left: 0;
+}
 button[disabled] {
   opacity: 0.8;
   pointer-events: none;
