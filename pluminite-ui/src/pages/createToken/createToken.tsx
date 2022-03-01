@@ -157,6 +157,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 viewType={ViewType.input}
                 setRef={(ref) => {this._refInputPrice = ref;}}
               />
+              <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
             </div>
             <div>
               <InputView
@@ -174,7 +175,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     label: catalog
                   }
                 })}
-                placeholder={'Number of copies*'}
+                          customCLass={styles.selectStyle}
+                placeholder={'Category'}
                 onChange={(opt) => { console.log(opt) }}
                 setRef={(ref) => {this._refCatalogSelect = ref;}}
               />
