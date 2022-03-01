@@ -1,7 +1,9 @@
 import { Component } from "react";
 import styles from './infoCounters.module.css';
 
-class InfoCounters extends Component {
+interface IInfoCounters { }
+
+class InfoCounters extends Component<IInfoCounters> {
   render() {
     return (
       <div className={styles.counterWrap}>

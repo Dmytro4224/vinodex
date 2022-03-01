@@ -32,6 +32,10 @@
   border-radius: 100%;
 }
 
+.avatarWrap img {
+  border-radius: 100%;
+}
+
 .profileName {
   font-weight: 400;
   font-size: 34px;
