@@ -145,6 +145,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
               className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
               ref={this.ref}
               disabled={this.disabled}
+              maxLength={250}
             />
           }
 
