@@ -11,7 +11,8 @@
 
 .inputDefault input,
 .inputDefault textarea {
-  padding: 5px 10px;
+  margin-top: 10px;
+  padding: 15px 10px;
   width: 100%;
   min-height: 44px;
   font-size: 16px;
@@ -29,7 +30,7 @@
 }
 
 .inputRound input,
-.inputRound textarea{
+.inputRound textarea {
   padding: 5px 10px;
   width: 100%;
   min-height: 44px;
@@ -65,23 +66,30 @@
 .absPlaceholder {
   position: absolute;
   top: 50%;
-  left: 44px;
+  left: 10px;
   transform: translateY(-50%);
-  font-size: 12px;
-  transition: transform 0.2s ease;
-  will-change: transform;
+  font-size: 16px;
+  transition: all 0.4s ease;
+  will-change: font-size;
   color: var(--doveGray);
   pointer-events: none;
 }
 
 .inputView:focus + .absPlaceholder {
-  transform: translateY(-23px);
+  top: 15px;
+  font-size: 12px;
 }
 
 .inputView:not(:placeholder-shown) + .absPlaceholder {
-  transform: translateY(-23px);
+  top: 15px;
+  font-size: 12px;
 }
 
 .inputView.hidePlaceholder::placeholder {
   color: transparent;
+}
+
+.inputBox {
+  width: 100%;
+  position: relative;
 }

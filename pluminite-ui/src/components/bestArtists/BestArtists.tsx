@@ -54,9 +54,8 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   public componentDidMount() {
       this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
         this.list = response;
-
-        console.log(`response authors_by_filter`, response);
-
+        
+        console.log("🚀 ~ file: BestArtists.tsx ~ line 57 ~ BestArtists ~ this.props.nftContractContext.authors_by_filter ~ response", response)
       });
   }
 

@@ -1,36 +1,56 @@
-import React, {Component} from "react";
-import ButtonView, {buttonColors} from "../../common/button/ButtonView";
+import React, { Component } from "react";
+import ButtonView, { buttonColors } from "../../common/button/ButtonView";
 import styles from './infoDetails.module.css';
 import userIcon from '../../../assets/icons/user-gold.svg';
 import emailIcon from '../../../assets/icons/mail-gold.svg';
 import listIcon from '../../../assets/icons/list-gold.svg';
 import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
-import InputView, {ViewType} from "../../common/inputView/InputView";
-import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import InputView, { InputType, ViewType } from "../../common/inputView/InputView";
+import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import { isEqual } from "../../../utils/sys";
 
 interface IInfoDetails extends IProps {
-  userId: string;
+  updateUserInfo: (profile) => void;
   isMyProfile: boolean;
+  userId: string;
+  profile: {
+    name: string,
+    email: string,
+    bio: string,
+  };
 }
 
 class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   public state = {
     isEditForm: false,
+    isLoading: false,
+    profile: {
+      name: this.profile.name,
+      email: this.profile.email,
+      bio: this.profile.bio,
+    }
   };
 
-  private readonly _radioNFTApproveRef: any;
+  private _radioNFTApproveRef: any;
   private _refInputUserName: any;
   private _refInputUserEmail: any;
   private _refInputUserBio: any;
 
   constructor(props: IInfoDetails & IBaseComponentProps) {
     super(props);
+  }
 
-    this._radioNFTApproveRef = null;
-    this._refInputUserName = null;
-    this._refInputUserEmail = null;
-    this._refInputUserBio = null;
+  public componentDidUpdate(prevState, currentState) {
+    console.log("🚀 ~ file: InfoDetails.tsx ~ line 44 ~ InfoDetails ~ componentDidUpdate ~ componentDidUpdate")
+
+    if (!isEqual(prevState.profile, currentState.profile)) {
+      this.setProfileInfo({
+        name: prevState.profile.name,
+        email: prevState.profile.email,
+        bio: prevState.profile.bio,
+      });
+    }
   }
 
   private changeToFormTemplate() {
@@ -55,21 +75,62 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     return this.props.isMyProfile;
   }
 
+  private get profile() {
+    return this.props.profile;
+  }
+
+  private updateUserInfo(profile: { name: string, email: string, bio: string, }) {
+    this.props.updateUserInfo && this.props.updateUserInfo(profile);
+  }
+
   private formSubmitHandler = async () => {
+    this.setState({
+      ...this.state,
+      profile: {
+        name: this._refInputUserName.value,
+        email: this._refInputUserEmail.value,
+        bio: this._refInputUserBio.value,
+      },
+      isLoading: true
+    })
+
     const result = {
-      name: this._refInputUserName.value,
-      email: this._refInputUserEmail.value,
-      bio: this._refInputUserBio.value,
+      profile: {
+        name: this._refInputUserName.value,
+        email: this._refInputUserEmail.value,
+        bio: this._refInputUserBio.value,
+        accountId: this.getUserId,
+        image: ''
+      }
     };
 
     console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
 
-    // return
+    this.props.nftContractContext.set_profile(result)
+      .then(res => {
+        this.setState({
+          ...this.state,
+          isLoading: false
+        })
 
-    this.props.nftContractContext.set_profile(result.bio, result.name, '', result.email, this.getUserId).then(profile => {
-      console.log("🚀 ~ file: InfoDetails.tsx ~ line 74 ~ InfoDetails ~ this.props.nftContractContext.set_profile ~ profile", profile);
-      // this.userProfile = profile;
-      // this.changeToInfoTemplate();
+        this.updateUserInfo({
+          name: result.profile.name,
+          email: result.profile.email,
+          bio: result.profile.bio,
+        })
+
+        this.changeToInfoTemplate();
+      });
+  }
+
+  private setProfileInfo({ name, email, bio }) {
+    this.setState({
+      ...this.state,
+      profile: {
+        name: name,
+        email: email,
+        bio: bio,
+      }
     });
   }
 
@@ -79,45 +140,45 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         <div className="d-flex align-items-center justify-content-between my-3">
           <h3 className={styles.profileBlockTitle}>Profile details</h3>
           {this.isMyProfile && <ButtonView
-              text={'EDIT'}
-              onClick={() => { this.changeToFormTemplate() }}
-              color={buttonColors.gold}
+            text={'EDIT'}
+            onClick={() => { this.changeToFormTemplate() }}
+            color={buttonColors.gold}
           />}
         </div>
         <ul className={styles.ulInfoList}>
           <li>
             <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
-              <img className={styles.iconStyle} width="20" height="20" src={userIcon} alt="icon"/>
+              <img className={styles.iconStyle} width="20" height="20" src={userIcon} alt="icon" />
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>User Name</p>
-                  <p className={styles.itemSubTitle}>User Name Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.name}</p>
                 </div>
-                <img src={arrowIcon} alt="arrow"/>
+                <img src={arrowIcon} alt="arrow" />
               </div>
             </div>
           </li>
           <li>
             <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
-              <img className={styles.iconStyle} width="20" height="20" src={emailIcon} alt="icon"/>
+              <img className={styles.iconStyle} width="20" height="20" src={emailIcon} alt="icon" />
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>Email</p>
-                  <p className={styles.itemSubTitle}>Email Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.email}</p>
                 </div>
-                <img src={arrowIcon} alt="arrow"/>
+                <img src={arrowIcon} alt="arrow" />
               </div>
             </div>
           </li>
           <li>
             <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
-              <img className={styles.iconStyle} width="20" height="20" src={listIcon} alt="icon"/>
+              <img className={styles.iconStyle} width="20" height="20" src={listIcon} alt="icon" />
               <div className="d-flex align-items-center justify-content-between w-100">
                 <div>
                   <p className={styles.itemTitle}>Bio</p>
-                  <p className={styles.itemSubTitle}>Bio Example</p>
+                  <p className={styles.itemSubTitle}>{this.profile.bio}</p>
                 </div>
-                <img src={arrowIcon} alt="arrow"/>
+                <img src={arrowIcon} alt="arrow" />
               </div>
             </div>
           </li>
@@ -155,7 +216,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
 
   private formTemplate() {
     return (
-      <div className={styles.profileDetailsWrap}>
+      <form onSubmit={(e) => { e.preventDefault() }} className={styles.profileDetailsWrap}>
         <div className="d-flex align-items-center justify-content-between my-3">
           <h3 className={styles.profileBlockTitle}>Edit profile</h3>
         </div>
@@ -165,21 +226,31 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             placeholder={'User name'}
             icon={userIcon}
             customClass={'mb-4'}
-            setRef={(ref) => {this._refInputUserName = ref;}}
+            value={this.state.profile.name}
+            absPlaceholder={'User name'}
+            setRef={(ref) => { this._refInputUserName = ref; }}
+            disabled={this.state.isLoading}
           />
 
           <InputView
             placeholder={'Email'}
             icon={emailIcon}
             customClass={'mb-4'}
-            setRef={(ref) => {this._refInputUserEmail = ref;}}
+            inputType={InputType.email}
+            value={this.state.profile.email}
+            absPlaceholder={'Email'}
+            setRef={(ref) => { this._refInputUserEmail = ref; }}
+            disabled={this.state.isLoading}
           />
 
           <InputView
             placeholder={'Bio'}
             customClass={'mb-4'}
             viewType={ViewType.textarea}
-            setRef={(ref) => {this._refInputUserBio = ref;}}
+            value={this.state.profile.bio}
+            absPlaceholder={'Bio'}
+            setRef={(ref) => { this._refInputUserBio = ref; }}
+            disabled={this.state.isLoading}
           />
 
           <div className="d-flex align-items-center justify-content-center">
@@ -192,10 +263,11 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
               text={'SAVE'}
               onClick={this.formSubmitHandler}
               color={buttonColors.goldFill}
+              isLoading={this.state.isLoading}
             />
           </div>
         </div>
-      </div>
+      </form>
     )
   }
 

@@ -1,9 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
+  font-family: "Roboto", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
 }
 
 ul,
@@ -15,78 +15,85 @@ h4,
 h5,
 h6,
 p {
-    margin: 0;
+  margin: 0;
 }
 
-ul, li {
-    margin: 0;
-    padding: 0;
-    list-style: none;
+ul,
+li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 img {
-    display: block;
-    max-width: 100%;
+  display: block;
+  max-width: 100%;
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }
 
-.slick-slider .slick-track, .slick-slider .slick-list{
-    display: flex;
-    gap: 30px;
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+  display: flex;
+  gap: 30px;
 }
 
-.slick-slider .slick-slide div:first-child{
-    height: 100%;
+.slick-slider .slick-slide div:first-child {
+  height: 100%;
 }
 
 .separator-horizontal {
-    margin: 24px 0;
-    width: 100%;
-    height: 1px;
-    background-color: var(--mercury);
+  margin: 24px 0;
+  width: 100%;
+  height: 1px;
+  background-color: var(--mercury);
 }
 
-.flex-gap-36{
-    gap: 36px;
+.flex-gap-36 {
+  gap: 36px;
 }
-.nav.nav-tabs{
-    border-bottom: 1px solid rgba(174, 126, 3, 0.6);
+.nav.nav-tabs {
+  border-bottom: 1px solid rgba(174, 126, 3, 0.6);
 }
 
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
-    border-color: transparent;
-    border-bottom: 1px solid rgba(174, 126, 3, 0.6);
-    color: var(--pirateCold);
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
+  border-color: transparent;
+  border-bottom: 1px solid rgba(174, 126, 3, 0.6);
+  color: var(--pirateCold);
 }
-.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover{
-    border-color: transparent;
-    border-bottom: 1px solid rgba(174, 126, 3, 0.6);
+.nav-tabs .nav-link:focus,
+.nav-tabs .nav-link:hover {
+  border-color: transparent;
+  border-bottom: 1px solid rgba(174, 126, 3, 0.6);
 }
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link{
-    color: var(--mineShaftS);
+.nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link {
+  color: var(--mineShaftS);
 }
 
 .cursor-pointer {
-    cursor: pointer;
+  cursor: pointer;
 }
 
 .form-check-input:checked {
-    background-color: var(--pirateCold);
-    border-color: var(--pirateCold);
+  background-color: var(--pirateCold);
+  border-color: var(--pirateCold);
 }
 
 .form-check-input:focus {
-    border-color: var(--pirateCold);
-    outline: 0;
-    box-shadow: unset;
+  border-color: var(--pirateCold);
+  outline: 0;
+  box-shadow: unset;
 }
 
 a:hover {
-    color: var(--pirateCold);
+  color: var(--pirateCold);
 }
-.pl-0{
-    padding-left: 0;
+
+button[disabled] {
+  opacity: 0.8;
+  pointer-events: none;
 }

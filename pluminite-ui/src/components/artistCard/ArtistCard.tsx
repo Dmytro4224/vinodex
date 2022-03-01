@@ -1,14 +1,14 @@
 import { Component } from "react";
-import LikeView, {LikeViewType } from "../like/likeView";
-import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import LikeView, { LikeViewType } from "../like/likeView";
+import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { NavLink } from 'react-router-dom';
 import { IdentificationCopy } from "../common/identificationCopy/IdentificationCopy";
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
-import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
-import {IAuthorResponseItem} from "../../types/IAuthorResponseItem";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
 
-interface IArtistCard extends IProps{
+interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
   identification: string;
   usersCount: number;
@@ -57,30 +57,38 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private btnFollowHandler() {
-    this.props.nftContractContext.follow_artist_account(this.identification).then(res => {
-      this.setState({
-        ...this.state,
-        isFollow: !this.state.isFollow
+    this.props.nftContractContext.follow_artist_account(this.identification)
+      .then(res => {
+        this.setState({
+          ...this.state,
+          isFollow: !this.state.isFollow
+        })
       })
-    })
+      .catch(error => {
+        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", error)
+      })
   }
 
   private toggleLikeAccount() {
-    this.props.nftContractContext.like_artist_account(this.identification).then(res => {
-      let likes = this.state.likesCount
+    this.props.nftContractContext.like_artist_account(this.identification)
+      .then(res => {
+        let likes = this.state.likesCount
 
-      if (this.state.isLike) {
-        likes -= 1;
-      } else {
-        likes += 1;
-      }
+        if (this.state.isLike) {
+          likes -= 1;
+        } else {
+          likes += 1;
+        }
 
-      this.setState({
-        ...this.state,
-        isLike: !this.state.isLike,
-        likesCount: likes
+        this.setState({
+          ...this.state,
+          isLike: !this.state.isLike,
+          likesCount: likes
+        })
       })
-    })
+      .catch(error => {
+        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 90 ~ ArtistCard ~ toggleLikeAccount ~ error", error)
+      })
   }
 
   isCardType() {
@@ -130,7 +138,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return (
       <div className="d-flex align-items-center justify-content-between w-100">
         <div className={styles.artistWrap}>
-          <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar"/>
+          <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
           <div>
             <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
             <IdentificationCopy id={this.identification} />

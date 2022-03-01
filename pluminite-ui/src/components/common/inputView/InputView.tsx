@@ -1,6 +1,5 @@
-import React, {ChangeEvent, Component} from "react";
-import { Form } from "react-bootstrap";
-import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import React, { ChangeEvent, Component } from "react";
+import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './inputView.module.css';
 
 interface IInputView extends IProps {
@@ -13,10 +12,14 @@ interface IInputView extends IProps {
   alt?: string;
   icon?: any;
   viewType?: ViewType;
+  inputStyleType?: InputStyleType;
   inputType?: InputType;
+  isError?: boolean;
+  errorMessage?: string;
+  disabled?: boolean;
 };
 
-export enum InputType {
+export enum InputStyleType {
   default = 'default',
   round = 'round'
 }
@@ -24,6 +27,12 @@ export enum InputType {
 export enum ViewType {
   input = 'input',
   textarea = 'textarea'
+}
+
+export enum InputType {
+  text = 'text',
+  number = 'number',
+  email = 'email'
 }
 
 class InputView extends Component<IInputView & IBaseComponentProps> {
@@ -36,8 +45,24 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     this.props.setRef && this.props.setRef(this);
   }
 
+  public componentDidMount() {
+    if (this.initialValue) {
+      this.ref.current.value = this.initialValue;
+    }
+  }
+
+  public componentDidUpdate() {
+    if (this.initialValue) {
+      this.ref.current.value = this.initialValue;
+    }
+  }
+
+  private get inputStyleType() {
+    return typeof this.props.inputStyleType === 'undefined' ? InputStyleType.default : this.props.inputStyleType;
+  }
+
   private get inputType() {
-    return typeof this.props.inputType === 'undefined' ? InputType.default : this.props.inputType;
+    return typeof this.props.inputType === 'undefined' ? InputType.text : this.props.inputType;
   }
 
   private get placeholder() {
@@ -64,6 +89,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     return this._ref;
   }
 
+  private get disabled() {
+    return this.props.disabled;
+  }
+
   private get isTextAreaType() {
     return this.props.viewType === ViewType.textarea;
   }
@@ -73,10 +102,10 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   private getInputTypeStyle() {
-    switch (this.inputType) {
-      case InputType.default:
+    switch (this.inputStyleType) {
+      case InputStyleType.default:
         return styles.inputDefault
-      case InputType.round:
+      case InputStyleType.round:
         return styles.inputRound
     }
   }
@@ -85,24 +114,43 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
     return this.ref.current?.value;
   }
 
+  private get isError() {
+    return typeof this.props.isError === 'undefined' ? false : this.props.isError;
+  }
+
+  private get errorMessage() {
+    return typeof this.props.errorMessage === 'undefined' ? '' : this.props.errorMessage;
+  }
+
   public render() {
     return (
       <div className={`${styles.inputWrap} ${this.getInputTypeStyle()} ${this.props.customClass || ''}`}>
 
         {this.icon && <img className={styles.icon} src={this.icon} alt={this.alt} />}
 
-        <Form.Control
-          onChange={this.onChange}
-          placeholder={this.placeholder}
-          className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-          value={this.initialValue}
-          type="text"
-          as={this.isTextAreaType ? 'textarea' : 'input'}
-          ref={this.ref}
-        />
+        <div className={styles.inputBox}>
+          {!this.isTextAreaType ?
+            <input
+              onChange={this.onChange}
+              placeholder={this.placeholder}
+              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+              type={this.inputType}
+              ref={this.ref}
+              disabled={this.disabled ? true : false}
+            />
+            :
+            <textarea
+              onChange={this.onChange}
+              placeholder={this.placeholder}
+              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+              ref={this.ref}
+              disabled={this.disabled ? true : false}
+            />
+          }
 
-        { this.absPlaceholder && <span className={styles.absPlaceholder}>{this.absPlaceholder}</span> }
+          {this.absPlaceholder && <label className={styles.absPlaceholder}>{this.absPlaceholder}</label>}
 
+        </div>
       </div>
     )
   }
