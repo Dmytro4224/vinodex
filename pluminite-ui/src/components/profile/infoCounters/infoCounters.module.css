@@ -1,0 +1,29 @@
+.counterWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 100px;
+  padding: 20px;
+  width: 100%;
+  background-color: var(--alabasterapprox);
+  border-radius: 4px;
+}
+
+.itemWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.itemCount {
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--black);
+}
+
+.itemDesc {
+  font-weight: 500;
+  font-size: 14px;
+  color: var(--doveGrayS);
+}
