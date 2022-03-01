@@ -9,7 +9,7 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
 import { showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
-import {APP} from "../../constants";
+
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
   identification: string;
@@ -24,8 +24,10 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   public state = {
     isLike: this.props.isLike,
     likesCount: this.likesCount,
+    usersCount: this.props.usersCount,
     isFollow: this.isFollow,
-    isProcess: false
+    isProcessLike: false,
+    isProcessFollow: false
   }
 
   constructor(props: IArtistCard & IBaseComponentProps) {
@@ -45,7 +47,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get usersCount() {
-    return this.props.usersCount;
+    return this.state.usersCount;
   }
 
   private get likesCount() {
@@ -59,23 +61,6 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private get isCard() {
     return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
-
-  private btnFollowHandler() {
-    this.props.nftContractContext.follow_artist_account(this.identification)
-      .then(res => {
-        this.setState({
-          ...this.state,
-          isFollow: !this.state.isFollow
-        })
-      })
-      .catch(error => {
-        console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", error)
-        showToast({
-          message: `Error! Please try again later`,
-          type: EShowTost.error
-        });
-      })
-  }
   public changeLikeCount(count: number,isLike: boolean){
     this.setState({
       ...this.state,
@@ -83,17 +68,44 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       likesCount: count
     })
   }
-  private  toggleLikeAccount = async() => {
+  public changeFollow(count: number,isFollow: boolean){
+    this.setState({
+      ...this.state,
+      isFollow: !this.state.isFollow,
+      usersCount:count
+    })
+  }
+  private btnFollowHandler = async () => {
     try {
-      if (this.state.isProcess){
+      if (this.state.isProcessFollow){
         return
       }
-      this.state.isProcess = true;
+      this.state.isProcessFollow = true;
+      this.changeFollow(!this.state.isFollow ? this.state.usersCount + 1 : this.state.usersCount - 1,!this.state.isFollow);
+      await this.props.nftContractContext.follow_artist_account(this.identification)
+      this.state.isProcessFollow = false;
+    }catch (ex) {
+      this.state.isProcessFollow = false;
+      this.changeLikeCount( this.state.usersCount,this.state.isFollow);
+      console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", ex)
+      showToast({
+        message: `Error! Please try again later`,
+        type: EShowTost.error
+      });
+    }
+  }
+
+  private  toggleLikeAccount = async () => {
+    try {
+      if (this.state.isProcessLike){
+        return
+      }
+      this.state.isProcessLike = true;
       this.changeLikeCount(!this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,!this.state.isLike);
       await this.props.nftContractContext.like_artist_account(this.identification);
-      this.state.isProcess = false;
+      this.state.isProcessLike = false;
     } catch(ex) {
-      this.state.isProcess = false;
+      this.state.isProcessLike = false;
       this.changeLikeCount( this.state.likesCount,this.state.isLike);
       showToast({
         message: `Error! Please try again later`,

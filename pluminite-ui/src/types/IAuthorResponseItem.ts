@@ -30,4 +30,6 @@ export interface IAuthorResponseItem {
   account_id: string
   likes_count: number
   is_like: boolean
+  is_following: boolean
+  followers_count: number
 }
