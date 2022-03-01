@@ -101,7 +101,6 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public like_artist_account = async (accountId: string) => {
-        console.log('accountId',accountId)
         return this.nftContract.like_artist_account({
             account_id: accountId
         });
@@ -115,7 +114,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
 
     public follow_artist_account = async (accountId: string) => {
         return this.nftContract.follow_artist_account({
-            accountId: accountId
+            account_id: accountId
         });
     }
 
