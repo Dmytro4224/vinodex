@@ -188,9 +188,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   render() {
-    return (
-      <>{this.isCard ? this.isCardType() : this.oneLineType()}</>
-    );
+    return <> {this.isCard ? this.isCardType() : this.oneLineType()} </>
   }
 }
 

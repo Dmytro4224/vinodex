@@ -21,7 +21,8 @@ const NftMethods = {
         'set_profile',
         'nft_transfer',
         'like_artist_account',
-        'follow_artist_account'
+        'follow_artist_account',
+        'token_set_like'
     ],
 };
 

@@ -5,6 +5,8 @@ import ButtonView, {buttonColors} from '../common/button/ButtonView';
 import LikeView, { LikeViewType } from '../like/likeView';
 import { NavLink } from 'react-router-dom';
 import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import {showToast} from "../../utils/sys";
+import {EShowTost} from "../../types/ISysTypes";
 
 interface ITokenCardView extends IProps{
     icon?: any;
@@ -18,25 +20,63 @@ interface ITokenCardView extends IProps{
     buttonText: string;
     isSmall?: boolean;
     linkTo?: string;
+    tokenID: string;
+    isLike: boolean;
     onClick?: () => void
 }
-
+type stateTypes = {
+    isLike: boolean;
+    likesCount: number;
+};
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>>{
+   public state: stateTypes = {
+        isLike: this.props.isLike,
+        likesCount: this.props.likesCount
+    }
     private readonly isSmall: boolean
+    private  _isProcessLike: boolean
     constructor(props: ITokenCardView & IBaseComponentProps) {
         super(props);
-
+        console.log('TokenCardView props',props)
         this.isSmall = this.props?.isSmall || false;
+        this._isProcessLike = false
     }
 
     private get icon(){
         return this.props.icon || cardPreview
     }
-
+    private get tokenID(){
+        return this.props.tokenID
+    }
     private onClick(){
         this.props.onClick && this.props.onClick();
     }
-
+    public changeLikeCount(count: number,isLike: boolean){
+        this.setState({
+            ...this.state,
+            isLike: isLike,
+            likesCount: count
+        })
+    }
+    private  toggleLikeToken = async () => {
+        try {
+            if (this._isProcessLike){
+                return
+            }
+            this._isProcessLike = true;
+             this.changeLikeCount(!this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,!this.state.isLike);
+            await this.props.nftContractContext.token_set_like(this.tokenID);
+            this._isProcessLike = false;
+            console.log('this.tate',this.state)
+        } catch(ex) {
+            this._isProcessLike = false;
+           this.changeLikeCount( this.state.likesCount,this.state.isLike);
+            showToast({
+                message: `Error! Please try again later`,
+                type: EShowTost.error
+            });
+        }
+    }
     render(){
         return(
             <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''}`}>
@@ -59,10 +99,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                     <div className={styles.cardControls}>
                         <LikeView
                           customClass={styles.likes}
-                          isChanged={false}
+                          isChanged={this.state.isLike}
                           isActive={true}
                           type={LikeViewType.like}
-                          count={22}
+                          count={this.state.likesCount}
+                          onClick={this.toggleLikeToken}
                         />
                         <ButtonView
                             text={this.props.buttonText}

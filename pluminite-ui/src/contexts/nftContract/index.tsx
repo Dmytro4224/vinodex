@@ -15,6 +15,7 @@ export interface INftContractContext {
     getProfile: (accountId: string) => Promise<IProfile>;
     set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
     like_artist_account: (account_id: string) => Promise<any>;
+    token_set_like: (token_id: string) => Promise<any>;
     follow_artist_account: (account_id: string) => Promise<any>;
     view_artist_account: (accountId: string) => Promise<any>;
     nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
@@ -46,9 +47,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             asked_account_id: this.myAccountId
         });
     }
-
+    public get asked_account_id(){
+        return  'vasyak.testnet';
+    }
     public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
-        return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort });
+        return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, asked_account_id: this.asked_account_id });
     }
 
     public nft_tokens_catalogs = () => {
@@ -105,6 +108,9 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             account_id: accountId
         });
     }
+    public token_set_like = async (token_id: string) => {
+        return this.nftContract.token_set_like({token_id: token_id });
+    }
 
     public view_artist_account = async (accountId: string) => {
         return this.nftContract.view_artist_account({
@@ -128,6 +134,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             getProfile: this.getProfile,
             set_profile: this.set_profile,
             like_artist_account: this.like_artist_account,
+            token_set_like: this.token_set_like,
             nft_mint: this.nft_mint,
             follow_artist_account: this.follow_artist_account,
             view_artist_account: this.view_artist_account,

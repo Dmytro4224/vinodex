@@ -54,7 +54,7 @@ class Marketplace2 extends Component {
                                 }}
                                 currentTabIndex={0}
                             />
-                            
+
                         </>
                     )}
                 </NearContext.Consumer>
@@ -79,6 +79,8 @@ class Marketplace2 extends Component {
                                 author={'Creat name'}
                                 likesCount={99}
                                 isSmall={false}
+                                tokenID={'item.token_id'}
+                                isLike={false}
                                 buttonText={'Place a bid 0.08 ETH'}
                                 onClick={() => {
                                   alert('buy Place a bid 0.08 ETH');
