@@ -178,7 +178,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
           />
           <ButtonView
             text={this.state.isFollow ? "Unfollow" : "Follow"}
-            onClick={() => { this.btnFollowHandler() }}
+            onClick={this.btnFollowHandler}
             color={buttonColors.goldFill}
             customClass={styles.buttonFollow}
           />
