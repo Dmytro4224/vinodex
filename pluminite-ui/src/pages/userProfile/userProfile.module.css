@@ -32,6 +32,10 @@
   border-radius: 100%;
 }
 
+.avatarWrap img {
+  border-radius: 100%;
+}
+
 .profileName {
   font-weight: 400;
   font-size: 34px;
@@ -48,4 +52,17 @@
 
 .tabResultContainer {
   background-color: var(--wildSandS);
+}
+
+.bioWrap {
+  margin: 25px auto 22px auto;
+  max-width: 640px;
+  text-align: center;
+  color: var(--doveGrayS);
+}
+
+.buttonFollow {
+  display: block;
+  margin: 0 auto 22px auto;
+  padding: 8px 60px;
 }

@@ -3,3 +3,4 @@ pluminite-ui/package-lock.json
 .vs/
 contracts/market-salebuy/target/
 contracts/market-crud/target/
+contracts/market-salebuy-old/target/

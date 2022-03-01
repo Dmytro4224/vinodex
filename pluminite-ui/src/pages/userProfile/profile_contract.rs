@@ -33,7 +33,7 @@ impl Contract {
             profile.name.len() < MAX_PROFILE_NAME_LENGTH,
             "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
         );
-        
+
         let predecessor_account_id = env::predecessor_account_id();
 
         profile.account_id=predecessor_account_id;
@@ -49,7 +49,7 @@ impl Contract {
     /// працює дзеркально: лайк або ставиться/або знімається
     pub fn like_artist_account(accountId:AccountId)->Result<(), E>
     {
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку лайків аккаунту, який лайкнули
         profile_provider::set_profile_like(
@@ -80,10 +80,10 @@ impl Contract {
         return  Ok();
     }
 
-    
+
     ///поставити помітку про відвідання карточки користувача
     pub fn view_artist_account(accountId:AccountId)->Result<(), E>{
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         profile_provider::set_profile_view (
             &self.autors_views,
@@ -106,7 +106,7 @@ impl Contract {
       ///додати користувача до стписку відстеження
       /// працює дзеркально: ставить або знімає
     pub fn follow_artist_account(accountId:AccountId)->Result<(), E>{
-        let predecessor_account_id = env::predecessor_account_id();  
+        let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку підписників аккаунту, на який підписалися
         profile_provider::set_profile_follow(

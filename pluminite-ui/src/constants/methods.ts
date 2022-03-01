@@ -1,5 +1,3 @@
-import React from 'react';
-
 //import { MintSuccessMessage, BuySuccessMessage } from './components/common/messages';
 
 export const PAYABLE_METHODS = {

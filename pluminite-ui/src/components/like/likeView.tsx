@@ -61,7 +61,7 @@ class LikeView extends Component<ILikeView & IBaseComponentProps>{
     }
   }
 
-  private async onClickHandler() {
+  private  onClickHandler = async () => {
     this.props.onClick && this.props.onClick();
   }
 
@@ -72,7 +72,7 @@ class LikeView extends Component<ILikeView & IBaseComponentProps>{
   private renderLikeType() {
     return (
       <>
-        <img ref={this._refImg} onClick={() => { /*this.changedIcon();*/ this.onClickHandler(); }} className={styles.likeImage} src={this.isChanged ? likeIconFill : likeIcon} alt={''} />
+        <img  ref={this._refImg} onClick={this.onClickHandler} className={styles.likeImage} src={this.isChanged ? likeIconFill : likeIcon} alt={''} />
         <span ref={this._refCount} className={styles.count}>{this.props.count}</span>
       </>
     )

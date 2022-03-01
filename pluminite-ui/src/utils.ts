@@ -20,11 +20,11 @@ export type INftContract = nearAPI.Contract & {
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
     set_profile: ({ profile: { bio, name, image, email, account_id } }: { profile: { bio: string, name: string, image: string, email: string, account_id: string } }) => Promise<IProfile>;
 
-    authors_by_filter: ({ parameter, is_reverse, page_index, page_size }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number }) => Promise<Array<IAuthorResponseItem>>;
+    authors_by_filter: ({ parameter, is_reverse, page_index, page_size,asked_account_id }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number,asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
     nft_tokens_by_filter: ({ catalog, page_index, page_size, sort }: { catalog: string, page_index: number, page_size: number, sort: number }) => Promise<Array<ITokenResponseItem>>;
     nft_token_get: ({ token_id }: { token_id: string}) => Promise<ITokenResponseItem>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
-    like_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
+    like_artist_account: ({account_id }: {account_id:string}) => Promise<any>;
     nft_mint: (data: any) => Promise<any>;
     follow_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
     view_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
@@ -56,7 +56,7 @@ export async function initContracts() {
     console.log('currentUser is: ', currentUser);
 
     // Initializing our contract APIs by contract name and configuration
-    const nftContract = await new nearAPI.Contract(
+        const nftContract = await new nearAPI.Contract(
         walletConnection.account(),
         nearConfig.contractName,
         {
@@ -89,7 +89,7 @@ export async function initContracts() {
         }
     ) as IMarketContract;
 
- 
+
     console.log('marketContract is', marketContract);
 
 

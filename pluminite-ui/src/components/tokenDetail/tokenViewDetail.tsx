@@ -108,12 +108,16 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   email: '',
                   image: '',
                   name: this.state.order?.owner_id!,
+                  account_id: '',
+                  likes_count: 0,
+                  is_like: false
                 }}
                 identification={'0x0b9D2weq28asdqwe132'}
                 usersCount={22}
                 likesCount={12}
                 isCard={false}
                 isFollow={false}
+                isLike={false}
               />
             </div>
             <div className={styles.tabsWrap}>

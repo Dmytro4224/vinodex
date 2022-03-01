@@ -126,6 +126,11 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         this.changeToInfoTemplate();
       })
       .catch(error => {
+        this.setState({
+          ...this.state,
+          isLoading: false
+        })
+
         showToast({
           message: `Error! Please try again later`,
           type: EShowTost.error
