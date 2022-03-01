@@ -1,7 +1,7 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
-import {dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
-import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import { dropdownColors, DropdownView } from "../../components/common/dropdown/dropdownView";
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import BestArtists from "../../components/bestArtists/BestArtists";
 import TopTokensView from "../../components/topTokens/topTokensView";
 import PopularTokensView from "../../components/popularTokens/popularTokensView";
@@ -9,8 +9,9 @@ import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 import Loader from "../../components/common/loader/loader";
 import Skeleton from "react-loading-skeleton";
+import { ToastContainer } from "react-toastify";
 
-interface IHome extends IProps{
+interface IHome extends IProps {
 
 }
 class Home extends Component<IHome & IBaseComponentProps> {
@@ -31,19 +32,19 @@ class Home extends Component<IHome & IBaseComponentProps> {
       this.setState({...this.state, catalogs: response, currentCatalog: 0, sort: 7, isLoading: false });
     });*/
 
-    this.setState({...this.state, currentCatalog: 0, sort: 7, isLoading: false });
+    this.setState({ ...this.state, currentCatalog: 0, sort: 7, isLoading: false });
   }
 
-  private setCatalog(catalog: number){
-    this.setState({...this.state, currentCatalog: catalog});
+  private setCatalog(catalog: number) {
+    this.setState({ ...this.state, currentCatalog: catalog });
   }
 
-  private get catalog(){
+  private get catalog() {
     return this.props.near.catalogs[this.state.currentCatalog];
   }
 
   render() {
-    if(this.state.isLoading){
+    if (this.state.isLoading) {
       return null;
     }
 
@@ -76,18 +77,18 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
           <ButtonView
             text={"Filter"}
-            onClick={() => {  }}
+            onClick={() => { }}
             color={buttonColors.select}
           />
         </div>
 
         <p className="separator-horizontal" />
 
-        <TopTokensView catalog={this.catalog}  />
+        <TopTokensView catalog={this.catalog} />
 
         <p className="separator-horizontal" />
 
-        <PopularTokensView catalog={this.catalog}/>
+        <PopularTokensView catalog={this.catalog} />
 
         <p className="separator-horizontal" />
 
@@ -100,10 +101,22 @@ class Home extends Component<IHome & IBaseComponentProps> {
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
             text={'Load more'}
-            onClick={() => {}}
+            onClick={() => { }}
             color={buttonColors.select}
           />
         </div>
+
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
       </div>
     );
   }
