@@ -22,6 +22,7 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
   }
 
   render(){
+    console.log('this.props.user.accountId',this.props.user)
     return <><Dropdown className={`${styles.customDropdown} ${styles.userDropdown}`}>
       <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${styles.dropdownSelect} ${styles.userDropdownButton}`}>
         <img className={styles.userAvatar} src={defaultAvatar} alt="avatar"/>

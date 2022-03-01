@@ -5,7 +5,7 @@ const NftMethods = {
     'nft_tokens_from_end',
     'nft_tokens_for_owner',
     'nft_tokens_for_creator',
-        'nft_tokens_batch',
+    'nft_tokens_batch',
     'nft_tokens_by_filter',
     'nft_tokens_catalogs',
     'like_artist_account',

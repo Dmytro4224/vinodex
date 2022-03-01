@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import * as nearAPI from 'near-api-js';
 
 import { INftContract } from '../../utils';
 
@@ -93,9 +92,12 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     }
 
     public like_artist_account = async (accountId: string) => {
-        return this.nftContract.like_artist_account({
+
+        let res = await this.nftContract.like_artist_account({
             accountId: accountId
         });
+        console.log('this.nftContract res',res)
+        return  res;
     }
 
     public view_artist_account = async (accountId: string) => {
