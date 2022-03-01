@@ -7,9 +7,6 @@ import TopTokensView from "../../components/topTokens/topTokensView";
 import PopularTokensView from "../../components/popularTokens/popularTokensView";
 import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
-import Loader from "../../components/common/loader/loader";
-import Skeleton from "react-loading-skeleton";
-import { ToastContainer } from "react-toastify";
 
 interface IHome extends IProps {
 
@@ -105,18 +102,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
             color={buttonColors.select}
           />
         </div>
-
-        <ToastContainer
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
       </div>
     );
   }
