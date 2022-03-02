@@ -47,11 +47,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
             asked_account_id: this.myAccountId
         });
     }
-    public get asked_account_id(){
-        return  'vasyak.testnet';
-    }
     public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
-        return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, asked_account_id: this.asked_account_id });
+        return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, account_id: this.myAccountId });
     }
 
     public nft_tokens_catalogs = () => {
