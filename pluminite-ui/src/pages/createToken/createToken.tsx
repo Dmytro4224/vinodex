@@ -24,6 +24,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _refRoyalitiesInput: any;
   private _refInputBids: any;
   private _refCatalogSelect: any;
+  private _refStartDate: any;
+  private _refExpDate: any;
   private _refPutOnMarket: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
@@ -233,13 +235,13 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                       type="date"
                       id="date-start"
                       placeholder={'Starting Date*'}
-                      ref={(ref) => {  }}
+                      ref={(ref) => { this._refExpDate = ref }}
                     />
                     <Form.Control
                       type="date"
                       id="date-exp"
                       placeholder={'Expiration Date*'}
-                      ref={(ref) => {  }}
+                      ref={(ref) => { this._refStartDate = ref  }}
                     />
                   </div>
                 </div>
@@ -301,7 +303,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       const title: string = this._refInputTitle.value;
       const description: string = this._refInputDescription.value;
       const catalog: string = this._refCatalogSelect.value;
-      const price = this._refInputPrice.value;
+      const price = this._refInputPrice.value || 0;
 
       if(this._fileResponse === undefined) { return }
 
@@ -330,6 +332,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         perpetual_royalties: null,
         token_id: this._fileResponse.IpfsHash,
         token_type: catalog
+      }
+
+      if(this._renderType == 2){
+        model.metadata.starts_at = this._refStartDate.value || null;
+        model.metadata.expires_at = this._refExpDate.value || null;
       }
 
       const resp = await this.props.nftContractContext.nft_mint(model);
