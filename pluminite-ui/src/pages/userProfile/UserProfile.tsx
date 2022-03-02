@@ -1,4 +1,4 @@
-import React, { ChangeEvent, ChangeEventHandler, Component } from "react";
+import React, { Component } from "react";
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
@@ -13,7 +13,9 @@ import avatarUpload from '../../assets/icons/upload_avatar.svg';
 import { showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
 
-interface IUserProfile extends IProps { }
+interface IUserProfile extends IProps {
+  callUpdateUserInfo: () => void;
+}
 
 interface IUpdateStateUserInfo {
   name: string;
@@ -87,14 +89,6 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     });
   }
 
-  private get getUserId() {
-    return this.props.params.userId!;
-  }
-
-  private get isMyProfile() {
-    return this.props.near.user?.accountId === this.getUserId;
-  }
-
   public setSelectFile = async (e) => {
     this._selectFile = e.currentTarget.files[0];
 
@@ -127,21 +121,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     }
   }
 
-  private set userProfile(profile) {
-    this.setState({
-      ...this.state,
-      image: profile.image || avatarDefault,
-      profile: {
-        bio: profile.bio,
-        email: profile.email,
-        name: profile.name
-      }
-    })
-  }
-
   private callUpdateUser({ name, email, bio, accountId, image }: IUpdateUser) {
     return this.props.nftContractContext.set_profile({
-      profile: { name, email, bio, accountId, image }
+      profile: { name, email, bio, accountId, image: image || this.state.image }
     })
   }
 
@@ -177,7 +159,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         email: profile.email,
         name: profile.name
       }
-    })
+    });
+
+    this.props.callUpdateUserInfo && this.props.callUpdateUserInfo();
   }
 
   private getProfileTabs() {
@@ -237,6 +221,26 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         </Tab>
       </Tabs>
     )
+  }
+
+  private set userProfile(profile) {
+    this.setState({
+      ...this.state,
+      image: profile.image || avatarDefault,
+      profile: {
+        bio: profile.bio,
+        email: profile.email,
+        name: profile.name
+      }
+    })
+  }
+
+  private get getUserId() {
+    return this.props.params.userId!;
+  }
+
+  private get isMyProfile() {
+    return this.props.near.user?.accountId === this.getUserId;
   }
 
   public render() {

@@ -20,6 +20,7 @@ interface IApp extends IProps {
 }
 
 class App extends Component<IApp & IBaseComponentProps> {
+  private updateUserInfo: (() => void) | undefined = undefined;
 
   public componentDidMount() {
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
@@ -27,21 +28,29 @@ class App extends Component<IApp & IBaseComponentProps> {
     });
   }
 
+  private setToUpdateUser(updateMtd: () => void) {
+    this.updateUserInfo = updateMtd;
+  }
+
+  public callUpdateUserInfo() {
+    this.updateUserInfo && this.updateUserInfo();
+  }
+
   public render() {
     return (
       <>
-        <Header />
+        <Header setToUpdateUser={(updateMtd: () => void) => { this.setToUpdateUser(updateMtd) }} />
 
-        <main>
-          <Routes>
-            <Route path="*" element={<Navigate to="/" />} />
-            <Route path="/" element={<Home />} />
-            <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.followers_count} />} />
-            <Route path="/userProfile/:userId" element={<UserProfile />} />
-            <Route path="/token/:tokenId" element={<OrderDetail />} />
-            <Route path="/create/" element={<CreateToken />} />
-          </Routes>
-        </main>
+                <main>
+                    <Routes>
+                        <Route path="*" element={<Navigate to="/" />} />
+                        <Route path="/" element={<Home />} />
+                        <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
+                        <Route path="/userProfile/:userId" element={<UserProfile />} />
+                        <Route path="/token/:tokenId" element={<OrderDetail />} />
+                        <Route path="/create/" element={<CreateToken />} />
+                    </Routes>
+                </main>
 
         <ToastContainer
           position="top-right"
