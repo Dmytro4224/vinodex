@@ -30,7 +30,7 @@ const NO_DEPOSIT: Balance = 0;
 const STORAGE_PER_SALE: u128 = 1000 * STORAGE_PRICE_PER_BYTE;
 
 //every sale will have a unique ID which is `CONTRACT + DELIMITER + TOKEN_ID`
-static DELIMETER: &str = ".";
+static DELIMETER: &str = "||";
 
 //Creating custom types to use within the contract. This makes things more readable. 
 pub type SalePriceInYoctoNear = U128;

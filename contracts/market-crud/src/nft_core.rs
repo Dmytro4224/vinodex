@@ -36,7 +36,7 @@ pub trait NonFungibleTokenCore {
         msg: String,
     ) -> Promise;
 
-    fn nft_approve(&mut self, token_id: TokenId, account_id: ValidAccountId, msg: Option<String>);
+    fn nft_approve(&mut self, token_id: TokenId, account_id: ValidAccountId, sale_conditions: U128);
 
     fn nft_revoke(&mut self, token_id: TokenId, account_id: ValidAccountId);
 
@@ -49,6 +49,14 @@ pub trait NonFungibleTokenCore {
 
     fn get_token_likes_count(&self, token_id: TokenId) -> usize;
     fn get_token_views_count(&self, token_id: TokenId) -> usize;
+
+    //check if the passed in account has access to approve the token ID
+	fn nft_is_approved(
+        &self,
+        token_id: TokenId,
+        approved_account_id: AccountId,
+        approval_id: Option<u64>,
+    ) -> bool;
 }
 
 #[ext_contract(ext_non_fungible_token_receiver)]
@@ -69,8 +77,8 @@ trait NonFungibleTokenApprovalsReceiver {
         &mut self,
         token_id: TokenId,
         owner_id: AccountId,
-        approval_id: U64,
-        msg: String,
+        approval_id: u64,
+        sale_conditions: U128
     );
 }
 
@@ -235,7 +243,7 @@ impl NonFungibleTokenCore for Contract {
     }
 
     #[payable]
-    fn nft_approve(&mut self, token_id: TokenId, account_id: ValidAccountId, msg: Option<String>) {
+    fn nft_approve(&mut self, token_id: TokenId, account_id: ValidAccountId, sale_conditions: U128) {
         if self.use_storage_fees {
             assert_at_least_one_yocto();
         } else {
@@ -252,10 +260,10 @@ impl NonFungibleTokenCore for Contract {
             "Predecessor must be the token owner."
         );
 
-        let approval_id: U64 = token.next_approval_id.into();
+        let approval_id = token.next_approval_id;
         let is_new_approval = token
             .approved_account_ids
-            .insert(account_id.clone(), approval_id)
+            .insert(account_id.clone(), approval_id.into())
             .is_none();
 
         if self.use_storage_fees {
@@ -275,26 +283,65 @@ impl NonFungibleTokenCore for Contract {
             self.tokens_by_id.insert(&token_id, &token);
         }
 
-        if let Some(msg) = msg {
+        ext_non_fungible_approval_receiver::nft_on_approve(
+            token_id,
+            token.owner_id,
+            approval_id,
+            sale_conditions,
+            &account_id, //contract account we're calling
+            NO_DEPOSIT, //NEAR deposit we attach to the call
+            env::prepaid_gas() - GAS_FOR_NFT_APPROVE, //GAS we're attaching
+        ).as_return(); // Returning this promise
 
-            // CUSTOM - add token_type to msg
-            let mut final_msg = msg;
-            let token_type = token.token_type;
-            if let Some(token_type) = token_type {
-                final_msg.insert_str(final_msg.len() - 1, &format!(",\"token_type\":\"{}\"", token_type));
-            }
+        // if let Some(msg) = msg {
 
-            ext_non_fungible_approval_receiver::nft_on_approve(
-                token_id,
-                token.owner_id,
-                approval_id,
-                final_msg,
-                &account_id,
-                NO_DEPOSIT,
-                env::prepaid_gas() - GAS_FOR_NFT_APPROVE,
-            )
-                .as_return(); // Returning this promise
-        }
+        //     // CUSTOM - add token_type to msg
+        //     let mut final_msg = msg;
+        //     let token_type = token.token_type;
+        //     if let Some(token_type) = token_type {
+        //         final_msg.insert_str(final_msg.len() - 1, &format!(",\"token_type\":\"{}\"", token_type));
+        //     }
+
+        //     ext_non_fungible_approval_receiver::nft_on_approve(
+        //         token_id,
+        //         token.owner_id,
+        //         approval_id,
+        //         final_msg,
+        //         &account_id,
+        //         NO_DEPOSIT,
+        //         env::prepaid_gas() - GAS_FOR_NFT_APPROVE,
+        //     )
+        //         .as_return(); // Returning this promise
+        // }
+    }
+
+    //check if the passed in account has access to approve the token ID
+	fn nft_is_approved(
+        &self,
+        token_id: TokenId,
+        approved_account_id: AccountId,
+        approval_id: Option<u64>,
+    ) -> bool {
+        //get the token object from the token_id
+        let token = self.tokens_by_id.get(&token_id).expect("No token");
+
+        //get the approval number for the passed in account ID
+		let approval = token.approved_account_ids.get(&approved_account_id);
+
+        //if there was some approval ID found for the account ID
+        if let Some(approval) = approval {
+            //if a specific approval_id was passed into the function
+			if let Some(approval_id) = approval_id {
+                //return if the approval ID passed in matches the actual approval ID for the account
+				approval_id == (*approval).0
+            //if there was no approval_id passed into the function, we simply return true
+			} else {
+				true
+			}
+        //if there was no approval ID found for the account ID, we simply return false
+		} else {
+			false
+		}
     }
 
     #[payable]
