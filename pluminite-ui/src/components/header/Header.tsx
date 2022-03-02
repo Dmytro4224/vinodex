@@ -10,7 +10,9 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { NavLink } from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 
-interface IHeader extends IProps { }
+interface IHeader extends IProps {
+  setToUpdateUser: (updateMtd) => void;
+}
 
 class Header extends Component<IHeader & IBaseComponentProps> {
   public state = {
@@ -22,6 +24,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
   }
 
   public componentDidMount() {
+    this.props.setToUpdateUser(() => this.getUserInfo())
     this.getUserInfo();
   }
 
