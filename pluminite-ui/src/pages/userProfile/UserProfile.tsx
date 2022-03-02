@@ -195,7 +195,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           <Tab eventKey="following" title="Following">
             <div style={{ minHeight: '300px' }}><EmptyListView /></div>
           </Tab>
-          <Tab eventKey="favourites" title="Favourites">
+          <Tab eventKey="favourites" title="Favorites">
             <div style={{ minHeight: '300px' }}><EmptyListView /></div>
           </Tab>
         </Tabs>
@@ -216,7 +216,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         <Tab eventKey="owned" title="Owned">
           <div style={{ minHeight: '300px' }}><EmptyListView /></div>
         </Tab>
-        <Tab eventKey="favourites" title="Favourites">
+        <Tab eventKey="favourites" title="Favorites">
           <div style={{ minHeight: '300px' }}><EmptyListView /></div>
         </Tab>
       </Tabs>
