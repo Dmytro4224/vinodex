@@ -24,6 +24,7 @@ class App extends Component<IApp & IBaseComponentProps> {
 
   public componentDidMount() {
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      console.log('App categories', response);
       this.props.near.setCatalogs(response);
     });
   }
@@ -32,7 +33,7 @@ class App extends Component<IApp & IBaseComponentProps> {
     this.updateUserInfo = updateMtd;
   }
 
-  public callUpdateUserInfo() {
+  public callUpdateUserInfo = async () => {
     this.updateUserInfo && this.updateUserInfo();
   }
 
@@ -41,16 +42,16 @@ class App extends Component<IApp & IBaseComponentProps> {
       <>
         <Header setToUpdateUser={(updateMtd: () => void) => { this.setToUpdateUser(updateMtd) }} />
 
-                <main>
-                    <Routes>
-                        <Route path="*" element={<Navigate to="/" />} />
-                        <Route path="/" element={<Home />} />
-                        <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
-                        <Route path="/userProfile/:userId" element={<UserProfile />} />
-                        <Route path="/token/:tokenId" element={<OrderDetail />} />
-                        <Route path="/create/" element={<CreateToken />} />
-                    </Routes>
-                </main>
+        <main>
+          <Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
+            <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />
+            <Route path="/token/:tokenId" element={<OrderDetail />} />
+            <Route path="/create/" element={<CreateToken />} />
+          </Routes>
+        </main>
 
         <ToastContainer
           position="top-right"

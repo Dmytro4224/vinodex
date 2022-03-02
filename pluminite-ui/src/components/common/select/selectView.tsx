@@ -14,20 +14,22 @@ interface ISelectView{
   onChange?: (item: ISelectViewItem) => void;
 }
 
-class SelectView extends Component<ISelectView>{
-  private _ref: any;
+interface ISelectState {
+  selectedOption: ISelectViewItem | null;
+}
 
-  public state = {
-    selectedOption: null,
-  };
+class SelectView extends Component<ISelectView, ISelectState>{
+  private _ref: any;
 
   constructor(props: ISelectView) {
     super(props);
 
     this.props.setRef && this.props.setRef(this);
+
+    this.state.selectedOption = null;
   }
 
-  handleChange = (selectedOption) => {
+  handleChange = (selectedOption: ISelectViewItem) => {
     if(this.props.onChange !== undefined){
       this.props.onChange(selectedOption);
     }
