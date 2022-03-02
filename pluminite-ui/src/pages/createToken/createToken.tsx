@@ -21,17 +21,35 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _refInputDescription: any;
   private _refInputPrice: any;
   private _refPriceSelect: any;
+  private _refRoyalitiesInput: any;
+  private _refInputBids: any;
   private _refCatalogSelect: any;
+  private _refPutOnMarket: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
   private _fileResponse: IUploadFileResponse | undefined
   private _imageRef: React.RefObject<HTMLImageElement>;
+  private _renderType: number
+
+  public state = {
+    file: null,
+    title: "",
+    putOnMarket: false,
+    price: 0,
+    royaltes: 0,
+    category: null,
+    description: '',
+    bid: 0,
+    startDate: '',
+    expDate: ''
+  }
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
 
     this._ref = React.createRef<DropzoneRef>();
     this._imageRef = React.createRef<HTMLImageElement>();
+    this._renderType = 1;
   }
 
   private openDialog = () => {
@@ -48,12 +66,47 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
 
     if(this._fileResponse && this._imageRef?.current){
-      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash!);
+      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
     }
   }
 
+  private setMState(renderType: number){
+    this._renderType = renderType;
+
+    let state = {
+      description: this._refInputDescription.value,
+      category: this._refCatalogSelect.value,
+      royaltes: this._refRoyalitiesInput.value,
+      title: this._refInputTitle.value,
+      file: this._fileResponse !== undefined ? pinataAPI.createUrl(this._fileResponse.IpfsHash) : null,
+      putOnMarket: this._refPutOnMarket.checked,
+      price: 0,
+      startDate: '',
+      expDate: ''
+    }
+
+    switch (this._renderType){
+      case 1:
+        state.price = this._refInputPrice.value;
+        break;
+      case 2:
+
+        break;
+      case 3:
+
+        break;
+    }
+
+    this.setState({
+      ...this.state,
+      ...state
+    })
+  }
+
   render(){
-    return <div className={styles.container}>
+    console.log(`this.state`, this.state);
+
+    return (<div className={styles.container}>
         <div className={styles.containerWrap}>
           <h3 className={styles.title}>Create Single NFT</h3>
           <div className={styles.createWrap}>
@@ -108,6 +161,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   <Form.Check
                     type="switch"
                     id="switch-nft-approve"
+                    ref={(ref) => { this._refPutOnMarket = ref }}
                     label=""
                   />
                 </div>
@@ -117,7 +171,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <Form className="d-flex align-items-center flex-gap-36">
                 <div key={1} className="mb-3">
                   <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
-                    <Form.Check.Input id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Input onChange={() => { this.setMState(1)  }}  id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
                       <div className="d-flex align-items-center justify-content-center flex-column">
                         <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
@@ -128,7 +182,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 </div>
                 <div key={2} className="mb-3">
                   <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
-                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Input onChange={() => { this.setMState(2)  }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label className={styles.priceTyleLabel}>
                       <div className="d-flex align-items-center justify-content-center flex-column">
                         <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
@@ -139,7 +193,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 </div>
                 <div key={3} className="mb-3">
                   <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Input onChange={() => { this.setMState(3)  }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
                     <Form.Check.Label className={styles.priceTyleLabel}>
                       <div className="d-flex align-items-center justify-content-center flex-column">
                         <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
@@ -149,18 +203,48 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 </div>
               </Form>
             </div>
-            <div className={styles.copies}>
-              <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
-              <InputView
-                onChange={(e) => { console.log(e) }}
-                placeholder={'Price*'}
-                absPlaceholder={'Price*'}
-                customClass={`${styles.titleInpWrap}`}
-                viewType={ViewType.input}
-                setRef={(ref) => {this._refInputPrice = ref;}}
-              />
-              <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
-            </div>
+            {this._renderType === 1 ?
+              <div className={styles.copies}>
+                <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
+                <InputView
+                  onChange={(e) => { console.log(e) }}
+                  placeholder={'Price*'}
+                  absPlaceholder={'Price*'}
+                  customClass={`${styles.titleInpWrap}`}
+                  viewType={ViewType.input}
+                  setRef={(ref) => {this._refInputPrice = ref;}}
+                />
+                <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
+              </div> : this._renderType === 2 ? <div className={styles.copies}>
+                <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
+                <InputView
+                  onChange={(e) => { console.log(e) }}
+                  placeholder={'Minimum bid**'}
+                  absPlaceholder={'Minimum bid**'}
+                  customClass={`${styles.titleInpWrap}`}
+                  viewType={ViewType.input}
+                  setRef={(ref) => {this._refInputBids = ref;}}
+                />
+                <div className={'mt-4'}>
+                  <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
+                  <div className={'d-flex align-items-centerjustify-content-between flex-gap-36 mt-3'}>
+                    <Form.Control
+                      type="date"
+                      id="date-start"
+                      placeholder={'Starting Date*'}
+                      ref={(ref) => {  }}
+                    />
+                    <Form.Control
+                      type="date"
+                      id="date-exp"
+                      placeholder={'Expiration Date*'}
+                      ref={(ref) => {  }}
+                    />
+                  </div>
+                </div>
+              </div> : <div></div>
+            }
+
             <div>
               <InputView
                 onChange={(e) => { console.log(e) }}
@@ -168,6 +252,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 absPlaceholder={'Royalties*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
+                setRef={(ref) => {this._refRoyalitiesInput = ref;}}
               />
               <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
             </div>
@@ -178,7 +263,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     label: catalog
                   }
                 })}
-                          customCLass={styles.selectStyle}
+                customCLass={styles.selectStyle}
                 placeholder={'Category'}
                 onChange={(opt) => { console.log(opt) }}
                 setRef={(ref) => {this._refCatalogSelect = ref;}}
@@ -195,7 +280,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               />
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-center">
+          <div className="d-flex align-items-center justify-content-center mt-2">
             <ButtonView
               text={'CANCEL'}
               onClick={() => { this.props.navigate(-1) }}
@@ -208,11 +293,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             />
           </div>
         </div>
-    </div>
+    </div>)
   }
-
-
-
 
   private submit = async () => {
       const title = this._refInputTitle.value;
