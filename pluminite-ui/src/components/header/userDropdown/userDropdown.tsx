@@ -8,6 +8,11 @@ import defaultAvatar from '../../../assets/images/avatar-def.png';
 import { transformArtistId } from "../../../utils/sys";
 import ButtonView, { buttonColors } from "../../common/button/ButtonView";
 import userIcon from '../../../assets/icons/user-gold.svg';
+import createdIcon from '../../../assets/icons/create-icon.svg';
+import purchasesIcon from '../../../assets/icons/purchases-icon.svg';
+import activeBidsIcon from '../../../assets/icons/active-bids-icon.svg';
+import favoritesIcon from '../../../assets/icons/heart-icon.svg';
+import followingsIcon from '../../../assets/icons/followings-icon.svg';
 import { IdentificationCopy } from "../../common/identificationCopy/IdentificationCopy";
 import { NavLink } from "react-router-dom";
 
@@ -54,7 +59,22 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
 
           <ul className={styles.navList}>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img src={userIcon} alt="icon" /> <p>Profile Details</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={userIcon} alt="icon" /> <p>Profile Details</p></NavLink>
+            </li>
+            <li>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={createdIcon} alt="icon" /> <p>Created Items</p></NavLink>
+            </li>
+            <li>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={purchasesIcon} alt="icon" /> <p>Purchases</p></NavLink>
+            </li>
+            <li>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={activeBidsIcon} alt="icon" /> <p>Active Bids</p></NavLink>
+            </li>
+            <li>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={favoritesIcon} alt="icon" /> <p>Favorites</p></NavLink>
+            </li>
+            <li>
+              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={followingsIcon} alt="icon" /> <p>Followings</p></NavLink>
             </li>
           </ul>
 

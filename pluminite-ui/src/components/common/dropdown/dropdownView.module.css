@@ -64,6 +64,7 @@
 }
 
 .navList {
+  padding: 0 10px;
   width: 100%;
 }
 
@@ -78,6 +79,11 @@
 .navList li a img {
   margin-right: 16px;
 }
+
+.navList li {
+  padding: 10px 0;
+}
+
 .userAvatar {
   border-radius: 100%;
 }

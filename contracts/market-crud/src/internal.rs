@@ -16,7 +16,8 @@ pub(crate) fn assert_one_yocto() {
     assert_eq!(
         env::attached_deposit(),
         1,
-        "Requires attached deposit of exactly 1 yoctoNEAR",
+        "Requires attached deposit of exactly 1 yoctoNEAR, attached {}",
+        env::attached_deposit()
     )
 }
 

@@ -21,17 +21,35 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _refInputDescription: any;
   private _refInputPrice: any;
   private _refPriceSelect: any;
+  private _refRoyalitiesInput: any;
+  private _refInputBids: any;
   private _refCatalogSelect: any;
+  private _refPutOnMarket: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
   private _fileResponse: IUploadFileResponse | undefined
   private _imageRef: React.RefObject<HTMLImageElement>;
+  private _renderType: number
+
+  public state = {
+    file: null,
+    title: "",
+    putOnMarket: false,
+    price: 0,
+    royaltes: 0,
+    category: null,
+    description: '',
+    bid: 0,
+    startDate: '',
+    expDate: ''
+  }
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
 
     this._ref = React.createRef<DropzoneRef>();
     this._imageRef = React.createRef<HTMLImageElement>();
+    this._renderType = 1;
   }
 
   private openDialog = () => {
@@ -49,20 +67,53 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
 
-    if (this._fileResponse && this._imageRef?.current) {
-      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash!);
+    if(this._fileResponse && this._imageRef?.current){
+      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
     }
   }
 
-  public render() {
+  private setMState(renderType: number){
+    this._renderType = renderType;
+
+    let state = {
+      description: this._refInputDescription.value,
+      category: this._refCatalogSelect.value,
+      royaltes: this._refRoyalitiesInput.value,
+      title: this._refInputTitle.value,
+      file: this._fileResponse !== undefined ? pinataAPI.createUrl(this._fileResponse.IpfsHash) : null,
+      putOnMarket: this._refPutOnMarket.checked,
+      price: 0,
+      startDate: '',
+      expDate: ''
+    }
+
+    switch (this._renderType){
+      case 1:
+        state.price = this._refInputPrice.value;
+        break;
+      case 2:
+
+        break;
+      case 3:
+
+        break;
+    }
+
+    this.setState({
+      ...this.state,
+      ...state
+    })
+  }
+
+  public render(){
     return <div className={styles.container}>
-      <div className={styles.containerWrap}>
-        <h3 className={styles.title}>Create Single NFT</h3>
-        <div className={styles.createWrap}>
-          <label className={styles.label}>Upload file</label>
-          <div className={styles.dropzone}>
-            <Dropzone onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
-              {({ getRootProps, getInputProps, acceptedFiles }) => {
+        <div className={styles.containerWrap}>
+          <h3 className={styles.title}>Create Single NFT</h3>
+          <div className={styles.createWrap}>
+            <label className={styles.label}>Upload file</label>
+            <div className={styles.dropzone}>
+              <Dropzone onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
+                {({getRootProps, getInputProps, acceptedFiles}) => {
 
                 //if(acceptedFiles.length > 0){
                 //    this.setSelectFile(acceptedFiles);
@@ -107,113 +158,109 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   <p className={styles.itemTitle}>Put on marketplace</p>
                 </div>
 
-                <Form.Check
-                  type="switch"
-                  id="switch-nft-approve"
-                  label=""
-                />
-              </div>
-            </FormCheck.Label>
-          </Form>
-          <div className={styles.checkboxes}>
-            <Form className="d-flex align-items-center flex-gap-36">
-              <div key={1} className="mb-3">
-                <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
-                  <Form.Check.Input id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
-                  <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
-                      <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
-                      <p className="mt-1">Fixed price</p>
-                    </div>
-                  </Form.Check.Label>
-                </Form.Check>
-              </div>
-              <div key={2} className="mb-3">
-                <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
-                  <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
-                  <Form.Check.Label className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
-                      <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
-                      <p className="mt-1">Timed auction</p>
-                    </div>
-                  </Form.Check.Label>
-                </Form.Check>
-              </div>
-              <div key={3} className="mb-3">
-                <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                  <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
-                  <Form.Check.Label className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
-                      <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
-                      <p className="mt-1">Unlimited auction</p>
-                    </div></Form.Check.Label>
-                </Form.Check>
-              </div>
+                  <Form.Check
+                    type="switch"
+                    id="switch-nft-approve"
+                    label=""
+                  />
+                </div>
+              </FormCheck.Label>
             </Form>
+            <div className={styles.checkboxes}>
+              <Form className="d-flex align-items-center flex-gap-36">
+                <div key={1} className="mb-3">
+                  <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
+                    <Form.Check.Input id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
+                        <p className="mt-1">Fixed price</p>
+                      </div>
+                    </Form.Check.Label>
+                  </Form.Check>
+                </div>
+                <div key={2} className="mb-3">
+                  <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
+                        <p className="mt-1">Timed auction</p>
+                      </div>
+                    </Form.Check.Label>
+                  </Form.Check>
+                </div>
+                <div key={3} className="mb-3">
+                  <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
+                    <Form.Check.Input className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
+                    <Form.Check.Label className={styles.priceTyleLabel}>
+                      <div className="d-flex align-items-center justify-content-center flex-column">
+                        <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
+                        <p className="mt-1">Unlimited auction</p>
+                      </div></Form.Check.Label>
+                  </Form.Check>
+                </div>
+              </Form>
+            </div>
+            <div className={styles.copies}>
+              <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
+              <InputView
+                onChange={(e) => { console.log(e) }}
+                placeholder={'Price*'}
+                absPlaceholder={'Price*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+                setRef={(ref) => {this._refInputPrice = ref;}}
+              />
+              <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
+            </div>
+            <div>
+              <InputView
+                onChange={(e) => { console.log(e) }}
+                placeholder={'Royalties*'}
+                absPlaceholder={'Royalties*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+              />
+              <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
+            </div>
+            <div className={styles.categories}>
+              <SelectView options={this.props.near.catalogs.map(catalog => {
+                  return {
+                    value: catalog,
+                    label: catalog
+                  }
+                })}
+                          customCLass={styles.selectStyle}
+                placeholder={'Category'}
+                onChange={(opt) => { console.log(opt) }}
+                setRef={(ref) => {this._refCatalogSelect = ref;}}
+              />
+            </div>
+            <div>
+              <InputView
+                onChange={(e) => { console.log(e) }}
+                placeholder={'Description*'}
+                absPlaceholder={'Description*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+                setRef={(ref) => {this._refInputDescription = ref;}}
+              />
+            </div>
           </div>
-          <div className={styles.copies}>
-            <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
-            <InputView
-              onChange={(e) => { console.log(e) }}
-              placeholder={'Price*'}
-              absPlaceholder={'Price*'}
-              customClass={`${styles.titleInpWrap}`}
-              viewType={ViewType.input}
-              setRef={(ref) => { this._refInputPrice = ref; }}
+          <div className="d-flex align-items-center justify-content-center">
+            <ButtonView
+              text={'CANCEL'}
+              onClick={() => { this.props.navigate(-1) }}
+              color={buttonColors.gold}
             />
-            <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
-          </div>
-          <div>
-            <InputView
-              onChange={(e) => { console.log(e) }}
-              placeholder={'Royalties*'}
-              absPlaceholder={'Royalties*'}
-              customClass={`${styles.titleInpWrap}`}
-              viewType={ViewType.input}
-            />
-            <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
-          </div>
-          <div className={styles.categories}>
-            <SelectView options={this.props.near.catalogs.map(catalog => {
-              return {
-                value: catalog,
-                label: catalog
-              }
-            })}
-              customCLass={styles.selectStyle}
-              placeholder={'Category'}
-              onChange={(opt) => {
-                const catalog: string = this._refCatalogSelect;
-                console.log('catalog', catalog);
-
-              }}
-              setRef={(ref) => { this._refCatalogSelect = ref; }}
-            />
-          </div>
-          <div>
-            <InputView
-              onChange={(e) => { console.log(e) }}
-              placeholder={'Description*'}
-              absPlaceholder={'Description*'}
-              customClass={`${styles.titleInpWrap}`}
-              viewType={ViewType.input}
-              setRef={(ref) => { this._refInputDescription = ref; }}
+            <ButtonView
+              text={'SUBMIT'}
+              onClick={this.submit}
+              color={buttonColors.goldFill}
             />
           </div>
         </div>
-        <div className="d-flex align-items-center justify-content-center">
-          <ButtonView
-            text={'CANCEL'}
-            onClick={() => { this.props.navigate(-1) }}
-            color={buttonColors.gold}
-          />
-          <ButtonView
-            text={'SUBMIT'}
-            onClick={this.submit}
-            color={buttonColors.goldFill}
-          />
-        </div>
-      </div>
     </div>
   }
 

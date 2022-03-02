@@ -339,7 +339,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "nft_simple"
+name = "nft_vinodex"
 version = "0.1.0"
 dependencies = [
  "near-sdk",
