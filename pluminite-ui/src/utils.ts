@@ -28,7 +28,7 @@ export type INftContract = nearAPI.Contract & {
     token_set_like: ({token_id }: {token_id:string}) => Promise<any>;
     nft_mint: (data: any) => Promise<any>;
     follow_artist_account: ({ account_id }: { account_id: string }) => Promise<any>;
-    view_artist_account: ({ accountId }: { accountId: string }) => Promise<any>;
+    view_artist_account: ({ account_id }: { account_id: string }) => Promise<any>;
 };
 
 export type IMarketContract = nearAPI.Contract & {
