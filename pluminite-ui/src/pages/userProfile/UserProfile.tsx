@@ -123,7 +123,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
   private callUpdateUser({ name, email, bio, accountId, image }: IUpdateUser) {
     return this.props.nftContractContext.set_profile({
-      profile: { name, email, bio, accountId, image }
+      profile: { name, email, bio, accountId, image: image || this.state.image }
     })
   }
 
