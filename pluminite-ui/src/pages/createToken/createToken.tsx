@@ -107,7 +107,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
 
   public render(){
-    return <div className={styles.container}>
+    return (<div className={styles.container}>
         <div className={styles.containerWrap}>
           <h3 className={styles.title}>Create Single NFT</h3>
           <div className={styles.createWrap}>
