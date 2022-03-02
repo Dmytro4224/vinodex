@@ -277,13 +277,15 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             <ButtonView
               text={'CANCEL'}
               onClick={() => { this.changeToInfoTemplate() }}
-              color={buttonColors.gold}
+              color={buttonColors.select}
+              customClass={`${styles.btnCancel}`}
             />
             <ButtonView
               text={'SAVE'}
               onClick={this.formSubmitHandler}
               color={buttonColors.goldFill}
               isLoading={this.state.isLoading}
+              customClass={`${styles.btnSave}`}
             />
           </div>
         </div>
