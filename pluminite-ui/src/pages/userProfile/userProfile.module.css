@@ -88,6 +88,10 @@
   pointer-events: none;
 }
 
+.uploadAvatarWrap img {
+  border-radius: 0;
+}
+
 .avatarWrap:hover .uploadAvatarWrap label {
   opacity: 1;
   pointer-events: all;

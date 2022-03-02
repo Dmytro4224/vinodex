@@ -20,17 +20,26 @@ interface IApp extends IProps {
 }
 
 class App extends Component<IApp & IBaseComponentProps> {
+  private updateUserInfo: (() => void) | undefined = undefined;
 
-    public componentDidMount() {
-        this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-            this.props.near.setCatalogs(response);
-        });
-    }
+  public componentDidMount() {
+    this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      this.props.near.setCatalogs(response);
+    });
+  }
 
-    public render() {
-        return (
-            <>
-                <Header />
+  private setToUpdateUser(updateMtd: () => void) {
+    this.updateUserInfo = updateMtd;
+  }
+
+  public callUpdateUserInfo() {
+    this.updateUserInfo && this.updateUserInfo();
+  }
+
+  public render() {
+    return (
+      <>
+        <Header setToUpdateUser={(updateMtd: () => void) => { this.setToUpdateUser(updateMtd) }} />
 
                 <main>
                     <Routes>
@@ -43,26 +52,26 @@ class App extends Component<IApp & IBaseComponentProps> {
                     </Routes>
                 </main>
 
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
-                {/*<NftContractContext.Consumer>
+        {/*<NftContractContext.Consumer>
             {context => (
                 <span>{context?.nftContract?.contractId}</span>
             )}
         </NftContractContext.Consumer>*/}
-            </>
-        );
-    }
+      </>
+    );
+  }
 }
 
 export default withComponent(App);
