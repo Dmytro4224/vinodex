@@ -21,48 +21,48 @@ interface IApp extends IProps {
 
 class App extends Component<IApp & IBaseComponentProps> {
 
-    public componentDidMount() {
-        this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-            this.props.near.setCatalogs(response);
-        });
-    }
+  public componentDidMount() {
+    this.props.nftContractContext.nft_tokens_catalogs().then(response => {
+      this.props.near.setCatalogs(response);
+    });
+  }
 
-    public render() {
-        return (
-            <>
-                <Header />
+  public render() {
+    return (
+      <>
+        <Header />
 
-                <main>
-                    <Routes>
-                        <Route path="*" element={<Navigate to="/" />} />
-                        <Route path="/" element={<Home />} />
-                        <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.followers_count} />} />
-                        <Route path="/userProfile/:userId" element={<UserProfile />} />
-                        <Route path="/token/:tokenId" element={<OrderDetail />} />
-                        <Route path="/create/" element={<CreateToken />} />
-                    </Routes>
-                </main>
+        <main>
+          <Routes>
+            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.followers_count} />} />
+            <Route path="/userProfile/:userId" element={<UserProfile />} />
+            <Route path="/token/:tokenId" element={<OrderDetail />} />
+            <Route path="/create/" element={<CreateToken />} />
+          </Routes>
+        </main>
 
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                />
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
 
-                {/*<NftContractContext.Consumer>
+        {/*<NftContractContext.Consumer>
             {context => (
                 <span>{context?.nftContract?.contractId}</span>
             )}
         </NftContractContext.Consumer>*/}
-            </>
-        );
-    }
+      </>
+    );
+  }
 }
 
 export default withComponent(App);
