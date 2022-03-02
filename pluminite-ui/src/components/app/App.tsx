@@ -36,7 +36,7 @@ class App extends Component<IApp & IBaseComponentProps> {
                     <Routes>
                         <Route path="*" element={<Navigate to="/" />} />
                         <Route path="/" element={<Home />} />
-                        <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.followers_count} />} />
+                        <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
                         <Route path="/userProfile/:userId" element={<UserProfile />} />
                         <Route path="/token/:tokenId" element={<OrderDetail />} />
                         <Route path="/create/" element={<CreateToken />} />

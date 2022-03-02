@@ -40,7 +40,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     }
   }
 
-  public setSelectFile = async (files) => {
+    public setSelectFile = async (files: Array<File>) => {
+        console.log('setSelectFile', files);
+
     this._selectFile = files[0];
 
     if(this._selectFile === undefined){ return }
@@ -52,7 +54,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     }
   }
 
-  render(){
+  public render(){
     return <div className={styles.container}>
         <div className={styles.containerWrap}>
           <h3 className={styles.title}>Create Single NFT</h3>
@@ -63,7 +65,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 {({getRootProps, getInputProps, acceptedFiles}) => {
 
                   if(acceptedFiles.length > 0){
-                      this.setSelectFile(acceptedFiles[0]);
+                      this.setSelectFile(acceptedFiles);
                   }
 
                   return (
@@ -90,7 +92,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               </Dropzone>
             </div>
             <InputView
-              onChange={(e) => { }}
+                    onChange={(e) => { console.log('input onChange', e); }}
               placeholder={'Title*'}
               absPlaceholder={'Title*'}
               customClass={`mb-4 ${styles.titleInpWrap}`}
@@ -211,13 +213,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     </div>
   }
 
-
-
-
   private submit = async () => {
-      const title = this._refInputTitle.value;
-      const description = this._refInputDescription.value;
-      const catalog = this._refCatalogSelect.value;
+      const title: string = this._refInputTitle.value;
+      const description: string = this._refInputDescription.value;
+      const catalog: string = this._refCatalogSelect.value;
       const price = this._refInputPrice.value;
 
       if(this._fileResponse === undefined) { return }

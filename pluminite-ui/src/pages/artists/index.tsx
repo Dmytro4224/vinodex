@@ -3,6 +3,9 @@ import ArtistCard from '../../components/artistCard/ArtistCard';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import Loader from '../../components/common/loader/loader';
+import LabelView from '../../components/common/label/labelView';
+import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 
 export interface IArtistsView extends IProps {
 	parameter?: BestArtistsParameter;
@@ -17,13 +20,13 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
 	private _parameter: BestArtistsParameter;
 	private _pageIndex: number = 1;
-	private _pageSize: number = 20;
-	private _isReverse: boolean = false;
+	private _pageSize: number = 8;
+	private _isReverse: boolean = true;
 
 	constructor(props: IArtistsView & IBaseComponentProps) {
 		super(props);
 
-		this._parameter = this.props.parameter || BestArtistsParameter.followers_count;
+		this._parameter = this.props.parameter === void 0 ? BestArtistsParameter.likes_count : this.props.parameter;
 
 		this.state = {
 			isLoading: true,
@@ -35,10 +38,11 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 		this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
 			console.log('ArtistsView response', response);
 			const list = response.filter(item => item !== null);
-			this.setState({ ...this.state, list, isLoading: false });
-			//this.list = response.filter(el => el !== null);
-
-			//console.log("🚀 ~ file: BestArtists.tsx ~ line 57 ~ BestArtists ~ this.props.nftContractContext.authors_by_filter ~ response", response)
+			this.setState({
+				...this.state,
+				list,
+				isLoading: false
+			});
 		});
 	}
 
@@ -50,9 +54,17 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 		if (this.state.isLoading) {
 			return (
 				<div className="my-5 container">
-					<p>Loading...</p>
+					return <Loader />
 				</div>
 			);
+		}
+		if (this.state.list.length === 0) {
+			return (
+				<div className="my-5 container">
+					<LabelView text={'Best Artists'} />
+					<EmptyListView />
+				</div>
+			)
 		}
 		return (
 			<div className="my-5 container">
