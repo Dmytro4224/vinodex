@@ -10,6 +10,7 @@ import { ITokenCreateItem } from "../../types/ITokenCreateItem";
 import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import defaultImage from '../../assets/icons/card-preview.jpg';
 import styles from './createToken.module.css';
+import { validateDotNum } from "../../utils/sys";
 
 interface ICreateToken extends IProps{
 
@@ -210,7 +211,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <div className={styles.copies}>
                 <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
                 <InputView
-                  onChange={(e) => { console.log(e) }}
+                  onChange={(e) => { validateDotNum(e.target) }}
                   placeholder={'Price*'}
                   absPlaceholder={'Price*'}
                   customClass={`${styles.titleInpWrap}`}
@@ -221,7 +222,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               </div> : this._renderType === 2 ? <div className={styles.copies}>
                 <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
                 <InputView
-                  onChange={(e) => { console.log(e) }}
+                  onChange={(e) => { validateDotNum(e.target) }}
                   placeholder={'Minimum bid**'}
                   absPlaceholder={'Minimum bid**'}
                   customClass={`${styles.titleInpWrap}`}
@@ -234,12 +235,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     <Form.Control
                       type="date"
                       id="date-start"
+                      className={styles.dateField}
                       placeholder={'Starting Date*'}
                       ref={(ref) => { this._refExpDate = ref }}
                     />
                     <Form.Control
                       type="date"
                       id="date-exp"
+                      className={styles.dateField}
                       placeholder={'Expiration Date*'}
                       ref={(ref) => { this._refStartDate = ref  }}
                     />
@@ -250,7 +253,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
             <div>
               <InputView
-                onChange={(e) => { console.log(e) }}
+                onChange={(e) => { validateDotNum(e.target) }}
                 placeholder={'Royalties*'}
                 absPlaceholder={'Royalties*'}
                 customClass={`${styles.titleInpWrap}`}
