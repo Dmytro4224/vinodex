@@ -132,6 +132,18 @@
 .dateField{
     background-color: var(--wildSand);
 }
+@media(max-width: 991px){
+  .formChecked{
+    flex-direction: column;
+    padding: 0 20px;
+  }
+  .container{
+    padding: 10px;
+  }
+  .checkItem, .checkItem label{
+    width: 100%;
+  }
+}
 /*
 .titleInpWrap input{
     margin-top: 0;

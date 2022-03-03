@@ -170,8 +170,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </FormCheck.Label>
           </Form>
           <div className={styles.checkboxes}>
-            <Form className="d-flex align-items-center flex-gap-36">
-              <div key={1} className="mb-3">
+            <Form className={`d-flex align-items-center flex-gap-36 ${styles.formChecked}`}>
+              <div key={1} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(1) }} id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
                   <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
@@ -182,7 +182,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   </Form.Check.Label>
                 </Form.Check>
               </div>
-              <div key={2} className="mb-3">
+              <div key={2} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(2) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
@@ -193,7 +193,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   </Form.Check.Label>
                 </Form.Check>
               </div>
-              <div key={3} className="mb-3">
+              <div key={3} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(3) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
