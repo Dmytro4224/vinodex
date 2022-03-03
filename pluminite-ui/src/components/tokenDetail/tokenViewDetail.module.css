@@ -119,3 +119,11 @@
     background: var(--alabasterapprox);
     width: fit-content;
 }
+@media(max-width: 991px){
+  .mainWrap{
+    flex-direction: column;
+  }
+  .cardImage{
+    max-width: 100%;
+  }
+}

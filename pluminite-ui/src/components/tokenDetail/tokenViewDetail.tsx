@@ -67,7 +67,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     }
 
     return (
-      <div className="d-flex flex-gap-36 container">
+      <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
               <img className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
