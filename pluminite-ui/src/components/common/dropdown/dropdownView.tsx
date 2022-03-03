@@ -3,11 +3,11 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import styles from './dropdownView.module.css';
 
 interface IDropdownView {
-    colorType: dropdownColors,
-    onChange: (item: dropdownItem) => void;
-    childrens: dropdownItem[],
-    disabled?: boolean,
-    title: string
+  colorType: dropdownColors;
+  onChange: (item: dropdownItem) => void;
+  childrens: dropdownItem[];
+  disabled?: boolean;
+  title: string;
 }
 
 interface dropdownItem {
@@ -26,7 +26,7 @@ enum dropdownColors {
     darkGray = 'darkGray',
 }
 
-class DropdownView extends Component<Readonly<IDropdownView>>{
+class DropdownView extends Component<IDropdownView>{
     constructor(props: IDropdownView) {
         super(props);
     }
