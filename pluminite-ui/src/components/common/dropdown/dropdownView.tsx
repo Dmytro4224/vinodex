@@ -5,11 +5,11 @@ import styles from './dropdownView.module.css';
 interface IDropdownView {
     colorType: dropdownColors,
     onChange: (item: dropdownItem) => void;
-    childrens: dropdownItem[],
-    disabled?: boolean,
-    icon?: any,
-    hideArrow?: boolean,
-    title: string
+    childrens: dropdownItem[];
+    disabled?: boolean;
+    icon?: any;
+    hideArrow?: boolean;
+    title: string;
 }
 
 interface dropdownItem {
@@ -28,7 +28,7 @@ enum dropdownColors {
     darkGray = 'darkGray',
 }
 
-class DropdownView extends Component<Readonly<IDropdownView>>{
+class DropdownView extends Component<IDropdownView>{
     constructor(props: IDropdownView) {
         super(props);
     }

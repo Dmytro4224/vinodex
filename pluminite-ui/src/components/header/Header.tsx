@@ -32,7 +32,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
 
   private getUserInfo() {
     if (!this.props.near.user) return;
-
+    console.log('this.props.near.user?.accountId!', this.props.near.user?.accountId!);
     this.props.nftContractContext.getProfile(this.props.near.user?.accountId!).then(profile => {
       console.log("🚀 ~ file: Header.tsx ~ line 35 ~ Header ~ this.props.nftContractContext.getProfile ~ profile", profile)
 
