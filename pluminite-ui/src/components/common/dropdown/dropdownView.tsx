@@ -10,7 +10,6 @@ interface IDropdownView {
     icon?: any;
     hideArrow?: boolean;
     title: string;
- 
 }
 
 interface dropdownItem {
