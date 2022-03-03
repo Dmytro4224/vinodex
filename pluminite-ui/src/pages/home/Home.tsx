@@ -9,7 +9,11 @@ import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 import { MainLogoView } from "../../components/mainLogo/mainLogoView";
 import logoImage from '../../assets/images/main-logo.jpg';
+import sortIcon from '../../assets/icons/sort-icon.svg';
+import filterIcon from '../../assets/icons/filter-icon.svg';
+import searchIcon from "../../assets/icons/search.svg";
 import MediaQuery from 'react-responsive';
+import InputView, { InputStyleType } from "../../components/common/inputView/InputView";
 
 interface IHome extends IProps {
 
@@ -66,65 +70,140 @@ class Home extends Component<IHome & IBaseComponentProps> {
         </MediaQuery>
 
         <div className="my-5 container">
-          <div className="d-flex align-items-center justify-content-between">
-            <DropdownView
-              colorType={dropdownColors.select}
-              title={'Sort by'}
-              onChange={(item) => { this.setSort(item.id) }}
-              childrens={[
-                {
-                  id: 1,
-                  title: 'Recently Listed'
-                },
-                {
-                  id: 2,
-                  title: 'Recently Created'
-                },
-                {
-                  id: 3,
-                  title: 'Recently Sold'
-                },
-                {
-                  id: 4,
-                  title: 'Ending Soon'
-                },
-                {
-                  id: 5,
-                  title: 'Price Low to High'
-                },
-                {
-                  id: 6,
-                  title: 'Highest last sale'
-                },
-                {
-                  id: 7,
-                  title: 'Most viewed'
-                },
-                {
-                  id: 8,
-                  title: 'Most Favorited'
-                },
-                {
-                  id: 9,
-                  title: 'Price High to Low'
-                },
-                {
-                  id: 10,
-                  title: 'Oldest'
-                },
-              ]}
-            />
+          <MediaQuery minWidth={992}>
+            <div className="d-flex align-items-center justify-content-between">
+              <DropdownView
+                colorType={dropdownColors.select}
+                title={'Sort by'}
+                onChange={(item) => { this.setSort(item.id) }}
+                childrens={[
+                  {
+                    id: 1,
+                    title: 'Recently Listed'
+                  },
+                  {
+                    id: 2,
+                    title: 'Recently Created'
+                  },
+                  {
+                    id: 3,
+                    title: 'Recently Sold'
+                  },
+                  {
+                    id: 4,
+                    title: 'Ending Soon'
+                  },
+                  {
+                    id: 5,
+                    title: 'Price Low to High'
+                  },
+                  {
+                    id: 6,
+                    title: 'Highest last sale'
+                  },
+                  {
+                    id: 7,
+                    title: 'Most viewed'
+                  },
+                  {
+                    id: 8,
+                    title: 'Most Favorited'
+                  },
+                  {
+                    id: 9,
+                    title: 'Price High to Low'
+                  },
+                  {
+                    id: 10,
+                    title: 'Oldest'
+                  },
+                ]}
+              />
 
-            <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-              this.setCatalog(index)
-            }} />
+              <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
+                this.setCatalog(index)
+              }} />
 
-            <ButtonView
-              text={"Filter"}
-              onClick={() => { }}
-              color={buttonColors.select}
-            />
-          </div>
+              <ButtonView
+                text={"Filter"}
+                onClick={() => { }}
+                color={buttonColors.select}
+              />
+            </div>
+          </MediaQuery>
+          <MediaQuery maxWidth={991}>
+              <div className="d-flex flex-column w-100">
+                <div className="d-flex align-items-center justify-content-between">
+                  <DropdownView
+                    colorType={dropdownColors.select}
+                    title={''}
+                    icon={sortIcon}
+                    hideArrow={true}
+                    onChange={(item) => { this.setSort(item.id) }}
+                    childrens={[
+                      {
+                        id: 1,
+                        title: 'Recently Listed'
+                      },
+                      {
+                        id: 2,
+                        title: 'Recently Created'
+                      },
+                      {
+                        id: 3,
+                        title: 'Recently Sold'
+                      },
+                      {
+                        id: 4,
+                        title: 'Ending Soon'
+                      },
+                      {
+                        id: 5,
+                        title: 'Price Low to High'
+                      },
+                      {
+                        id: 6,
+                        title: 'Highest last sale'
+                      },
+                      {
+                        id: 7,
+                        title: 'Most viewed'
+                      },
+                      {
+                        id: 8,
+                        title: 'Most Favorited'
+                      },
+                      {
+                        id: 9,
+                        title: 'Price High to Low'
+                      },
+                      {
+                        id: 10,
+                        title: 'Oldest'
+                      },
+                    ]}
+                  />
+                  <InputView
+                    onChange={(e) => { console.log(e) }}
+                    placeholder={'Search'}
+                    icon={searchIcon}
+                    inputStyleType={InputStyleType.round}
+                  />
+                  <ButtonView
+                    text={""}
+                    withoutText={true}
+                    icon={filterIcon}
+                    onClick={() => { }}
+                    color={buttonColors.select}
+                  />
+                </div>
+                <div className="d-flex align-items-center mt-4">
+                  <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
+                    this.setCatalog(index)
+                  }} />
+                </div>
+              </div>
+          </MediaQuery>
 
           <p className="separator-horizontal" />
 
