@@ -1,12 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import LabelView from "../common/label/labelView";
-import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import ArtistCard from "../artistCard/ArtistCard";
-import {IBaseComponentProps, IProps, withComponent} from "../../utils/withComponent";
-import {IAuthorResponseItem} from "../../types/IAuthorResponseItem";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
 import Loader from "../common/loader/loader";
 import { EmptyListView } from "../common/emptyList/emptyListView";
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
+import styles from './bestArtists.module.css';
 
 interface IBestArtists extends IProps {
   parameter?: BestArtistsParameter;
@@ -42,10 +43,10 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-      this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
-          console.log('BestArtists response',response)
-        this.list = response.filter(el => el  !== null);
-      });
+    this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
+      console.log('BestArtists response', response)
+      this.list = response.filter(el => el !== null);
+    });
   }
 
   private set list(list) {
@@ -68,8 +69,8 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
     if (!this.list.length) {
       return (
         <>
-          <LabelView  text={'Best Artists'}/>
-          <EmptyListView/>
+          <LabelView text={'Best Artists'} />
+          <EmptyListView />
         </>
       )
     }
@@ -77,17 +78,16 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
     return (
       <>
         <div className="d-flex align-items-center justify-content-between mt-3">
-          <LabelView  text={'Best Artists'}/>
+          <LabelView text={'Best Artists'} />
           <ButtonView
             text={'More'}
-            onClick={() => {  }}
+            onClick={() => { }}
             color={buttonColors.gold}
           />
         </div>
 
-        <div className="d-flex flex-wrap flex-gap-36 mt-3">
+        <div className={`mt-3 ${styles.artistWrap}`}>
           {this.list.map((item, index) => {
-
             return <ArtistCard
               key={index}
               info={item}
@@ -96,6 +96,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
               likesCount={item.likes_count}
               isLike={item.is_like}
               isFollow={item.is_following}
+              customClass={styles.artistMobile}
             />;
           })}
         </div>

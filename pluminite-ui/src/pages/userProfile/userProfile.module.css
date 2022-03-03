@@ -113,3 +113,13 @@
   border-radius: 100%;
   z-index: 1;
 }
+
+@media (max-width: 767px) {
+  .bgBlock {
+    height: 140px;
+  }
+
+  .bgWrap {
+    padding: 0;
+  }
+}

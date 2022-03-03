@@ -18,6 +18,7 @@ interface IArtistCard extends IProps {
   isFollow: boolean;
   isCard?: boolean;
   isLike: boolean;
+  customClass?: string;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -127,7 +128,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   isCardType() {
     return (
-      <div className={styles.artistCard}>
+      <div className={`${styles.artistCard} ${this.props.customClass || ''}`}>
         <div className={styles.artistWrap}>
           <NavLink to={`/userProfile/${this.identification}`}>
             <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
