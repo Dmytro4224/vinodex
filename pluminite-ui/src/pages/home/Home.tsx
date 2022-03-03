@@ -9,6 +9,7 @@ import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 import { MainLogoView } from "../../components/mainLogo/mainLogoView";
 import logoImage from '../../assets/images/main-logo.jpg';
+import MediaQuery from 'react-responsive';
 
 interface IHome extends IProps {
 
@@ -60,7 +61,9 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
     return (
       <div>
-        <MainLogoView img={logoImage} title={'VINE & NFT'} />
+        <MediaQuery minWidth={992}>
+          <MainLogoView img={logoImage} title={'VINE & NFT'} />
+        </MediaQuery>
 
         <div className="my-5 container">
           <div className="d-flex align-items-center justify-content-between">
