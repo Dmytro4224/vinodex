@@ -15,19 +15,31 @@ interface ITopTokensView extends IProps {
     sort: number;
 }
 
+enum TokensSortType {
+  'Recently_Listed' = 1,
+  //Recently Created (Oldest ��� ����� �����)
+  'Recently_Created' = 2, 
+  'Recently_Sold' = 3,
+  'Ending_Soon' = 4,
+  //Price Low to High (High to Low ��� ����� �����)
+  'Price_Low_to_High' = 5,
+  'Highest_last_sale' = 6,
+  'Most_viewed' = 7,
+  'Most_Favorited' = 8,
+  'Price_High_to_Low' = 9,
+  'Oldest' = 10
+}
+
 class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, any> {
   public state = { list: new Array<ITokenResponseItem>(), isLoading: true };
 
-    constructor(props: ITopTokensView & IBaseComponentProps) {
+  constructor(props: ITopTokensView & IBaseComponentProps) {
     super(props);
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
-      console.log(`response`, response);
-
-      this.setState({...this.state, list: response, isLoading: false });
-    });
+    //console.log('Home componentDidMount', this.props.catalog);
+    this.loadData();
   }
 
   private get sort(){
@@ -35,28 +47,39 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
-      if(prevProps.catalog !== this.props.catalog || prevProps.sort !== this.sort){
-        this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, this.sort).then(response => {
-
-          this.setState({...this.state, list: response, isLoading: false });
-        });
-      }
+    //console.log('Home componentDidUpdate', prevProps.catalog, this.props.catalog);
+    if (prevProps.catalog !== this.props.catalog) {
+      this.loadData();
+    }
   }
 
-  render(){
+  private loadData() {
+    if (this.props.catalog === void 0) {
+      return;
+    }
+    const catalog = this.props.catalog;
+    this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
+      //console.log(`Home loadData`, TokensSortType.Most_viewed, catalog, response.length);
+      this.setState({ ...this.state, list: response, isLoading: false });
+    }).catch(ex => {
+      console.error('loadData ex => ', ex);
+    });
+  }
 
-    if(this.state.isLoading){
+  render() {
+
+    if (this.state.isLoading) {
       return <div className="d-flex align-items-center flex-gap-36">
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
       </div>
     }
 
     if (!this.state.list.length) {
       return (
         <>
-          <LabelView  text={'Top 10'}/>
-          <EmptyListView/>
+          <LabelView text={'Top 10'} />
+          <EmptyListView />
         </>
       )
     }
@@ -64,32 +87,33 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     return (
       <div>
         <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
-          <LabelView  text={'Top 10'}/>
+          <LabelView text={'Top 10'} />
           <ButtonView
             text={'More'}
-            onClick={() => {  }}
+            onClick={() => {
+            }}
             color={buttonColors.gold}
           />
         </div>
         <CarouselView customCLass={'carousel-owl-tokens'}
-            childrens={this.state.list.map(item => {
-              return <TokenCardView key={item.token_id}
-                                    countL={1}
-                                    countR={1}
-                                    days={item.metadata.expires_at}
-                                    name={item.metadata.title}
-                                    author={item.owner_id}
-                                    likesCount={item.metadata.likes_count}
-                                    icon={item.metadata.media}
-                                    isSmall={false}
-                                    buttonText={`Place a bid ${item.metadata.price} NEAR`}
-                                    linkTo={`/token/${item.token_id}`}
-                                    tokenID={item.token_id}
-                                    isLike={item.is_like}
-                                    onClick={() => {
-                                      //this.props.navigate('/token/qwewqq-1231-weq-123');
-                                    }}/>;
-            })}/>
+          childrens={this.state.list.map(item => {
+            return <TokenCardView key={item.token_id}
+              countL={1}
+              countR={1}
+              days={item.metadata.expires_at}
+              name={item.metadata.title}
+              author={item.owner_id}
+              likesCount={item.metadata.likes_count}
+              icon={item.metadata.media}
+              isSmall={false}
+              buttonText={`Place a bid ${item.metadata.price} NEAR`}
+              linkTo={`/token/${item.token_id}`}
+              tokenID={item.token_id}
+              isLike={item.is_like}
+              onClick={() => {
+                //this.props.navigate('/token/qwewqq-1231-weq-123');
+              }} />;
+          })} />
       </div>
     )
   }

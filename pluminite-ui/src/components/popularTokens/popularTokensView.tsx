@@ -26,16 +26,16 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
   }
 
   public componentDidMount() {
-    // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, this.sort).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
       this.setState({...this.state, list: response, isLoading: false });
     });
   }
 
   public componentDidUpdate(prevProps: IPopularTokensView, prevState: any) {
-    if(prevProps.catalog !== this.props.catalog || prevProps.sort !== this.sort){
+    if(prevProps.catalog !== this.props.catalog){
+    console.log('PopularTokensView componentDidUpdate: ', prevProps.catalog, this.props.catalog);
       this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
-
+        console.log('PopularTokensView componentDidUpdate: ', response);
         this.setState({...this.state, list: response, isLoading: false });
       });
     }
