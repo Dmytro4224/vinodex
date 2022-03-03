@@ -61,14 +61,14 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private get isCard() {
     return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
-  public changeLikeCount(){
+  public changeLikeCount() {
     this.setState({
       ...this.state,
       isLike: !this.state.isLike,
       likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
     })
   }
-  public changeFollow(){
+  public changeFollow() {
     this.setState({
       ...this.state,
       isFollow: !this.state.isFollow,
@@ -76,15 +76,20 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     })
   }
   private btnFollowHandler = async () => {
+    if (!this.props.near.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     try {
-      if (this.state.isProcessFollow){
+      if (this.state.isProcessFollow) {
         return
       }
       this.state.isProcessFollow = true;
       this.changeFollow();
       await this.props.nftContractContext.follow_artist_account(this.identification);
       this.state.isProcessFollow = false;
-    }catch (ex) {
+    } catch (ex) {
       this.state.isProcessFollow = false;
       this.changeFollow();
       console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", ex)
@@ -95,18 +100,23 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     }
   }
 
-  private  toggleLikeAccount = async () => {
+  private toggleLikeAccount = async () => {
+    if (!this.props.near.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     try {
-      if (this.state.isProcessLike){
+      if (this.state.isProcessLike) {
         return
       }
       this.state.isProcessLike = true;
       this.changeLikeCount();
       await this.props.nftContractContext.like_artist_account(this.identification);
       this.state.isProcessLike = false;
-    } catch(ex) {
+    } catch (ex) {
       this.state.isProcessLike = false;
-      console.warn('error',this.state.isLike)
+      console.warn('error', this.state.isLike)
       this.changeLikeCount();
       showToast({
         message: `Error! Please try again later`,

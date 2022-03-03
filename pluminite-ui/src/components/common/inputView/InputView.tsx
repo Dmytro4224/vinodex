@@ -46,15 +46,11 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    if (this.initialValue) {
-      this.ref.current.value = this.initialValue;
-    }
+    this.ref.current.value = this.initialValue || '';
   }
 
   public componentDidUpdate() {
-    if (this.initialValue) {
-      this.ref.current.value = this.initialValue;
-    }
+    this.ref.current.value = this.initialValue || '';
   }
 
   private get inputStyleType() {
@@ -124,34 +120,38 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
 
   public render() {
     return (
-      <div className={`${styles.inputWrap} ${this.getInputTypeStyle()} ${this.props.customClass || ''}`}>
+      <div className={`${this.props.customClass || ''} ${this.isError && styles.error}`}>
+        <div className={`${styles.inputWrap} ${this.getInputTypeStyle()}`}>
 
-        {this.icon && <img className={styles.icon} src={this.icon} alt={this.alt} />}
+          {this.icon && <img className={styles.icon} src={this.icon} alt={this.alt} />}
 
-        <div className={styles.inputBox}>
-          {!this.isTextAreaType ?
-            <input
-              onChange={this.onChange}
-              placeholder={this.placeholder}
-              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-              type={this.inputType}
-              ref={this.ref}
-              disabled={this.disabled}
-            />
-            :
-            <textarea
-              onChange={this.onChange}
-              placeholder={this.placeholder}
-              className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
-              ref={this.ref}
-              disabled={this.disabled}
-              maxLength={250}
-            />
-          }
+          <div className={styles.inputBox}>
+            {!this.isTextAreaType ?
+              <input
+                onChange={this.onChange}
+                placeholder={this.placeholder}
+                className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+                type={this.inputType}
+                ref={this.ref}
+                disabled={this.disabled}
+              />
+              :
+              <textarea
+                onChange={this.onChange}
+                placeholder={this.placeholder}
+                className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
+                ref={this.ref}
+                disabled={this.disabled}
+                maxLength={250}
+              />
+            }
 
-          {this.absPlaceholder && <label className={styles.absPlaceholder}>{this.absPlaceholder}</label>}
+            {this.absPlaceholder && <label className={styles.absPlaceholder}>{this.absPlaceholder}</label>}
 
+          </div>
         </div>
+
+        {this.isError && <p className={styles.errorMessage}>{this.errorMessage}</p>}
       </div>
     )
   }

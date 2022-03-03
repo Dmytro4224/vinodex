@@ -53,6 +53,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     this._ref = React.createRef<DropzoneRef>();
     this._imageRef = React.createRef<HTMLImageElement>();
     this._renderType = 1;
+
+    if(!this.props.near.isAuth){
+      this.props.near.signIn();
+    }
   }
 
   private openDialog = () => {

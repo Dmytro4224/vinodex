@@ -73,6 +73,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
             <DropdownView
               colorType={dropdownColors.selectGray}
               title={'En'}
+              disabled={true}
               onChange={(item) => { console.log(item) }}
               childrens={[
                 {
