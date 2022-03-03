@@ -11,6 +11,7 @@ import TokenCardView from "../tokenCard/tokenCardView";
 interface IAllTokensView extends IProps{
   list?: Array<ITokenResponseItem>;
   catalog: string;
+  sort: number;
 }
 
 class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
@@ -20,9 +21,13 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
     super(props);
   }
 
+  private get sort(){
+    return this.props.sort || 7;
+  }
+
   public componentDidMount() {
     // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, this.sort).then(response => {
 
       this.setState({...this.state, list: response, isLoading: false });
     });

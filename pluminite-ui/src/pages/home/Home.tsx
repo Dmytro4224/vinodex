@@ -14,6 +14,7 @@ interface IHome extends IProps {
 class Home extends Component<IHome & IBaseComponentProps> {
   public state = {
     catalogs: new Array<any>(),
+    sort: 7,
     currentCatalog: 0,
     isLoading: true
   };
@@ -36,8 +37,16 @@ class Home extends Component<IHome & IBaseComponentProps> {
     this.setState({ ...this.state, currentCatalog: catalog });
   }
 
+  private setSort(sort: number) {
+    this.setState({ ...this.state, sort: sort });
+  }
+
   private get catalog() {
     return this.props.near.catalogs[this.state.currentCatalog];
+  }
+
+  private get sort() {
+    return this.state.sort;
   }
 
   render() {
@@ -45,13 +54,15 @@ class Home extends Component<IHome & IBaseComponentProps> {
       return null;
     }
 
+    console.log(`state`, this.state)
+
     return (
       <div className="my-5 container">
         <div className="d-flex align-items-center justify-content-between">
           <DropdownView
             colorType={dropdownColors.select}
             title={'Sort by'}
-            onChange={(item) => { console.log(item) }}
+            onChange={(item) => { this.setSort(item.id) }}
             childrens={[
               {
                 id: 1,
@@ -64,7 +75,35 @@ class Home extends Component<IHome & IBaseComponentProps> {
               {
                 id: 3,
                 title: 'Recently Sold'
-              }
+              },
+              {
+                id: 4,
+                title: 'Ending Soon'
+              },
+              {
+                id: 5,
+                title: 'Price Low to High'
+              },
+              {
+                id: 6,
+                title: 'Highest last sale'
+              },
+              {
+                id: 7,
+                title: 'Most viewed'
+              },
+              {
+                id: 8,
+                title: 'Most Favorited'
+              },
+              {
+                id: 9,
+                title: 'Price High to Low'
+              },
+              {
+                id: 10,
+                title: 'Oldest'
+              },
             ]}
           />
 
@@ -81,11 +120,11 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <p className="separator-horizontal" />
 
-        <TopTokensView catalog={this.catalog} />
+        <TopTokensView sort={this.sort} catalog={this.catalog} />
 
         <p className="separator-horizontal" />
 
-        <PopularTokensView catalog={this.catalog} />
+        <PopularTokensView sort={this.sort} catalog={this.catalog} />
 
         <p className="separator-horizontal" />
 
@@ -93,7 +132,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
         <p className="separator-horizontal" />
 
-        <AllTokensView catalog={this.catalog} />
+        <AllTokensView sort={this.sort} catalog={this.catalog} />
 
         <div className="d-flex align-items-center justify-content-center mt-5 w-100">
           <ButtonView
