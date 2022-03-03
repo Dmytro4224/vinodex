@@ -6,6 +6,7 @@ import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { EmptyListView } from "../common/emptyList/emptyListView";
 import LabelView from "../common/label/labelView";
 import TokenCardView from "../tokenCard/tokenCardView";
+import styles from './allTokens.module.css';
 
 interface IAllTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -67,7 +68,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
           color={buttonColors.gold}
         />
       </div>
-      <div className="d-flex align-items-center flex-gap-36">
+      <div className={`d-flex align-items-center flex-gap-36 ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView key={item.token_id}
             countL={1}

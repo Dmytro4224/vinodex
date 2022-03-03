@@ -7,6 +7,7 @@ import { EmptyListView } from "../common/emptyList/emptyListView";
 import LabelView  from "../common/label/labelView";
 import Loader  from "../common/loader/loader";
 import TokenCardView  from "../tokenCard/tokenCardView";
+import styles from './popularTokens.module.css';
 
 interface IPopularTokensView extends IProps{
   list?: Array<ITokenResponseItem>;
@@ -43,7 +44,7 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
 
   render(){
     if(this.state.isLoading){
-      return <div className="d-flex align-items-center flex-gap-36">
+      return <div className={`d-flex align-items-center flex-gap-36 ${styles.scrollWrap}`}>
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
         <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
@@ -69,7 +70,7 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
             color={buttonColors.gold}
           />
         </div>
-        <div className="d-flex align-items-center flex-gap-36">
+        <div className={`d-flex align-items-center flex-gap-36 ${styles.scrollWrap}`}>
           {this.state.list.map(item => {
             return <TokenCardView key={item.token_id}
                                   countL={1}
