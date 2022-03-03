@@ -59,22 +59,40 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
 
           <ul className={styles.navList}>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={userIcon} alt="icon" /> <p>Profile Details</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=details`}>
+                <img width="24" height="24" src={userIcon} alt="icon" />
+                <p>Profile Details</p>
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={createdIcon} alt="icon" /> <p>Created Items</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=items`}>
+                <img width="24" height="24" src={createdIcon} alt="icon" />
+                <p>Created Items</p>
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={purchasesIcon} alt="icon" /> <p>Purchases</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
+                <img width="24" height="24" src={purchasesIcon} alt="icon" />
+                <p>Purchases</p>
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={activeBidsIcon} alt="icon" /> <p>Active Bids</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
+                <img width="24" height="24" src={activeBidsIcon} alt="icon" />
+                <p>Active Bids</p>
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={favoritesIcon} alt="icon" /> <p>Favorites</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=following`}>
+                <img width="24" height="24" src={followingsIcon} alt="icon" />
+                <p>Followings</p>
+              </NavLink>
             </li>
             <li>
-              <NavLink to={`/userProfile/${this.accountId}`}><img width="24" height="24" src={followingsIcon} alt="icon" /> <p>Followings</p></NavLink>
+              <NavLink to={`/userProfile/${this.accountId}?tab=favorites`}>
+                <img width="24" height="24" src={favoritesIcon} alt="icon" />
+                <p>Favorites</p>
+              </NavLink>
             </li>
           </ul>
 

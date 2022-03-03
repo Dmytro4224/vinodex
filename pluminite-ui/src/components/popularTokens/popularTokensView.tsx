@@ -11,6 +11,7 @@ import TokenCardView  from "../tokenCard/tokenCardView";
 interface IPopularTokensView extends IProps{
   list?: Array<ITokenResponseItem>;
   catalog: string;
+  sort: number;
 }
 
 class PopularTokensView extends Component<IPopularTokensView & IBaseComponentProps>{
@@ -18,6 +19,10 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
 
   constructor(props: IPopularTokensView & IBaseComponentProps) {
     super(props);
+  }
+
+  private get sort(){
+    return this.props.sort || 7;
   }
 
   public componentDidMount() {
