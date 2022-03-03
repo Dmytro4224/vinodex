@@ -1,9 +1,7 @@
 import React from "react";
 import { Component } from "react";
-import TooltipS, { PlacementType } from "../../common/tooltip/Tooltip";
 import { transformArtistId } from "../../../utils/sys";
 import styles from './identificationCopy.module.css';
-import copyIcon from '../../../assets/icons/copy.svg'
 import ButtonCopy from "../buttonCopy/ButtonCopy";
 
 interface IIdentificationCopy {
@@ -12,7 +10,7 @@ interface IIdentificationCopy {
 }
 
 class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
-  private readonly _refIdentificationText:  React.RefObject<HTMLParagraphElement>;
+  private readonly _refIdentificationText: React.RefObject<HTMLParagraphElement>;
 
   constructor(props: IIdentificationCopy) {
     super(props);
@@ -36,7 +34,7 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
       clearTimeout(t);
     }, 1500);
   }
-  
+
   render() {
     return (
       <div className={styles.identificationWrap}>
@@ -48,6 +46,6 @@ class IdentificationCopy extends Component<Readonly<IIdentificationCopy>> {
       </div>
     )
   }
-} 
+}
 
 export { IdentificationCopy };

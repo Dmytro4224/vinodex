@@ -10,7 +10,7 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { NavLink } from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 import MediaQuery from 'react-responsive'
-import { Menu } from "./menu/Menu";
+import Menu from "./menu/Menu";
 
 interface IHeader extends IProps {
   setToUpdateUser: (updateMtd) => void;
@@ -110,7 +110,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
           </MediaQuery>
 
           <MediaQuery maxWidth={992}>
-            <Menu />
+            <Menu user={this.state.profile} />
           </MediaQuery>
         </div>
       </header>
