@@ -3,11 +3,14 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import styles from './dropdownView.module.css';
 
 interface IDropdownView {
-  colorType: dropdownColors;
-  onChange: (item: dropdownItem) => void;
-  childrens: dropdownItem[];
-  disabled?: boolean;
-  title: string;
+    colorType: dropdownColors,
+    onChange: (item: dropdownItem) => void;
+    childrens: dropdownItem[];
+    disabled?: boolean;
+    icon?: any;
+    hideArrow?: boolean;
+    title: string;
+ 
 }
 
 interface dropdownItem {
@@ -76,8 +79,8 @@ class DropdownView extends Component<IDropdownView>{
         return(
             <>
                 <Dropdown  className={`${styles.customDropdown}`}>
-                    <Dropdown.Toggle disabled={this.props.disabled || false} variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${this.dropdownColor}`}>
-                        {this.props.title}
+                    <Dropdown.Toggle disabled={this.props.disabled || false} variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${this.dropdownColor} ${this.props.hideArrow ? styles.isHiddenArrow : ''}`}>
+                        {<img src={this.props.icon} alt=""/> || ''}{this.props.title}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>

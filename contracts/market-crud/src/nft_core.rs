@@ -45,10 +45,10 @@ pub trait NonFungibleTokenCore {
     fn nft_total_supply(&self) -> U64;
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken>;
-    fn nft_token_for_account(&self, token_id: TokenId,account_id: Option<AccountId>)->Option<JsonToken>;
+    fn nft_token_for_account(&self, token_id: &TokenId, account_id: Option<AccountId>)->Option<JsonToken>;
 
-    fn get_token_likes_count(&self, token_id: TokenId) -> usize;
-    fn get_token_views_count(&self, token_id: TokenId) -> usize;
+    fn get_token_likes_count(&self, token_id: &TokenId) -> usize;
+    fn get_token_views_count(&self, token_id: &TokenId) -> usize;
 
     //check if the passed in account has access to approve the token ID
 	fn nft_is_approved(
@@ -382,20 +382,20 @@ impl NonFungibleTokenCore for Contract {
     }
 
     fn nft_token(&self, token_id: TokenId) -> Option<JsonToken> {
-        return self.nft_token_for_account(token_id, None);
+        return self.nft_token_for_account(&token_id, None);
     }
 
-    fn nft_token_for_account(&self, token_id: TokenId,account_id: Option<AccountId>)
+    fn nft_token_for_account(&self, token_id: &TokenId, account_id: Option<AccountId>)
      -> Option<JsonToken> {
-        if let Some(token) = self.tokens_by_id.get(&token_id) {
-            let mut metadata = self.token_metadata_by_id.get(&token_id).unwrap();
-            metadata.likes_count = self.get_token_likes_count(token_id.clone()) as u64;
-            metadata.views_count = self.get_token_views_count(token_id.clone()) as u64;
+        if let Some(token) = self.tokens_by_id.get(token_id) {
+            let mut metadata = self.token_metadata_by_id.get(token_id).unwrap();
+            metadata.likes_count = self.get_token_likes_count(token_id) as u64;
+            metadata.views_count = self.get_token_views_count(token_id) as u64;
 
             let mut _is_like=false;
 
              if let Some(_users_like_list)
-             =self.tokens_users_likes.get(&token_id){
+             =self.tokens_users_likes.get(token_id){
 
                 if account_id.is_some(){
                     _is_like= _users_like_list.contains(&account_id.unwrap());
@@ -404,7 +404,7 @@ impl NonFungibleTokenCore for Contract {
 
 
             Some(JsonToken {
-                token_id,
+                token_id: token_id.clone(),
                 owner_id: token.owner_id,
                 metadata,
                 royalty: token.royalty,
@@ -417,31 +417,33 @@ impl NonFungibleTokenCore for Contract {
         }
     }
 
-    fn get_token_likes_count(&self, token_id: TokenId) -> usize
+    fn get_token_likes_count(&self, token_id: &TokenId) -> usize
     {
-        let hash_set = self.tokens_users_likes.get(&token_id);
-
-        if hash_set.is_none()
+        match self.tokens_users_likes.get(token_id)
         {
-            return 0;
-        }
-        else
-        {
-            return hash_set.unwrap().len();
+            Some(set) =>
+            {
+                return set.len();
+            },
+            None =>
+            {
+                return 0;
+            }
         }
     }
 
-    fn get_token_views_count(&self, token_id: TokenId) -> usize
+    fn get_token_views_count(&self, token_id: &TokenId) -> usize
     {
-        let hash_set = self.tokens_users_views.get(&token_id);
-
-        if hash_set.is_none()
+        match self.tokens_users_views.get(token_id)
         {
-            return 0;
-        }
-        else
-        {
-            return hash_set.unwrap().len();
+            Some(set) =>
+            {
+                return set.len();
+            },
+            None =>
+            {
+                return 0;
+            }
         }
     }
 }

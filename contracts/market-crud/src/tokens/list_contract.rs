@@ -15,10 +15,11 @@ impl Contract {
         account_id:Option<AccountId>) -> Vec<JsonToken> {
         let keys = self.token_metadata_by_id.keys_as_vector();
         let start = u128::from(from_index.unwrap_or(U128(0)));
+
         keys.iter()
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
-            .map(|token_id| self.nft_token_for_account(token_id.clone(),account_id.clone()).unwrap())
+            .map(|token_id| self.nft_token_for_account(&token_id, account_id.clone()).unwrap())
             .collect()
     }
 
@@ -52,6 +53,11 @@ impl Contract {
         });
 
         return result;
+    }
+
+    pub fn nft_tokens_sorted(&self, sort : u8) -> Vec<SortedToken>
+    {
+        return self.tokens_sorted.get(&sort).unwrap_or(Vec::new());
     }
 
     ///к-сть токенів типу token_type
@@ -120,7 +126,7 @@ impl Contract {
 
         let token_ids : HashSet<String>;
         let mut skip = 0;
-        if page_index >= 1
+        if page_index > 1
         {
             skip = (page_index - 1) * page_size;
         }
@@ -180,64 +186,105 @@ impl Contract {
             return Vec::new();
         }
 
+        let limit = available_amount as usize;
+        let mut stop = false;
+
         if is_reverse
         {
-            let start_index = token_ids.len() as i64 - skip as i64;
+            let mut start_index = token_ids.len() as i64 - skip as i64 - 1;
             let end_index = start_index - available_amount;
 
-            for i in (end_index..start_index).rev()
+            //while start_index > end_index && !stop
+            while result.len() < limit && !stop
             {
-                let _index = i as usize;
+                let _index = start_index as usize;
+                let _token = sorted.get(_index);
 
-                if token_ids.contains(&sorted[_index].token_id)
+                match _token
                 {
-                    result.push(
-                        self.nft_token_for_account
-                        (
-                            sorted[_index].token_id.clone(),
-                            account_id.clone()).unwrap()
-                                )
-                                
+                    Some(_token) =>
+                    {
+                        if token_ids.contains(&_token.token_id)
+                        {
+                            match self.nft_token_for_account
+                            (
+                                &_token.token_id,
+                                account_id.clone()
+                            )
+                            {
+                                Some(res) =>
+                                {
+                                    result.push(res);
+                                },
+                                None =>
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    },
+                    None =>
+                    {
+                        stop = true;
+                    }
                 }
+
+                start_index = start_index - 1;
             }
         }
         else
         {
-            for i in skip..skip + available_amount as u64
+            //while skip < skip + available_amount as u64 && !stop
+            while result.len() < limit && !stop
             {
-                let _index = i as usize;
+                let _index = skip as usize;
                 let _token = sorted.get(_index);
-                if _token.is_none()
+
+                match _token
                 {
-                    continue;
+                    Some(_token) =>
+                    {
+                        if token_ids.contains(&_token.token_id)
+                        {
+                            match self.nft_token_for_account
+                            (
+                                &_token.token_id,
+                                account_id.clone()
+                            )
+                            {
+                                Some(res) =>
+                                {
+                                    result.push(res);
+                                },
+                                None =>
+                                {
+                                    continue;
+                                }
+                            }
+                        }
+                    },
+                    None =>
+                    {
+                        stop = true;
+                    }
                 }
 
-                if token_ids.contains(&_token.unwrap().token_id)
-                {
-                    result.push(
-                        self.nft_token_for_account
-                        (
-                            sorted[_index].token_id.clone(),
-                            account_id.clone()).unwrap()
-                                );
-                }
+                skip = skip + 1;
             }
         }
 
         return result;
     }
     
-    
-
     ///отримати дані по токену
     pub fn nft_token_get(
         &self,
         // id токену
         token_id: TokenId,
         account_id:Option<AccountId>
-    ) -> JsonToken {
-
-        return self.nft_token_for_account(token_id,account_id.clone()).unwrap();
+    ) -> JsonToken 
+    {
+        return self.nft_token_for_account(&token_id, account_id).unwrap();
     }
     
 
@@ -261,29 +308,32 @@ impl Contract {
         limit: Option<u64>,
     ) -> Vec<JsonToken> {
         let tokens_owner = self.tokens_per_owner.get(&account_id);
-        let tokens = if let Some(tokens_owner) = tokens_owner {
+
+        let tokens = if let Some(tokens_owner) = tokens_owner 
+        {
             tokens_owner
-        } else {
+        } 
+        else 
+        {
             return vec![];
         };
+
         let keys = tokens.as_vector();
         let start = u128::from(from_index.unwrap_or(U128(0)));
         keys.iter()
             .skip(start as usize)
             .take(limit.unwrap_or(0) as usize)
-            .map(|token_id| self.nft_token_for_account(token_id.clone(),Some(account_id.clone())).unwrap())
+            .map(|token_id| self.nft_token_for_account(&token_id, Some(account_id.clone())).unwrap())
             .collect()
     }
-
 
     pub fn nft_liked_for_account(
         &self,
         account_id: AccountId,
         from_index: Option<U128>,
         limit: Option<u64>,
-    ) -> Vec<Option<JsonToken>> {
-
-       
+    ) -> Vec<Option<JsonToken>> 
+    {
         if let Some(_liked_tokens)=self.my_tokens_likes.get(&account_id){
 
             let keys:Vec<TokenId> = _liked_tokens.into_iter().collect();
@@ -291,10 +341,12 @@ impl Contract {
             keys.iter()
                 .skip(start as usize)
                 .take(limit.unwrap_or(0) as usize)
-                .map(|token_id| self.nft_token_for_account(token_id.clone(),Some(account_id.clone())))
+                .map(|token_id| self.nft_token_for_account(&token_id, Some(account_id.clone())))
                 .collect()
 
-        }else{
+        }
+        else
+        {
             return vec![];
         }
     }
