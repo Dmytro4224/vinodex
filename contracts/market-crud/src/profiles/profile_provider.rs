@@ -408,7 +408,7 @@ impl ProfileStatCriterion{
     {
         let mut stat:ProfileStat;
     
-        match profiles_global_stat.get(&user_id.clone()) 
+        match profiles_global_stat.get(user_id) 
         {
             Some(mut _profile_stat) => 
             {
@@ -479,8 +479,7 @@ impl ProfileStatCriterion{
         {
             Some(mut _vector) =>
             {
-
-                if let Some(_current_position) = _vector.iter().position(|x| x.account_id == *user_id) {
+                if let Some(_current_position) = _vector.iter().position(|x| x.account_id.eq(user_id)) {
                     _vector.remove(_current_position);
                 }
 
@@ -511,7 +510,7 @@ impl ProfileStatCriterion{
     }
 
     ///збільшити значення статистики
-    pub  fn profile_stat_inc
+    pub fn profile_stat_inc
     (
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
@@ -523,7 +522,7 @@ impl ProfileStatCriterion{
         {
             let stat:ProfileStat;
     
-            match profiles_global_stat.get(&user_id.clone()) 
+            match profiles_global_stat.get(user_id) 
             {
                 Some(mut _profile_stat) => 
                 {
@@ -633,14 +632,12 @@ impl ProfileStatCriterion{
                 profiles_global_stat.insert(&user_id, &stat);
             }
 
-            //Не потрібно
-
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
-            // ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
         }
 
 
