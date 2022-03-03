@@ -36,7 +36,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   }
 
   public get myAccountId() {
-    return this.nftContract.account.accountId
+    return this.nftContract.account.accountId;
   }
   public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
     return this.props.nftContract.authors_by_filter({

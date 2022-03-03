@@ -79,13 +79,6 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
       return (
         <>
           <LabelView text={'Top 10'} />
-          <ButtonView
-            text={'More'}
-            onClick={() => {
-              this.loadData();
-            }}
-            color={buttonColors.gold}
-          />
           <EmptyListView />
         </>
       )
@@ -98,7 +91,6 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
           <ButtonView
             text={'More'}
             onClick={() => {
-              this.loadData();
             }}
             color={buttonColors.gold}
           />

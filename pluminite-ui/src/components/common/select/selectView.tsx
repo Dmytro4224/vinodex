@@ -1,5 +1,5 @@
 import { Component } from "react";
-import Select from "react-select";
+import Select, { ActionMeta } from "react-select";
 
 interface ISelectViewItem{
   value: string;
@@ -11,7 +11,7 @@ interface ISelectView{
   placeholder?: string;
   customCLass?: string;
   setRef?: any;
-  onChange?: (item: ISelectViewItem) => void;
+  onChange: (item: ISelectViewItem | null) => void;
 }
 
 interface ISelectState {
@@ -26,11 +26,13 @@ class SelectView extends Component<ISelectView, ISelectState>{
 
     this.props.setRef && this.props.setRef(this);
 
-    this.state.selectedOption = null;
+    this.state = {
+      selectedOption: null
+    };
   }
 
-  handleChange = (selectedOption: ISelectViewItem) => {
-    if(this.props.onChange !== undefined){
+  handleChange = (selectedOption: ISelectViewItem | null, actionMeta: ActionMeta<ISelectViewItem>) => {
+    if (this.props.onChange !== undefined) {
       this.props.onChange(selectedOption);
     }
 
