@@ -27,3 +27,14 @@
 .linkCreate {
   margin-left: 14px;
 }
+
+.inputSearchWrap {
+  max-width: 360px;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .inputSearchWrap {
+    width: 200px;
+  }
+}
