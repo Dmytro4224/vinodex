@@ -425,9 +425,9 @@ impl Contract {
     }
 
     //Отримати дані профілю для юзера AccountId
-    pub fn get_profile(&self, account_id: AccountId) -> Option<Profile> {
+    pub fn get_profile(&self, account_id: AccountId) -> Profile {
         let account_id: AccountId = account_id.into();
-        return self.profiles.get(&account_id);
+        return self.profiles.get(&account_id).unwrap_or(Profile::get_default_data(account_id.clone()));
     }
 
     //Встановити дані профілю
