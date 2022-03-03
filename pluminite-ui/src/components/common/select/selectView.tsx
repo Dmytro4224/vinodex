@@ -1,7 +1,7 @@
 import { Component } from "react";
 import Select, { ActionMeta } from "react-select";
 
-interface ISelectViewItem{
+export interface ISelectViewItem{
   value: string;
   label: string;
 }

@@ -25,20 +25,19 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
   }
 
   public componentDidMount() {
-    // @ts-ignore
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, this.sort).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(null, 1, 4, this.sort).then(response => {
       this.setState({...this.state, list: response, isLoading: false });
     });
   }
-
+  /*
   public componentDidUpdate(prevProps: IAllTokensView, prevState: any) {
     if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.sort) {
       this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
-
         this.setState({ ...this.state, list: response, isLoading: false });
       });
     }
   }
+  */
 
   render() {
     if (this.state.isLoading) {
