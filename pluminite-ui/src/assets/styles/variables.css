@@ -1,19 +1,20 @@
 :root {
- --white: #ffffff;
- --black: #000000;
- --denim: #134FC2;
- --wildSand: #f6f6f6;
- --wildSandS: #F5F5F5;
- --doveGray: #626262;
- --linkWater: #E7EAF8;
- --alabaster: #FAFAFA;
- --artistBorder: rgba(0, 0, 0, 0.12);
- --limeade: #63b400;
- --mineShaft: #212121;
- --mercury: #E4E4E4;
- --cobalt: #003DAC;
- --mineShaftS: #373737;
- --doveGrayS: #737373;
- --alabasterapprox: #F8F8F8;
- --pirateCold: #AE7E03;
+  --white: #ffffff;
+  --black: #000000;
+  --denim: #134fc2;
+  --wildSand: #f6f6f6;
+  --wildSandS: #f5f5f5;
+  --doveGray: #626262;
+  --linkWater: #e7eaf8;
+  --alabaster: #fafafa;
+  --artistBorder: rgba(0, 0, 0, 0.12);
+  --limeade: #63b400;
+  --mineShaft: #212121;
+  --mercury: #e4e4e4;
+  --cobalt: #003dac;
+  --mineShaftS: #373737;
+  --doveGrayS: #737373;
+  --alabasterapprox: #f8f8f8;
+  --pirateCold: #ae7e03;
+  --thunderbird: #c21313;
 }

@@ -18,7 +18,7 @@ export interface INftContractContext {
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
+  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
   authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
@@ -36,7 +36,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   }
 
   public get myAccountId() {
-    return this.nftContract.account.accountId
+    return this.nftContract.account.accountId;
   }
   public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
     return this.props.nftContract.authors_by_filter({
@@ -47,7 +47,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       asked_account_id: this.myAccountId
     });
   }
-  public nft_tokens_by_filter = (catalog: string, page_index: number, page_size: number, sort: number) => {
+  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number) => {
     return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, account_id: this.myAccountId });
   }
 

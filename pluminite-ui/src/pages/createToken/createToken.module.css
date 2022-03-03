@@ -129,6 +129,9 @@
 .selectStyle{
     background: var(--alabasterapprox);
 }
+.dateField{
+    background-color: var(--wildSand);
+}
 /*
 .titleInpWrap input{
     margin-top: 0;

@@ -22,6 +22,7 @@ interface IButtonView extends IProps {
   color: buttonColors;
   customClass?: string;
   icon?: any;
+  withoutText?: boolean;
   isLoading?: boolean;
 }
 
@@ -103,7 +104,7 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
           />
           &nbsp;
         </>}
-        <span className={styles.btnText}>{this.text}</span>
+        {this.props.withoutText ? `` : <span className={styles.btnText}>{this.text}</span>}
         {this.props.icon && <i style={{ backgroundImage: `url(${this.props.icon})` }} className={`${styles.icon}`} />}
       </button>
     )

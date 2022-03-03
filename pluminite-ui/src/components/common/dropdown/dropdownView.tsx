@@ -6,6 +6,9 @@ interface IDropdownView {
     colorType: dropdownColors,
     onChange: (item: dropdownItem) => void;
     childrens: dropdownItem[],
+    disabled?: boolean,
+    icon?: any,
+    hideArrow?: boolean,
     title: string
 }
 
@@ -74,9 +77,9 @@ class DropdownView extends Component<Readonly<IDropdownView>>{
     render(){
         return(
             <>
-                <Dropdown className={`${styles.customDropdown}`}>
-                    <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${this.dropdownColor}`}>
-                        {this.props.title}
+                <Dropdown  className={`${styles.customDropdown}`}>
+                    <Dropdown.Toggle disabled={this.props.disabled || false} variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${this.dropdownColor} ${this.props.hideArrow ? styles.isHiddenArrow : ''}`}>
+                        {<img src={this.props.icon} alt=""/> || ''}{this.props.title}
                     </Dropdown.Toggle>
 
                     <Dropdown.Menu>

@@ -8,6 +8,10 @@
   font-size: 16px;
 }
 
+.dropdownButton.isHiddenArrow:after{
+  display: none;
+}
+
 .dropdownButton {
 }
 

@@ -27,6 +27,11 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   public state = {
     isEditForm: false,
     isLoading: false,
+    validate: {
+      isNameValid: true,
+      isEmailValid: true,
+      isBioValid: true,
+    },
     profile: {
       name: this.profile.name,
       email: this.profile.email,
@@ -83,7 +88,43 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     return this.props.updateUserInfo && this.props.updateUserInfo(profile);
   }
 
+  private isValidForm() {
+    return true
+
+    let validInfo = {
+      name: true,
+      email: true,
+      bio: true
+    };
+
+    if (this._refInputUserName.value.trim() === '') {
+      validInfo.name = false;
+    }
+
+    if (!validInfo.name || !validInfo.email || !validInfo.bio) {
+      this.setState({
+        ...this.state,
+        profile: {
+          name: this._refInputUserName.value,
+          email: this._refInputUserEmail.value,
+          bio: this._refInputUserBio.value,
+        },
+        validate: {
+          isNameValid: validInfo.name,
+          isEmailValid: validInfo.email,
+          isBioValid: validInfo.bio,
+        }
+      })
+
+      return false;
+    }
+
+    return true;
+  }
+
   private formSubmitHandler = async () => {
+    if (!this.isValidForm()) return;
+
     this.setState({
       ...this.state,
       profile: {
@@ -152,6 +193,38 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         bio: bio,
       }
     });
+  }
+
+  private inputOnChange(e, type: string) {
+    // switch (type) {
+    //   case 'name':
+    //     this.setState({
+    //       ...this.state,
+    //       profile: {
+    //         ...this.state.profile,
+    //         name: e.target.value
+    //       }
+    //     })
+    //     break;
+    //   case 'email':
+    //     this.setState({
+    //       ...this.state,
+    //       profile: {
+    //         ...this.state.profile,
+    //         email: e.target.value
+    //       }
+    //     })
+    //     break;
+    //   case 'bio':
+    //     this.setState({
+    //       ...this.state,
+    //       profile: {
+    //         ...this.state.profile,
+    //         bio: e.target.value
+    //       }
+    //     })
+    //     break;
+    // }
   }
 
   private infoTemplate() {
@@ -249,7 +322,10 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.name}
             absPlaceholder={'User name'}
             setRef={(ref) => { this._refInputUserName = ref; }}
+            onChange={(e) => { this.inputOnChange(e, 'name') }}
             disabled={this.state.isLoading}
+            isError={!this.state.validate.isNameValid}
+            errorMessage={`Enter the Name`}
           />
 
           <InputView
@@ -260,7 +336,10 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.email}
             absPlaceholder={'Email'}
             setRef={(ref) => { this._refInputUserEmail = ref; }}
+            onChange={(e) => { this.inputOnChange(e, 'email') }}
             disabled={this.state.isLoading}
+            isError={!this.state.validate.isEmailValid}
+            errorMessage={`Enter the mail in the correct format.`}
           />
 
           <InputView
@@ -270,7 +349,10 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.bio}
             absPlaceholder={'Bio'}
             setRef={(ref) => { this._refInputUserBio = ref; }}
+            onChange={(e) => { this.inputOnChange(e, 'bio') }}
             disabled={this.state.isLoading}
+            isError={!this.state.validate.isBioValid}
+            errorMessage={`Enter the Bio`}
           />
 
           <div className="d-flex align-items-center justify-content-center">
