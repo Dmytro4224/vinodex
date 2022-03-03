@@ -20,7 +20,7 @@ trait NonFungibleTokenApprovalsReceiver {
         token_id: TokenId,
         owner_id: AccountId,
         approval_id: u64,
-        msg: String,
+        sale_conditions: U128,
     );
 }
 
@@ -34,7 +34,7 @@ impl NonFungibleTokenApprovalsReceiver for Contract {
         token_id: TokenId,
         owner_id: AccountId,
         approval_id: u64,
-        msg: String,
+        sale_conditions: U128,
     ) {
         // get the contract ID which is the predecessor
         let nft_contract_id = env::predecessor_account_id();
@@ -70,12 +70,6 @@ impl NonFungibleTokenApprovalsReceiver for Contract {
             "Insufficient storage paid: {}, for {} sales at {} rate of per sale",
             owner_paid_storage, signer_storage_required / STORAGE_PER_SALE, STORAGE_PER_SALE
         );
-
-        //if all these checks pass we can create the sale conditions object.
-        let SaleArgs { sale_conditions } =
-            //the sale conditions come from the msg field. The market assumes that the user passed
-            //in a proper msg. If they didn't, it panics. 
-            near_sdk::serde_json::from_str(&msg).expect("Not valid SaleArgs");
 
         //create the unique sale ID which is the contract + DELIMITER + token ID
         let contract_and_token_id = format!("{}{}{}", nft_contract_id, DELIMETER, token_id);

@@ -36,6 +36,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   public state = {
     isLoadAvatar: false,
     image: avatarDefault,
+    activeTab: window.location.href.split('?tab=')[1],
     profile: {
       bio: 'Bio Example',
       email: 'User Name Example',
@@ -45,26 +46,22 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
   private _selectFile?: File;
   private _fileResponse: IUploadFileResponse | undefined
-  private _imageRef: React.RefObject<HTMLImageElement>;
   private _inputFile: React.RefObject<HTMLInputElement>;
 
   constructor(props: IUserProfile & IBaseComponentProps) {
     super(props);
 
-    this._imageRef = React.createRef<HTMLImageElement>();
     this._inputFile = React.createRef<HTMLInputElement>();
   }
 
   public componentDidMount() {
-    console.log("🚀 ~ file: UserProfile.tsx ~ line 57 ~ UserProfile ~ componentDidMount ~ componentDidMount")
-
     if (!this.isMyProfile) {
       this.props.nftContractContext.view_artist_account(this.getUserId)
         .then(res => {
-          console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ view_artist_account ~ success", res)
+          console.log("🚀 ~ file: UserProfile.tsx ~ line 63 ~ UserProfile ~ componentDidMount ~ res", res)
         })
         .catch(error => {
-          console.warn("🚀 ~ file: UserProfile.tsx ~ line 41 ~ UserProfile ~ view_artist_account ~ error", error)
+          console.warn("🚀 ~ file: UserProfile.tsx ~ line 66 ~ UserProfile ~ componentDidMount ~ error", error)
         })
     }
 
@@ -72,16 +69,21 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidUpdate(prevState, currentState) {
-    console.log("🚀 ~ file: UserProfile.tsx ~ line 77 ~ UserProfile ~ componentDidUpdate ~ componentDidUpdate")
+    if (this.state.activeTab !== this.activeTabFromUrl && this.activeTabFromUrl) {
+      this.setState({
+        ...this.state,
+        activeTab: this.activeTabFromUrl
+      })
+    }
 
-    if (prevState.params.userId !== window.location.href.split('/userProfile/')[1]) {
+    if (prevState.params.userId !== this.props.params.userId) {
       this.getData();
     }
   }
 
   private getData() {
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-      console.log("🚀 ~ file: UserProfile.tsx ~ line 38 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
+      console.log("🚀 ~ file: UserProfile.tsx ~ line 83 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
 
       if (profile) {
         this.userProfile = profile;
@@ -103,7 +105,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
     this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
 
-    if (this._fileResponse && this._imageRef?.current) {
+    if (this._fileResponse) {
       const src = pinataAPI.createUrl(this._fileResponse.IpfsHash!);
 
       this.updateUser({
@@ -168,6 +170,8 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     if (this.isMyProfile) {
       return (
         <Tabs
+          activeKey={this.state.activeTab || `details`}
+          onSelect={(key) => this.updateActiveTab(key)}
           id="controlled-tab-example"
           className="mb-3 justify-content-center"
         >
@@ -195,7 +199,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           <Tab eventKey="following" title="Following">
             <div style={{ minHeight: '300px' }}><EmptyListView /></div>
           </Tab>
-          <Tab eventKey="favourites" title="Favourites">
+          <Tab eventKey="favorites" title="Favorites">
             <div style={{ minHeight: '300px' }}><EmptyListView /></div>
           </Tab>
         </Tabs>
@@ -204,6 +208,8 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
     return (
       <Tabs
+        activeKey={this.state.activeTab || `sale`}
+        onSelect={(key) => this.updateActiveTab(key)}
         id="controlled-tab-example"
         className="mb-3 justify-content-center"
       >
@@ -216,7 +222,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         <Tab eventKey="owned" title="Owned">
           <div style={{ minHeight: '300px' }}><EmptyListView /></div>
         </Tab>
-        <Tab eventKey="favourites" title="Favourites">
+        <Tab eventKey="favourites" title="Favorites">
           <div style={{ minHeight: '300px' }}><EmptyListView /></div>
         </Tab>
       </Tabs>
@@ -235,12 +241,29 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     })
   }
 
+  private updateActiveTab(key) {
+    window.history.pushState({}, "", `${this.urlWithoutParam}?tab=${key}`);
+
+    this.setState({
+      ...this.state,
+      activeTab: key
+    })
+  }
+
   private get getUserId() {
     return this.props.params.userId!;
   }
 
   private get isMyProfile() {
     return this.props.near.user?.accountId === this.getUserId;
+  }
+
+  private get activeTabFromUrl() {
+    return window.location.href.split('?tab=')[1];
+  }
+
+  private get urlWithoutParam() {
+    return window.location.href.split('?tab=')[0]
   }
 
   public render() {
@@ -254,7 +277,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
             <div className={styles.profileInfoWrap}>
               <div className={styles.avatarWrap}>
-                <img ref={this._imageRef} width="100" height="100" src={this.state.image} alt="avatar" />
+                <img width="100" height="100" src={this.state.image} alt="avatar" />
                 {this.isMyProfile && (
                   <div className={styles.uploadAvatarWrap}>
                     <label>
