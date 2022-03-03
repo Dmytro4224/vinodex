@@ -32,7 +32,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
   }
 
   public componentDidUpdate(prevProps: IAllTokensView, prevState: any) {
-    if (prevProps.catalog !== this.props.catalog) {
+    if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.sort) {
       this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 4, 7).then(response => {
 
         this.setState({ ...this.state, list: response, isLoading: false });
