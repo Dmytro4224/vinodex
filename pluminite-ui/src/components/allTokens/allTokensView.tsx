@@ -63,7 +63,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
       <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
         <LabelView text={'All'} />
         <ButtonView
-          text={'More'}
+          text={'Show all'}
           onClick={() => { }}
           color={buttonColors.gold}
         />
