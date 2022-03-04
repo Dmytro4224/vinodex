@@ -50,7 +50,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   }
 
   public componentDidUpdate(prevState, currentState) {
-    if (!isEqual(prevState.profile, currentState.profile) && this.state.validate.formValid) {
+    if (!isEqual(prevState.profile, currentState.profile) && this.state.validate.formValid && !this.state.isLoading) {
       this.setProfileInfo({
         name: prevState.profile.name,
         email: prevState.profile.email,
