@@ -14,6 +14,7 @@ import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComp
 import { ToastContainer } from 'react-toastify';
 import ArtistsView from '../../pages/artists';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
+import Footer from '../footer/Footer';
 
 interface IApp extends IProps {
 
@@ -53,6 +54,8 @@ class App extends Component<IApp & IBaseComponentProps> {
           </Routes>
         </main>
 
+        <Footer />
+
         <ToastContainer
           position="top-right"
           autoClose={5000}
@@ -64,12 +67,6 @@ class App extends Component<IApp & IBaseComponentProps> {
           draggable
           pauseOnHover
         />
-
-        {/*<NftContractContext.Consumer>
-            {context => (
-                <span>{context?.nftContract?.contractId}</span>
-            )}
-        </NftContractContext.Consumer>*/}
       </>
     );
   }
