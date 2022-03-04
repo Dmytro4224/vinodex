@@ -15,6 +15,10 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
     return new Date().getFullYear();
   }
 
+  get accountId() {
+    return this.props.near.user?.accountId || '';
+  }
+
   render() {
     return (
       <footer className={styles.footer}>
@@ -36,16 +40,16 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
               <p className={styles.linksTitle}>My Account</p>
               <ul className={styles.linksWrap}>
                 <li>
-                  <NavLink to={'/'}>Profile</NavLink>
+                  <NavLink to={`/userProfile/${this.accountId}?tab=details`}>Profile</NavLink>
                 </li>
                 <li>
-                  <NavLink to={'/'}>My Auctions</NavLink>
+                  <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>My Auctions</NavLink>
                 </li>
                 <li>
-                  <NavLink to={'/'}>My Wine</NavLink>
+                  <NavLink to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
                 </li>
                 <li>
-                  <NavLink to={'/'}>Activity</NavLink>
+                  <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
                 </li>
               </ul>
             </div>
