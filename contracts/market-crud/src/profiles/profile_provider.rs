@@ -656,22 +656,16 @@ impl ProfileStatCriterion{
                 {
                     let _current_position 
                     = _new_vector.iter().position(|x|x.account_id  == user_id.to_string());
-                    
-                    let emty_value = ProfileStatCriterion{
-                        account_id:user_id.to_string(),
-                        criterion:Some(0)
-                    };
 
                     if _current_position.is_none()
                     {
-                        _new_vector.push(emty_value);
-                    }
-                    else
-                    {
-                        _new_vector.insert(_current_position.unwrap(), emty_value);
-                    }
+                        _new_vector.push(ProfileStatCriterion{
+                            account_id:user_id.to_string(),
+                            criterion:Some(0)
+                        });
 
-                    profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
+                        profiles_global_stat_sorted_vector.insert(&parameter,&_new_vector);
+                    }
                 },
                 None =>
                 {

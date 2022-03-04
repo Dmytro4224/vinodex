@@ -5,8 +5,12 @@ use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
 use near_sdk::json_types::{Base64VecU8, ValidAccountId, U64, U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
-    env, near_bindgen, AccountId, Balance, CryptoHash, PanicOnDefault, Promise, StorageUsage,
+    assert_one_yocto, env, ext_contract, near_bindgen, AccountId, Balance, Gas, PanicOnDefault,
+    Promise, CryptoHash, BorshStorageKey, StorageUsage,
 };
+
+use std::mem::size_of;
+use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use std::collections::HashSet;
 use std::cmp::Ordering;
 
@@ -39,6 +43,32 @@ mod nft_core;
 #[path = "profiles/profile_provider.rs"]
 mod profile;
 
+#[path = "sales/sale.rs"]
+mod sales;
+pub use crate::sales::*;
+
+//=========Sales=================//
+
+//GAS constants to attach to calls
+const GAS_FOR_ROYALTIES: Gas = 115_000_000_000_000;
+const GAS_FOR_NFT_TRANSFER: Gas = 15_000_000_000_000;
+
+//constant used to attach 0 NEAR to a call
+const NO_DEPOSIT: Balance = 0;
+
+//the minimum storage to have a sale on the contract.
+const STORAGE_PER_SALE: u128 = 1000 * STORAGE_PRICE_PER_BYTE;
+
+//Creating custom types to use within the contract. This makes things more readable. 
+pub type SalePriceInYoctoNear = U128;
+pub type TokenId = String;
+pub type FungibleTokenId = AccountId;
+pub type ContractAndTokenId = String;
+
+//===============================//
+
+
+
 //тип токену
 pub type TokenType = String;
 //типи токенів
@@ -61,6 +91,11 @@ near_sdk::setup_alloc!();
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
+
+    //keep track of the storage that accounts have payed
+    pub storage_deposits: LookupMap<AccountId, Balance>,
+
+
     //токени власника
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
     //токени автора
@@ -154,6 +189,20 @@ pub struct Contract {
   pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
   //список аккаунтів, на які я підписався
   pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
+
+
+    //================sales==========================//
+
+     //Токени, виставлені на продаж
+    pub sales_active: UnorderedMap<TokenId, Sale>,
+
+    //Історія продажу токенів
+    pub sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
+
+    //================sales==========================//
+
+
+
   }
 
 // Helper structure to for keys of the persistent collections.
@@ -182,7 +231,10 @@ pub enum StorageKey {
     MyAutorsViews,
     MyAutorsFollowed,
     MyTokensLikes,
-    MyTokensFollowed
+    MyTokensFollowed,
+    SalesActive,
+    SalesHistoryByTokenId,
+    StorageDeposit
 }
 
 #[near_bindgen]
@@ -229,6 +281,9 @@ impl Contract {
             my_autors_followed:LookupMap::new (StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
             my_tokens_likes:LookupMap::new (StorageKey::MyTokensLikes.try_to_vec().unwrap()),
             my_tokens_followed:LookupMap::new (StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
+            sales_active:UnorderedMap::new (StorageKey::SalesActive.try_to_vec().unwrap()),
+            sales_history_by_token_id:LookupMap::new (StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap()),
+            storage_deposits:LookupMap::new (StorageKey::StorageDeposit.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -276,6 +331,9 @@ impl Contract {
             my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
             my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
             my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
+            sales_active: UnorderedMap<TokenId, Sale>,
+            sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
+            storage_deposits: LookupMap<AccountId, Balance>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -308,7 +366,10 @@ impl Contract {
             my_autors_views: old_contract.my_autors_views,
             my_autors_followed: old_contract.my_autors_followed,
             my_tokens_likes: old_contract.my_tokens_likes,
-            my_tokens_followed: old_contract.my_tokens_followed
+            my_tokens_followed: old_contract.my_tokens_followed,
+            sales_active: old_contract.sales_active,
+            sales_history_by_token_id: old_contract.sales_history_by_token_id,
+            storage_deposits: old_contract.storage_deposits
         }
     }
 
@@ -396,8 +457,6 @@ impl Contract {
             self.supply_cap_by_type.insert(token_type.to_string(), *hard_cap);
         }
     }
-
-
 
     pub fn unlock_token_types(&mut self, token_types: Vec<String>) {
         for token_type in &token_types {
@@ -545,5 +604,84 @@ impl Contract {
                 &account_id
             )
         );
+    }
+
+
+    //Allows users to deposit storage. This is to cover the cost of storing sale objects on the contract
+    //Optional account ID is to users can pay for storage for other people.
+    #[payable]
+    pub fn storage_deposit(&mut self, account_id: Option<AccountId>) {
+        //get the account ID to pay for storage for
+        let storage_account_id = account_id 
+            //convert the valid account ID into an account ID
+            .map(|a| a.into())
+            //if we didn't specify an account ID, we simply use the caller of the function
+            .unwrap_or_else(env::predecessor_account_id);
+
+        //get the deposit value which is how much the user wants to add to their storage
+        let deposit = env::attached_deposit();
+
+        //make sure the deposit is greater than or equal to the minimum storage for a sale
+        assert!(
+            deposit >= STORAGE_PER_SALE,
+            "Requires minimum deposit of {}",
+            STORAGE_PER_SALE
+        );
+
+        //get the balance of the account (if the account isn't in the map we default to a balance of 0)
+        let mut balance: u128 = self.storage_deposits.get(&storage_account_id).unwrap_or(0);
+        //add the deposit to their balance
+        balance += deposit;
+        //insert the balance back into the map for that account ID
+        self.storage_deposits.insert(&storage_account_id, &balance);
+    }
+
+    //Allows users to withdraw any excess storage that they're not using. Say Bob pays 0.01N for 1 sale
+    //Alice then buys Bob's token. This means bob has paid 0.01N for a sale that's no longer on the marketplace
+    //Bob could then withdraw this 0.01N back into his account. 
+    #[payable]
+    pub fn storage_withdraw(&mut self) {
+        //make sure the user attaches exactly 1 yoctoNEAR for security purposes.
+        //this will redirect them to the NEAR wallet (or requires a full access key). 
+        assert_one_yocto();
+
+        //Порахувати скільки за токен використовується місьця в системі
+
+        // //the account to withdraw storage to is always the function caller
+        // let owner_id = env::predecessor_account_id();
+        // //get the amount that the user has by removing them from the map. If they're not in the map, default to 0
+        // let mut amount = self.storage_deposits.remove(&owner_id).unwrap_or(0);
+        
+        // //how many sales is that user taking up currently. This returns a set
+        // let sales = self.by_owner_id.get(&owner_id);
+        // //get the length of that set. 
+        // let len = sales.map(|s| s.len()).unwrap_or_default();
+        // //how much NEAR is being used up for all the current sales on the account 
+        // let diff = u128::from(len) * STORAGE_PER_SALE;
+
+        // //the excess to withdraw is the total storage paid - storage being used up.
+        // amount -= diff;
+
+        // //if that excess to withdraw is > 0, we transfer the amount to the user.
+        // if amount > 0 {
+        //     Promise::new(owner_id.clone()).transfer(amount);
+        // }
+        // //we need to add back the storage being used up into the map if it's greater than 0.
+        // //this is so that if the user had 500 sales on the market, we insert that value here so
+        // //if those sales get taken down, the user can then go and withdraw 500 sales worth of storage.
+        // if diff > 0 {
+        //     self.storage_deposits.insert(&owner_id, &diff);
+        // }
+    }
+
+    /// views
+    //return the minimum storage for 1 sale
+    pub fn storage_minimum_balance(&self) -> U128 {
+        U128(STORAGE_PER_SALE)
+    }
+
+    //return how much storage an account has paid for
+    pub fn storage_balance_of(&self, account_id: AccountId) -> U128 {
+        U128(self.storage_deposits.get(&account_id).unwrap_or(0))
     }
 }
