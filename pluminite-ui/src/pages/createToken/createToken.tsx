@@ -426,8 +426,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
 
-    console.log(`model model model`, model);
-    return;
     //@ts-ignore
     const res = await nftContract.account.signAndSendTransaction(nftContract.contractId, [
       transactions.functionCall(
