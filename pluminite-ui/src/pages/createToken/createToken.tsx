@@ -44,7 +44,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     description: '',
     bid: 0,
     startDate: '',
-    expDate: ''
+    expDate: '',
+    validate: {
+      isFileValid: true,
+      isTitleValid: true,
+      isPriceValid: true,
+      isBidsValid: true,
+      isDescrValid: true
+    }
   }
 
   constructor(props: ICreateToken & IBaseComponentProps) {
@@ -209,7 +216,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <div className={styles.copies}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
               <InputView
-                onChange={(e) => { console.log(e) }}
+                onChange={(e) => { validateDotNum(e.target) }}
                 placeholder={'Price*'}
                 absPlaceholder={'Price*'}
                 customClass={`${styles.titleInpWrap}`}
@@ -220,7 +227,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </div> : this._renderType === 2 ? <div className={styles.copies}>
               <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
               <InputView
-                onChange={(e) => { console.log(e) }}
+                onChange={(e) => { validateDotNum(e.target) }}
                 placeholder={'Minimum bid**'}
                 absPlaceholder={'Minimum bid**'}
                 customClass={`${styles.titleInpWrap}`}
@@ -249,7 +256,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
           <div>
             <InputView
-              onChange={(e) => { console.log(e) }}
+              onChange={(e) => { validateDotNum(e.target) }}
               placeholder={'Royalties*'}
               absPlaceholder={'Royalties*'}
               customClass={`${styles.titleInpWrap}`}
@@ -298,7 +305,57 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     </div>)
   }
 
+  private isValidForm() {
+    let validInfo = {
+      file: true,
+      title: true,
+      price: true,
+      descr: true,
+      bids: true,
+    };
+
+    if (this._fileResponse === undefined) {
+      validInfo.file = false;
+    }
+
+    if (this._refInputTitle.value.trim() === '') {
+      validInfo.title = false;
+    }
+
+    if (this._renderType === 1 && this._refInputPrice.value === '') {
+      validInfo.price = false;
+    }
+
+    if (this._renderType === 2 && this._refInputBids.value === '') {
+      validInfo.bids = false;
+    }
+
+    if (this._refInputDescription.value.trim() === '') {
+      validInfo.descr = false;
+    }
+
+    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids) {
+      /*this.setState({
+        ...this.state,
+        validate: {
+          isFileValid: validInfo.file,
+          isTitleValid: validInfo.title,
+          isPriceValid: validInfo.price,
+          isBidsValid: validInfo.bids,
+          isDescrValid: validInfo.descr
+        }
+      })*/
+
+      return false;
+    }
+
+    return true;
+  }
+
   private submit = async () => {
+
+    if (!this.isValidForm()) return;
+
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
     const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
@@ -307,31 +364,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     if (this._fileResponse === undefined) { return }
 
     const url = pinataAPI.createUrl(this._fileResponse.IpfsHash);
-
-    //const model = {
-    //  metadata: {
-    //    copies: '1',
-    //    description: description,
-    //    expires_at: null,
-    //    extra: 0,
-    //    issued_at: null,
-    //    likes_count: 0,
-    //    media: url,
-    //    media_hash: this._fileResponse.IpfsHash,
-    //    price: price,
-    //    reference: 0,
-    //    reference_hash: null,
-    //    sold_at: null,
-    //    starts_at: null,
-    //    title: title,
-    //    updated_at: null,
-    //    views_count: 0
-    //  },
-    //  receiver_id: null,
-    //  perpetual_royalties: null,
-    //  token_id: this._fileResponse.IpfsHash,
-    //  token_type: catalog
-    //};
 
     const model = {
       metadata: {
@@ -357,11 +389,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       token_id: this._fileResponse.IpfsHash,
       token_type: catalog?.value
     };
-
-    console.log(`create model`, model);
     const resp = await this.props.nftContractContext.nft_mint(model);
-
-    console.log(`create response`, resp);
   }
 }
 
