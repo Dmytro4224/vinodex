@@ -47,6 +47,10 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
     return this.props.user?.name;
   }
 
+  get isAuth() {
+    return this.props.near.isAuth;
+  }
+
   render() {
     return (
       <>
@@ -84,64 +88,77 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
           <p className="line-separator" />
 
           <div className="w-100 p-3">
-            <div className="d-flex align-items-center justify-content-between">
-              <div className="d-flex align-items-center mt-2">
-                <img className={styles.avatar} width="40" height="40" src={this.avatar} alt="avatar" />
-                <div>
-                  <p className={styles.name}>{this.name}</p>
-                  <p className={styles.accountId}>{this.accountId || ''}</p>
+            {this.isAuth ? (
+              <>
+                <div className="d-flex align-items-center justify-content-between">
+                  <div className="d-flex align-items-center mt-2">
+                    <img className={styles.avatar} width="40" height="40" src={this.avatar} alt="avatar" />
+                    <div>
+                      <p className={styles.name}>{this.name}</p>
+                      <p className={styles.accountId}>{this.accountId || ''}</p>
+                    </div>
+                  </div>
+                  <ButtonCopy copyText={this.accountId || ''} />
                 </div>
-              </div>
-              <ButtonCopy copyText={this.accountId || ''} />
-            </div>
 
-            <ul onClick={() => this.toggleMenu()} className={styles.otherNavigation}>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=details`}>
-                  <img width="24" height="24" src={userIcon} alt="icon" />
-                  <p>Profile Details</p>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=items`}>
-                  <img width="24" height="24" src={createdIcon} alt="icon" />
-                  <p>Created Items</p>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
-                  <img width="24" height="24" src={purchasesIcon} alt="icon" />
-                  <p>Purchases</p>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
-                  <img width="24" height="24" src={activeBidsIcon} alt="icon" />
-                  <p>Active Bids</p>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=following`}>
-                  <img width="24" height="24" src={followingsIcon} alt="icon" />
-                  <p>Followings</p>
-                </NavLink>
-              </li>
-              <li>
-                <NavLink to={`/userProfile/${this.accountId}?tab=favorites`}>
-                  <img width="24" height="24" src={favoritesIcon} alt="icon" />
-                  <p>Favorites</p>
-                </NavLink>
-              </li>
-            </ul>
+                <ul onClick={() => this.toggleMenu()} className={styles.otherNavigation}>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=details`}>
+                      <img width="24" height="24" src={userIcon} alt="icon" />
+                      <p>Profile Details</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=items`}>
+                      <img width="24" height="24" src={createdIcon} alt="icon" />
+                      <p>Created Items</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
+                      <img width="24" height="24" src={purchasesIcon} alt="icon" />
+                      <p>Purchases</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
+                      <img width="24" height="24" src={activeBidsIcon} alt="icon" />
+                      <p>Active Bids</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=following`}>
+                      <img width="24" height="24" src={followingsIcon} alt="icon" />
+                      <p>Followings</p>
+                    </NavLink>
+                  </li>
+                  <li>
+                    <NavLink to={`/userProfile/${this.accountId}?tab=favorites`}>
+                      <img width="24" height="24" src={favoritesIcon} alt="icon" />
+                      <p>Favorites</p>
+                    </NavLink>
+                  </li>
+                </ul>
 
-            <p className="line-separator" />
+                <p className="line-separator" />
 
-            <ButtonView
-              text={'Disconnect'}
-              onClick={() => { this.props.near.signOut(); this.toggleMenu(); }}
-              color={buttonColors.select}
-              customClass={styles.buttonDisconnect}
-            />
+                <ButtonView
+                  text={'Disconnect'}
+                  onClick={() => { this.props.near.signOut(); this.toggleMenu(); }}
+                  color={buttonColors.select}
+                  customClass={styles.buttonDisconnect}
+                />
+              </>
+            ) : (
+              <ButtonView
+                text={'Connect Wallet'}
+                onClick={() => { this.props.near.signIn(); this.toggleMenu(); }}
+                color={buttonColors.select}
+                customClass={styles.buttonDisconnect}
+              />
+            )}
+
+
           </div>
 
         </div>
