@@ -159,8 +159,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       isLoading: true
     })
 
-    console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
-
     this.updateUserInfo({
       name: result.profile.name,
       email: result.profile.email,

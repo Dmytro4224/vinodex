@@ -1,0 +1,109 @@
+.footer {
+  padding: 40px 0 0 0;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--mineShaftS);
+  background-color: var(--alabasterapprox);
+}
+
+.footerPlaceInfo {
+  font-weight: 40;
+  font-size: 12px;
+  padding: 18px 5px;
+  color: var(--doveGrayS);
+}
+
+.footerInfoWrap {
+  max-width: 255px;
+}
+
+.footerLogo {
+  margin-bottom: 24px;
+}
+
+.infoDesc {
+  margin-bottom: 28px;
+}
+
+.contentBox {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 76px;
+}
+
+.linksTitle {
+  margin-bottom: 26px;
+  font-weight: 400;
+  font-size: 18px;
+  text-transform: uppercase;
+  color: var(--mineShaftS);
+}
+
+.linksWrap li:not(:last-of-type) {
+  margin-bottom: 16px;
+}
+
+.linksWrap li a {
+  color: var(--mineShaftS);
+}
+
+.footerLinksWrap {
+  display: flex;
+  align-items: center;
+  gap: 100px;
+}
+
+.footerSubscribeWrap {
+  max-width: 310px;
+}
+
+@media (max-width: 1400px) {
+  .footerLinksWrap {
+    display: flex;
+    align-items: center;
+    gap: 50px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .footerSubscribeWrap {
+    margin-top: 50px;
+  }
+}
+
+@media (max-width: 770px) {
+  .footerLinksWrap {
+    margin-top: 50px;
+  }
+
+  .footerLinksWrap {
+    gap: unset;
+    width: 100%;
+    max-width: 310px;
+    justify-content: space-between;
+  }
+
+  .footerInfoWrap {
+    width: 100%;
+    max-width: 310px;
+  }
+
+  .myAccountLinks {
+    display: none;
+  }
+
+  .contentBox {
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+
+  .footerInfoWrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+}

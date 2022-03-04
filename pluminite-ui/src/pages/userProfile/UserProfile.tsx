@@ -58,10 +58,10 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     if (!this.isMyProfile) {
       this.props.nftContractContext.view_artist_account(this.getUserId)
         .then(res => {
-          console.log("🚀 ~ file: UserProfile.tsx ~ line 63 ~ UserProfile ~ componentDidMount ~ res", res)
+          console.log("🚀 ~ file: view_artist_account ~ res", res)
         })
         .catch(error => {
-          console.warn("🚀 ~ file: UserProfile.tsx ~ line 66 ~ UserProfile ~ componentDidMount ~ error", error)
+          console.warn("🚀 ~ file: view_artist_account ~ error", error)
         })
     }
 
@@ -83,8 +83,6 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
   private getData() {
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
-      console.log("🚀 ~ file: UserProfile.tsx ~ line 83 ~ UserProfile ~ this.props.nftContractContext.getProfile ~ profile", profile)
-
       if (profile) {
         this.userProfile = profile;
       }
@@ -309,6 +307,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             {this.getProfileTabs()}
           </div>
         </div>
+        <p className="line-separator"></p>
       </>
     );
   }

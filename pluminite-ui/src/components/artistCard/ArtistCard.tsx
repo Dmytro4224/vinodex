@@ -88,12 +88,14 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       }
       this.state.isProcessFollow = true;
       this.changeFollow();
+
       await this.props.nftContractContext.follow_artist_account(this.identification);
+
       this.state.isProcessFollow = false;
     } catch (ex) {
       this.state.isProcessFollow = false;
       this.changeFollow();
-      console.warn("🚀 ~ file: ArtistCard.tsx ~ line 68 ~ ArtistCard ~ btnFollowHandler ~ error", ex)
+
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error
@@ -113,12 +115,15 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       }
       this.state.isProcessLike = true;
       this.changeLikeCount();
+
       await this.props.nftContractContext.like_artist_account(this.identification);
+
       this.state.isProcessLike = false;
     } catch (ex) {
       this.state.isProcessLike = false;
       console.warn('error', this.state.isLike)
       this.changeLikeCount();
+
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error
