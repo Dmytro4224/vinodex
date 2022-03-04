@@ -81,7 +81,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
           <LabelView text={'Best Artists'} />
           <ButtonView
             text={'Show all'}
-            onClick={() => { }}
+            onClick={() => { this.props.navigate('/artists') }}
             color={buttonColors.gold}
           />
         </div>
