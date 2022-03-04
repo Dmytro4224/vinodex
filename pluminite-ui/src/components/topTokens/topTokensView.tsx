@@ -18,7 +18,7 @@ interface ITopTokensView extends IProps {
 enum TokensSortType {
   'Recently_Listed' = 1,
   //Recently Created (Oldest ��� ����� �����)
-  'Recently_Created' = 2, 
+  'Recently_Created' = 2,
   'Recently_Sold' = 3,
   'Ending_Soon' = 4,
   //Price Low to High (High to Low ��� ����� �����)
@@ -89,7 +89,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
         <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
           <LabelView text={'Top 10'} />
           <ButtonView
-            text={'More'}
+            text={'Show all'}
             onClick={() => {
             }}
             color={buttonColors.gold}

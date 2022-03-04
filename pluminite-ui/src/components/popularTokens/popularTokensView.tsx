@@ -65,7 +65,7 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
           <div className="d-flex align-items-center justify-content-between mt-3 flex-wrap">
           <LabelView  text={'Popular'}/>
           <ButtonView
-            text={'More'}
+            text={'Show all'}
             onClick={() => {  }}
             color={buttonColors.gold}
           />
