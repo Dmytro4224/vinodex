@@ -22,6 +22,7 @@ interface ITokenCardView extends IProps {
   linkTo?: string;
   tokenID: string;
   isLike: boolean;
+  customClass?: string;
   onClick?: () => void
 }
 type stateTypes = {
@@ -82,7 +83,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
   render() {
     return (
-      <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''}`}>
+      <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
         <div className={styles.cardImage}>
           <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />
           <div className={styles.cardDetail}>

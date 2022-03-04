@@ -91,6 +91,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
           <ButtonView
             text={'Show all'}
             onClick={() => {
+              this.props.navigate('/tokens/1')
             }}
             color={buttonColors.gold}
           />

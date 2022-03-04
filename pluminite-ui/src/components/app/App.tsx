@@ -15,6 +15,7 @@ import { ToastContainer } from 'react-toastify';
 import ArtistsView from '../../pages/artists';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import Footer from '../footer/Footer';
+import CatalogTokens from '../../pages/catalogTokens/CatalogTokens';
 
 interface IApp extends IProps {
 
@@ -50,6 +51,7 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
             <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />
             <Route path="/token/:tokenId" element={<OrderDetail />} />
+            <Route path="/tokens/:type" element={<CatalogTokens />} />
             <Route path="/create/" element={<CreateToken />} />
           </Routes>
         </main>
