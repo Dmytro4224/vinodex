@@ -52,10 +52,18 @@ const validateDotNum = (element) => {
   element.value = stringVal;
 }
 
+const isValidEmail = (value: string) => {
+  const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (value.match(mailFormat)) return true;
+    
+  return false;
+};
+
 export {
   classList,
   transformArtistId,
   isEqual,
   showToast,
-  validateDotNum
+  validateDotNum,
+  isValidEmail
 };
