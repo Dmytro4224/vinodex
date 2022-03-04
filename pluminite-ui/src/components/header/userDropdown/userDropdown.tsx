@@ -4,7 +4,7 @@ import { ICurrentUser } from "../../../types/ICurrentUser";
 import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from '../../common/dropdown/dropdownView.module.css';
 import styled from './userDropdown.module.css';
-import { transformArtistId } from "../../../utils/sys";
+import { changeAvatarRefSrc, transformArtistId } from "../../../utils/sys";
 import ButtonView, { buttonColors } from "../../common/button/ButtonView";
 import defaultAvatar from '../../../assets/images/avatar-def.png';
 import userIcon from '../../../assets/icons/user-gold.svg';
@@ -21,8 +21,14 @@ interface IUserDropdown extends IProps {
 }
 
 class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
+  private _refAvatar: any;
+  private _refAvatarSm: any;
+
   constructor(props: IUserDropdown & IBaseComponentProps) {
     super(props);
+
+    this._refAvatar = React.createRef();
+    this._refAvatarSm = React.createRef();
   }
 
   get accountId() {
@@ -41,7 +47,7 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
     return <>
       <Dropdown className={`${styles.customDropdown} ${styles.userDropdown}`}>
         <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${styles.dropdownSelect} ${styles.userDropdownButton}`}>
-          <img className={styles.userAvatar} src={this.avatar} />
+          <img ref={this._refAvatarSm} onError={() => { changeAvatarRefSrc(this._refAvatarSm) }} className={styles.userAvatar} src={this.avatar} alt="" />
           {transformArtistId(this.accountId)}
         </Dropdown.Toggle>
 
@@ -51,7 +57,7 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
         </Dropdown.Item>*/}
           <div className="w-100 d-flex align-items-center justify-content-center flex-column p-2">
             <div className="d-flex align-items-center justify-content-center flex-column">
-              <img className={styles.avatar} width="72" height="72" src={this.avatar} alt="avatar" />
+              <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.avatar} width="72" height="72" src={this.avatar} alt="avatar" />
               <p className={styles.profileName}>{this.name}</p>
               <IdentificationCopy idCustomClass={styles.idTextStyle} id={this.accountId} />
             </div>

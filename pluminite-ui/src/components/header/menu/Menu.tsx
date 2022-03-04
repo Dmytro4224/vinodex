@@ -15,18 +15,24 @@ import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withC
 import { NavLink } from "react-router-dom";
 import ButtonView, { buttonColors } from "../../common/button/ButtonView";
 import ButtonCopy from "../../common/buttonCopy/ButtonCopy";
+import React from "react";
+import { changeAvatarRefSrc } from "../../../utils/sys";
 
 interface IMenu extends IProps {
   user: ICurrentUser | null;
 }
 
 class Menu extends Component<IMenu & IBaseComponentProps> {
+  private _refAvatar: any;
+
   state = {
     isOpen: false
   }
 
   constructor(props: IMenu & IBaseComponentProps) {
     super(props);
+
+    this._refAvatar = React.createRef();
   }
 
   private toggleMenu() {
@@ -92,7 +98,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
               <>
                 <div className="d-flex align-items-center justify-content-between">
                   <div className="d-flex align-items-center mt-2">
-                    <img className={styles.avatar} width="40" height="40" src={this.avatar} alt="avatar" />
+                    <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.avatar} width="40" height="40" src={this.avatar} alt="avatar" />
                     <div>
                       <p className={styles.name}>{this.name}</p>
                       <p className={styles.accountId}>{this.accountId || ''}</p>
@@ -157,10 +163,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
                 customClass={styles.buttonDisconnect}
               />
             )}
-
-
           </div>
-
         </div>
       </>
     )

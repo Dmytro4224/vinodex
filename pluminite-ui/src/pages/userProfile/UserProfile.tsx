@@ -10,8 +10,9 @@ import { InfoCounters } from "../../components/profile/infoCounters/InfoCounters
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import { IUploadFileResponse, pinataAPI } from "../../api/Pinata";
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
-import { showToast } from "../../utils/sys";
+import { changeAvatarRefSrc, showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
+import defaultAvatar from '../../assets/images/avatar-def.png';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -33,6 +34,11 @@ interface IUpdateUser {
 }
 
 class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
+  private _refAvatar: any;
+  private _selectFile?: File;
+  private _fileResponse: IUploadFileResponse | undefined
+  private _inputFile: React.RefObject<HTMLInputElement>;
+
   public state = {
     isLoadAvatar: false,
     image: avatarDefault,
@@ -44,14 +50,11 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     }
   }
 
-  private _selectFile?: File;
-  private _fileResponse: IUploadFileResponse | undefined
-  private _inputFile: React.RefObject<HTMLInputElement>;
-
   constructor(props: IUserProfile & IBaseComponentProps) {
     super(props);
 
     this._inputFile = React.createRef<HTMLInputElement>();
+    this._refAvatar = React.createRef();
   }
 
   public componentDidMount() {
@@ -275,7 +278,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
             <div className={styles.profileInfoWrap}>
               <div className={styles.avatarWrap}>
-                <img width="100" height="100" src={this.state.image} alt="avatar" />
+                <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} width="100" height="100" src={this.state.image} alt="avatar" />
                 {this.isMyProfile && (
                   <div className={styles.uploadAvatarWrap}>
                     <label>
