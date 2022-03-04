@@ -1,0 +1,20 @@
+.socialListWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.socialListWrap a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(174, 126, 3, 0.2);
+  border-radius: 8px;
+  transition: transform 0.4s ease;
+}
+
+.socialListWrap a:hover {
+  transform: scale(1.05) translateY(-4px);
+}
