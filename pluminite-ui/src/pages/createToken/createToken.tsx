@@ -52,6 +52,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       isTitleValid: true,
       isPriceValid: true,
       isBidsValid: true,
+      isRoyaltiesValid: true,
       isDescrValid: true
     }
   }
@@ -154,12 +155,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </Dropzone>
           </div>
           <InputView
-            onChange={(e) => { console.log('input onChange', e); }}
+            onChange={(e) => {  }}
             placeholder={'Title*'}
             absPlaceholder={'Title*'}
             customClass={`mb-4 ${styles.titleInpWrap}`}
             viewType={ViewType.input}
             setRef={(ref) => { this._refInputTitle = ref; }}
+            value={this._refInputTitle && this._refInputTitle.value}
+            isError={!this.state.validate.isTitleValid}
+            errorMessage={`Enter title in the correct format.`}
           />
           <p></p>
           <Form>
@@ -224,6 +228,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
                 setRef={(ref) => { this._refInputPrice = ref; }}
+                value={this._refInputPrice && this._refInputPrice.value}
+                isError={!this.state.validate.isPriceValid}
+                errorMessage={`Enter price in the correct format.`}
               />
               <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
             </div> : this._renderType === 2 ? <div className={styles.copies}>
@@ -235,6 +242,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
                 setRef={(ref) => { this._refInputBids = ref; }}
+                value={this._refInputBids && this._refInputBids.value}
+                isError={!this.state.validate.isBidsValid}
+                errorMessage={`Enter minimum bid in the correct format.`}
               />
               <div className={'mt-4'}>
                 <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
@@ -263,6 +273,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               absPlaceholder={'Royalties*'}
               customClass={`${styles.titleInpWrap}`}
               viewType={ViewType.input}
+              value={this._refRoyalitiesInput && this._refRoyalitiesInput.value}
+              isError={!this.state.validate.isRoyaltiesValid}
+              errorMessage={`Enter royalties in the correct format.`}
               setRef={(ref) => { this._refRoyalitiesInput = ref; }}
             />
             <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
@@ -286,7 +299,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               placeholder={'Description*'}
               absPlaceholder={'Description*'}
               customClass={`${styles.titleInpWrap}`}
+              value={this._refInputDescription && this._refInputDescription.value}
               viewType={ViewType.input}
+              isError={!this.state.validate.isDescrValid}
+              errorMessage={`Enter description in the correct format.`}
               setRef={(ref) => { this._refInputDescription = ref; }}
             />
           </div>
@@ -312,6 +328,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       file: true,
       title: true,
       price: true,
+      royal: true,
       descr: true,
       bids: true,
     };
@@ -332,21 +349,26 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       validInfo.bids = false;
     }
 
+    if (this._refRoyalitiesInput.value === '') {
+      validInfo.royal = false;
+    }
+
     if (this._refInputDescription.value.trim() === '') {
       validInfo.descr = false;
     }
 
-    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids) {
-      /*this.setState({
+    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids || !validInfo.royal) {
+      this.setState({
         ...this.state,
         validate: {
           isFileValid: validInfo.file,
           isTitleValid: validInfo.title,
           isPriceValid: validInfo.price,
           isBidsValid: validInfo.bids,
+          isRoyaltiesValid: validInfo.royal,
           isDescrValid: validInfo.descr
         }
-      })*/
+      })
 
       return false;
     }
@@ -404,6 +426,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
 
+    console.log(`model model model`, model);
+    return;
     //@ts-ignore
     const res = await nftContract.account.signAndSendTransaction(nftContract.contractId, [
       transactions.functionCall(
