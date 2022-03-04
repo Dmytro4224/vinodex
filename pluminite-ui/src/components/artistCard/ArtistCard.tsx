@@ -7,7 +7,7 @@ import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
-import { showToast } from "../../utils/sys";
+import { changeAvatarRefSrc, showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
 import React from "react";
 
@@ -141,7 +141,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       <div className={`${styles.artistCard} ${this.props.customClass || ''}`}>
         <div className={styles.artistWrap}>
           <NavLink to={`/userProfile/${this.identification}`}>
-            <img ref={this._refAvatar} onError={() => { this._refAvatar.current.src = defaultAvatar }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+            <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
           </NavLink>
           <div>
             <NavLink to={`/userProfile/${this.identification}`}>
@@ -183,7 +183,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return (
       <div className="d-flex align-items-center justify-content-between w-100">
         <div className={styles.artistWrap}>
-          <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+          <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
           <div>
             <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
             <IdentificationCopy id={this.identification} />

@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import { IShowToast } from "../types/ISysTypes";
+import defaultAvatar from '../assets/images/avatar-def.png';
 
 const classList = (...args: string[]) => {
     return args.join(' ');
@@ -59,11 +60,18 @@ const isValidEmail = (value: string) => {
   return false;
 };
 
+const changeAvatarRefSrc = (ref) => {
+  try {
+    ref.current.src = defaultAvatar;
+  } catch (e) { console.warn(e) }
+}
+
 export {
   classList,
   transformArtistId,
   isEqual,
   showToast,
   validateDotNum,
-  isValidEmail
+  isValidEmail,
+  changeAvatarRefSrc
 };
