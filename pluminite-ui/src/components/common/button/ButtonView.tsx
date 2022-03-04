@@ -14,6 +14,7 @@ enum buttonColors {
   darkGray = 'darkGray',
   gold = 'gold',
   goldFill = 'goldFill',
+  backButton = 'backButton',
 }
 
 interface IButtonView extends IProps {
@@ -72,6 +73,9 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
         break;
       case 'goldFill':
         color = styles.btnGoldFill;
+        break;
+      case 'backButton':
+        color = styles.backButton;
         break;
     }
 

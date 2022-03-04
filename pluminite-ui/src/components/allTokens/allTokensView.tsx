@@ -64,7 +64,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
         <LabelView text={'All'} />
         <ButtonView
           text={'Show all'}
-          onClick={() => { }}
+          onClick={() => { this.props.navigate('/tokens/3') }}
           color={buttonColors.gold}
         />
       </div>

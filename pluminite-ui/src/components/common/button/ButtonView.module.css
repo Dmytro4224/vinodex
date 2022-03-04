@@ -86,3 +86,13 @@
     min-height: 20px;
     display: block;
 }
+.backButton{
+  background: transparent;
+  outline: none;
+  border: none;
+}
+.backButton .icon{
+  min-width: 36px;
+  min-height: 36px;
+  background-size: contain;
+}

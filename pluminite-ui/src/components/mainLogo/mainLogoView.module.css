@@ -30,3 +30,23 @@
     text-transform: uppercase;
     z-index: 2;
 }
+
+.backButton{
+    left: 70px;
+    position: absolute;
+    cursor: pointer;
+}
+
+.smallWrap{
+    height: 259px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
+.smallWrap .titleWrap{
+    padding: 21px 102px;
+}
+
+.smallWrap .image{
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
+}
