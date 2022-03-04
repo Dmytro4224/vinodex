@@ -221,13 +221,13 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
           <AllTokensView sort={this.sort} catalog={this.catalog} />
 
-          <div className="d-flex align-items-center justify-content-center mt-5 w-100">
+          {/*<div className="d-flex align-items-center justify-content-center mt-5 w-100">
             <ButtonView
               text={'Load more'}
               onClick={() => { }}
               color={buttonColors.select}
             />
-          </div>
+          </div>*/}
         </div>
       </div>
     );
