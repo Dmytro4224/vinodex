@@ -85,7 +85,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     return (
       <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
         <div className={styles.cardImage}>
-          <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />
+          {this.props.linkTo ? <NavLink to={this.props.linkTo}><img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} /></NavLink> : <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />}
           <div className={styles.cardDetail}>
             {(this.props.countL > 0 || this.props.countR > 0) && <div className={styles.count}>
               {this.props.countL}/{this.props.countR}

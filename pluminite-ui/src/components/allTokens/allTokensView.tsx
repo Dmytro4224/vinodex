@@ -80,7 +80,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps>{
             icon={item.metadata.media}
             isSmall={true}
             buttonText={`Place a bid ${item.metadata.price} NEAR`}
-            linkTo={`/token/qwewqq-1231-weq-123`}
+            linkTo={`/token/${item.token_id}`}
             tokenID={item.token_id}
             isLike={item.is_like}
             onClick={() => { }} />

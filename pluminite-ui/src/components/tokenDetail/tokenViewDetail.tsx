@@ -11,6 +11,7 @@ import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import Skeleton from 'react-loading-skeleton';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -63,7 +64,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   render(){
     if(this.state.isLoading){
-      return <p>sad</p>
+      return <div className={`d-flex align-items-center flex-gap-36 p-5 ${styles.scrollWrap}`}>
+        <div className="w-100"><Skeleton  count={1} height={300} /></div>
+        <div className="w-100 flex-column"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+      </div>
     }
 
     return (
