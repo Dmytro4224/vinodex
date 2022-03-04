@@ -102,9 +102,8 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
             role="status"
             aria-hidden="true"
           />
-          &nbsp;
         </>}
-        {this.props.withoutText ? `` : <span className={styles.btnText}>{this.text}</span>}
+        {this.props.withoutText || this.isLoading ? `` : <span className={styles.btnText}>{this.text}</span>}
         {this.props.icon && <i style={{ backgroundImage: `url(${this.props.icon})` }} className={`${styles.icon}`} />}
       </button>
     )
