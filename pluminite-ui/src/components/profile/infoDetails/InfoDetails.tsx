@@ -8,7 +8,7 @@ import arrowIcon from '../../../assets/icons/arrow-right.svg';
 import { Form, FormCheck } from "react-bootstrap";
 import InputView, { InputType, ViewType } from "../../common/inputView/InputView";
 import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
-import { isEqual, showToast } from "../../../utils/sys";
+import { isEqual, isValidEmail, showToast } from "../../../utils/sys";
 import { EShowTost } from "../../../types/ISysTypes";
 
 interface IInfoDetails extends IProps {
@@ -28,6 +28,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     isEditForm: false,
     isLoading: false,
     validate: {
+      formValid: true,
       isNameValid: true,
       isEmailValid: true,
       isBioValid: true,
@@ -49,7 +50,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   }
 
   public componentDidUpdate(prevState, currentState) {
-    if (!isEqual(prevState.profile, currentState.profile)) {
+    if (!isEqual(prevState.profile, currentState.profile) && this.state.validate.formValid) {
       this.setProfileInfo({
         name: prevState.profile.name,
         email: prevState.profile.email,
@@ -89,8 +90,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   }
 
   private isValidForm() {
-    return true
-
     let validInfo = {
       name: true,
       email: true,
@@ -99,6 +98,14 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
 
     if (this._refInputUserName.value.trim() === '') {
       validInfo.name = false;
+    }
+
+    if (this._refInputUserEmail.value.trim() === '' || !isValidEmail(this._refInputUserEmail.value.trim())) {
+      validInfo.email = false;
+    }
+
+    if (this._refInputUserBio.value.trim() === '') {
+      validInfo.bio = false;
     }
 
     if (!validInfo.name || !validInfo.email || !validInfo.bio) {
@@ -110,6 +117,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
           bio: this._refInputUserBio.value,
         },
         validate: {
+          formValid: false,
           isNameValid: validInfo.name,
           isEmailValid: validInfo.email,
           isBioValid: validInfo.bio,
@@ -125,16 +133,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   private formSubmitHandler = async () => {
     if (!this.isValidForm()) return;
 
-    this.setState({
-      ...this.state,
-      profile: {
-        name: this._refInputUserName.value,
-        email: this._refInputUserEmail.value,
-        bio: this._refInputUserBio.value,
-      },
-      isLoading: true
-    })
-
     const result = {
       profile: {
         name: this._refInputUserName.value,
@@ -145,14 +143,30 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       }
     };
 
+    this.setState({
+      ...this.state,
+      profile: {
+        name: result.profile.name,
+        email: result.profile.email,
+        bio: result.profile.bio,
+      },
+      validate: {
+        formValid: true,
+        isNameValid: true,
+        isEmailValid: true,
+        isBioValid: true,
+      },
+      isLoading: true
+    })
+
     console.log("🚀 ~ file: InfoDetails.tsx ~ line 64 ~ InfoDetails ~ formSubmitHandler= ~ result", result)
 
     this.updateUserInfo({
       name: result.profile.name,
       email: result.profile.email,
       bio: result.profile.bio,
-      image: '',
-      accountId: this.getUserId
+      accountId: result.profile.accountId,
+      image: ''
     }).then(res => {
       showToast({
         message: `Data saved successfully.`,
@@ -165,6 +179,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       })
 
       this.changeToInfoTemplate();
+
       this.props.updateStateUserInfo && this.props.updateStateUserInfo({
         name: result.profile.name,
         email: result.profile.email,
@@ -193,38 +208,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         bio: bio,
       }
     });
-  }
-
-  private inputOnChange(e, type: string) {
-    // switch (type) {
-    //   case 'name':
-    //     this.setState({
-    //       ...this.state,
-    //       profile: {
-    //         ...this.state.profile,
-    //         name: e.target.value
-    //       }
-    //     })
-    //     break;
-    //   case 'email':
-    //     this.setState({
-    //       ...this.state,
-    //       profile: {
-    //         ...this.state.profile,
-    //         email: e.target.value
-    //       }
-    //     })
-    //     break;
-    //   case 'bio':
-    //     this.setState({
-    //       ...this.state,
-    //       profile: {
-    //         ...this.state.profile,
-    //         bio: e.target.value
-    //       }
-    //     })
-    //     break;
-    // }
   }
 
   private infoTemplate() {
@@ -322,7 +305,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.name}
             absPlaceholder={'User name'}
             setRef={(ref) => { this._refInputUserName = ref; }}
-            onChange={(e) => { this.inputOnChange(e, 'name') }}
             disabled={this.state.isLoading}
             isError={!this.state.validate.isNameValid}
             errorMessage={`Enter the Name`}
@@ -336,10 +318,9 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.email}
             absPlaceholder={'Email'}
             setRef={(ref) => { this._refInputUserEmail = ref; }}
-            onChange={(e) => { this.inputOnChange(e, 'email') }}
             disabled={this.state.isLoading}
             isError={!this.state.validate.isEmailValid}
-            errorMessage={`Enter the mail in the correct format.`}
+            errorMessage={`Enter mail in the correct format.`}
           />
 
           <InputView
@@ -349,7 +330,6 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             value={this.state.profile.bio}
             absPlaceholder={'Bio'}
             setRef={(ref) => { this._refInputUserBio = ref; }}
-            onChange={(e) => { this.inputOnChange(e, 'bio') }}
             disabled={this.state.isLoading}
             isError={!this.state.validate.isBioValid}
             errorMessage={`Enter the Bio`}
