@@ -60,7 +60,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
     }
 
     return <div>
-      <div className={`d-flex align-items-center flex-gap-36 flex=wrap ${styles.scrollWrap}`}>
+      <div className={`d-flex align-items-center flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView key={item.token_id}
                                 countL={1}
@@ -75,6 +75,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
                                 linkTo={`/token/${item.token_id}`}
                                 tokenID={item.token_id}
                                 isLike={item.is_like}
+                                customClass={styles.tokenWidth}
                                 onClick={() => {
                                   //this.props.navigate('/token/qwewqq-1231-weq-123');
                                 }}/>
