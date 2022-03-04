@@ -12,6 +12,7 @@ import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
+import React from 'react';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -46,9 +47,12 @@ interface ITokenViewState{
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
     public state:ITokenViewState = { order: null, isLoading: true };
+    private readonly _refImage: React.RefObject<HTMLImageElement>;
 
     constructor(props: ITokenViewDetail & IBaseComponentProps) {
     super(props);
+
+    this._refImage = React.createRef();
   }
 
   public componentDidMount() {
@@ -60,6 +64,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   private get tokenId() {
     return this.props.params.tokenId!;
+  }
+
+  public setDefaultImage = async () => {
+    if(this._refImage.current){
+      this._refImage.current.src = cardPreview;
+    }
   }
 
   render(){
@@ -74,7 +84,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
-              <img className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
+              <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
               <div className={styles.cardDetail}>
                 { (this.state.order?.metadata.expires_at !== '' && this.state.order?.metadata.expires_at !== null) && <div className={styles.daysInfo}>
                   {this.state.order?.metadata.expires_at}

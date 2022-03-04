@@ -7,6 +7,7 @@ import { NavLink } from 'react-router-dom';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import { showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
+import React from 'react';
 
 interface ITokenCardView extends IProps {
   icon?: any;
@@ -36,10 +37,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
   private readonly isSmall: boolean
   private _isProcessLike: boolean
+  private readonly _refImage: React.RefObject<HTMLImageElement>;
+
   constructor(props: ITokenCardView & IBaseComponentProps) {
     super(props);
     this.isSmall = this.props?.isSmall || false;
     this._isProcessLike = false
+
+    this._refImage = React.createRef();
   }
 
   private get icon() {
@@ -81,11 +86,18 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       });
     }
   }
+
+  public setDefaultImage = () => {
+    if(this._refImage.current){
+      this._refImage.current.src = cardPreview;
+    }
+  }
+
   render() {
     return (
       <div className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
         <div className={styles.cardImage}>
-          {this.props.linkTo ? <NavLink to={this.props.linkTo}><img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} /></NavLink> : <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />}
+          {this.props.linkTo ? <NavLink to={this.props.linkTo}><img className={styles.imageStyle} src={this.icon} onError={this.setDefaultImage} ref={this._refImage} alt={this.props.alt || 'preview image'} /></NavLink> : <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />}
           <div className={styles.cardDetail}>
             {(this.props.countL > 0 || this.props.countR > 0) && <div className={styles.count}>
               {this.props.countL}/{this.props.countR}

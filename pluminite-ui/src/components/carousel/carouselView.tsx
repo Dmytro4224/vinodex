@@ -56,6 +56,7 @@ class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
       currentslide: 1,
       dots: false,
       adaptiveHeight: false,
+      draggable: false,
       nextArrow: <SampleNextArrow {...(this.props as any)} />, //this.SampleNextArrow(),
       prevArrow: <SamplePrevArrow {...(this.props as any)} />, //this.SamplePrevArrow()
       responsive: [
