@@ -27,3 +27,9 @@
   font-size: 14px;
   color: var(--doveGrayS);
 }
+
+@media (max-width: 500px) {
+  .counterWrap {
+    gap: 50px;
+  }
+}
