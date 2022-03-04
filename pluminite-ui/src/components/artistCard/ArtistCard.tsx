@@ -9,6 +9,7 @@ import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComp
 import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
 import { showToast } from "../../utils/sys";
 import { EShowTost } from "../../types/ISysTypes";
+import React from "react";
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
@@ -22,6 +23,8 @@ interface IArtistCard extends IProps {
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
+  private _refAvatar: any;
+
   public state = {
     isLike: this.props.isLike,
     likesCount: this.likesCount,
@@ -33,6 +36,8 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   constructor(props: IArtistCard & IBaseComponentProps) {
     super(props);
+
+    this._refAvatar = React.createRef();
   }
 
   private get avatar() {
@@ -136,7 +141,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       <div className={`${styles.artistCard} ${this.props.customClass || ''}`}>
         <div className={styles.artistWrap}>
           <NavLink to={`/userProfile/${this.identification}`}>
-            <img className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+            <img ref={this._refAvatar} onError={() => { this._refAvatar.current.src = defaultAvatar }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
           </NavLink>
           <div>
             <NavLink to={`/userProfile/${this.identification}`}>
