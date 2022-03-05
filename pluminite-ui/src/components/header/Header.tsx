@@ -53,6 +53,14 @@ class Header extends Component<IHeader & IBaseComponentProps> {
     })
   }
 
+  private createAction() {
+    if (this.props.near.isAuth) {
+      this.props.navigate('/create');
+    } else {
+      this.props.near.signIn();
+    }
+  }
+
   render() {
     return (
       <header className={styles.header}>
@@ -94,15 +102,11 @@ class Header extends Component<IHeader & IBaseComponentProps> {
 
               <LoginButton user={this.state.profile} />
 
-              <NavLink
-                className={styles.linkCreate}
-                to={"/create"}>
-                <ButtonView
-                  text={'CREATE'}
-                  onClick={() => { }}
-                  color={buttonColors.goldFill}
-                />
-              </NavLink>
+              <ButtonView
+                text={'CREATE'}
+                onClick={() => { this.createAction() }}
+                color={buttonColors.goldFill}
+              />
 
             </div>
           </MediaQuery>
