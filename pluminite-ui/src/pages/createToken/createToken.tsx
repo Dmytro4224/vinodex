@@ -2,7 +2,8 @@ import React from "react";
 import { Component } from "react";
 import { Form, FormCheck } from "react-bootstrap";
 import Dropzone, { DropzoneRef } from "react-dropzone";
-import { IUploadFileResponse, pinataAPI } from "../../api/Pinata";
+import { pinataAPI } from "../../api/Pinata";
+import { IUploadFileResponse } from "../../api/IUploadFileResponse";
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import InputView, { ViewType } from "../../components/common/inputView/InputView";
 import { ISelectViewItem, SelectView } from "../../components/common/select/selectView";
@@ -13,6 +14,7 @@ import styles from './createToken.module.css';
 import { validateDotNum } from "../../utils/sys";
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
+import { nftStorage } from '../../api/NftStorage';
 
 interface ICreateToken extends IProps {
 
@@ -82,10 +84,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     if (this._selectFile === undefined) { return }
 
-    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    const re = await nftStorage.uploadFile(this._selectFile as File);
+    console.log('nftStorege response', re);
 
+    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
-      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+      //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+      this._imageRef.current.src = nftStorage.createUrl(this._fileResponse.IpfsHash);
     }
   }
 
@@ -432,7 +438,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         'nft_mint',
         model,
         APP.PREPAID_GAS_LIMIT_HALF,
-        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? APP.DEPOSIT_DEFAULT : '0'
+        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '30000000000000000000000' : '0'
       ),
       /*transactions.functionCall(
         'nft_approve',

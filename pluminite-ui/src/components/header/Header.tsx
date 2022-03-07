@@ -11,6 +11,7 @@ import { NavLink } from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 import MediaQuery from 'react-responsive'
 import Menu from "./menu/Menu";
+import CreateTokenDropdownView  from "../createTokenDropdown/createTokenDropdownView";
 
 interface IHeader extends IProps {
   setToUpdateUser: (updateMtd) => void;
@@ -51,14 +52,6 @@ class Header extends Component<IHeader & IBaseComponentProps> {
         image: profile.image,
       }
     })
-  }
-
-  private createAction() {
-    if (this.props.near.isAuth) {
-      this.props.navigate('/create');
-    } else {
-      this.props.near.signIn();
-    }
   }
 
   render() {
@@ -102,11 +95,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
 
               <LoginButton user={this.state.profile} />
 
-              <ButtonView
-                text={'CREATE'}
-                onClick={() => { this.createAction() }}
-                color={buttonColors.goldFill}
-              />
+              <CreateTokenDropdownView />
 
             </div>
           </MediaQuery>

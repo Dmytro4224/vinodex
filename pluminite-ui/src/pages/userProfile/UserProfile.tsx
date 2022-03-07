@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
-import { IdentificationCopy } from '../../components/common/identificationCopy/IdentificationCopy';
-import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { Spinner, Tab, Tabs } from 'react-bootstrap';
-import InfoDetails from '../../components/profile/infoDetails/InfoDetails';
-import { EmptyListView } from '../../components/common/emptyList/emptyListView';
-import { InfoCounters } from '../../components/profile/infoCounters/InfoCounters';
-import ButtonView, { buttonColors } from '../../components/common/button/ButtonView';
-import { IUploadFileResponse, pinataAPI } from '../../api/Pinata';
+import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
+import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import { Spinner, Tab, Tabs } from "react-bootstrap";
+import InfoDetails from "../../components/profile/infoDetails/InfoDetails";
+import { EmptyListView } from "../../components/common/emptyList/emptyListView";
+import { InfoCounters } from "../../components/profile/infoCounters/InfoCounters";
+import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
+import { pinataAPI } from "../../api/Pinata";
+import { IUploadFileResponse } from "../../api/IUploadFileResponse";
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
 import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
@@ -144,16 +145,16 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
         this.updateStateUserInfo(info);
       }).catch(error => {
-      showToast({
-        message: `Error! Please try again later.`,
-        type: EShowTost.error,
-      });
+        showToast({
+          message: `Error! Please try again later.`,
+          type: EShowTost.error,
+        });
 
-      this.setState({
-        ...this.state,
-        isLoadAvatar: false,
+        this.setState({
+          ...this.state,
+          isLoadAvatar: false,
+        });
       });
-    });
   };
 
   public updateStateUserInfo(profile: IUpdateStateUserInfo) {

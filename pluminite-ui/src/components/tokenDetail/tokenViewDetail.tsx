@@ -12,6 +12,7 @@ import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
+import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
 
 interface ITokenViewDetail extends IProps {
@@ -81,7 +82,8 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     }
 
     return (
-      <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
+      <div>
+        <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
           <div className={styles.cardImage}>
             <div className={styles.cardImageWrap}>
               <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
@@ -142,9 +144,9 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 className="mb-3"
               >
                 <Tab eventKey="home" title="DESCRIPTION">
-                    <div className={styles.tabContainer}>
-                      <DescrtiptionView text={this.state.order?.metadata.description!}/>
-                    </div>
+                  <div className={styles.tabContainer}>
+                    <DescrtiptionView text={this.state.order?.metadata.description!}/>
+                  </div>
                 </Tab>
                 <Tab eventKey="profile" title="DETAILS">
                   <div className={styles.tabContainer}>
@@ -174,6 +176,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               />
             </div>
           </div>
+        </div>
+        <div className="w-100 container my-5">
+          <p className={styles.line}></p>
+        </div>
+        <div className="container">
+          <SimilarTokensView />
+        </div>
       </div>
     )
   }
