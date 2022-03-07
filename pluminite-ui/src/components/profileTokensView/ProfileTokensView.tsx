@@ -12,6 +12,9 @@ import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import searchIcon from '../../assets/icons/search.svg';
 import InputView, { InputStyleType } from '../common/inputView/InputView';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
+import MediaQuery from 'react-responsive';
+import sortIcon from '../../assets/icons/sort-icon.svg';
+import filterIcon from '../../assets/icons/filter-icon.svg';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -87,30 +90,63 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       case ProfileTokensType.owned:
         return (
           <>
-            <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
-              <DropdownView
-                colorType={dropdownColors.select}
-                title={'Sort by'}
-                onChange={(item) => {
-                  this.setSort(item.id);
-                }}
-                childrens={dropdownData}
-              />
+            <MediaQuery minWidth={992}>
+              <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
+                <DropdownView
+                  colorType={dropdownColors.select}
+                  title={'Sort by'}
+                  onChange={(item) => {
+                    this.setSort(item.id);
+                  }}
+                  childrens={dropdownData}
+                />
 
-              <TabsFilterView
-                currentTabIndex={this.state.currentCatalog}
-                onClick={(index) => {
-                  this.setCatalog(index);
-                }}
-              />
+                <TabsFilterView
+                  currentTabIndex={this.state.currentCatalog}
+                  onClick={(index) => {
+                    this.setCatalog(index);
+                  }}
+                />
 
-              <ButtonView
-                text={'Filter'}
-                onClick={() => {
-                }}
-                color={buttonColors.select}
-              />
-            </div>
+                <ButtonView
+                  text={'Filter'}
+                  onClick={() => {
+                  }}
+                  color={buttonColors.select}
+                />
+              </div>
+            </MediaQuery>
+            <MediaQuery maxWidth={991}>
+              <div className="d-flex flex-column w-100">
+                <div className="d-flex align-items-center justify-content-between">
+                  <DropdownView
+                    colorType={dropdownColors.select}
+                    title={''}
+                    icon={sortIcon}
+                    hideArrow={true}
+                    onChange={(item) => { this.setSort(item.id) }}
+                    childrens={dropdownData}
+                  />
+
+                  <ButtonView
+                    text={""}
+                    withoutText={true}
+                    icon={filterIcon}
+                    onClick={() => { }}
+                    color={buttonColors.select}
+                  />
+                </div>
+                <div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>
+                  <TabsFilterView
+                    currentTabIndex={this.state.currentCatalog}
+                    onClick={(index) => {
+                      this.setCatalog(index);
+                    }}
+                  />
+                </div>
+              </div>
+            </MediaQuery>
+
             <p className='line-separator my-4' />
           </>
         );
@@ -129,7 +165,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                 inputStyleType={InputStyleType.round}
               />
             </div>
-            <p className='line-separator my-4'></p>
+            <p className='line-separator my-4' />
           </>
         );
         break;
