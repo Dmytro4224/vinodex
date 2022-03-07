@@ -11,6 +11,7 @@ import filterIcon from '../../assets/icons/filter-icon.svg';
 import searchIcon from "../../assets/icons/search.svg";
 import MediaQuery from 'react-responsive';
 import InputView, { InputStyleType } from "../../components/common/inputView/InputView";
+import { dropdownData } from "../../components/common/dropdown/data";
 
 interface ICatalogTokens extends IProps {
 
@@ -92,48 +93,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                 colorType={dropdownColors.select}
                 title={'Sort by'}
                 onChange={(item) => { this.setSort(item.id) }}
-                childrens={[
-                  {
-                    id: 1,
-                    title: 'Recently Listed'
-                  },
-                  {
-                    id: 2,
-                    title: 'Recently Created'
-                  },
-                  {
-                    id: 3,
-                    title: 'Recently Sold'
-                  },
-                  {
-                    id: 4,
-                    title: 'Ending Soon'
-                  },
-                  {
-                    id: 5,
-                    title: 'Price Low to High'
-                  },
-                  {
-                    id: 6,
-                    title: 'Highest last sale'
-                  },
-                  {
-                    id: 7,
-                    title: 'Most viewed'
-                  },
-                  {
-                    id: 8,
-                    title: 'Most Favorited'
-                  },
-                  {
-                    id: 9,
-                    title: 'Price High to Low'
-                  },
-                  {
-                    id: 10,
-                    title: 'Oldest'
-                  },
-                ]}
+                childrens={dropdownData}
               />
 
               <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
@@ -156,48 +116,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                     icon={sortIcon}
                     hideArrow={true}
                     onChange={(item) => { this.setSort(item.id) }}
-                    childrens={[
-                      {
-                        id: 1,
-                        title: 'Recently Listed'
-                      },
-                      {
-                        id: 2,
-                        title: 'Recently Created'
-                      },
-                      {
-                        id: 3,
-                        title: 'Recently Sold'
-                      },
-                      {
-                        id: 4,
-                        title: 'Ending Soon'
-                      },
-                      {
-                        id: 5,
-                        title: 'Price Low to High'
-                      },
-                      {
-                        id: 6,
-                        title: 'Highest last sale'
-                      },
-                      {
-                        id: 7,
-                        title: 'Most viewed'
-                      },
-                      {
-                        id: 8,
-                        title: 'Most Favorited'
-                      },
-                      {
-                        id: 9,
-                        title: 'Price High to Low'
-                      },
-                      {
-                        id: 10,
-                        title: 'Oldest'
-                      },
-                    ]}
+                    childrens={dropdownData}
                   />
                   <InputView
                     onChange={(e) => { console.log(e) }}
