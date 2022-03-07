@@ -66,7 +66,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   private get typeViewTokens() {
-    return this.props.typeViewTokens || ProfileTokensType.onSale;
+    return this.props.typeViewTokens;
   }
 
 
@@ -86,45 +86,51 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       case ProfileTokensType.favourites:
       case ProfileTokensType.owned:
         return (
-          <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
-            <DropdownView
-              colorType={dropdownColors.select}
-              title={'Sort by'}
-              onChange={(item) => {
-                this.setSort(item.id);
-              }}
-              childrens={dropdownData}
-            />
+          <>
+            <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
+              <DropdownView
+                colorType={dropdownColors.select}
+                title={'Sort by'}
+                onChange={(item) => {
+                  this.setSort(item.id);
+                }}
+                childrens={dropdownData}
+              />
 
-            <TabsFilterView
-              currentTabIndex={this.state.currentCatalog}
-              onClick={(index) => {
-                this.setCatalog(index);
-              }}
-            />
+              <TabsFilterView
+                currentTabIndex={this.state.currentCatalog}
+                onClick={(index) => {
+                  this.setCatalog(index);
+                }}
+              />
 
-            <ButtonView
-              text={'Filter'}
-              onClick={() => {
-              }}
-              color={buttonColors.select}
-            />
-          </div>
+              <ButtonView
+                text={'Filter'}
+                onClick={() => {
+                }}
+                color={buttonColors.select}
+              />
+            </div>
+            <p className='line-separator my-4' />
+          </>
         );
         break;
       case ProfileTokensType.createdItems:
         return (
-          <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
-            <InputView
-              customClass={styles.inputSearch}
-              onChange={(e) => {
-                console.log(e);
-              }}
-              placeholder={'Search'}
-              icon={searchIcon}
-              inputStyleType={InputStyleType.round}
-            />
-          </div>
+          <>
+            <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
+              <InputView
+                customClass={styles.inputSearch}
+                onChange={(e) => {
+                  console.log(e);
+                }}
+                placeholder={'Search'}
+                icon={searchIcon}
+                inputStyleType={InputStyleType.round}
+              />
+            </div>
+            <p className='line-separator my-4'></p>
+          </>
         );
         break;
     }
@@ -135,7 +141,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       this.typeViewTokens === ProfileTokensType.activeBids
       || this.typeViewTokens === ProfileTokensType.purchases
       || this.typeViewTokens === ProfileTokensType.createdItems
-    )
+    );
   }
 
   public render() {
@@ -159,8 +165,6 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     return (
       <div className={`container`}>
         {this.getFilter()}
-
-        <p className='line-separator my-4'></p>
 
         <div className={`d-flex align-items-center flex-gap-36 pb-4 ${styles.scrollWrap}`}>
           {this.state.list.map(item => {
