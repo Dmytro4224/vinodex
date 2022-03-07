@@ -11,21 +11,13 @@ import TabsFilterView from '../tabsFilterView/tabsFilterView';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import searchIcon from '../../assets/icons/search.svg';
 import InputView, { InputStyleType } from '../common/inputView/InputView';
+import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
   sort: number;
   typeViewTokens?: ProfileTokensType;
-}
-
-export enum ProfileTokensType {
-  onSale = 'onSale',
-  createdItems = 'createdItems',
-  purchases = 'purchases',
-  activeBids = 'activeBids',
-  favourites = 'favourites',
-  owned = 'owned',
 }
 
 class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentProps> {
@@ -118,28 +110,38 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
               color={buttonColors.select}
             />
           </div>
-        )
-      break;
+        );
+        break;
       case ProfileTokensType.createdItems:
         return (
           <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
             <InputView
               customClass={styles.inputSearch}
-              onChange={(e) => { console.log(e) }}
+              onChange={(e) => {
+                console.log(e);
+              }}
               placeholder={'Search'}
               icon={searchIcon}
               inputStyleType={InputStyleType.round}
             />
           </div>
-        )
+        );
         break;
     }
+  }
+
+  private get isTransferAction() {
+    return (
+      this.typeViewTokens === ProfileTokensType.activeBids
+      || this.typeViewTokens === ProfileTokensType.purchases
+      || this.typeViewTokens === ProfileTokensType.createdItems
+    )
   }
 
   public render() {
     if (this.state.isLoading) {
       return (
-        <div className='d-flex align-items-center flex-gap-36'>
+        <div className='container d-flex align-items-center flex-gap-36 my-4'>
           <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
           <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
           <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
@@ -156,7 +158,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
     return (
       <div className={`container`}>
-        { this.getFilter() }
+        {this.getFilter()}
 
         <p className='line-separator my-4'></p>
 
@@ -177,6 +179,9 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                 linkTo={`/token/${item.token_id}`}
                 tokenID={item.token_id}
                 isLike={item.is_like}
+                typeView={this.typeViewTokens}
+                price={item.metadata.price}
+                isTransferAction={this.isTransferAction}
                 onClick={() => {
                 }}
               />

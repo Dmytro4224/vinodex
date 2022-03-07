@@ -20,6 +20,11 @@
     color: var(--white);
 }
 
+.redButton {
+  color: var(--thunderbird);
+  background-color: var(--vanillaIce);
+}
+
 .btnGoldFill{
     background-color: var(--pirateCold);
     color: var(--white);

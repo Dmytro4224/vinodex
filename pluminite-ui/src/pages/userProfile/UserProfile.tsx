@@ -13,9 +13,8 @@ import { IUploadFileResponse } from "../../api/IUploadFileResponse";
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
 import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
-import ProfileTokensView, {
-  ProfileTokensType,
-} from '../../components/profileTokensView/ProfileTokensView';
+import ProfileTokensView  from '../../components/profileTokensView/ProfileTokensView';
+import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -194,7 +193,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           </Tab>
           <Tab eventKey='sale' title='On sale'>
             <ProfileTokensView
-              catalog={'Art'}
+              catalog={this.catalog}
               sort={this.sort}
               typeViewTokens={ProfileTokensType.onSale}
             />
@@ -208,7 +207,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           </Tab>
           <Tab eventKey='purchases' title='Purchases'>
             <ProfileTokensView
-              catalog={'Art'}
+              catalog={this.catalog}
               sort={this.sort}
               typeViewTokens={ProfileTokensType.purchases}
             />
@@ -245,28 +244,24 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
-            typeViewTokens={ProfileTokensType.onSale}
           />
         </Tab>
         <Tab eventKey='items' title='Created Items'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
-            typeViewTokens={ProfileTokensType.createdItems}
           />
         </Tab>
         <Tab eventKey='owned' title='Owned'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
-            typeViewTokens={ProfileTokensType.owned}
           />
         </Tab>
         <Tab eventKey='favourites' title='Favorites'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
-            typeViewTokens={ProfileTokensType.favourites}
           />
         </Tab>
       </Tabs>
