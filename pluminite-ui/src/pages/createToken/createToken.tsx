@@ -16,6 +16,9 @@ import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
 import Big from 'big.js';
+import TokenCardView from "../../components/tokenCard/tokenCardView";
+import cardPreview from '../../assets/images/Corners.jpg';
+import MediaQuery from 'react-responsive';
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return new Big(yoctoNears)
@@ -23,9 +26,6 @@ const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
     .round(precision)
     .toString();
 };
-import TokenCardView from "../../components/tokenCard/tokenCardView";
-import cardPreview from '../../assets/images/Corners.jpg';
-import MediaQuery from 'react-responsive';
 
 interface ICreateToken extends IProps {
 
@@ -72,8 +72,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
-
-    //console.log('sss', convertYoctoNearsToNears('100000000000000000000000'));
 
     this._ref = React.createRef<DropzoneRef>();
     this._imageRef = React.createRef<HTMLImageElement>();
