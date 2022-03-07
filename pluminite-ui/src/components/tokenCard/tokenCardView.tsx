@@ -20,7 +20,7 @@ interface ITokenCardView extends IProps {
   days: string;
   name: string;
   author: string;
-  likesCount: number;
+  likesCount?: number;
   buttonText: string;
   isSmall?: boolean;
   linkTo?: string;
@@ -41,7 +41,7 @@ type stateTypes = {
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
   public state: stateTypes = {
     isLike: this.props.isLike,
-    likesCount: this.props.likesCount,
+    likesCount: this.props.likesCount || 0,
   };
   private readonly isSmall: boolean;
   private _isProcessLike: boolean;
@@ -128,14 +128,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       case ProfileTokensType.purchases:
         return (
           <div className={styles.cardControls}>
-            <LikeView
+            {this.props.likesCount ? <LikeView
               customClass={styles.likes}
               isChanged={this.state.isLike}
               isActive={true}
               type={LikeViewType.like}
               count={this.state.likesCount}
               onClick={this.toggleLikeToken}
-            />
+            /> : <div></div>}
             <ButtonView
               text={this.typeView === ProfileTokensType.purchases ? 'Sell' : this.props.buttonText}
               onClick={() => {

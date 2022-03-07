@@ -14,6 +14,8 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
+import { showToast } from '../../utils/sys';
+import { EShowTost } from '../../types/ISysTypes';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -24,7 +26,7 @@ interface ICategory extends IProps {
 }
 
 class Category extends Component<ICategory & IBaseComponentProps, {}, any>{
-    constructor(props: ICategory & IBaseComponentProps) {
+  constructor(props: ICategory & IBaseComponentProps) {
     super(props);
   }
 
@@ -44,22 +46,26 @@ const CategoryView = withComponent(Category);
 interface ITokenViewState{
   order?: ITokenResponseItem | null;
   isLoading: boolean;
+  isLike: boolean;
+  likesCount: number;
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-    public state:ITokenViewState = { order: null, isLoading: true };
-    private readonly _refImage: React.RefObject<HTMLImageElement>;
+  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0 };
+  private readonly _refImage: React.RefObject<HTMLImageElement>;
+  private _isProcessLike: boolean;
 
-    constructor(props: ITokenViewDetail & IBaseComponentProps) {
+  constructor(props: ITokenViewDetail & IBaseComponentProps) {
     super(props);
 
+    this._isProcessLike = false;
     this._refImage = React.createRef();
   }
 
   public componentDidMount() {
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`d response`, response);
-      this.setState({...this.state, order: response, isLoading: false });
+      this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
     });
   }
 
@@ -72,6 +78,44 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       this._refImage.current.src = cardPreview;
     }
   }
+
+  public changeLikeCount() {
+    this.setState({
+      ...this.state,
+      isLike: !this.state.isLike,
+      likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
+    });
+  }
+
+  private toggleLikeToken = async () => {
+    if (!this.props.near.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
+    try {
+      if (this._isProcessLike) {
+        return;
+      }
+
+      this._isProcessLike = true;
+
+      this.changeLikeCount();
+
+      await this.props.nftContractContext.token_set_like(this.tokenId);
+
+      this._isProcessLike = false;
+    } catch (ex) {
+      this._isProcessLike = false;
+
+      this.changeLikeCount();
+
+      showToast({
+        message: `Error! Please try again later`,
+        type: EShowTost.error,
+      });
+    }
+  };
 
   render(){
     if(this.state.isLoading){
@@ -88,7 +132,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             <div className={styles.cardImageWrap}>
               <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
               <div className={styles.cardDetail}>
-                { (this.state.order?.metadata.expires_at !== '' && this.state.order?.metadata.expires_at !== null) && <div className={styles.daysInfo}>
+                { (this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) && <div className={styles.daysInfo}>
                   {this.state.order?.metadata.expires_at}
                 </div> }
               </div>
@@ -106,10 +150,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <div className={styles.likesInfo}>
                 <LikeView
                   customClass={styles.likes}
-                  isChanged={false}
                   isActive={true}
                   type={LikeViewType.like}
-                  count={22}
+                  isChanged={this.state.isLike}
+                  onClick={this.toggleLikeToken}
+                  count={this.state.likesCount}
                 />
               </div>
             </div>

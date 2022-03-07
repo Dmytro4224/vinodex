@@ -15,6 +15,8 @@ import { validateDotNum } from "../../utils/sys";
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
+import TokenCardView from "../../components/tokenCard/tokenCardView";
+import cardPreview from '../../assets/images/Corners.jpg';
 
 interface ICreateToken extends IProps {
 
@@ -91,6 +93,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
       //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+
+      this.setState({...this.state, file: nftStorage.createUrl(this._fileResponse.IpfsHash)});
+
       this._imageRef.current.src = nftStorage.createUrl(this._fileResponse.IpfsHash);
     }
   }
@@ -136,8 +141,61 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     })
   }
 
+  private get tokenId(){
+    if(this._fileResponse !== undefined){
+      return `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
+    }
+
+    return `${new Date().getTime()}`;
+  }
+
+  private get previewImage(){
+    if(this._fileResponse !== undefined){
+      return nftStorage.createUrl(this._fileResponse.IpfsHash);
+    }
+
+    return cardPreview;
+  }
+
+  private get previewTitle(){
+    if(this._refInputTitle && this._refInputTitle.value !== ""){
+      return this._refInputTitle.value;
+    }
+
+    return 'Title';
+  }
+
+  private get previewAuthor(){
+    if(this.props.near.user !== null){
+      return `${this.props.near.user.accountId}`;
+    }
+
+    return 'Creator name';
+  }
+
+  private setTitle = () =>{
+    this.setState({
+      ...this.state,
+      title: this._refInputTitle.value
+    })
+  }
+
   public render() {
     return (<div className={styles.container}>
+      <div className={styles.previewWrap}>
+        <TokenCardView key={this.tokenId}
+                       countL={1}
+                       countR={1}
+                       name={this.previewTitle}
+                       author={this.previewAuthor}
+                       icon={this.previewImage}
+                       isSmall={true}
+                       buttonText={`Buy now`}
+                       tokenID={this.tokenId}
+                       isLike={false}
+                       onClick={() => {
+                       }} days={""} />
+      </div>
       <div className={styles.containerWrap}>
         <h3 className={styles.title}>Create Single NFT</h3>
         <div className={styles.createWrap}>
@@ -169,7 +227,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </Dropzone>
           </div>
           <InputView
-            onChange={(e) => {  }}
+            onChange={(e) => { this.setTitle() }}
             placeholder={'Title*'}
             absPlaceholder={'Title*'}
             customClass={`mb-4 ${styles.titleInpWrap}`}
@@ -267,13 +325,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     type="date"
                     id="date-start"
                     placeholder={'Starting Date*'}
-                    ref={(ref) => { }}
+                    ref={(ref) => { this._refStartDate = ref }}
+                    value={this._refStartDate && this._refStartDate.value}
                   />
                   <Form.Control
                     type="date"
                     id="date-exp"
                     placeholder={'Expiration Date*'}
-                    ref={(ref) => { }}
+                    ref={(ref) => { this._refExpDate = ref }}
+                    value={this._refExpDate && this._refExpDate.value}
                   />
                 </div>
               </div>
