@@ -1,7 +1,9 @@
 ////import { NFTStorage } from 'nft.storage'
 ////import mime from 'mime'
 
+import fs from 'fs';
 import { IUploadFileResponse } from './IUploadFileResponse';
+import { NFTStorage } from 'nft.storage';
 
 class NftStorage {
 
@@ -13,7 +15,37 @@ class NftStorage {
 
   }
 
-  public uploadFile(file: File, onProgress?: (percent: number) => void) {
+  public async uploadFile(file: File, name: string, description: string) {
+    const storage = new NFTStorage({ token: this.API_KEY });
+    let result: IUploadFileResponse;
+    try {
+      const metadata = await storage.store({
+        name,
+        description,
+        image: file
+      });
+      console.log('metadata.json metadata', metadata);
+      result = {
+        status: true,
+        url: metadata.embed().image.href,
+        IpfsHash: metadata.ipnft,
+        PinSize: file.size
+      };
+      return result;
+    }
+    catch (ex) {
+      console.error(ex);
+      result = {
+        status: false,
+        url: '',
+        IpfsHash: '',
+        PinSize: 0
+      };
+    }
+    return result;
+  }
+  /*
+  public uploadFile2(file: File, onProgress?: (percent: number) => void) {
     return new Promise((resolve: (success: IUploadFileResponse) => void) => {
       const data = new FormData();
       data.append('file', file);
@@ -44,10 +76,11 @@ class NftStorage {
       xhr.send(data);
     });
   }
-
+  */
   public createUrl(cid: string) {
     return `https://nftstorage.link/ipfs/${cid}`;
   }
+
 }
 
 export const nftStorage = new NftStorage();

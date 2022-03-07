@@ -86,17 +86,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     if (this._selectFile === undefined) { return }
 
-    const re = await nftStorage.uploadFile(this._selectFile as File);
-    console.log('nftStorege response', re);
+    this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
+    //return;
 
-    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
-    console.log('_fileResponse', this._fileResponse);
+    //this._fileResponse = await nftStorage.uploadFile(this._selectFile as File);
+    //console.log('nftStorege response', this._fileResponse);
+
+    //this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    //console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
       //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+      this.setState({...this.state, file: this._fileResponse.url});
 
-      this.setState({...this.state, file: nftStorage.createUrl(this._fileResponse.IpfsHash)});
-
-      this._imageRef.current.src = nftStorage.createUrl(this._fileResponse.IpfsHash);
+      this._imageRef.current.src = this._fileResponse.url;
     }
   }
 
@@ -461,7 +463,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     if (this._fileResponse === undefined) { return }
 
-    const url = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+    const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
 
     const metadata = {
       copies: '1',
@@ -476,7 +478,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       issued_at: null,
       likes_count: 0,
       media: url,
-      media_hash: null,//this._fileResponse.IpfsHash,
+      media_hash: this._fileResponse.IpfsHash,
       price: price,
       reference: APP.HASH_SOURCE,
       reference_hash: null,
