@@ -118,7 +118,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       category: this._refCatalogSelect.value,
       royaltes: this._refRoyalitiesInput.value,
       title: this._refInputTitle.value,
-      file: this._fileResponse !== undefined ? pinataAPI.createUrl(this._fileResponse.IpfsHash) : null,
+      file: this._fileResponse !== undefined ? this._fileResponse.url : null,
       putOnMarket: this._refPutOnMarket.checked,
       price: 0,
       startDate: '',
@@ -153,7 +153,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
   private get previewImage(){
     if(this._fileResponse !== undefined){
-      return nftStorage.createUrl(this._fileResponse.IpfsHash);
+      return this._fileResponse.url;
     }
 
     return cardPreview;
@@ -195,6 +195,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                        buttonText={`Buy now`}
                        tokenID={this.tokenId}
                        isLike={false}
+                       customClass={styles.preview}
                        onClick={() => {
                        }} days={""} />
       </div>

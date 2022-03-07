@@ -238,7 +238,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                    alt={this.props.alt || 'preview image'} />
             </NavLink>
           ) : (
-            <img className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />
+            <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />
           )}
 
           <div className={styles.cardDetail}>
