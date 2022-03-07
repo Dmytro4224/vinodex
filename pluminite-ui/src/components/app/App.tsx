@@ -52,7 +52,7 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />
             <Route path="/token/:tokenId" element={<OrderDetail />} />
             <Route path="/tokens/:type" element={<CatalogTokens />} />
-            <Route path="/create/" element={<CreateToken />} />
+            <Route path="/create/:type" element={<CreateToken />} />
           </Routes>
         </main>
 
