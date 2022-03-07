@@ -27,7 +27,9 @@ pub struct JsonToken {
     pub royalty: HashMap<AccountId, u32>,
     pub token_type: Option<String>,
     ///чи поставив лайк той, хто переглядає
-    pub is_like:bool
+    pub is_like:bool,
+
+    pub sale: Option<Sale>
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -35,6 +37,50 @@ pub struct SortedToken
 {
     pub token_id: TokenId,
     pub criterion: Option<u128>
+}
+
+pub trait Resort
+{
+    fn tokens_resort(&mut self, token_id: TokenId, sort: u8, criterion: Option<u128>);
+}
+
+impl Resort for Contract
+{
+    fn tokens_resort(&mut self, token_id: TokenId, sort: u8, criterion: Option<u128>)
+    {
+        let key = SortedToken{token_id: token_id, criterion: criterion};
+
+        match self.tokens_sorted.get(&sort) {
+            Some(mut tokens) => {
+
+                if criterion.is_none()
+                {
+                    tokens.push(key);
+                    self.tokens_sorted.insert(&sort, &tokens);
+
+                    return;
+                }
+
+                let index = SortedToken::binary_search(&key, &tokens);
+                if index.is_none()
+                {
+                    tokens.push(key);
+                    self.tokens_sorted.insert(&sort, &tokens);
+
+                    return;
+                }
+
+                tokens.insert(index.unwrap(), key);
+                self.tokens_sorted.insert(&sort, &tokens);
+            }
+            None => {
+                let mut vector :Vec<SortedToken> = Vec::new();
+                vector.push(key);
+
+                self.tokens_sorted.insert(&sort, &vector);
+            }
+        }
+    }
 }
 
 impl SortedToken
