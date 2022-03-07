@@ -15,9 +15,17 @@ import { validateDotNum } from "../../utils/sys";
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
+import Big from 'big.js';
 import TokenCardView from "../../components/tokenCard/tokenCardView";
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
+
+const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
+  return new Big(yoctoNears)
+    .div(10 ** 24)
+    .round(precision)
+    .toString();
+};
 
 interface ICreateToken extends IProps {
 
@@ -504,6 +512,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       token_type: catalog?.value
     };
 
+    console.log('save model', JSON.stringify(model));
+
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
 
@@ -513,7 +523,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         'nft_mint',
         model,
         APP.PREPAID_GAS_LIMIT_HALF,
-        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '30000000000000000000000' : '0'
+        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '100000000000000000000000' : '0'
       ),
       /*transactions.functionCall(
         'nft_approve',
