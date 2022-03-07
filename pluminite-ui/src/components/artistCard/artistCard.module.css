@@ -40,3 +40,14 @@
 .likesCustom {
   margin-right: 10px;
 }
+
+.pointerNone {
+  pointer-events: none;
+}
+
+@media (max-width: 767px) {
+  .artistCard {
+    margin: 0 auto;
+    max-width: 90%;
+  }
+}

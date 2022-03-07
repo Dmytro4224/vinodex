@@ -9,11 +9,16 @@ import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 
 export interface IArtistsView extends IProps {
 	parameter?: BestArtistsParameter;
+  viewType?: ArtistViewType;
 }
 
 interface IArtistsViewState {
 	isLoading: boolean;
 	list: Array<IAuthorResponseItem>;
+}
+
+export enum ArtistViewType {
+  profilePage = 'profilePage',
 }
 
 class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtistsViewState> {
@@ -36,8 +41,8 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
 	public componentDidMount() {
 		this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
-			console.log('ArtistsView response', response);
 			const list = response.filter(item => item !== null);
+
 			this.setState({
 				...this.state,
 				list,
@@ -50,14 +55,27 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 		return this.state.isLoading;
 	}
 
+  private get viewType() {
+    return this.props.viewType;
+  }
+
+  private get isProfilePageView() {
+    return this.viewType === ArtistViewType.profilePage;
+  }
+
+  private get followBtnText() {
+    return this.isProfilePageView ? 'your following' : '';
+  }
+
 	public render() {
 		if (this.state.isLoading) {
 			return (
 				<div className="my-5 container">
-					return <Loader />
+          <Loader />
 				</div>
 			);
 		}
+
 		if (this.state.list.length === 0) {
 			return (
 				<div className="my-5 container">
@@ -66,17 +84,22 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 				</div>
 			)
 		}
+
 		return (
 			<div className="my-5 container">
 				<div className="d-flex flex-wrap flex-gap-36 mt-3">
-					{this.state.list.map((item, index) => <ArtistCard
-						key={`artist-${item.account_id}`}
-						info={item}
-						identification={item.account_id}
-						usersCount={item.followers_count}
-						likesCount={item.likes_count}
-						isLike={item.is_like}
-						isFollow={item.is_following} />
+					{this.state.list.map((item, index) => (
+            <ArtistCard
+              key={`artist-${item.account_id}`}
+              info={item}
+              identification={item.account_id}
+              usersCount={item.followers_count}
+              likesCount={item.likes_count}
+              isLike={item.is_like}
+              isFollow={item.is_following}
+              followBtnText={this.followBtnText}
+              isDisabledFollowBtn={this.isProfilePageView}
+            />)
 					)}
 				</div>
 			</div>

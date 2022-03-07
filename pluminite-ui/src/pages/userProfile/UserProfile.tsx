@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
-import { IdentificationCopy } from "../../components/common/identificationCopy/IdentificationCopy";
-import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
-import { Spinner, Tab, Tabs } from "react-bootstrap";
-import InfoDetails from "../../components/profile/infoDetails/InfoDetails";
-import { EmptyListView } from "../../components/common/emptyList/emptyListView";
-import { InfoCounters } from "../../components/profile/infoCounters/InfoCounters";
-import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
-import { pinataAPI } from "../../api/Pinata";
-import { IUploadFileResponse } from "../../api/IUploadFileResponse";
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
+import { IdentificationCopy } from '../../components/common/identificationCopy/IdentificationCopy';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import { Spinner, Tab, Tabs } from 'react-bootstrap';
+import InfoDetails from '../../components/profile/infoDetails/InfoDetails';
+import { InfoCounters } from '../../components/profile/infoCounters/InfoCounters';
+import ButtonView, { buttonColors } from '../../components/common/button/ButtonView';
+import { pinataAPI } from '../../api/Pinata';
+import { IUploadFileResponse } from '../../api/IUploadFileResponse';
 import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
-import ProfileTokensView  from '../../components/profileTokensView/ProfileTokensView';
+import ProfileTokensView from '../../components/profileTokensView/ProfileTokensView';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
+import { BestArtistsParameter } from '../../types/BestArtistsParameter';
+import ArtistsView, { ArtistViewType } from '../artists';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -144,16 +145,16 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
         this.updateStateUserInfo(info);
       }).catch(error => {
-        showToast({
-          message: `Error! Please try again later.`,
-          type: EShowTost.error,
-        });
-
-        this.setState({
-          ...this.state,
-          isLoadAvatar: false,
-        });
+      showToast({
+        message: `Error! Please try again later.`,
+        type: EShowTost.error,
       });
+
+      this.setState({
+        ...this.state,
+        isLoadAvatar: false,
+      });
+    });
   };
 
   public updateStateUserInfo(profile: IUpdateStateUserInfo) {
@@ -220,7 +221,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             />
           </Tab>
           <Tab eventKey='following' title='Following'>
-            <div style={{ minHeight: '300px' }}><EmptyListView /></div>
+            <div style={{ minHeight: '300px' }}>
+              <ArtistsView viewType={ArtistViewType.profilePage} parameter={BestArtistsParameter.likes_count} />
+            </div>
           </Tab>
           <Tab eventKey='favorites' title='Favorites'>
             <ProfileTokensView
