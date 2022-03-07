@@ -145,7 +145,7 @@
     background-color: var(--wildSand);
 }
 .preview img{
-  object-fit: contain;
+  /*object-fit: contain;*/
 }
 @media(max-width: 991px){
   .formChecked{

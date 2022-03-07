@@ -17,6 +17,7 @@ import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
 import TokenCardView from "../../components/tokenCard/tokenCardView";
 import cardPreview from '../../assets/images/Corners.jpg';
+import MediaQuery from 'react-responsive';
 
 interface ICreateToken extends IProps {
 
@@ -184,21 +185,24 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
   public render() {
     return (<div className={styles.container}>
-      <div className={styles.previewWrap}>
-        <TokenCardView key={this.tokenId}
-                       countL={1}
-                       countR={1}
-                       name={this.previewTitle}
-                       author={this.previewAuthor}
-                       icon={this.previewImage}
-                       isSmall={true}
-                       buttonText={`Buy now`}
-                       tokenID={this.tokenId}
-                       isLike={false}
-                       customClass={styles.preview}
-                       onClick={() => {
-                       }} days={""} />
-      </div>
+      <MediaQuery minWidth={992}>
+        <div className={styles.previewWrap}>
+          <TokenCardView key={this.tokenId}
+                         countL={1}
+                         countR={1}
+                         name={this.previewTitle}
+                         author={this.previewAuthor}
+                         icon={this.previewImage}
+                         isSmall={true}
+                         buttonText={`Buy now`}
+                         tokenID={this.tokenId}
+                         isLike={false}
+                         customClass={styles.preview}
+                         onClick={() => {
+                         }} days={""} />
+        </div>
+      </MediaQuery>
+
       <div className={styles.containerWrap}>
         <h3 className={styles.title}>Create Single NFT</h3>
         <div className={styles.createWrap}>

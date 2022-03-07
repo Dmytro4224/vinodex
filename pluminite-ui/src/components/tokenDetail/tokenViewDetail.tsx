@@ -225,7 +225,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
         <div className="w-100 container my-5">
           <p className={styles.line}></p>
         </div>
-        <div className="container">
+        <div className="container mb-3">
           <SimilarTokensView />
         </div>
       </div>
