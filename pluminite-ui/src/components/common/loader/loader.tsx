@@ -12,9 +12,9 @@ class Loader extends Component<ILoader & IBaseComponentProps> {
 
   render() {
     return (
-      <p className='w-100 text-center'>
+      <div className='w-100 text-center'>
         <Spinner animation='border' variant='warning' />
-      </p>
+      </div>
     );
   }
 
