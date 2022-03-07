@@ -28,7 +28,7 @@ class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBase
   }
 
   render(){
-    return <Dropdown>
+    return <Dropdown className="ml-12">
       <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.isHiddenArrow} ${styles.goldFill}`}>
         CREATE
       </Dropdown.Toggle>
