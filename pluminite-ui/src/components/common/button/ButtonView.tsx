@@ -1,5 +1,5 @@
 import styles from './ButtonView.module.css';
-import React, { MouseEvent, Component } from "react";
+import React, { MouseEvent, Component } from 'react';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import { Spinner } from 'react-bootstrap';
 
@@ -15,6 +15,7 @@ enum buttonColors {
   gold = 'gold',
   goldFill = 'goldFill',
   backButton = 'backButton',
+  redButton = 'redButton'
 }
 
 interface IButtonView extends IProps {
@@ -25,9 +26,10 @@ interface IButtonView extends IProps {
   icon?: any;
   withoutText?: boolean;
   isLoading?: boolean;
+  disabled?: boolean;
 }
 
-class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
+class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>> {
   private readonly _ref: React.RefObject<HTMLButtonElement>;
 
   constructor(props: IButtonView & IBaseComponentProps) {
@@ -37,7 +39,7 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
   }
 
   public get text() {
-    return this.props.text
+    return this.props.text;
   }
 
   public get buttonColor() {
@@ -77,6 +79,9 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
       case 'backButton':
         color = styles.backButton;
         break;
+      case 'redButton':
+        color = styles.redButton;
+        break;
     }
 
     return color;
@@ -84,7 +89,7 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
 
   private onClick = async (event: MouseEvent) => {
     this.props.onClick(event);
-  }
+  };
 
   private get isLoading() {
     return this.props.isLoading;
@@ -93,26 +98,26 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>>{
   public render() {
     return (
       <button
-        disabled={this.isLoading}
+        disabled={this.isLoading || this.props.disabled}
         ref={this._ref}
         onClick={this.onClick}
         className={`${styles.buttonView} ${this.buttonColor} ${this.props.icon && styles.btnIcon} ${this.props.customClass || ''}`}
       >
         {this.isLoading && <>
           <Spinner
-            as="span"
-            animation="grow"
-            size="sm"
-            role="status"
-            aria-hidden="true"
+            as='span'
+            animation='grow'
+            size='sm'
+            role='status'
+            aria-hidden='true'
           />
         </>}
         {this.props.withoutText || this.isLoading ? `` : <span className={styles.btnText}>{this.text}</span>}
-        {this.props.icon && <i style={{ backgroundImage: `url(${this.props.icon})` }} className={`${styles.icon}`} />}
+        {this.props.icon && <i style={{ backgroundImage: `url(${this.props.icon})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} className={`${styles.icon}`} />}
       </button>
-    )
+    );
   }
 }
 
 export default withComponent(ButtonView);
-export { buttonColors }
+export { buttonColors };

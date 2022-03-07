@@ -1,13 +1,21 @@
 .container{
     padding: 40px 72px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    align-items: start;
+    gap: 60px;
     min-height: 1000px;
 }
 .containerWrap{
     width: 100%;
     max-width: 560px;
+}
+.previewCreateWrap{
+  display: flex;
+  align-items: start;
+  justify-content: start;
+}
+.previewWrap{
+  margin-top: 120px;
 }
 .title{
     font-weight: 600;
@@ -93,6 +101,10 @@
     min-width: 164px;
     text-align: center;
     cursor: pointer;
+    width: 100%;
+}
+.checkItem{
+  width: 100%;
 }
 .priceTypeInput:checked ~ .priceTyleLabel{
     border: 1px solid var(--pirateCold);
@@ -131,6 +143,9 @@
 }
 .dateField{
     background-color: var(--wildSand);
+}
+.preview img{
+  /*object-fit: contain;*/
 }
 @media(max-width: 991px){
   .formChecked{

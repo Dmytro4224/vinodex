@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap");
 
 body {
-  font-family: "Roboto", sans-serif;
+  font-family: "Gilroy", sans-serif;
   font-size: 14px;
   font-weight: 400;
   overflow-x: hidden;
@@ -104,16 +104,19 @@ a:hover {
 }
 
 button[disabled] {
-  opacity: 0.8;
+  opacity: 0.6;
   pointer-events: none;
 }
 
 .line-separator {
   width: 100%;
   height: 1px;
-  background-color: rgba(174, 126, 3, 0.2);
+  background-color: rgba(174, 126, 3, 0.6);
 }
 
 .ta-c {
   text-align: center;
+}
+.ml-12{
+  margin-left: 12px;
 }

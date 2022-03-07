@@ -2,7 +2,8 @@ import React from "react";
 import { Component } from "react";
 import { Form, FormCheck } from "react-bootstrap";
 import Dropzone, { DropzoneRef } from "react-dropzone";
-import { IUploadFileResponse, pinataAPI } from "../../api/Pinata";
+import { pinataAPI } from "../../api/Pinata";
+import { IUploadFileResponse } from "../../api/IUploadFileResponse";
 import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
 import InputView, { ViewType } from "../../components/common/inputView/InputView";
 import { ISelectViewItem, SelectView } from "../../components/common/select/selectView";
@@ -13,6 +14,18 @@ import styles from './createToken.module.css';
 import { validateDotNum } from "../../utils/sys";
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
+import { nftStorage } from '../../api/NftStorage';
+import Big from 'big.js';
+import TokenCardView from "../../components/tokenCard/tokenCardView";
+import cardPreview from '../../assets/images/Corners.jpg';
+import MediaQuery from 'react-responsive';
+
+const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
+  return new Big(yoctoNears)
+    .div(10 ** 24)
+    .round(precision)
+    .toString();
+};
 
 interface ICreateToken extends IProps {
 
@@ -82,11 +95,28 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     if (this._selectFile === undefined) { return }
 
-    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
+    //return;
 
+    //this._fileResponse = await nftStorage.uploadFile(this._selectFile as File);
+    //console.log('nftStorege response', this._fileResponse);
+
+    //this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    //console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
-      this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+      //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+      this.setState({...this.state, file: this._fileResponse.url});
+
+      this._imageRef.current.src = this._fileResponse.url;
     }
+  }
+
+  private get isMultiple(){
+    if(this.props.params.type === 'multiple'){
+      return true;
+    }
+
+    return false;
   }
 
   private setMState(renderType: number) {
@@ -97,7 +127,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       category: this._refCatalogSelect.value,
       royaltes: this._refRoyalitiesInput.value,
       title: this._refInputTitle.value,
-      file: this._fileResponse !== undefined ? pinataAPI.createUrl(this._fileResponse.IpfsHash) : null,
+      file: this._fileResponse !== undefined ? this._fileResponse.url : null,
       putOnMarket: this._refPutOnMarket.checked,
       price: 0,
       startDate: '',
@@ -122,8 +152,65 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     })
   }
 
+  private get tokenId(){
+    if(this._fileResponse !== undefined){
+      return `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
+    }
+
+    return `${new Date().getTime()}`;
+  }
+
+  private get previewImage(){
+    if(this._fileResponse !== undefined){
+      return this._fileResponse.url;
+    }
+
+    return cardPreview;
+  }
+
+  private get previewTitle(){
+    if(this._refInputTitle && this._refInputTitle.value !== ""){
+      return this._refInputTitle.value;
+    }
+
+    return 'Title';
+  }
+
+  private get previewAuthor(){
+    if(this.props.near.user !== null){
+      return `${this.props.near.user.accountId}`;
+    }
+
+    return 'Creator name';
+  }
+
+  private setTitle = () =>{
+    this.setState({
+      ...this.state,
+      title: this._refInputTitle.value
+    })
+  }
+
   public render() {
     return (<div className={styles.container}>
+      <MediaQuery minWidth={992}>
+        <div className={styles.previewWrap}>
+          <TokenCardView key={this.tokenId}
+                         countL={1}
+                         countR={1}
+                         name={this.previewTitle}
+                         author={this.previewAuthor}
+                         icon={this.previewImage}
+                         isSmall={true}
+                         buttonText={`Buy now`}
+                         tokenID={this.tokenId}
+                         isLike={false}
+                         customClass={styles.preview}
+                         onClick={() => {
+                         }} days={""} />
+        </div>
+      </MediaQuery>
+
       <div className={styles.containerWrap}>
         <h3 className={styles.title}>Create Single NFT</h3>
         <div className={styles.createWrap}>
@@ -155,7 +242,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </Dropzone>
           </div>
           <InputView
-            onChange={(e) => {  }}
+            onChange={(e) => { this.setTitle() }}
             placeholder={'Title*'}
             absPlaceholder={'Title*'}
             customClass={`mb-4 ${styles.titleInpWrap}`}
@@ -195,7 +282,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   </Form.Check.Label>
                 </Form.Check>
               </div>
-              <div key={2} className={`mb-3 ${styles.checkItem}`}>
+              {this.isMultiple ? '' : <div key={2} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(2) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
@@ -205,7 +292,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     </div>
                   </Form.Check.Label>
                 </Form.Check>
-              </div>
+              </div>}
               <div key={3} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(3) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
@@ -253,13 +340,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     type="date"
                     id="date-start"
                     placeholder={'Starting Date*'}
-                    ref={(ref) => { }}
+                    ref={(ref) => { this._refStartDate = ref }}
+                    value={this._refStartDate && this._refStartDate.value}
                   />
                   <Form.Control
                     type="date"
                     id="date-exp"
                     placeholder={'Expiration Date*'}
-                    ref={(ref) => { }}
+                    ref={(ref) => { this._refExpDate = ref }}
+                    value={this._refExpDate && this._refExpDate.value}
                   />
                 </div>
               </div>
@@ -387,7 +476,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     if (this._fileResponse === undefined) { return }
 
-    const url = pinataAPI.createUrl(this._fileResponse.IpfsHash);
+    const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
 
     const metadata = {
       copies: '1',
@@ -402,7 +491,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       issued_at: null,
       likes_count: 0,
       media: url,
-      media_hash: null,//this._fileResponse.IpfsHash,
+      media_hash: this._fileResponse.IpfsHash,
       price: price,
       reference: APP.HASH_SOURCE,
       reference_hash: null,
@@ -423,6 +512,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       token_type: catalog?.value
     };
 
+    console.log('save model', JSON.stringify(model));
+
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
 
@@ -432,7 +523,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         'nft_mint',
         model,
         APP.PREPAID_GAS_LIMIT_HALF,
-        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? APP.DEPOSIT_DEFAULT : '0'
+        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '100000000000000000000000' : '0'
       ),
       /*transactions.functionCall(
         'nft_approve',

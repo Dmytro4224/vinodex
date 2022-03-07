@@ -20,6 +20,8 @@ interface IArtistCard extends IProps {
   isCard?: boolean;
   isLike: boolean;
   customClass?: string;
+  followBtnText?: string;
+  isDisabledFollowBtn?: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -64,9 +66,22 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return this.props.isFollow;
   }
 
+  private get followBtnText() {
+    return this.props.followBtnText;
+  }
+
   private get isCard() {
     return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
+
+  private get isDisabledFollowBtn() {
+    return this.props.isDisabledFollowBtn;
+  }
+
+  private get isMyUser() {
+    return this.props.near.user?.accountId === this.identification;
+  }
+
   public changeLikeCount() {
     this.setState({
       ...this.state,
@@ -74,6 +89,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
     })
   }
+
   public changeFollow() {
     this.setState({
       ...this.state,
@@ -81,6 +97,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       usersCount: !this.state.isFollow ? this.state.usersCount + 1 : this.state.usersCount - 1,
     })
   }
+
   private btnFollowHandler = async () => {
     if (!this.props.near.isAuth) {
       this.props.near.signIn();
@@ -150,13 +167,15 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
-        <div className="d-flex align-items-center justify-content-between">
-          <ButtonView
-            text={this.state.isFollow ? "Unfollow" : "Follow"}
-            onClick={this.btnFollowHandler}
-            color={buttonColors.goldFill}
-            customClass={styles.buttonFollow}
-          />
+        <div className={`d-flex align-items-center justify-content-between ${this.isMyUser ? styles.pointerNone : ''}`}>
+          {!this.isMyUser ? (
+            <ButtonView
+              text={this.followBtnText ? this.followBtnText : this.state.isFollow ? "Unfollow" : "Follow"}
+              onClick={this.btnFollowHandler}
+              color={buttonColors.goldFill}
+              customClass={`${styles.buttonFollow} ${this.isDisabledFollowBtn ? styles.pointerNone : ''}`}
+            />
+          ) : <span>&nbsp;</span>}
           <div className="d-flex align-items-center">
             <LikeView
               customClass={styles.userInfo}
