@@ -1,23 +1,25 @@
 .buttonView {
-    font-family: "Bebas Neue", sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--white);
-    background: rgba(0, 0, 0, 0.87);
-    border-radius: 30px;
-    outline: none;
-    border: none;
-    padding: 12px 16px;
-    cursor: pointer;
-    line-height: 1;
-}
-.blue{
-    background-color: blue;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--white);
+  background: rgba(0, 0, 0, 0.87);
+  border-radius: 30px;
+  outline: none;
+  border: none;
+  padding: 12px 16px;
+  cursor: pointer;
+  line-height: 1;
+  letter-spacing: 1.4px;
 }
 
-.btnBlue{
-    background-color: var(--denim);
-    color: var(--white);
+.blue {
+  background-color: blue;
+}
+
+.btnBlue {
+  background-color: var(--denim);
+  color: var(--white);
 }
 
 .redButton {
@@ -25,79 +27,85 @@
   background-color: var(--vanillaIce);
 }
 
-.btnGoldFill{
-    background-color: var(--pirateCold);
-    color: var(--white);
-}
-.btnWhite{
-    background-color: var(--white);
-    color: var(--denim);
-    text-transform: uppercase;
+.btnGoldFill {
+  background-color: var(--pirateCold);
+  color: var(--white);
 }
 
-.btnGray{
-    background-color: var(--white);
-    color: rgba(0, 0, 0, 0.6);
-    font-weight: 500;
-    border: 1px solid rgba(0, 0, 0, 0.12);
-    text-transform: uppercase;
-}
-.btnWhiteGray{
-    background-color: var(--white);
-    color: rgba(0, 0, 0, 0.6);
-    font-weight: 500;
-    text-transform: uppercase;
+.btnWhite {
+  background-color: var(--white);
+  color: var(--denim);
+  text-transform: uppercase;
 }
 
-.btnSelectGray{
-    background-color: #F6F6F6;
-    color: var(--mineShaftS);
-    font-weight: 500;
+.btnGray {
+  background-color: var(--white);
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  text-transform: uppercase;
 }
 
-.btnDarkGray{
-    background-color: rgba(0, 0, 0, 0.54);;
-    color: var(--white);
-    font-weight: 500;
+.btnWhiteGray {
+  background-color: var(--white);
+  color: rgba(0, 0, 0, 0.6);
+  font-weight: 500;
+  text-transform: uppercase;
 }
 
-.btnSelect{
-    background-color: var(--white);
-    color: var(--pirateCold);
-    font-size: 14px;
-    font-weight: normal;
-    border: 1px solid var(--pirateCold);
-    text-transform: uppercase;
+.btnSelectGray {
+  background-color: #F6F6F6;
+  color: var(--mineShaftS);
+  font-weight: 500;
 }
 
-.btnPrimary{
-    background-color: var(--linkWater);
-    color: var(--denim);
+.btnDarkGray {
+  background-color: rgba(0, 0, 0, 0.54);;
+  color: var(--white);
+  font-weight: 500;
+}
+
+.btnSelect {
+  background-color: var(--white);
+  color: var(--pirateCold);
+  font-size: 14px;
+  font-weight: normal;
+  border: 1px solid var(--pirateCold);
+  text-transform: uppercase;
+}
+
+.btnPrimary {
+  background-color: var(--linkWater);
+  color: var(--denim);
 }
 
 .btnGold {
-    background-color: transparent;
-    color: var(--pirateCold);
+  background-color: transparent;
+  color: var(--pirateCold);
 }
 
-.btnIcon{
-    display: flex;
-    align-items: center;
+.btnIcon {
+  display: flex;
+  align-items: center;
 }
-.btnIcon .btnText{
-    margin-right: 5px;
+
+.btnIcon .btnText {
+  margin-right: 5px;
 }
-.icon{
-    min-width: 20px;
-    min-height: 20px;
-    display: block;
+
+.icon {
+  min-width: 20px;
+  min-height: 20px;
+  display: block;
 }
-.backButton{
+
+.backButton {
   background: transparent;
   outline: none;
   border: none;
 }
-.backButton .icon{
+
+.backButton .icon {
   min-width: 36px;
   min-height: 36px;
   background-size: contain;
