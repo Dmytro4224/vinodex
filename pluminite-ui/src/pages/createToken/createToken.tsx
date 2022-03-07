@@ -95,6 +95,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     }
   }
 
+  private get isMultiple(){
+    if(this.props.params.type === 'multiple'){
+      return true;
+    }
+
+    return false;
+  }
+
   private setMState(renderType: number) {
     this._renderType = renderType;
 
@@ -201,7 +209,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                   </Form.Check.Label>
                 </Form.Check>
               </div>
-              <div key={2} className={`mb-3 ${styles.checkItem}`}>
+              {this.isMultiple ? '' : <div key={2} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(2) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
@@ -211,7 +219,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                     </div>
                   </Form.Check.Label>
                 </Form.Check>
-              </div>
+              </div>}
               <div key={3} className={`mb-3 ${styles.checkItem}`}>
                 <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
                   <Form.Check.Input onChange={() => { this.setMState(3) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />

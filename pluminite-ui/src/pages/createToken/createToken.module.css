@@ -93,6 +93,10 @@
     min-width: 164px;
     text-align: center;
     cursor: pointer;
+    width: 100%;
+}
+.checkItem{
+  width: 100%;
 }
 .priceTypeInput:checked ~ .priceTyleLabel{
     border: 1px solid var(--pirateCold);
