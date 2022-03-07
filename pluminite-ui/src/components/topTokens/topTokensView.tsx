@@ -3,16 +3,16 @@ import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import CarouselView from "../carousel/carouselView";
-import ButtonView, {buttonColors} from "../common/button/ButtonView";
+import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { EmptyListView } from "../common/emptyList/emptyListView";
 import LabelView from "../common/label/labelView";
 import Loader from "../common/loader/loader";
 import TokenCardView from "../tokenCard/tokenCardView";
 
 interface ITopTokensView extends IProps {
-    list?: Array<ITokenResponseItem>;
-    catalog: string;
-    sort: number;
+  list?: Array<ITokenResponseItem>;
+  catalog: string;
+  sort: number;
 }
 
 enum TokensSortType {
@@ -42,8 +42,8 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     this.loadData();
   }
 
-  private get sort(){
-      return this.props.sort || 7;
+  private get sort() {
+    return this.props.sort || 7;
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
