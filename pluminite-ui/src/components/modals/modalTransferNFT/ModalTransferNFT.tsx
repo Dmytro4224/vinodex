@@ -5,6 +5,7 @@ import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import InputView, { InputType } from '../../common/inputView/InputView';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import { onlyNumber } from '../../../utils/sys';
+import styles from '../../../pages/createToken/createToken.module.css';
 
 interface IModalTransferNFT extends IProps {
   onHideModal: () => void;
@@ -48,8 +49,8 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
     }
 
     try {
-      this._refNumberOfCopies._ref.current.value = ``;
-      this._refInputUserName._ref.current.value = ``;
+      this._refNumberOfCopies.value = ``;
+      this._refInputUserName.value = ``;
     } catch (e) {
       console.warn(e);
     }
@@ -160,7 +161,7 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
         <InputView
           inputType={InputType.text}
           placeholder={'Number of copies*'}
-          customClass={'mb-4'}
+          customClass={'mb-1'}
           value={this._refNumberOfCopies?.value || ''}
           absPlaceholder={'Number of copies*'}
           setRef={(ref) => {
@@ -173,6 +174,7 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
             onlyNumber(e.target);
           }}
         />
+        <p className={styles.inputSubText}>0 Available</p>
       </ModalSample>
     );
   }
