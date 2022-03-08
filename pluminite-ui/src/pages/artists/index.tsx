@@ -83,7 +83,6 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     if (this.state.list.length === 0) {
       return (
         <div className='my-5 container'>
-          {!this.isProfilePageView && <LabelView text={'Best Artists'} />}
           <EmptyListView />
         </div>
       );
