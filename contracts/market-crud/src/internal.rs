@@ -120,7 +120,6 @@ impl Contract {
         sender_id: &AccountId,
         receiver_id: &AccountId,
         token_id: &TokenId,
-        approval_id: Option<U64>,
         memo: Option<String>,
     ) -> Token {
         let token = self.tokens_by_id.get(token_id).expect("Token not found");
@@ -128,23 +127,6 @@ impl Contract {
         // CUSTOM - token_type can be locked until unlocked by owner
         if token.token_type.is_some() {
             assert_eq!(self.token_types_locked.contains(&token.token_type.clone().unwrap()), false, "Token transfers are locked");
-        }
-
-        if sender_id != &token.owner_id && !token.approved_account_ids.contains_key(sender_id) {
-            env::panic(b"Unauthorized");
-        }
-
-        // If they included an enforce_approval_id, check the receiver approval id
-        if let Some(enforced_approval_id) = approval_id {
-            let actual_approval_id = token
-                .approved_account_ids
-                .get(sender_id)
-                .expect("Sender is not approved account");
-            assert_eq!(
-                actual_approval_id, &enforced_approval_id,
-                "The actual approval_id {} is different from the given approval_id {}",
-                actual_approval_id.0, enforced_approval_id.0,
-            );
         }
 
         assert_ne!(

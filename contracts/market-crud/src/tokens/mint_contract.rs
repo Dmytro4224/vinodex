@@ -24,14 +24,12 @@ impl Contract {
             owner_id = receiver_id.into();
         }
 
-        let pay_for_storage =  self.use_storage_fees || !self.is_free_mint_available(owner_id.clone());
-
-        let initial_storage_usage = if pay_for_storage {
-            env::storage_usage()
+        //0.1 near
+        let required_deposit : u128 = (10 as u128).pow(23);
+        if env::attached_deposit() < required_deposit
+        {
+            panic!("Need to attach at least 0.1 near");
         }
-        else {
-            0
-        };
 
         // CUSTOM - create royalty map
         let mut royalty = HashMap::new();
@@ -102,14 +100,6 @@ impl Contract {
             }
         }
 
-        if pay_for_storage {
-            let new_token_size_in_bytes = env::storage_usage() - initial_storage_usage;
-            let required_storage_in_bytes =
-                self.extra_storage_in_bytes_per_token + new_token_size_in_bytes;
-
-            refund_deposit(required_storage_in_bytes);
-        }
-
         //Оновлення словників фільтрів
         for i in 1..9
         {
@@ -121,43 +111,13 @@ impl Contract {
                 2 => criterion =  metadata.issued_at,
                 3 => criterion = metadata.sold_at,
                 4 => criterion = metadata.expires_at,
-                5 => criterion = Some(metadata.price),
+                5 => criterion = None,
                 7 => criterion = Some(0),
                 8 => criterion = Some(0),
                 _ => criterion = None
             }
 
-            let key = SortedToken{token_id: final_token_id.clone(), criterion: criterion};
-
-            match self.tokens_sorted.get(&i) {
-                Some(mut tokens) => {
-
-                    if criterion.is_none()
-                    {
-                        tokens.push(key);
-                        self.tokens_sorted.insert(&i, &tokens);
-                        continue;
-                    }
-
-                    let index = SortedToken::binary_search(&key, &tokens);
-                    if index.is_none()
-                    {
-                        tokens.push(key);
-                        self.tokens_sorted.insert(&i, &tokens);
-                        continue;
-                    }
-
-                    tokens.insert(index.unwrap(), key);
-                    self.tokens_sorted.insert(&i, &tokens);
-                }
-                None => {
-                    let mut vector :Vec<SortedToken> = Vec::new();
-                    vector.push(key);
-
-                    self.tokens_sorted.insert(&i, &vector);
-                    continue;
-                }
-            }
+            self.tokens_resort(final_token_id.clone(), i, criterion);
         }
 
         //створюємо профіль, якшо нема

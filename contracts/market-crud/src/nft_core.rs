@@ -18,11 +18,10 @@ pub trait NonFungibleTokenCore {
 
     fn nft_transfer_payout(
         &mut self,
-        receiver_id: ValidAccountId,
+        receiver_id: String,
         token_id: TokenId,
-        approval_id: Option<U64>,
         memo: Option<String>,
-        balance: Option<U128>,
+        balance: Option<u128>,
         max_len_payout: Option<u32>,
     ) -> Option<Payout>;
 
@@ -34,7 +33,7 @@ pub trait NonFungibleTokenCore {
         approval_id: Option<U64>,
         memo: Option<String>,
         msg: String,
-    ) -> Promise;
+    );
 
     fn nft_approve(&mut self, token_id: TokenId, account_id: ValidAccountId, sale_conditions: U128);
 
@@ -57,18 +56,6 @@ pub trait NonFungibleTokenCore {
         approved_account_id: AccountId,
         approval_id: Option<u64>,
     ) -> bool;
-}
-
-#[ext_contract(ext_non_fungible_token_receiver)]
-trait NonFungibleTokenReceiver {
-    /// Returns `true` if the token should be returned back to the sender.
-    fn nft_on_transfer(
-        &mut self,
-        sender_id: AccountId,
-        previous_owner_id: AccountId,
-        token_id: TokenId,
-        msg: String,
-    ) -> Promise;
 }
 
 #[ext_contract(ext_non_fungible_approval_receiver)]
@@ -127,7 +114,6 @@ impl NonFungibleTokenCore for Contract {
             &sender_id,
             receiver_id.as_ref(),
             &token_id,
-            approval_id,
             memo,
         );
         if self.use_storage_fees {
@@ -142,20 +128,17 @@ impl NonFungibleTokenCore for Contract {
     #[payable]
     fn nft_transfer_payout(
         &mut self,
-        receiver_id: ValidAccountId,
+        receiver_id: String,
         token_id: TokenId,
-        approval_id: Option<U64>,
         memo: Option<String>,
-        balance: Option<U128>,
+        balance: Option<u128>,
         max_len_payout: Option<u32>,
     ) -> Option<Payout> {
-        assert_one_yocto();
         let sender_id = env::predecessor_account_id();
         let previous_token = self.internal_transfer(
             &sender_id,
-            receiver_id.as_ref(),
+            &receiver_id,
             &token_id,
-            approval_id,
             memo,
         );
         if self.use_storage_fees {
@@ -210,36 +193,27 @@ impl NonFungibleTokenCore for Contract {
         token_id: TokenId,
         approval_id: Option<U64>,
         memo: Option<String>,
-        msg: String,
-    ) -> Promise {
+        msg: String
+    ) 
+    {
         assert_one_yocto();
         let sender_id = env::predecessor_account_id();
         let previous_token = self.internal_transfer(
             &sender_id,
             receiver_id.as_ref(),
             &token_id,
-            approval_id,
             memo,
         );
-        // Initiating receiver's call and the callback
-        ext_non_fungible_token_receiver::nft_on_transfer(
-            sender_id,
-            previous_token.owner_id.clone(),
-            token_id.clone(),
-            msg,
-            receiver_id.as_ref(),
+        
+        ext_self::nft_resolve_transfer(
+            previous_token.owner_id,
+            receiver_id.into(),
+            previous_token.approved_account_ids,
+            token_id,
+            &env::current_account_id(),
             NO_DEPOSIT,
-            env::prepaid_gas() - GAS_FOR_NFT_TRANSFER_CALL,
-        )
-            .then(ext_self::nft_resolve_transfer(
-                previous_token.owner_id,
-                receiver_id.into(),
-                previous_token.approved_account_ids,
-                token_id,
-                &env::current_account_id(),
-                NO_DEPOSIT,
-                GAS_FOR_RESOLVE_TRANSFER,
-            ))
+            GAS_FOR_RESOLVE_TRANSFER,
+        );
     }
 
     #[payable]
@@ -410,7 +384,8 @@ impl NonFungibleTokenCore for Contract {
                 royalty: token.royalty,
                 approved_account_ids: token.approved_account_ids,
                 token_type: token.token_type,
-                is_like:_is_like
+                is_like:_is_like,
+                sale : self.sales_active.get(&token_id)
             })
         } else {
             None
