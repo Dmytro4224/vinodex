@@ -89,6 +89,7 @@ export {
   validateDotNum,
   isValidEmail,
   changeAvatarRefSrc,
-  isVideoFile
+  isVideoFile,
+  onlyNumber,
 };
 
