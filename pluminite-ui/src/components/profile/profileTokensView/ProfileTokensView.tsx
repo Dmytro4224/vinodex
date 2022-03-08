@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { ITokenResponseItem } from '../../types/ITokenResponseItem';
-import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { EmptyListView } from '../common/emptyList/emptyListView';
-import TokenCardView from '../tokenCard/tokenCardView';
+import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
+import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
+import { EmptyListView } from '../../common/emptyList/emptyListView';
+import TokenCardView from '../../tokenCard/tokenCardView';
 import styles from './profileTokensView.module.css';
-import { dropdownColors, DropdownView } from '../common/dropdown/dropdownView';
-import { dropdownData } from '../common/dropdown/data';
-import TabsFilterView from '../tabsFilterView/tabsFilterView';
-import ButtonView, { buttonColors } from '../common/button/ButtonView';
-import searchIcon from '../../assets/icons/search.svg';
-import InputView, { InputStyleType } from '../common/inputView/InputView';
-import { ProfileTokensType } from '../../types/ProfileTokenTypes';
+import { dropdownColors, DropdownView } from '../../common/dropdown/dropdownView';
+import { dropdownData } from '../../common/dropdown/data';
+import TabsFilterView from '../../tabsFilterView/tabsFilterView';
+import ButtonView, { buttonColors } from '../../common/button/ButtonView';
+import searchIcon from '../../../assets/icons/search.svg';
+import InputView, { InputStyleType } from '../../common/inputView/InputView';
+import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
-import sortIcon from '../../assets/icons/sort-icon.svg';
-import filterIcon from '../../assets/icons/filter-icon.svg';
+import sortIcon from '../../../assets/icons/sort-icon.svg';
+import filterIcon from '../../../assets/icons/filter-icon.svg';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -195,42 +195,40 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       );
     }
 
-    if (!this.state.list.length) {
-      return (
-        <EmptyListView />
-      );
-    }
-
     return (
       <div className={`container`}>
         {this.getFilter()}
 
-        <div className={`d-flex align-items-center flex-gap-36 pb-4 ${styles.scrollWrap}`}>
-          {this.state.list.map(item => {
-            return (
-              <TokenCardView
-                key={item.token_id}
-                countL={1}
-                countR={1}
-                days={item.metadata.expires_at}
-                name={item.metadata.title}
-                author={item.owner_id}
-                likesCount={item.metadata.likes_count}
-                icon={item.metadata.media}
-                isSmall={true}
-                buttonText={`Place a bid ${item.metadata.price} NEAR`}
-                linkTo={`/token/${item.token_id}`}
-                tokenID={item.token_id}
-                isLike={item.is_like}
-                typeView={this.typeViewTokens}
-                price={item.metadata.price}
-                isTransferAction={this.isTransferAction}
-                onClick={() => {
-                }}
-              />
-            );
-          })}
-        </div>
+        {!this.state.list.length ? (
+          <EmptyListView />
+        ) : (
+          <div className={`d-flex align-items-center flex-gap-36 pb-4 ${styles.scrollWrap}`}>
+            {this.state.list.map(item => {
+              return (
+                <TokenCardView
+                  key={item.token_id}
+                  countL={1}
+                  countR={1}
+                  days={item.metadata.expires_at}
+                  name={item.metadata.title}
+                  author={item.owner_id}
+                  likesCount={item.metadata.likes_count}
+                  icon={item.metadata.media}
+                  isSmall={true}
+                  buttonText={`Place a bid ${item.metadata.price} NEAR`}
+                  linkTo={`/token/${item.token_id}`}
+                  tokenID={item.token_id}
+                  isLike={item.is_like}
+                  typeView={this.typeViewTokens}
+                  price={item.metadata.price}
+                  isTransferAction={this.isTransferAction}
+                  onClick={() => {
+                  }}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     );
   }

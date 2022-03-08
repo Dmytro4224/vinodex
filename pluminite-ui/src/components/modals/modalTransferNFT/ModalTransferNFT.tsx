@@ -22,6 +22,7 @@ interface ModalTransferNFTState {
 }
 
 class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps> {
+  private _initialState: ModalTransferNFTState | undefined;
   private _refInputUserName: any;
   private _refNumberOfCopies: any;
 
@@ -37,6 +38,23 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
     super(props);
   }
 
+  public componentWillMount() {
+    this._initialState = this.state;
+  }
+
+  private resetState() {
+    if (this._initialState) {
+      this.setState(this._initialState);
+    }
+
+    try {
+      this._refNumberOfCopies._ref.current.value = ``;
+      this._refInputUserName._ref.current.value = ``;
+    } catch (e) {
+      console.warn(e);
+    }
+  }
+
   private get modalIsShow() {
     return this.props.inShowModal;
   }
@@ -47,6 +65,7 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
 
   private onHideModal() {
     this.props.onHideModal && this.props.onHideModal();
+    this.resetState();
   }
 
   private isValidForm() {
