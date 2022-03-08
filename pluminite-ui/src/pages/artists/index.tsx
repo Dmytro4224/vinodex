@@ -41,7 +41,13 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
 	public componentDidMount() {
 		this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
-			const list = response.filter(item => item !== null);
+			let list = response.filter(item => item !== null);
+
+      if (this.isProfilePageView) {
+        list = list.filter(item => item.is_following);
+      }
+
+      console.log('list', list);
 
 			this.setState({
 				...this.state,
@@ -79,7 +85,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 		if (this.state.list.length === 0) {
 			return (
 				<div className="my-5 container">
-					<LabelView text={'Best Artists'} />
+          {!this.isProfilePageView && <LabelView text={'Best Artists'} />}
 					<EmptyListView />
 				</div>
 			)
