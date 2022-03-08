@@ -1,5 +1,5 @@
-import React, { ChangeEvent, Component } from "react";
-import { IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
+import React, { ChangeEvent, Component } from 'react';
+import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import styles from './inputView.module.css';
 
 interface IInputView extends IProps {
@@ -95,19 +95,23 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
 
   private onChange = async (e: ChangeEvent) => {
     this.props.onChange && this.props.onChange(e);
-  }
+  };
 
   private getInputTypeStyle() {
     switch (this.inputStyleType) {
       case InputStyleType.default:
-        return styles.inputDefault
+        return styles.inputDefault;
       case InputStyleType.round:
-        return styles.inputRound
+        return styles.inputRound;
     }
   }
 
   public get value() {
     return this.ref.current?.value;
+  }
+
+  public set value(value) {
+    this.ref.current.value = value;
   }
 
   private get isError() {
@@ -153,7 +157,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
 
         {this.isError && <p className={styles.errorMessage}>{this.errorMessage}</p>}
       </div>
-    )
+    );
   }
 }
 
