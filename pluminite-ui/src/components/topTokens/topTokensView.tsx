@@ -1,6 +1,7 @@
 import { Component } from "react";
 import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
+import { mediaUrl } from '../../utils/sys';
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import CarouselView from "../carousel/carouselView";
 import ButtonView, { buttonColors } from "../common/button/ButtonView";
@@ -59,7 +60,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     }
     const catalog = this.props.catalog;
     this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
-      //console.log(`Home loadData`, TokensSortType.Most_viewed, catalog, response.length);
+      console.log(`Home loadData`, catalog, response);
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
       console.error('loadData ex => ', ex);
@@ -105,7 +106,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
               name={item.metadata.title}
               author={item.owner_id}
               likesCount={item.metadata.likes_count}
-              icon={item.metadata.media}
+              icon={mediaUrl(item.metadata)}
               isSmall={false}
               buttonText={`Place a bid ${item.metadata.price} NEAR`}
               linkTo={`/token/${item.token_id}`}

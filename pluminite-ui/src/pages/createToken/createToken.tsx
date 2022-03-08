@@ -568,13 +568,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     }
 
     const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
+    const preview = this._isVideo && this._fileCoverResponse !== void 0 ? this._fileCoverResponse.url || pinataAPI.createUrl(this._fileCoverResponse.IpfsHash) : url;
 
     const metadata = {
       copies: '1',
       description: description,
       expires_at: null,
       extra: JSON.stringify({
-        //media_lowres: '',
+        media_lowres: preview,
         creator_id: this.props.near.user!.accountId,
         media_size: this._selectFile!.size,
         media_type: this._selectFile!.type

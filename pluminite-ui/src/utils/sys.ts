@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import { IShowToast } from '../types/ISysTypes';
 import defaultAvatar from '../assets/images/avatar-def.png';
+import { IMetaData } from '../types/ITokenCreateItem';
 
 const classList = (...args: string[]) => {
   return args.join(' ');
@@ -81,6 +82,21 @@ const isVideoFile = (type: string) => {
   return videoFileTypes.indexOf(type) !== -1;
 };
 
+const mediaUrl = (metadata: IMetaData): string => {
+  if (metadata.extra) {
+    try {
+      const json = JSON.parse(metadata.extra);
+      if (json && json.media_lowres) {
+        return json.media_lowres;
+      }
+    }
+    catch (ex) {
+      console.error('mediaUrl ex =>', ex);
+    }
+  }
+  return metadata.media;
+};
+
 export {
   classList,
   transformArtistId,
@@ -91,5 +107,6 @@ export {
   changeAvatarRefSrc,
   isVideoFile,
   onlyNumber,
+  mediaUrl
 };
 

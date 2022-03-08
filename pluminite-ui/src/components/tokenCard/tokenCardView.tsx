@@ -251,6 +251,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   public render() {
+    console.log('icon', this.props.icon);
     return (
       <>
         <div

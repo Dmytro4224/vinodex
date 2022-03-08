@@ -1,6 +1,7 @@
 import { Component } from "react";
 import Skeleton from "react-loading-skeleton";
 import { ITokenResponseItem } from "../../types/ITokenResponseItem";
+import { mediaUrl } from '../../utils/sys';
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { EmptyListView } from "../common/emptyList/emptyListView";
@@ -62,7 +63,7 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
             name={item.metadata.title}
             author={item.owner_id}
             likesCount={item.metadata.likes_count}
-            icon={item.metadata.media}
+            icon={mediaUrl(item.metadata)}
             isSmall={true}
             buttonText={`Place a bid ${item.metadata.price} NEAR`}
             linkTo={`/token/${item.token_id}`}

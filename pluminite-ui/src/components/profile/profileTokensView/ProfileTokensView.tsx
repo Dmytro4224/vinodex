@@ -15,6 +15,7 @@ import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
 import filterIcon from '../../../assets/icons/filter-icon.svg';
+import { mediaUrl } from '../../../utils/sys';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -213,7 +214,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   name={item.metadata.title}
                   author={item.owner_id}
                   likesCount={item.metadata.likes_count}
-                  icon={item.metadata.media}
+                  icon={mediaUrl(item.metadata)}
                   isSmall={true}
                   buttonText={`Place a bid ${item.metadata.price} NEAR`}
                   linkTo={`/token/${item.token_id}`}
