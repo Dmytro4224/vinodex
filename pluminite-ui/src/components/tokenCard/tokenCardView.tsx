@@ -11,6 +11,7 @@ import React from 'react';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
+import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
 
 interface ITokenCardView extends IProps {
   icon?: any;
@@ -36,13 +37,16 @@ interface ITokenCardView extends IProps {
 type stateTypes = {
   isLike: boolean;
   likesCount: number;
+  modalTransferIsShow: boolean;
 };
 
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
   public state: stateTypes = {
     isLike: this.props.isLike,
     likesCount: this.props.likesCount || 0,
+    modalTransferIsShow: false,
   };
+
   private readonly isSmall: boolean;
   private _isProcessLike: boolean;
   private readonly _refImage: React.RefObject<HTMLImageElement>;
@@ -205,15 +209,16 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             <div className='d-flex align-items-center justify-content-between w-100'>
               <Form className='w-100'>
                 <FormCheck.Label className='w-100'>
-                  <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>
+                  <div
+                    className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>
                     <div>
                       <p className={styles.toggleTitle}>Put on marketplace</p>
                     </div>
 
                     <Form.Check
-                      type="switch"
+                      type='switch'
                       className={styles.customFormCheck}
-                      label=""
+                      label=''
                       ref={this._radioNFTApproveRef}
                     />
                   </div>
@@ -226,63 +231,95 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     }
   }
 
+  private transferAction() {
+    this.showModal();
+  }
+
+  private showModal() {
+    this.setState({
+      ...this.state,
+      modalTransferIsShow: true,
+    });
+  }
+
+  private hideModal() {
+    this.setState({
+      ...this.state,
+      modalTransferIsShow: false,
+    });
+  }
+
   public render() {
     return (
-      <div
-        className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
-        <div className={styles.cardImage}>
-          {this.props.linkTo ? (
-            <NavLink to={this.props.linkTo}>
-              <img className={styles.imageStyle} src={this.icon}
-                   onError={this.setDefaultImage} ref={this._refImage}
-                   alt={this.props.alt || 'preview image'} />
-            </NavLink>
-          ) : (
-            <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon} alt={this.props.alt || 'preview image'} />
-          )}
-
-          <div className={styles.cardDetail}>
-            {(this.props.countL > 0 || this.props.countR > 0) && (
-              <div className={styles.count}>
-                {this.props.countL}/{this.props.countR}
-              </div>
-            )}
-
-            {this.props.days !== '' && this.props.days !== null && (
-              <div className={styles.daysInfo}>
-                {this.props.days}
-              </div>
-            )}
-          </div>
-
-          {this.isTransferAction && (
-            <ButtonView
-              text={''}
-              icon={transferIcon}
-              withoutText={true}
-              onClick={() => {
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.btnTransfer}
-            />
-          )}
-        </div>
-        <div className={styles.cardFooter}>
-          <div className={styles.cardInfo}>
+      <>
+        <div
+          className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
+          <div className={styles.cardImage}>
             {this.props.linkTo ? (
               <NavLink to={this.props.linkTo}>
-                <div className={styles.infoName}>{this.props.name}</div>
+                <img className={styles.imageStyle} src={this.icon}
+                     onError={this.setDefaultImage} ref={this._refImage}
+                     alt={this.props.alt || 'preview image'} />
               </NavLink>
             ) : (
-              <div className={styles.infoName}>{this.props.name}</div>
+              <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
+                   alt={this.props.alt || 'preview image'} />
             )}
-            <div className={styles.authorName}>{this.props.author}</div>
+
+            <div className={styles.cardDetail}>
+              {(this.props.countL > 0 || this.props.countR > 0) && (
+                <div className={styles.count}>
+                  {this.props.countL}/{this.props.countR}
+                </div>
+              )}
+
+              {this.props.days !== '' && this.props.days !== null && (
+                <div className={styles.daysInfo}>
+                  {this.props.days}
+                </div>
+              )}
+            </div>
+
+            {this.isTransferAction && (
+              <ButtonView
+                text={''}
+                icon={transferIcon}
+                withoutText={true}
+                onClick={() => {
+                  this.transferAction();
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.btnTransfer}
+              />
+            )}
           </div>
+          <div className={styles.cardFooter}>
+            <div className={styles.cardInfo}>
+              {this.props.linkTo ? (
+                <NavLink to={this.props.linkTo}>
+                  <div className={styles.infoName}>{this.props.name}</div>
+                </NavLink>
+              ) : (
+                <div className={styles.infoName}>{this.props.name}</div>
+              )}
+              <div className={styles.authorName}>{this.props.author}</div>
+            </div>
 
-          {this.getCardControls()}
+            {this.getCardControls()}
 
+          </div>
         </div>
-      </div>
+
+        {this.isTransferAction && (
+          <ModalTransferNFT
+            inShowModal={this.state.modalTransferIsShow}
+            onHideModal={() => this.hideModal()}
+            onSubmit={() => {
+            }}
+            tokenInfo={{}}
+          />
+        )}
+      </>
     );
   }
 }
