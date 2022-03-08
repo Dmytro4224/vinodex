@@ -16,6 +16,7 @@ import SimilarTokensView from "../../components/similarTokens/similarTokensView"
 import React from 'react';
 import { showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
+import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -48,10 +49,11 @@ interface ITokenViewState{
   isLoading: boolean;
   isLike: boolean;
   likesCount: number;
+  modalTransferIsShow: boolean;
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0 };
+  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false };
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _isProcessLike: boolean;
 
@@ -84,6 +86,24 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       ...this.state,
       isLike: !this.state.isLike,
       likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
+    });
+  }
+
+  private buyAction() {
+    this.showModal();
+  }
+
+  private showModal() {
+    this.setState({
+      ...this.state,
+      modalTransferIsShow: true,
+    });
+  }
+
+  private hideModal() {
+    this.setState({
+      ...this.state,
+      modalTransferIsShow: false,
     });
   }
 
@@ -126,109 +146,122 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     }
 
     return (
-      <div>
-        <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
-          <div className={styles.cardImage}>
-            <div className={styles.cardImageWrap}>
-              <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle} src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
-              <div className={styles.cardDetail}>
-                { (this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) && <div className={styles.daysInfo}>
-                  {this.state.order?.metadata.expires_at}
-                </div> }
-              </div>
-            </div>
-          </div>
-          <div className={styles.tokenInfo}>
-            <div className={styles.titleWrap}>
-              <div className={styles.titleInfo}>
-                <h3>{this.state.order?.metadata.title}</h3>
-                <div className={styles.avalialbeItems}>
-                  <p className={styles.title}>Available items:</p>
-                  <span className={styles.counts}>{1}/{2}</span>
+      <>
+        <div>
+          <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
+            <div className={styles.cardImage}>
+              <div className={styles.cardImageWrap}>
+                <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
+                     src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
+                <div className={styles.cardDetail}>
+                  {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
+                    <div className={styles.daysInfo}>
+                      {this.state.order?.metadata.expires_at}
+                    </div>}
                 </div>
               </div>
-              <div className={styles.likesInfo}>
-                <LikeView
-                  customClass={styles.likes}
-                  isActive={true}
-                  type={LikeViewType.like}
-                  isChanged={this.state.isLike}
-                  onClick={this.toggleLikeToken}
-                  count={this.state.likesCount}
-                />
+            </div>
+            <div className={styles.tokenInfo}>
+              <div className={styles.titleWrap}>
+                <div className={styles.titleInfo}>
+                  <h3>{this.state.order?.metadata.title}</h3>
+                  <div className={styles.avalialbeItems}>
+                    <p className={styles.title}>Available items:</p>
+                    <span className={styles.counts}>{1}/{2}</span>
+                  </div>
+                </div>
+                <div className={styles.likesInfo}>
+                  <LikeView
+                    customClass={styles.likes}
+                    isActive={true}
+                    type={LikeViewType.like}
+                    isChanged={this.state.isLike}
+                    onClick={this.toggleLikeToken}
+                    count={this.state.likesCount}/>
+                </div>
+              </div>
+              <div className={styles.categoriesList}>
+                {this.state.order?.token_type && <CategoryView text={this.state.order?.token_type}/>}
+              </div>
+              <div className={styles.creator}>
+                <p className={styles.title}>Creator</p>
+                <ArtistCard
+                  info={{
+                    bio: '',
+                    email: '',
+                    image: '',
+                    name: this.state.order?.owner_id!,
+                    account_id: '',
+                    likes_count: 0,
+                    is_like: false,
+                    is_following: false,
+                    followers_count: 0
+                  }}
+                  identification={'0x0b9D2weq28asdqwe132'}
+                  usersCount={22}
+                  likesCount={12}
+                  isCard={false}
+                  isFollow={false}
+                  isLike={false}/>
+              </div>
+              <div className={styles.tabsWrap}>
+                <Tabs
+                  id="controlled-tab-example"
+                  className="mb-3"
+                >
+                  <Tab eventKey="home" title="DESCRIPTION">
+                    <div className={styles.tabContainer}>
+                      <DescrtiptionView text={this.state.order?.metadata.description!}/>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="profile" title="DETAILS">
+                    <div className={styles.tabContainer}>
+                      <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!}/>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="bids" title="BIDS">
+                    <div className={styles.tabContainer}>
+                      <BidsView items={[{
+                        name: "user",
+                        identification: "28 September, 2021, 5:51 PM ",
+                        price: 12,
+                        currency: "ETC"
+                      },
+                        {name: "user-2", identification: "2 September, 2021, 3:51 PM ", price: 2, currency: "ETC"}]}/>
+                    </div>
+                  </Tab>
+                  <Tab eventKey="contact" title="HISTORY">
+                    <div className={styles.tabContainer}>Empty result</div>
+                  </Tab>
+                  <Tab eventKey="owners" title="OWNERS">
+                    <div className={styles.tabContainer}>Empty result</div>
+                  </Tab>
+                </Tabs>
+              </div>
+              <div className={styles.buttonWrap}>
+                <ButtonView
+                  text={`Place a bid ${this.state.order?.metadata.price} ETH`}
+                  onClick={() => {
+                    this.buyAction();
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.button}/>
               </div>
             </div>
-            <div className={styles.categoriesList}>
-              {this.state.order?.token_type && <CategoryView text={this.state.order?.token_type} />}
-            </div>
-            <div className={styles.creator}>
-              <p className={styles.title}>Creator</p>
-              <ArtistCard
-                info={{
-                  bio: '',
-                  email: '',
-                  image: '',
-                  name: this.state.order?.owner_id!,
-                  account_id: '',
-                  likes_count: 0,
-                  is_like: false,
-                  is_following: false,
-                  followers_count: 0
-                }}
-                identification={'0x0b9D2weq28asdqwe132'}
-                usersCount={22}
-                likesCount={12}
-                isCard={false}
-                isFollow={false}
-                isLike={false}
-              />
-            </div>
-            <div className={styles.tabsWrap}>
-              <Tabs
-                id="controlled-tab-example"
-                className="mb-3"
-              >
-                <Tab eventKey="home" title="DESCRIPTION">
-                  <div className={styles.tabContainer}>
-                    <DescrtiptionView text={this.state.order?.metadata.description!}/>
-                  </div>
-                </Tab>
-                <Tab eventKey="profile" title="DETAILS">
-                  <div className={styles.tabContainer}>
-                    <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!}/>
-                  </div>
-                </Tab>
-                <Tab eventKey="bids" title="BIDS">
-                  <div className={styles.tabContainer}>
-                    <BidsView items={[{name: "user", identification: "28 September, 2021, 5:51 PM ", price: 12, currency: "ETC"},
-                      {name: "user-2", identification: "2 September, 2021, 3:51 PM ", price: 2, currency: "ETC"}]}/>
-                  </div>
-                </Tab>
-                <Tab eventKey="contact" title="HISTORY">
-                  <div className={styles.tabContainer}>Empty result</div>
-                </Tab>
-                <Tab eventKey="owners" title="OWNERS">
-                  <div className={styles.tabContainer}>Empty result</div>
-                </Tab>
-              </Tabs>
-            </div>
-            <div className={styles.buttonWrap}>
-              <ButtonView
-                text={'Place a bid 0.08 ETH'}
-                onClick={() => {  }}
-                color={buttonColors.goldFill}
-                customClass={styles.button}
-              />
-            </div>
+          </div>
+          <div className="w-100 container my-5">
+            <p className={styles.line}></p>
+          </div>
+          <div className="container mb-3">
+            <SimilarTokensView/>
           </div>
         </div>
-        <div className="w-100 container my-5">
-          <p className={styles.line}></p>
-        </div>
-        <div className="container mb-3">
-          <SimilarTokensView />
-        </div>
-      </div>
+        <ModalTokenCheckoutNFT
+          inShowModal={this.state.modalTransferIsShow}
+          onHideModal={() => this.hideModal()}
+          onSubmit={() => {
+          }}
+          tokenInfo={{}} token={this.state.order || null}/></>
     )
   }
 }

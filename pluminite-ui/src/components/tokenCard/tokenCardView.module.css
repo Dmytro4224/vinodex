@@ -143,3 +143,12 @@
   padding: 0;
   min-height: auto;
 }
+.onlyViewed{
+
+}
+.onlyViewed .cardFooter{
+  padding: 16px 0;
+}
+.onlyViewed .cardControls{
+  display: none;
+}

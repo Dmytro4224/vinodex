@@ -23,7 +23,7 @@ interface ITokenCardView extends IProps {
   name: string;
   author: string;
   likesCount?: number;
-  buttonText: string;
+  buttonText?: string;
   isSmall?: boolean;
   linkTo?: string;
   tokenID: string;
@@ -33,6 +33,7 @@ interface ITokenCardView extends IProps {
   typeView?: ProfileTokensType;
   price?: number;
   isTransferAction?: boolean;
+  isView?: boolean;
 }
 
 type stateTypes = {
@@ -141,7 +142,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               count={this.state.likesCount}
               onClick={this.toggleLikeToken}
             /> : <div></div>}
-            <ButtonView
+            {this.props.buttonText && <ButtonView
               text={this.typeView === ProfileTokensType.purchases ? 'Sell' : this.props.buttonText}
               onClick={() => {
                 this.onClick();
@@ -149,7 +150,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               color={buttonColors.goldFill}
               customClass={styles.buttonSecondControls}
               disabled={this.typeView === ProfileTokensType.purchases}
-            />
+            />}
           </div>
         );
         break;
@@ -255,7 +256,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     return (
       <>
         <div
-          className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''}`}>
+          className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
           <div className={styles.cardImage}>
             {this.props.linkTo ? (
               <NavLink to={this.props.linkTo}>
