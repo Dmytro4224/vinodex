@@ -66,6 +66,11 @@ const changeAvatarRefSrc = (ref) => {
   } catch (e) { console.warn(e) }
 }
 
+const videoFileTypes = ['video/mp4'];
+const isVideoFile = (type: string) => {
+  return videoFileTypes.indexOf(type) !== -1;
+};
+
 export {
   classList,
   transformArtistId,
@@ -73,5 +78,7 @@ export {
   showToast,
   validateDotNum,
   isValidEmail,
-  changeAvatarRefSrc
+  changeAvatarRefSrc,
+  isVideoFile
 };
+
