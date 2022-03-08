@@ -4,7 +4,6 @@ import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import Loader from '../../components/common/loader/loader';
-import LabelView from '../../components/common/label/labelView';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 
 export interface IArtistsView extends IProps {
