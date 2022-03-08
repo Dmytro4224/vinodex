@@ -4,6 +4,7 @@
     align-items: start;
     gap: 60px;
     min-height: 1000px;
+    justify-content: center;
 }
 .containerWrap{
     width: 100%;
