@@ -15,6 +15,20 @@ pub struct SaleHistory {
     pub date: u128
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct SaleHistoryJson {
+    //owner of the sale
+    pub account_from: Option<JsonProfile>,
+    //reciever of token
+    pub account_to: Option<JsonProfile>,
+    //sale price in yoctoNEAR that the token is listed for
+    pub price: U128,
+    /// utc timestamp
+    pub date: u128
+}
+
+
 //Структура однієї ставки на аукціоні
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -22,7 +36,22 @@ pub struct SaleBid
 {
     pub account_id: AccountId,
     pub date: u128,
-    pub price: u128
+    pub price: u128,
+    pub account: Option<JsonProfile>
+}
+
+impl Clone for SaleBid
+{
+    fn clone(&self) -> SaleBid
+    {
+        return SaleBid
+        {
+            account_id: self.account_id.clone(),
+            account: self.account.clone(),
+            date: self.date,
+            price: self.price
+        };
+    }
 }
 
 //Токен виставлений на продаж, інформацію для продажу
@@ -44,7 +73,7 @@ pub struct Sale {
     pub end_date: Option<u128>,
 
     // ставки по аукціону
-    pub bids : Option<Vec<SaleBid>>
+    pub bids : Vec<SaleBid>
 }
 
 #[near_bindgen]
@@ -52,18 +81,67 @@ impl Contract {
     
     //removes a sale from the market. 
     #[private]
-    pub fn sale_remove_inner(&mut self, token_id: &String) -> Sale
+    pub fn sale_remove_inner(&mut self, token_id: &TokenId) -> Sale
     {
         return self.sales_active.remove(token_id).expect("No sale");
     }
 
-    pub fn sale_remove(&mut self, token_id: String) -> Sale
+    pub fn sale_remove(&mut self, token_id: TokenId) -> Sale
     {
         let token = self.tokens_by_id.get(&token_id).expect("Token not found");
         
         assert_eq!(token.owner_id, env::predecessor_account_id(), "Forbidden");
 
         return self.sale_remove_inner(&token_id);
+    }
+
+    pub fn sale_get(&self, token_id: &TokenId, asked_account_id: Option<AccountId>, with_bids: bool) -> Option<Sale>
+    {
+        let sale_option = self.sales_active.get(&token_id);
+        if sale_option.is_none()
+        {
+            return None;
+        }
+
+        let mut sale = sale_option.unwrap();
+        if sale.sale_type == 2 || sale.sale_type == 3
+        {
+            if sale.bids.len() > 0
+            {
+                if with_bids
+                {
+                    for i in 0..sale.bids.len()
+                    {
+                        sale.bids[i].account = Profile::get_full_profile(
+                            &self.profiles,
+                            &sale.bids[i].account_id,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        );
+                    }
+                }
+                else
+                {
+                    let mut only_last_bid : Vec<SaleBid> = Vec::new();
+                    only_last_bid.push(sale.bids[sale.bids.len() - 1].clone());
+
+                    only_last_bid[0].account = Profile::get_full_profile(
+                        &self.profiles,
+                        &only_last_bid[0].account_id,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers
+                    );
+
+                    sale.bids = only_last_bid;
+                }
+            }
+
+            Some(sale);
+        }
+        
+        return None;
     }
 
     pub fn sale_create(
@@ -84,8 +162,6 @@ impl Contract {
             signer_id,
             "Forbidden"
         );
-
-        let bids : Option<Vec<SaleBid>>;
 
         match sale_type
         {
@@ -112,14 +188,11 @@ impl Contract {
 
                 start_date = None;
                 end_date = None;
-                bids = None;
 
                 self.tokens_resort(token_id.clone(), 5, Some(num_price));
             },
             2 | 3 =>
             {
-                bids = Some(Vec::new());
-
                 if sale_type == 2 
                     && (start_date.is_none() || end_date.is_none())
                 {
@@ -145,7 +218,7 @@ impl Contract {
                 price : price,
                 start_date: start_date,
                 end_date: end_date,
-                bids: bids
+                bids: Vec::new()
            }
         );
     }
@@ -231,7 +304,6 @@ impl Contract {
             2 | 3 =>
             {
                 let price : u128;
-                let mut  bids = sale.bids.unwrap();
 
                 if sale.sale_type == 2
                 {
@@ -253,7 +325,7 @@ impl Contract {
 
                 price = offer.unwrap().0;
 
-                if bids.len() == 0
+                if sale.bids.len() == 0
                 {
                     if price <= 0
                     {
@@ -262,20 +334,20 @@ impl Contract {
                 }
                 else
                 {
-                    if price <= bids[bids.len() - 1].price
+                    if price <= sale.bids[sale.bids.len() - 1].price
                     {
                         panic!("Offer must be greater then last offer");
                     }
                 }
 
-                bids.push(SaleBid
+                sale.bids.push(SaleBid
                 {
                     account_id: buyer_id,
                     date: time,
-                    price: price
+                    price: price,
+                    account: None
                 });
 
-                sale.bids = Some(bids);
                 self.sales_active.insert(&token_id, &sale);
 
                 self.tokens_resort(token_id.clone(), 5, Some(price));

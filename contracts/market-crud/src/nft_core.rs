@@ -372,7 +372,7 @@ impl NonFungibleTokenCore for Contract {
              =self.tokens_users_likes.get(token_id){
 
                 if account_id.is_some(){
-                    _is_like= _users_like_list.contains(&account_id.unwrap());
+                    _is_like= _users_like_list.contains(&account_id.clone().unwrap());
                 }
              }
 
@@ -385,7 +385,7 @@ impl NonFungibleTokenCore for Contract {
                 approved_account_ids: token.approved_account_ids,
                 token_type: token.token_type,
                 is_like:_is_like,
-                sale : self.sales_active.get(&token_id)
+                sale : self.sale_get(&token_id, account_id, false)
             })
         } else {
             None

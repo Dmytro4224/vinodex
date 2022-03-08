@@ -185,120 +185,127 @@ impl Profile {
     ///кількість поставлених лайків
     pub fn get_profile_like_count(
      autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
-     account_id: &AccountId)->u32{
-
-        if !autors_likes.contains_key(account_id)
+     account_id: &AccountId)->u32
+     {
+        match autors_likes.get(&account_id)
         {
-            return  0;
+            Some(likes) =>
+            {
+                return likes.len() as u32;
+            },
+            None =>
+            {
+                return 0 as u32;
+            }
         }
-
-        return autors_likes.get(&account_id).unwrap().len() as u32;
     }
 
     pub fn is_profile_liked(
         autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
-        asked_account_id: &AccountId)->bool{
-   
-            let likes =  autors_likes.get(&sourse_account_id);
-
-            match likes
+        asked_account_id: &AccountId)->bool
+    {
+        match autors_likes.get(&sourse_account_id)
+        {
+            Some(tmp) =>
             {
-                Some(tmp) =>
+                if tmp.contains(asked_account_id)
                 {
-                    if tmp.contains(asked_account_id)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                },
-                None =>
-                {
-                    return false;
+                    return true;
                 }
+
+                return false;
+            },
+            None =>
+            {
+                return false;
             }
-       }
+        }
+    }
 
     ///кількість людей, які підписалися на автора
     pub fn get_profile_followers_count(
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
-        account_id: &AccountId)->u32{
-   
-           if !autors_followers.contains_key(account_id)
-           {
-               return  0;
-           }
-   
-           return autors_followers.get(&account_id).unwrap().len() as u32;
-       }
+        account_id: &AccountId)->u32
+    {
+        match autors_followers.get(&account_id)
+        {
+            Some(follows) =>
+            {
+                return follows.len() as u32;
+            },
+            None =>
+            {
+                return 0 as u32;
+            }
+        }
+    }
 
-       pub fn is_profile_followind(
+    pub fn is_profile_followind(
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
         asked_account_id: &AccountId)->bool
+    {
+        match autors_followers.get(&sourse_account_id)
         {
-   
-            let follows = autors_followers.get(&sourse_account_id);
-
-            match follows
+            Some(tmp) =>
             {
-                Some(tmp) =>
+                if tmp.contains(asked_account_id)
                 {
-                    if tmp.contains(asked_account_id)
-                    {
-                        return true;
-                    }
-
-                    return false;
-                },
-                None =>
-                {
-                    return false;
+                    return true;
                 }
+
+                return false;
+            },
+            None =>
+            {
+                return false;
             }
-       }
+        }
+    }
 
     ///поставити відмітку, хто відвідував сторінку користувачем
     pub fn set_profile_view(
         autors_view:&mut LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
-        target_account_id: &AccountId){
+        target_account_id: &AccountId)
+    {
 
-            Profile::change_dictionary_state(
-                autors_view,
-                sourse_account_id,
-                target_account_id,
-            false
-            );
+        Profile::change_dictionary_state(
+            autors_view,
+            sourse_account_id,
+            target_account_id,
+        false
+        );
     }
 
     ///Додати користувача в список відстеження
     pub fn set_profile_follow(
         autors_following_list:&mut LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
-        target_account_id: &AccountId){
-
-            Profile::change_dictionary_state(
-                autors_following_list,
-                sourse_account_id,
-                target_account_id,
-            true
-            );
+        target_account_id: &AccountId)
+    {
+        Profile::change_dictionary_state(
+            autors_following_list,
+            sourse_account_id,
+            target_account_id,
+        true
+        );
     }
 
     ///додати юзера до мого списку вподобань
     pub fn add_profile_to_my_like_list(
         my_authors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
         my_account_id: &AccountId,
-        like_account_id: &AccountId){
+        like_account_id: &AccountId)
+    {
 
-            Profile::change_dictionary_state(
-                my_authors_likes,
-                my_account_id,
-                like_account_id,
-            true
-            );
+        Profile::change_dictionary_state(
+            my_authors_likes,
+            my_account_id,
+            like_account_id,
+        true
+        );
     }
 
     pub fn add_profile_to_my_followers_list(
@@ -323,8 +330,7 @@ impl Profile {
         //вказує на те, чи потрібно робити зворотню дію: чек-анчек
         need_reverse:bool)
     {
-        let mut _account_list = dictionary.get(&sourse_account_id);
-        match _account_list
+        match dictionary.get(&sourse_account_id)
         {
             Some(mut value) =>
             {

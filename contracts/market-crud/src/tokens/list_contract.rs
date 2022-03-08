@@ -361,6 +361,207 @@ impl Contract {
         self.profiles_global_stat_sorted_vector = LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap());
     }
 
+    pub fn sale_history(&self, 
+        token_id: TokenId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id:Option<AccountId>) -> Vec<SaleHistoryJson>
+    {
+        match self.sales_history_by_token_id.get(&token_id)
+        {
+            Some(history) =>
+            {
+                if history.len() == 0
+                {
+                    return Vec::new();
+                }
+
+                let mut start_index : i64 = 0;
+
+                if page_index > 1
+                {
+                    start_index = (page_index as i64 - 1) * page_size as i64;
+                }
+
+                let history_len = history.len() as i64;
+                if start_index >= history_len
+                {
+                    return Vec::new();
+                }
+
+                let mut end_index = start_index + page_size as i64;
+                if end_index > history_len
+                {
+                    end_index = history_len;
+                }
+
+                let mut result : Vec<SaleHistoryJson> = Vec::new();
+
+                for i in start_index..end_index
+                {
+                    let _index = i as usize;
+
+                    let item = history.get(_index);
+                    if item.is_none()
+                    {
+                        break;
+                    }
+
+                    let item_unwrapped = item.unwrap();
+
+                    result.push(SaleHistoryJson
+                    {
+                        account_from: Profile::get_full_profile(
+                            &self.profiles,
+                            &item_unwrapped.account_from,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        ),
+                        account_to: Profile::get_full_profile(
+                            &self.profiles,
+                            &item_unwrapped.account_to,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        ),
+                        price: item_unwrapped.price,
+                        date: item_unwrapped.date
+                    });
+                }
+
+                return result;
+            },
+            None =>
+            {
+                return Vec::new();
+            }
+        }
+    }
+
+    pub fn token_owners_history(&self, 
+        token_id: TokenId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id:Option<AccountId>) -> Vec<JsonProfile>
+    {
+        let mut result : Vec<JsonProfile> = Vec::new();
+
+        match self.sales_history_by_token_id.get(&token_id)
+        {
+            Some(history) =>
+            {
+                if history.len() == 0
+                {
+                    return Vec::new();
+                }
+
+                let mut start_index : i64 = 0;
+
+                if page_index > 1
+                {
+                    start_index = (page_index as i64 - 1) * page_size as i64;
+                }
+
+                let history_len = history.len() as i64 + 1;
+                if start_index >= history_len
+                {
+                    return Vec::new();
+                }
+
+                let mut end_index = start_index + page_size as i64;
+                if end_index > history_len
+                {
+                    end_index = history_len;
+                }
+
+                for i in start_index..end_index
+                {
+                    let _index : usize;
+                    if i as usize == history.len()
+                    {
+                        _index = (i - 1) as usize;
+                    }
+                    else
+                    {
+                        _index = i as usize;
+                    }
+
+                    let item = history.get(_index);
+                    if item.is_none()
+                    {
+                        break;
+                    }
+
+                    let item_unwrapped = item.unwrap();
+                    let res : Option<JsonProfile>;
+
+                    if _index == history.len()
+                    {
+                        res = Profile::get_full_profile(
+                            &self.profiles,
+                            &item_unwrapped.account_to,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        );
+                    }
+                    else
+                    {
+                        res = Profile::get_full_profile(
+                            &self.profiles,
+                            &item_unwrapped.account_from,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers
+                        );
+                    }
+
+                    if res.is_some()
+                    {
+                        result.push(res.unwrap());
+                    }
+                }
+
+                return result;
+            },
+            None =>
+            {
+                if page_index <= 1
+                {
+                    let token = self.tokens_by_id.get(&token_id);
+
+                    match token
+                    {
+                        Some(token) =>
+                        {
+                            let res = Profile::get_full_profile(
+                                &self.profiles,
+                                &token.owner_id,
+                                &asked_account_id,
+                                &self.autors_likes,
+                                &self.autors_followers
+                            );
+    
+                            if res.is_some()
+                            {
+                                result.push(res.unwrap());
+                            }
+                        },
+                        None => {}
+                    }
+                }
+            }
+        }
+            
+        return result;
+    }
+
+
     //списки авторів
     pub fn authors_by_filter(
         &self,

@@ -298,6 +298,8 @@ impl Contract {
         this
     }
 
+    
+
     #[init(ignore_state)]
     pub fn migrate_state_1() -> Self {
         let migration_version: u16 = 1;
