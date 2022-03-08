@@ -12,6 +12,7 @@ import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
 import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
+import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 
 interface ITokenCardView extends IProps {
   icon?: any;
@@ -311,13 +312,23 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
         </div>
 
         {this.isTransferAction && (
-          <ModalTransferNFT
-            inShowModal={this.state.modalTransferIsShow}
-            onHideModal={() => this.hideModal()}
-            onSubmit={() => {
-            }}
-            tokenInfo={{}}
-          />
+          <>
+            <ModalTransferNFT
+              inShowModal={this.state.modalTransferIsShow}
+              onHideModal={() => this.hideModal()}
+              onSubmit={() => {
+              }}
+              tokenInfo={{}}
+            />
+
+            {/*<ModalSaleToken*/}
+            {/*  inShowModal={false}*/}
+            {/*  onHideModal={() => {}}*/}
+            {/*  onSubmit={() => {*/}
+            {/*  }}*/}
+            {/*  tokenInfo={{}}*/}
+            {/*/>*/}
+          </>
         )}
       </>
     );
