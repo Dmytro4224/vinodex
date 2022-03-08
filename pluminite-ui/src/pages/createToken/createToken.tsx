@@ -1,6 +1,6 @@
 import React from "react";
 import { Component } from "react";
-import { Form, FormCheck } from "react-bootstrap";
+import { Form, FormCheck, Spinner } from "react-bootstrap";
 import Dropzone, { DropzoneRef } from "react-dropzone";
 import { pinataAPI } from "../../api/Pinata";
 import { IUploadFileResponse } from "../../api/IUploadFileResponse";
@@ -33,6 +33,7 @@ interface ICreateToken extends IProps {
 
 class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _ref: React.RefObject<DropzoneRef>;
+  private _refCoverFile: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
   private _refInputDescription: any;
   private _refInputPrice: any;
@@ -43,14 +44,21 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _refStartDate: any;
   private _refExpDate: any;
   private _refPutOnMarket: any;
+  private _refCoverFileWrap: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
   private _fileResponse: IUploadFileResponse | undefined
-  private _imageRef: React.RefObject<HTMLImageElement>;
+  private _fileCoverResponse: IUploadFileResponse | undefined
+  private _imageRef: React.RefObject<any>;
+  private _refCoverImg: React.RefObject<any>;
   private _renderType: number
+  private _isVideo: boolean
 
   public state = {
     file: null,
+    isLoadFile: false,
+    fileCover: null,
+    isLoadCoverFile: false,
     title: "",
     putOnMarket: false,
     price: 0,
@@ -74,8 +82,12 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     super(props);
 
     this._ref = React.createRef<DropzoneRef>();
-    this._imageRef = React.createRef<HTMLImageElement>();
+    this._refCoverFile = React.createRef<DropzoneRef>();
+    this._refCoverFileWrap = React.createRef<any>();
+    this._imageRef = React.createRef<any>();
+    this._refCoverImg = React.createRef<any>();
     this._renderType = 1;
+    this._isVideo = false;
 
     if (!this.props.near.isAuth) {
       this.props.near.signIn();
@@ -88,12 +100,23 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     }
   }
 
-  public setSelectFile = async (files: Array<File>) => {
-    console.log('setSelectFile', files);
+  private openCoverDialog = () => {
+    if (this._refCoverFile.current) {
+      this._refCoverFile.current.open();
+    }
+  }
 
+  public setSelectFile = async (files: Array<File>) => {
     this._selectFile = files[0];
 
     if (this._selectFile === undefined) { return }
+
+    if(this._selectFile.type.startsWith('video/')){
+      this._isVideo = true;
+      this._refCoverFileWrap.current.hidden = false;
+    }
+
+    this.setState({...this.state, isLoadFile: true});
 
     this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
     //return;
@@ -105,9 +128,24 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     //console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
       //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
-      this.setState({...this.state, file: this._fileResponse.url});
+      this.setState({...this.state, file: this._fileResponse.url, isLoadFile: false});
 
       this._imageRef.current.src = this._fileResponse.url;
+    }
+  }
+
+  public setSelectCoverFile = async (files: Array<File>) => {
+    let _selectFile = files[0];
+
+    if (_selectFile === undefined) { return }
+
+    this.setState({...this.state, isLoadCoverFile: true});
+    this._fileCoverResponse = await nftStorage.uploadFile(_selectFile as File, 'name', 'descr');
+
+    if (this._fileCoverResponse && this._refCoverImg?.current) {
+      this.setState({...this.state, fileCover: this._fileCoverResponse.url, isLoadCoverFile: false});
+
+      this._refCoverImg.current.src = this._fileCoverResponse.url;
     }
   }
 
@@ -161,8 +199,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   }
 
   private get previewImage(){
-    if(this._fileResponse !== undefined){
-      return this._fileResponse.url;
+    if(!this._isVideo){
+      if(this._fileResponse !== undefined){
+        return this._fileResponse.url;
+      }
+    }else{
+      if(this._fileCoverResponse !== undefined){
+        return this._fileCoverResponse.url;
+      }
     }
 
     return cardPreview;
@@ -216,16 +260,23 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         <div className={styles.createWrap}>
           <label className={styles.label}>Upload file</label>
           <div className={styles.dropzone}>
-            <Dropzone onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
+            <Dropzone accept="image/*,video/*" onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
               {({ getRootProps, getInputProps, acceptedFiles }) => {
+
                 return (
                   <div>
                     <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
                       <input {...getInputProps()} />
                       <div className={styles.dropzoneControls}>
                         {acceptedFiles.length > 0 ?
-                          <img ref={this._imageRef} src={defaultImage} /> :
-                          <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p><ButtonView
+                          <>{ acceptedFiles[0].type.startsWith('video/') ?
+                              <iframe ref={this._imageRef} className={styles.iFrameStyle} width="550" height="300" src={""}
+                                      title="" frameBorder="0"
+                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                      allowFullScreen></iframe>
+                              : <img ref={this._imageRef} src={""} /> }</> :
+                          <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
+                            <ButtonView
                             text={'Upload file'}
                             onClick={() => {
                               this.openDialog();
@@ -240,7 +291,43 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 );
               }}
             </Dropzone>
+            {this.state.isLoadFile &&
+              <div className={styles.spinnerWrap}><Spinner animation='grow' variant='light' /></div>}
           </div>
+
+          <div ref={this._refCoverFileWrap} className={"mt-5"} hidden>
+            <label className={styles.label}>Upload cover</label>
+            <div className={styles.dropzone}>
+              <Dropzone accept="image/*" onDrop={this.setSelectCoverFile} ref={this._refCoverFile} noClick noKeyboard>
+                {({ getRootProps, getInputProps, acceptedFiles }) => {
+                  return (
+                    <div>
+                      <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
+                        <input {...getInputProps()} />
+                        <div className={styles.dropzoneControls}>
+                          {acceptedFiles.length > 0 ?
+                            <img ref={this._refCoverImg} src={""} /> :
+                            <><p className={styles.dropzoneTitle}>PNG, GIF. Max 100mb</p>
+                              <ButtonView
+                                text={'Upload file'}
+                                onClick={() => {
+                                  this.openCoverDialog();
+                                }}
+                                color={buttonColors.goldFill}
+                                customClass={styles.button} /></>
+                          }
+
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }}
+              </Dropzone>
+              {this.state.isLoadCoverFile &&
+                <div className={styles.spinnerWrap}><Spinner animation='grow' variant='light' /></div>}
+            </div>
+          </div>
+
           <InputView
             onChange={(e) => { this.setTitle() }}
             placeholder={'Title*'}
@@ -475,6 +562,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     const price = parseFloat(this._refInputPrice.value);
 
     if (this._fileResponse === undefined) { return }
+
+    if(this._isVideo){
+      if (this._fileCoverResponse === undefined) { return }
+    }
 
     const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
 
