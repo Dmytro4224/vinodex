@@ -134,7 +134,7 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
             />
 
             <ButtonView
-              text={'Save'}
+              text={'Apply'}
               onClick={() => {
                 this.onSubmit();
               }}

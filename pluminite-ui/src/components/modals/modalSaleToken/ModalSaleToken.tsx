@@ -134,7 +134,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             />
 
             <ButtonView
-              text={'Save'}
+              text={'Apply'}
               onClick={() => {
                 this.onSubmit();
               }}
