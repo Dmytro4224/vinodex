@@ -117,22 +117,25 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
               </div>
             </MediaQuery>
             <MediaQuery maxWidth={991}>
-              <div className="d-flex flex-column w-100">
-                <div className="d-flex align-items-center justify-content-between">
+              <div className='d-flex flex-column w-100'>
+                <div className='d-flex align-items-center justify-content-between'>
                   <DropdownView
                     colorType={dropdownColors.select}
                     title={''}
                     icon={sortIcon}
                     hideArrow={true}
-                    onChange={(item) => { this.setSort(item.id) }}
+                    onChange={(item) => {
+                      this.setSort(item.id);
+                    }}
                     childrens={dropdownData}
                   />
 
                   <ButtonView
-                    text={""}
+                    text={''}
                     withoutText={true}
                     icon={filterIcon}
-                    onClick={() => { }}
+                    onClick={() => {
+                    }}
                     color={buttonColors.select}
                   />
                 </div>
