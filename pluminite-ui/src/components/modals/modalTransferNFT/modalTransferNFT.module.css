@@ -1,0 +1,11 @@
+.modalBtn {
+  padding: 12px 26px !important;
+}
+
+.inputSubText {
+  font-weight: 500;
+  font-size: 14px;
+  margin-top: 4px;
+  margin-left: 12px;
+  color: var(--doveGrayS);
+}

@@ -4,17 +4,16 @@ import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import Loader from '../../components/common/loader/loader';
-import LabelView from '../../components/common/label/labelView';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 
 export interface IArtistsView extends IProps {
-	parameter?: BestArtistsParameter;
+  parameter?: BestArtistsParameter;
   viewType?: ArtistViewType;
 }
 
 interface IArtistsViewState {
-	isLoading: boolean;
-	list: Array<IAuthorResponseItem>;
+  isLoading: boolean;
+  list: Array<IAuthorResponseItem>;
 }
 
 export enum ArtistViewType {
@@ -23,37 +22,41 @@ export enum ArtistViewType {
 
 class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtistsViewState> {
 
-	private _parameter: BestArtistsParameter;
-	private _pageIndex: number = 1;
-	private _pageSize: number = 8;
-	private _isReverse: boolean = true;
+  private _parameter: BestArtistsParameter;
+  private _pageIndex: number = 1;
+  private _pageSize: number = 8;
+  private _isReverse: boolean = true;
 
-	constructor(props: IArtistsView & IBaseComponentProps) {
-		super(props);
+  constructor(props: IArtistsView & IBaseComponentProps) {
+    super(props);
 
-		this._parameter = this.props.parameter === void 0 ? BestArtistsParameter.likes_count : this.props.parameter;
+    this._parameter = this.props.parameter === void 0 ? BestArtistsParameter.likes_count : this.props.parameter;
 
-		this.state = {
-			isLoading: true,
-			list: []
-		};
-	}
+    this.state = {
+      isLoading: true,
+      list: [],
+    };
+  }
 
-	public componentDidMount() {
-		this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
-			const list = response.filter(item => item !== null);
+  public componentDidMount() {
+    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
+      let list = response.filter(item => item !== null);
 
-			this.setState({
-				...this.state,
-				list,
-				isLoading: false
-			});
-		});
-	}
+      if (this.isProfilePageView) {
+        list = list.filter(item => item.is_following);
+      }
 
-	public isLoading() {
-		return this.state.isLoading;
-	}
+      this.setState({
+        ...this.state,
+        list,
+        isLoading: false,
+      });
+    });
+  }
+
+  public isLoading() {
+    return this.state.isLoading;
+  }
 
   private get viewType() {
     return this.props.viewType;
@@ -67,28 +70,27 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     return this.isProfilePageView ? 'your following' : '';
   }
 
-	public render() {
-		if (this.state.isLoading) {
-			return (
-				<div className="my-5 container">
+  public render() {
+    if (this.state.isLoading) {
+      return (
+        <div className='my-5 container'>
           <Loader />
-				</div>
-			);
-		}
+        </div>
+      );
+    }
 
-		if (this.state.list.length === 0) {
-			return (
-				<div className="my-5 container">
-					<LabelView text={'Best Artists'} />
-					<EmptyListView />
-				</div>
-			)
-		}
+    if (this.state.list.length === 0) {
+      return (
+        <div className='my-5 container'>
+          <EmptyListView />
+        </div>
+      );
+    }
 
-		return (
-			<div className="my-5 container">
-				<div className="d-flex flex-wrap flex-gap-36 mt-3">
-					{this.state.list.map((item, index) => (
+    return (
+      <div className='my-5 container'>
+        <div className='d-flex flex-wrap flex-gap-36 mt-3'>
+          {this.state.list.map((item, index) => (
             <ArtistCard
               key={`artist-${item.account_id}`}
               info={item}
@@ -99,12 +101,12 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
               isFollow={item.is_following}
               followBtnText={this.followBtnText}
               isDisabledFollowBtn={this.isProfilePageView}
-            />)
-					)}
-				</div>
-			</div>
-		);
-	}
+            />),
+          )}
+        </div>
+      </div>
+    );
+  }
 }
 
 export default withComponent(ArtistsView);

@@ -12,7 +12,7 @@ import { pinataAPI } from '../../api/Pinata';
 import { IUploadFileResponse } from '../../api/IUploadFileResponse';
 import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
-import ProfileTokensView from '../../components/profileTokensView/ProfileTokensView';
+import ProfileTokensView from '../../components/profile/profileTokensView/ProfileTokensView';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import ArtistsView, { ArtistViewType } from '../artists';
@@ -45,7 +45,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   public state = {
     isLoadAvatar: false,
     image: avatarDefault,
-    activeTab: window.location.href.split('?tab=')[1],
+    activeTab: this.activeTabFromUrl,
     catalog: 'Art',
     sort: 7,
     profile: {
@@ -301,7 +301,11 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   private get activeTabFromUrl() {
-    return window.location.href.split('?tab=')[1];
+    try {
+      return window.location.href.split('?tab=')[1].split('&')[0];
+    } catch (e) {
+      return window.location.href.split('?tab=')[1];
+    }
   }
 
   private get urlWithoutParam() {
