@@ -192,7 +192,6 @@ impl Contract {
         if is_reverse
         {
             let mut start_index = token_ids.len() as i64 - skip as i64 - 1;
-            let end_index = start_index - available_amount;
 
             //while start_index > end_index && !stop
             while result.len() < limit && !stop
@@ -418,14 +417,16 @@ impl Contract {
                             &item_unwrapped.account_from,
                             &asked_account_id,
                             &self.autors_likes,
-                            &self.autors_followers
+                            &self.autors_followers,
+                            true
                         ),
                         account_to: Profile::get_full_profile(
                             &self.profiles,
                             &item_unwrapped.account_to,
                             &asked_account_id,
                             &self.autors_likes,
-                            &self.autors_followers
+                            &self.autors_followers,
+                            true
                         ),
                         price: item_unwrapped.price,
                         date: item_unwrapped.date
@@ -507,7 +508,8 @@ impl Contract {
                             &item_unwrapped.account_to,
                             &asked_account_id,
                             &self.autors_likes,
-                            &self.autors_followers
+                            &self.autors_followers,
+                            true
                         );
                     }
                     else
@@ -517,7 +519,8 @@ impl Contract {
                             &item_unwrapped.account_from,
                             &asked_account_id,
                             &self.autors_likes,
-                            &self.autors_followers
+                            &self.autors_followers,
+                            true
                         );
                     }
 
@@ -544,7 +547,8 @@ impl Contract {
                                 &token.owner_id,
                                 &asked_account_id,
                                 &self.autors_likes,
-                                &self.autors_followers
+                                &self.autors_followers,
+                                true
                             );
     
                             if res.is_some()
@@ -627,7 +631,8 @@ impl Contract {
                         &_author_id.unwrap().account_id,
                         &asked_account_id,
                         &self.autors_likes,
-                        &self.autors_followers
+                        &self.autors_followers,
+                        true
                     ));
                 }
             }
@@ -650,7 +655,8 @@ impl Contract {
                         &_author_id.unwrap().account_id,
                         &asked_account_id,
                         &self.autors_likes,
-                        &self.autors_followers
+                        &self.autors_followers,
+                        true
                   ));
             }
         }
@@ -658,7 +664,7 @@ impl Contract {
         return result;
     }
 
-    ///список улюблений авторів
+    ///список вподобаних авторів
     pub fn liked_authors_for_account(
         &self,
         account_id: AccountId,
@@ -719,7 +725,8 @@ impl Contract {
                         &_author_id.unwrap(),
                         &_accoutn_id,
                         &self.autors_likes,
-                        &self.autors_followers
+                        &self.autors_followers,
+                        true
                   ));
             }
         
@@ -789,7 +796,8 @@ impl Contract {
                             &author_id,
                             &_accoutn_id,
                             &self.autors_likes,
-                            &self.autors_followers
+                            &self.autors_followers,
+                            true
                         )
                     );
                 },

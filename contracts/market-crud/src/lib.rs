@@ -5,11 +5,10 @@ use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
 use near_sdk::json_types::{Base64VecU8, ValidAccountId, U64, U128};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
-    assert_one_yocto, env, ext_contract, near_bindgen, AccountId, Balance, Gas, PanicOnDefault,
+    assert_one_yocto, env, near_bindgen, AccountId, Balance, Gas, PanicOnDefault,
     Promise, CryptoHash, BorshStorageKey, StorageUsage,
 };
 
-use std::mem::size_of;
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
 use std::collections::HashSet;
 use std::cmp::Ordering;

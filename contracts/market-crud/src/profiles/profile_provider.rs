@@ -50,12 +50,15 @@ impl Profile {
         return profiles.get(&account_id);
     }
 
+
+
     pub fn get_full_profile(
         profiles: &LookupMap<AccountId, Profile>,
         account_id: &AccountId,
         asked_account_id: &Option<AccountId>,
         autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>,
+        default_if_none: bool
        ) -> Option<JsonProfile> {
        let account_id: AccountId = account_id.into();
 
@@ -90,8 +93,27 @@ impl Profile {
            return  Some(result);
            }
         
-        else {
-           return  None
+        else 
+        {
+            if default_if_none
+            {
+                return Some(JsonProfile
+                {
+                    account_id: account_id,
+                    bio: String::from(""),
+                    name: String::from(""),
+                    image: String::from(""),
+                    email: String::from(""),
+                    is_following:false,
+                    is_like:false,
+                    followers_count: 0,
+                    likes_count: 0
+                });
+            }
+            else
+            {
+                return  None;
+            }
        }
    }
     pub fn get_default_data(account_id: AccountId) -> Profile{
