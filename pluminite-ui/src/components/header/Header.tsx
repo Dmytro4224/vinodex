@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import styles from './header.module.css';
 import { HeaderNavigation } from "../navigation/HeaderNavigation";
 import InputView, { InputStyleType } from "../common/inputView/InputView";
 import LoginButton from "../header/loginButton";
 import searchIcon from "../../assets/icons/search.svg";
-import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { dropdownColors, DropdownView } from "../common/dropdown/dropdownView";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { NavLink } from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 import MediaQuery from 'react-responsive'
 import Menu from "./menu/Menu";
-import CreateTokenDropdownView  from "../createTokenDropdown/createTokenDropdownView";
+import CreateTokenDropdownView from "../createTokenDropdown/createTokenDropdownView";
 
 interface IHeader extends IProps {
   setToUpdateUser: (updateMtd) => void;
