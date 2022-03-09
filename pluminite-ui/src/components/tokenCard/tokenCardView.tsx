@@ -134,14 +134,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       case ProfileTokensType.purchases:
         return (
           <div className={styles.cardControls}>
-            {this.props.likesCount ? <LikeView
+            <LikeView
               customClass={styles.likes}
               isChanged={this.state.isLike}
               isActive={true}
               type={LikeViewType.like}
               count={this.state.likesCount}
               onClick={this.toggleLikeToken}
-            /> : <div></div>}
+            />
             {this.props.buttonText && <ButtonView
               text={this.typeView === ProfileTokensType.purchases ? 'Sell' : this.props.buttonText}
               onClick={() => {
