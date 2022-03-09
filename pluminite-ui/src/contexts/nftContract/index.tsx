@@ -19,8 +19,10 @@ export interface INftContractContext {
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
+  sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
+  sale_get: (token_id: string, with_bids: boolean) => Promise<any>;
   authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_mint: (data: any) => Promise<any>;
 }
@@ -47,6 +49,10 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       asked_account_id: this.myAccountId
     });
   }
+  public sale_history = (token_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.sale_history({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
+  }
+
   public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number) => {
     return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, account_id: this.myAccountId });
   }
@@ -57,6 +63,10 @@ export class NftContractContextProvider extends Component<INftContractContextPro
 
   public nft_token_get = (token_id: string) => {
     return this.props.nftContract.nft_token_get({ token_id });
+  }
+
+  public sale_get = (token_id: string, with_bids: boolean) => {
+    return this.props.nftContract.sale_get({ token_id, with_bids, asked_account_id: this.myAccountId });
   }
 
   public get nftContract() {
@@ -127,6 +137,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_tokens_by_filter: this.nft_tokens_by_filter,
       nft_tokens_catalogs: this.nft_tokens_catalogs,
       nft_token_get: this.nft_token_get,
+      sale_get: this.sale_get,
+      sale_history: this.sale_history,
       authors_by_filter: this.authors_by_filter,
       getProfile: this.getProfile,
       set_profile: this.set_profile,

@@ -10,6 +10,7 @@ import ButtonView, {buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
+import HistoryView  from './tabs/history/historyView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
@@ -222,17 +223,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   </Tab>
                   <Tab eventKey="bids" title="BIDS">
                     <div className={styles.tabContainer}>
-                      <BidsView items={[{
-                        name: "user",
-                        identification: "28 September, 2021, 5:51 PM ",
-                        price: 12,
-                        currency: "ETC"
-                      },
-                        {name: "user-2", identification: "2 September, 2021, 3:51 PM ", price: 2, currency: "ETC"}]}/>
+                      <BidsView tokenId={this.state.order?.token_id!}/>
                     </div>
                   </Tab>
                   <Tab eventKey="contact" title="HISTORY">
-                    <div className={styles.tabContainer}>Empty result</div>
+                    <div className={styles.tabContainer}>
+                      {/*<HistoryView tokenId={this.state.order?.token_id!} />*/}
+                    </div>
                   </Tab>
                   <Tab eventKey="owners" title="OWNERS">
                     <div className={styles.tabContainer}>Empty result</div>
