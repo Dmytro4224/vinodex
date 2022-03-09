@@ -377,6 +377,7 @@ impl Contract {
     }
 
     //Забрати лот по аукціону (доступно тільки якщо він вже закритий)
+    #[payable]
     pub fn sale_auction_init_transfer(
         &mut self,
         token_id: String,
@@ -405,7 +406,10 @@ impl Contract {
         let last_bid = sale.bids.get(sale.bids.len() - 1).expect("error");
         assert_eq!(last_bid.account_id, buyer_id, "forbidden");
 
-        assert!(deposit < last_bid.price, "Attached deposit must be greater than or equal to the current price: {:?}", last_bid.price);
+        if deposit < last_bid.price
+        {
+            panic!("Attached deposit must be greater than or equal to the current price");
+        }
 
         //process the purchase (which will remove the sale, transfer and get the payout from the nft contract, and then distribute royalties) 
         self.process_purchase(
@@ -592,43 +596,23 @@ impl Contract {
         price: u128,
         payout: Option<HashMap<String, U128>>
     ) -> u128 {
-       1
-        // //we'll keep track of how much the nft contract wants us to payout. Starting at the full price payed by the buyer
-        // let mut remainder = price;
-                        
-        // //loop through the payout and subtract the values from the remainder. 
-        // for &value in payout_object.values() {
-        //     //checked sub checks for overflow or any errors and returns None if there are problems
-        //     remainder = remainder.checked_sub(value.0)?;
-        // }
-        // //Check to see if the NFT contract sent back a faulty payout that requires us to pay more or too little. 
-        // //The remainder will be 0 if the payout summed to the total price. The remainder will be 1 if the royalties
-        // //we something like 3333 + 3333 + 3333. 
-        // if remainder == 0 || remainder == 1 {
-        //     //set the payout_option to be the payout because nothing went wrong
-        //     Some(payout_object)
-        // } else {
-        //     //if the remainder was anything but 1 or 0, we return None
-        //     None
-        // }
+        // if the payout option was some payout, we set this payout variable equal to that some payout
+        let payout = if let Some(payout_option) = payout {
+            payout_option
+        //if the payout option was None, we refund the buyer for the price they payed and return
+        } else {
+            Promise::new(buyer_id).transfer(u128::from(price));
+            // leave function and return the price that was refunded
+            return price;
+        };
 
-        // // if the payout option was some payout, we set this payout variable equal to that some payout
-        // let payout = if let Some(payout_option) = payout_option {
-        //     payout_option
-        // //if the payout option was None, we refund the buyer for the price they payed and return
-        // } else {
-        //     Promise::new(buyer_id).transfer(u128::from(price));
-        //     // leave function and return the price that was refunded
-        //     return price;
-        // };
+        // NEAR payouts
+        for (receiver_id, amount) in payout {
+            Promise::new(receiver_id).transfer(amount.0);
+        }
 
-        // // NEAR payouts
-        // for (receiver_id, amount) in payout {
-        //     Promise::new(receiver_id).transfer(amount.0);
-        // }
-
-        // //return the price payout out
-        // price
+        //return the price payout out
+        price
     }
 }
 
