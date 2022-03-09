@@ -65,6 +65,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidMount() {
+    window.scrollTo(0, 0);
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`d response`, response);
       this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
