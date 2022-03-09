@@ -145,16 +145,16 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
         this.updateStateUserInfo(info);
       }).catch(error => {
-      showToast({
-        message: `Error! Please try again later.`,
-        type: EShowTost.error,
-      });
+        showToast({
+          message: `Error! Please try again later.`,
+          type: EShowTost.error,
+        });
 
-      this.setState({
-        ...this.state,
-        isLoadAvatar: false,
+        this.setState({
+          ...this.state,
+          isLoadAvatar: false,
+        });
       });
-    });
   };
 
   public updateStateUserInfo(profile: IUpdateStateUserInfo) {

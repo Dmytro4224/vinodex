@@ -1,25 +1,22 @@
 import { Component } from "react";
-import styles from './bidsView.module.css';
+import styles from './ownersView.module.css';
 import defaultAvatar from '../../../../assets/images/avatar-def.png';
 import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
 import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
-import { formatDate } from "../../../../utils/sys";
 import Skeleton from "react-loading-skeleton";
 
-interface IBidsItemView extends IProps{
+interface IOwnersItemView extends IProps{
   avatar?: any;
   name: string;
   identification: string;
-  price: number;
-  currency: string
 }
 
-interface IBidsView extends IProps{
+interface IOwnersView extends IProps{
   tokenId: string;
 }
 
-class BidsItemView extends Component<IBidsItemView & IBaseComponentProps>{
-  constructor(props: IBidsItemView & IBaseComponentProps) {
+class OwnerItemView extends Component<IOwnersItemView & IBaseComponentProps> {
+  constructor(props: IOwnersItemView & IBaseComponentProps) {
     super(props);
   }
 
@@ -33,14 +30,6 @@ class BidsItemView extends Component<IBidsItemView & IBaseComponentProps>{
 
   private get identification() {
     return this.props.identification;
-  }
-
-  private get price() {
-    return this.props.price;
-  }
-
-  private get currency() {
-    return this.props.currency;
   }
 
   render(){
@@ -57,32 +46,27 @@ class BidsItemView extends Component<IBidsItemView & IBaseComponentProps>{
             />
           </div>
         </div>
-        <div className={styles.bidsPrice}>
-            <span className={styles.price}>
-              {this.price}&nbsp;{this.currency}
-            </span>
-        </div>
       </div>
     )
   }
 }
 
-const BidsItem = withComponent(BidsItemView);
+const OwnerItem = withComponent(OwnerItemView);
 
-interface IBidsViewState{
-  item: any;
+interface IOwnersViewState{
+  items: Array<any>;
   isLoading: boolean;
 }
 
-class BidsView extends Component<IBidsView & IBaseComponentProps>{
-  public state:IBidsViewState = { item: null, isLoading: true };
+class OwnersView extends Component<IOwnersView & IBaseComponentProps>{
+  public state:IOwnersViewState = { items: [], isLoading: true };
 
-  constructor(props: IBidsView & IBaseComponentProps) {
+  constructor(props: IOwnersView & IBaseComponentProps) {
     super(props);
   }
 
   private get childrens(){
-    return this.state.item?.bids;
+    return this.state.items;
   }
 
   private get tokenId(){
@@ -92,8 +76,9 @@ class BidsView extends Component<IBidsView & IBaseComponentProps>{
   public componentDidMount() {
     if(!this.props.near.user){ return }
 
-    this.props.nftContractContext.sale_get(this.tokenId, true).then(response => {
-      this.setState({...this.state, item: response, isLoading: false });
+    this.props.nftContractContext.token_owners_history(this.tokenId, 1, 100).then(response => {
+      console.log(`owners response`, response);
+      this.setState({...this.state, items: response, isLoading: false });
     });
   }
 
@@ -112,7 +97,7 @@ class BidsView extends Component<IBidsView & IBaseComponentProps>{
       <>
         {
           this.childrens.map((child, i) => {
-            return <BidsItem key={i} name={child.account.account_id} avatar={child.account.image} identification={formatDate(new Date(child.date))} price={child.price} currency={"NEAR"}/>
+            return <OwnerItem key={i} name={child.account_id} identification={child.account_id} avatar={child.image} />
           })
         }
       </>
@@ -120,4 +105,4 @@ class BidsView extends Component<IBidsView & IBaseComponentProps>{
   }
 }
 
-export default withComponent(BidsView);
+export default withComponent(OwnersView);
