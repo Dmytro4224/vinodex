@@ -104,7 +104,7 @@ class HistoryView extends Component<IHistoryView & IBaseComponentProps>{
       </div>
     }
 
-    if(!this.childrens){
+    if(!this.childrens || !this.childrens.length){
       return <div className={"w-100 text-center"}>No items found</div> ;
     }
 
@@ -112,7 +112,7 @@ class HistoryView extends Component<IHistoryView & IBaseComponentProps>{
       <>
         {
           this.childrens.map((child, i) => {
-            return <HistoryItem key={i} name={child.name} identification={child.identification} price={child.price} currency={child.currency}/>
+            return <HistoryItem key={i} name={child.account_to.account_id} avatar={child.account_to.image} identification={child.account_to.account_id} price={child.price} currency={"NEAR"}/>
           })
         }
       </>

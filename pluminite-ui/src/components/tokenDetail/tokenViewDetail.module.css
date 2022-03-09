@@ -96,6 +96,8 @@
     padding: 24px 24px;
     font-size: 16px;
     color: var(--mineShaftS);
+    max-height: 279px;
+    overflow-y: auto;
 }
 .buttonWrap{
     display: flex;

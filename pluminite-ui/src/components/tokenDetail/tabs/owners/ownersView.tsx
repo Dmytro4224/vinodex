@@ -89,7 +89,7 @@ class OwnersView extends Component<IOwnersView & IBaseComponentProps>{
       </div>
     }
 
-    if(!this.childrens){
+    if(!this.childrens || !this.childrens.length){
       return <div className={"w-100 text-center"}>No items found</div> ;
     }
 

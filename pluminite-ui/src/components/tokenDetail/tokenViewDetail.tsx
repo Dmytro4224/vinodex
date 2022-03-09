@@ -200,7 +200,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     is_following: false,
                     followers_count: 0
                   }}
-                  identification={'0x0b9D2weq28asdqwe132'}
+                  identification={this.state.order?.owner_id!}
                   usersCount={22}
                   likesCount={12}
                   isCard={false}
@@ -233,13 +233,15 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     </div>
                   </Tab>
                   <Tab eventKey="owners" title="OWNERS">
-                    <OwnersView tokenId={this.state.order?.token_id!} />
+                    <div className={styles.tabContainer}>
+                      <OwnersView tokenId={this.state.order?.token_id!} />
+                    </div>
                   </Tab>
                 </Tabs>
               </div>
               <div className={styles.buttonWrap}>
                 <ButtonView
-                  text={`Place a bid ${this.state.order?.metadata.price} ETH`}
+                  text={`Place a bid ${this.state.order?.metadata.price} NEAR`}
                   onClick={() => {
                     this.buyAction();
                   }}
