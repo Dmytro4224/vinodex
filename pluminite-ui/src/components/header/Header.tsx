@@ -66,7 +66,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
           <MediaQuery minWidth={992}>
             <div className={styles.inputSearchWrap}>
               <InputView
-                onChange={(e) => { console.log(e) }}
+                onChange={(e) => {  }}
                 placeholder={'Search'}
                 icon={searchIcon}
                 inputStyleType={InputStyleType.round}
@@ -77,7 +77,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
                 colorType={dropdownColors.selectGray}
                 title={'En'}
                 disabled={true}
-                onChange={(item) => { console.log(item) }}
+                onChange={(item) => {  }}
                 childrens={[
                   {
                     id: 1,
