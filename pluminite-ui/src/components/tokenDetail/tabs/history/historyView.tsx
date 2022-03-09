@@ -3,6 +3,7 @@ import styles from './historyView.module.css';
 import defaultAvatar from '../../../../assets/images/avatar-def.png';
 import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
 import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
+import Skeleton from "react-loading-skeleton";
 
 interface IHistoryItemView extends IProps{
   avatar?: any;
@@ -90,15 +91,21 @@ class HistoryView extends Component<IHistoryView & IBaseComponentProps>{
   public componentDidMount() {
     if(!this.props.near.user){ return }
 
-    this.props.nftContractContext.sale_get(this.tokenId, true).then(response => {
-      console.log(`bids response`, response);
+    this.props.nftContractContext.sale_history(this.tokenId, 1, 100).then(response => {
+      console.log(`history response`, response);
       this.setState({...this.state, items: response, isLoading: false });
     });
   }
 
   render(){
-    if(this.childrens === null){
-      return <div>Empty result</div> ;
+    if(this.state.isLoading){
+      return <div>
+        <div className="w-100"><Skeleton  count={2} height={30} /></div>
+      </div>
+    }
+
+    if(!this.childrens){
+      return <div className={"w-100 text-center"}>No items found</div> ;
     }
 
     return(

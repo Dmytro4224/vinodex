@@ -11,6 +11,7 @@ import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
 import HistoryView  from './tabs/history/historyView';
+import OwnersView  from './tabs/owners/ownersView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
@@ -228,11 +229,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   </Tab>
                   <Tab eventKey="contact" title="HISTORY">
                     <div className={styles.tabContainer}>
-                      {/*<HistoryView tokenId={this.state.order?.token_id!} />*/}
+                      <HistoryView tokenId={this.state.order?.token_id!} />
                     </div>
                   </Tab>
                   <Tab eventKey="owners" title="OWNERS">
-                    <div className={styles.tabContainer}>Empty result</div>
+                    <OwnersView tokenId={this.state.order?.token_id!} />
                   </Tab>
                 </Tabs>
               </div>

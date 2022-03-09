@@ -22,7 +22,8 @@ export type INftContract = nearAPI.Contract & {
 
     authors_by_filter: ({ parameter, is_reverse, page_index, page_size,asked_account_id }: { parameter: number, is_reverse: boolean, page_index: number, page_size: number,asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
     nft_tokens_by_filter: ({ catalog, page_index, page_size, sort, account_id}: { catalog: string | null, page_index: number, page_size: number, sort: number, account_id:string }) => Promise<Array<ITokenResponseItem>>;
-    sale_history: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<ITokenResponseItem>>;
+    sale_history: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<any>>;
+    token_owners_history: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<any>>;
     nft_token_get: ({ token_id }: { token_id: string}) => Promise<ITokenResponseItem>;
     sale_get: ({ token_id, with_bids, asked_account_id }: { token_id: string, with_bids: boolean, asked_account_id: string}) => Promise<any>;
     nft_tokens_catalogs: () => Promise<Array<any>>;

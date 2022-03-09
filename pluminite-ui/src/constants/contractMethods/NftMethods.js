@@ -11,6 +11,7 @@ const NftMethods = {
     "nft_token_get",
     "sale_get",
     "sale_history",
+    "token_owners_history",
     "authors_by_filter",
     "get_profile",
     "nft_supply_for_creator",

@@ -20,6 +20,7 @@ export interface INftContractContext {
   view_artist_account: (account_id: string) => Promise<any>;
   nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
   sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
+  token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
   sale_get: (token_id: string, with_bids: boolean) => Promise<any>;
@@ -49,8 +50,13 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       asked_account_id: this.myAccountId
     });
   }
+
   public sale_history = (token_id: string, page_index: number, page_size: number) => {
     return this.props.nftContract.sale_history({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
+  }
+
+  public token_owners_history = (token_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.token_owners_history({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
   }
 
   public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number) => {
@@ -139,6 +145,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_token_get: this.nft_token_get,
       sale_get: this.sale_get,
       sale_history: this.sale_history,
+      token_owners_history: this.token_owners_history,
       authors_by_filter: this.authors_by_filter,
       getProfile: this.getProfile,
       set_profile: this.set_profile,
