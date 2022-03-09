@@ -166,7 +166,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 count={this.state.likesCount}
                 onClick={this.toggleLikeToken}
               />
-              <p className={styles.priceText}>Price {this.props.price || 0.00} ETH</p>
+              <p className={styles.priceText}>Price {this.props.price || 0.00} NEAR</p>
             </div>
 
             <p className='line-separator' />
