@@ -19,6 +19,7 @@ import React from 'react';
 import { showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
+import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -52,10 +53,11 @@ interface ITokenViewState{
   isLike: boolean;
   likesCount: number;
   modalTransferIsShow: boolean;
+  modalMediaShow: boolean;
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false };
+  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false, modalMediaShow: false };
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _isProcessLike: boolean;
 
@@ -110,6 +112,20 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     });
   }
 
+  private showMediaModal() {
+    this.setState({
+      ...this.state,
+      modalMediaShow: true,
+    });
+  }
+
+  private hideMediaModal() {
+    this.setState({
+      ...this.state,
+      modalMediaShow: false,
+    });
+  }
+
   private toggleLikeToken = async () => {
     if (!this.props.near.isAuth) {
       this.props.near.signIn();
@@ -154,7 +170,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
             <div className={styles.cardImage}>
               <div className={styles.cardImageWrap}>
-                <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
+                <img onClick={() => { this.showMediaModal() }} ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
                      src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
                 <div className={styles.cardDetail}>
                   {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
@@ -262,7 +278,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           onHideModal={() => this.hideModal()}
           onSubmit={() => {
           }}
-          tokenInfo={{}} token={this.state.order || null}/></>
+          tokenInfo={{}} token={this.state.order || null}/>
+        <ModalViewMedia
+          inShowModal={this.state.modalMediaShow}
+          onHideModal={() => this.hideMediaModal()}
+          media={{ src: this.state.order?.metadata.media || cardPreview }}
+        /></>
     )
   }
 }
