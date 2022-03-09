@@ -60,8 +60,9 @@ impl Contract {
     pub fn token_set_like(&mut self, token_id: TokenId)
     {
         let user_id = env::predecessor_account_id();
+        let likes_count: usize;
 
-        match self.tokens_users_likes.get(&token_id.clone()) {
+        match self.tokens_users_likes.get(&token_id) {
             Some(mut likes) => {
 
                 if likes.contains(&user_id)
@@ -73,11 +74,15 @@ impl Contract {
                     likes.insert(user_id);
                 }
 
+                likes_count = likes.len();
+
                 self.tokens_users_likes.insert(&token_id, &likes);
             }
             None => {
                 let mut hash_set: HashSet<String> = HashSet::new();
                 hash_set.insert(user_id);
+
+                likes_count = 1;
 
                 self.tokens_users_likes.insert(&token_id, &hash_set);
             }
@@ -101,7 +106,7 @@ impl Contract {
             None =>
             {
                 let mut hash_set: HashSet<String> = HashSet::new();
-                hash_set.insert(token_id);
+                hash_set.insert(token_id.clone());
                 self.my_tokens_likes.insert(&env::predecessor_account_id(), &hash_set);
             }
         }
@@ -113,6 +118,8 @@ impl Contract {
             ,1
             ,1
             ,true);
+
+        self.tokens_resort(token_id, 8, Some(likes_count as u128));
     }
 
 
@@ -120,12 +127,15 @@ impl Contract {
     pub fn token_set_view(&mut self, token_id: TokenId)
     {
         let user_id = env::predecessor_account_id();
+        let mut views_count: Option<u128> = None;
 
         match self.tokens_users_views.get(&token_id.clone()) {
             Some(mut views) => {
                 if !views.contains(&user_id)
                 {
                     views.insert(user_id);
+
+                    views_count = Some(views.len() as u128);
                 }
 
                 self.tokens_users_views.insert(&token_id, &views);
@@ -133,6 +143,8 @@ impl Contract {
             None => {
                 let mut hash_set: HashSet<String> = HashSet::new();
                 hash_set.insert(user_id);
+
+                views_count = Some(1);
 
                 self.tokens_users_views.insert(&token_id, &hash_set);
             }
@@ -142,6 +154,12 @@ impl Contract {
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
             &env::predecessor_account_id(),3,1,true);
+
+
+        if views_count.is_some()
+        {
+            self.tokens_resort(token_id, 7, views_count);
+        }
     }
 
 }
