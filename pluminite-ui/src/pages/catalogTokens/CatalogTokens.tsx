@@ -78,8 +78,6 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
       return null;
     }
 
-    console.log(`state`, this.state)
-
     return (
       <div>
         <MediaQuery minWidth={992}>

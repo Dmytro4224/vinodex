@@ -119,15 +119,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     this.setState({...this.state, isLoadFile: true});
 
     this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
-    //return;
-
-    //this._fileResponse = await nftStorage.uploadFile(this._selectFile as File);
-    //console.log('nftStorege response', this._fileResponse);
-
-    //this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
-    //console.log('_fileResponse', this._fileResponse);
     if (this._fileResponse && this._imageRef?.current) {
-      //this._imageRef.current.src = pinataAPI.createUrl(this._fileResponse.IpfsHash);
       this.setState({...this.state, file: this._fileResponse.url, isLoadFile: false});
 
       this._imageRef.current.src = this._fileResponse.url;
@@ -637,8 +629,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         APP.USE_STORAGE_FEES ? marketContractState.minStorage : 1
       ),*/
     ]);
-
-    console.log(`create response`, res);
   }
 }
 

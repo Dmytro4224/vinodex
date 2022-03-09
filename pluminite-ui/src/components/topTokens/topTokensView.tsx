@@ -39,7 +39,6 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   public componentDidMount() {
-    //console.log('Home componentDidMount', this.props.catalog);
     this.loadData();
   }
 
@@ -48,7 +47,6 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
-    //console.log('Home componentDidUpdate', prevProps.catalog, this.props.catalog);
     if (prevProps.catalog !== this.props.catalog) {
       this.loadData();
     }
@@ -60,10 +58,8 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     }
     const catalog = this.props.catalog;
     this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
-      console.log(`Home loadData`, catalog, response);
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
-      console.error('loadData ex => ', ex);
     });
   }
 

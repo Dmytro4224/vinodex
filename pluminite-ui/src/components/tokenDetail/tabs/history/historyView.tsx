@@ -92,7 +92,6 @@ class HistoryView extends Component<IHistoryView & IBaseComponentProps>{
     if(!this.props.near.user){ return }
 
     this.props.nftContractContext.sale_history(this.tokenId, 1, 100).then(response => {
-      console.log(`history response`, response);
       this.setState({...this.state, items: response, isLoading: false });
     });
   }

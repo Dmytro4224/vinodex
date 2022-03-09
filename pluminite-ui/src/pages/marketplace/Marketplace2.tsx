@@ -15,7 +15,7 @@ class Marketplace2 extends Component {
                 <DropdownView
                     colorType={dropdownColors.select}
                     title={'Sort by'}
-                    onChange={(item) => { console.log(item) }}
+                    onChange={(item) => {}}
                     childrens={[
                         {
                             id: 1,

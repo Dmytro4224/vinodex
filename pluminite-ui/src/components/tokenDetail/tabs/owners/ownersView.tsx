@@ -77,7 +77,6 @@ class OwnersView extends Component<IOwnersView & IBaseComponentProps>{
     if(!this.props.near.user){ return }
 
     this.props.nftContractContext.token_owners_history(this.tokenId, 1, 100).then(response => {
-      console.log(`owners response`, response);
       this.setState({...this.state, items: response, isLoading: false });
     });
   }
