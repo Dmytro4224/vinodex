@@ -241,7 +241,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               </div>
               <div className={styles.buttonWrap}>
                 <ButtonView
-                  text={`Place a bid ${this.state.order?.metadata.price} ETH`}
+                  text={`Place a bid ${this.state.order?.metadata.price} NEAR`}
                   onClick={() => {
                     this.buyAction();
                   }}
