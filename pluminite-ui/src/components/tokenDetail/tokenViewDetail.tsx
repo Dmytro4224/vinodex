@@ -16,7 +16,7 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
-import { showToast } from '../../utils/sys';
+import {isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
@@ -72,12 +72,23 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     window.scrollTo(0, 0);
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`d response`, response);
+      console.log(`d extra`, JSON.parse(response.metadata.extra));
       this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
     });
   }
 
   private get tokenId() {
     return this.props.params.tokenId!;
+  }
+
+  private get isVideo(){
+    let extra = JSON.parse(this.state.order?.metadata.extra);
+
+    if(extra){
+        return isVideoFile(extra.media_type)
+    }
+
+    return false;
   }
 
   public setDefaultImage = async () => {
@@ -170,8 +181,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
             <div className={styles.cardImage}>
               <div className={styles.cardImageWrap}>
-                <img onClick={() => { this.showMediaModal() }} ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
-                     src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
+                {this.isVideo ?
+                  <iframe className={styles.iFrameStyle} width="1000" height="600" src={this.state.order?.metadata.media || cardPreview}
+                  title="" frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen/>
+                  :
+                  <img onClick={() => { this.showMediaModal() }} ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
+                                       src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>}
                 <div className={styles.cardDetail}>
                   {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
                     <div className={styles.daysInfo}>
@@ -279,11 +296,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           onSubmit={() => {
           }}
           tokenInfo={{}} token={this.state.order || null}/>
-        <ModalViewMedia
+        {!this.isVideo ? <ModalViewMedia
           inShowModal={this.state.modalMediaShow}
           onHideModal={() => this.hideMediaModal()}
           media={{ src: this.state.order?.metadata.media || cardPreview }}
-        /></>
+        /> : ''}</>
     )
   }
 }
