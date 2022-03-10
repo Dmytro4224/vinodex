@@ -148,6 +148,9 @@
 .dateField{
     background-color: var(--wildSand);
 }
+.preview{
+  pointer-events: none;
+}
 .preview img{
   /*object-fit: contain;*/
 }
