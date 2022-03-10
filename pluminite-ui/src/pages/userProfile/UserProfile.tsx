@@ -66,7 +66,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     if (!this.isMyProfile) {
       this.props.nftContractContext.view_artist_account(this.getUserId)
         .then(res => {
-          console.log('🚀 ~ file: view_artist_account ~ res', res);
+
         })
         .catch(error => {
           console.warn('🚀 ~ file: view_artist_account ~ error', error);
@@ -145,16 +145,16 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
         this.updateStateUserInfo(info);
       }).catch(error => {
-      showToast({
-        message: `Error! Please try again later.`,
-        type: EShowTost.error,
-      });
+        showToast({
+          message: `Error! Please try again later.`,
+          type: EShowTost.error,
+        });
 
-      this.setState({
-        ...this.state,
-        isLoadAvatar: false,
+        this.setState({
+          ...this.state,
+          isLoadAvatar: false,
+        });
       });
-    });
   };
 
   public updateStateUserInfo(profile: IUpdateStateUserInfo) {

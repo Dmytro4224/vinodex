@@ -1,15 +1,18 @@
-import { Component } from "react";
-import LikeView, { LikeViewType } from "../like/likeView";
-import ButtonView, { buttonColors } from "../common/button/ButtonView";
+import { Component } from 'react';
+import LikeView, { LikeViewType } from '../like/likeView';
+import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import { NavLink } from 'react-router-dom';
-import { IdentificationCopy } from "../common/identificationCopy/IdentificationCopy";
+import { IdentificationCopy } from '../common/identificationCopy/IdentificationCopy';
 import styles from './artistCard.module.css';
 import defaultAvatar from '../../assets/images/avatar-def.png';
-import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
-import { IAuthorResponseItem } from "../../types/IAuthorResponseItem";
-import { changeAvatarRefSrc, showToast } from "../../utils/sys";
-import { EShowTost } from "../../types/ISysTypes";
-import React from "react";
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
+import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
+import { changeAvatarRefSrc, showToast } from '../../utils/sys';
+import { EShowTost } from '../../types/ISysTypes';
+import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import LazyLoad from 'react-lazyload';
+import { forceVisible } from 'react-lazyload';
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
@@ -22,6 +25,7 @@ interface IArtistCard extends IProps {
   customClass?: string;
   followBtnText?: string;
   isDisabledFollowBtn?: boolean;
+  isForceVisible?: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -33,13 +37,17 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     usersCount: this.props.usersCount,
     isFollow: this.isFollow,
     isProcessLike: false,
-    isProcessFollow: false
-  }
+    isProcessFollow: false,
+  };
 
   constructor(props: IArtistCard & IBaseComponentProps) {
     super(props);
 
     this._refAvatar = React.createRef();
+  }
+
+  public componentDidUpdate() {
+    this.props.isForceVisible && forceVisible();
   }
 
   private get avatar() {
@@ -87,7 +95,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       ...this.state,
       isLike: !this.state.isLike,
       likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
-    })
+    });
   }
 
   public changeFollow() {
@@ -95,7 +103,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       ...this.state,
       isFollow: !this.state.isFollow,
       usersCount: !this.state.isFollow ? this.state.usersCount + 1 : this.state.usersCount - 1,
-    })
+    });
   }
 
   private btnFollowHandler = async () => {
@@ -106,7 +114,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
     try {
       if (this.state.isProcessFollow) {
-        return
+        return;
       }
       this.state.isProcessFollow = true;
       this.changeFollow();
@@ -120,10 +128,10 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
       showToast({
         message: `Error! Please try again later`,
-        type: EShowTost.error
+        type: EShowTost.error,
       });
     }
-  }
+  };
 
   private toggleLikeAccount = async () => {
     if (!this.props.near.isAuth) {
@@ -133,7 +141,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
     try {
       if (this.state.isProcessLike) {
-        return
+        return;
       }
       this.state.isProcessLike = true;
       this.changeLikeCount();
@@ -143,22 +151,35 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
       this.state.isProcessLike = false;
     } catch (ex) {
       this.state.isProcessLike = false;
-      console.warn('error', this.state.isLike)
+      console.warn('error', this.state.isLike);
       this.changeLikeCount();
 
       showToast({
         message: `Error! Please try again later`,
-        type: EShowTost.error
+        type: EShowTost.error,
       });
     }
-  }
+  };
 
   isCardType() {
     return (
-      <div className={`${styles.artistCard} ${this.props.customClass || ''}`}>
+      <LazyLoad
+        unmountIfInvisible={true}
+        height={200}
+        placeholder={
+          <div style={{ width: '100%' }}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+        }
+        debounce={400}
+        className={`${styles.artistCard} ${this.props.customClass || ''}`}
+      >
         <div className={styles.artistWrap}>
           <NavLink to={`/userProfile/${this.identification}`}>
-            <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+            <img ref={this._refAvatar} onError={() => {
+              changeAvatarRefSrc(this._refAvatar);
+            }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           </NavLink>
           <div>
             <NavLink to={`/userProfile/${this.identification}`}>
@@ -170,13 +191,13 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         <div className={`d-flex align-items-center justify-content-between ${this.isMyUser ? styles.pointerNone : ''}`}>
           {!this.isMyUser ? (
             <ButtonView
-              text={this.followBtnText ? this.followBtnText : this.state.isFollow ? "Unfollow" : "Follow"}
+              text={this.followBtnText ? this.followBtnText : this.state.isFollow ? 'Unfollow' : 'Follow'}
               onClick={this.btnFollowHandler}
               color={buttonColors.goldFill}
               customClass={`${styles.buttonFollow} ${this.isDisabledFollowBtn ? styles.pointerNone : ''}`}
             />
           ) : <span>&nbsp;</span>}
-          <div className="d-flex align-items-center">
+          <div className='d-flex align-items-center'>
             <LikeView
               customClass={styles.userInfo}
               isChanged={false}
@@ -194,21 +215,24 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             />
           </div>
         </div>
-      </div>
+      </LazyLoad>
     );
   }
 
   private oneLineType() {
     return (
-      <div className="d-flex align-items-center justify-content-between w-100">
+      <div className='d-flex align-items-center justify-content-between w-100'>
         <div className={styles.artistWrap}>
-          <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt="avatar" />
+          <img ref={this._refAvatar} onError={() => {
+            changeAvatarRefSrc(this._refAvatar);
+          }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           <div>
-            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p></NavLink>
+            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p>
+            </NavLink>
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
-        <div className="d-flex align-items-center">
+        <div className={`d-flex align-items-center ${this.isMyUser ? styles.pointerNone : ''}`}>
           <LikeView
             onClick={this.toggleLikeAccount}
             customClass={`${styles.likes} ${styles.likesCustom}`}
@@ -217,19 +241,21 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             type={LikeViewType.like}
             count={this.likesCount}
           />
-          <ButtonView
-            text={this.state.isFollow ? "Unfollow" : "Follow"}
-            onClick={this.btnFollowHandler}
-            color={buttonColors.goldFill}
-            customClass={styles.buttonFollow}
-          />
+          {!this.isMyUser && (
+            <ButtonView
+              text={this.state.isFollow ? 'Unfollow' : 'Follow'}
+              onClick={this.btnFollowHandler}
+              color={buttonColors.goldFill}
+              customClass={styles.buttonFollow}
+            />
+          )}
         </div>
       </div>
     );
   }
 
   render() {
-    return <> {this.isCard ? this.isCardType() : this.oneLineType()} </>
+    return <> {this.isCard ? this.isCardType() : this.oneLineType()} </>;
   }
 }
 

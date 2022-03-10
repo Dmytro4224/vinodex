@@ -10,13 +10,16 @@ import ButtonView, {buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
 import BidsView  from './tabs/bids/bidsView';
+import HistoryView  from './tabs/history/historyView';
+import OwnersView  from './tabs/owners/ownersView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
-import { showToast } from '../../utils/sys';
+import {isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
+import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -50,10 +53,11 @@ interface ITokenViewState{
   isLike: boolean;
   likesCount: number;
   modalTransferIsShow: boolean;
+  modalMediaShow: boolean;
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false };
+  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false, modalMediaShow: false };
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _isProcessLike: boolean;
 
@@ -65,14 +69,25 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidMount() {
+    window.scrollTo(0, 0);
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
-      console.log(`d response`, response);
+      console.log(`response d`, response);
       this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
     });
   }
 
   private get tokenId() {
     return this.props.params.tokenId!;
+  }
+
+  private get isVideo(){
+    let extra = JSON.parse(this.state.order?.metadata.extra);
+
+    if(extra){
+        return isVideoFile(extra.media_type)
+    }
+
+    return false;
   }
 
   public setDefaultImage = async () => {
@@ -104,6 +119,20 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     this.setState({
       ...this.state,
       modalTransferIsShow: false,
+    });
+  }
+
+  private showMediaModal() {
+    this.setState({
+      ...this.state,
+      modalMediaShow: true,
+    });
+  }
+
+  private hideMediaModal() {
+    this.setState({
+      ...this.state,
+      modalMediaShow: false,
     });
   }
 
@@ -151,8 +180,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
             <div className={styles.cardImage}>
               <div className={styles.cardImageWrap}>
-                <img ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
-                     src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>
+                {this.isVideo ?
+                  <iframe className={styles.iFrameStyle} width="1000" height="600" src={this.state.order?.metadata.media || cardPreview}
+                  title="" frameBorder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen/>
+                  :
+                  <img onClick={() => { this.showMediaModal() }} ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
+                                       src={this.state.order?.metadata.media || cardPreview} alt={'preview image'}/>}
                 <div className={styles.cardDetail}>
                   {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
                     <div className={styles.daysInfo}>
@@ -197,7 +232,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     is_following: false,
                     followers_count: 0
                   }}
-                  identification={'0x0b9D2weq28asdqwe132'}
+                  identification={this.state.order?.owner_id!}
                   usersCount={22}
                   likesCount={12}
                   isCard={false}
@@ -219,28 +254,26 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                       <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!}/>
                     </div>
                   </Tab>
-                  <Tab eventKey="bids" title="BIDS">
+                  {this.state.order?.sale !== null && (this.state.order?.sale.sale_type === 2 || this.state.order?.sale.sale_type === 3 ? <Tab eventKey="bids" title="BIDS">
                     <div className={styles.tabContainer}>
-                      <BidsView items={[{
-                        name: "user",
-                        identification: "28 September, 2021, 5:51 PM ",
-                        price: 12,
-                        currency: "ETC"
-                      },
-                        {name: "user-2", identification: "2 September, 2021, 3:51 PM ", price: 2, currency: "ETC"}]}/>
+                      <BidsView tokenId={this.state.order?.token_id!}/>
+                    </div>
+                  </Tab> : '')}
+                  <Tab eventKey="contact" title="HISTORY">
+                    <div className={styles.tabContainer}>
+                      <HistoryView tokenId={this.state.order?.token_id!} />
                     </div>
                   </Tab>
-                  <Tab eventKey="contact" title="HISTORY">
-                    <div className={styles.tabContainer}>Empty result</div>
-                  </Tab>
                   <Tab eventKey="owners" title="OWNERS">
-                    <div className={styles.tabContainer}>Empty result</div>
+                    <div className={styles.tabContainer}>
+                      <OwnersView tokenId={this.state.order?.token_id!} />
+                    </div>
                   </Tab>
                 </Tabs>
               </div>
               <div className={styles.buttonWrap}>
                 <ButtonView
-                  text={`Place a bid ${this.state.order?.metadata.price} ETH`}
+                  text={`Place a bid ${this.state.order?.metadata.price} NEAR`}
                   onClick={() => {
                     this.buyAction();
                   }}
@@ -261,7 +294,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           onHideModal={() => this.hideModal()}
           onSubmit={() => {
           }}
-          tokenInfo={{}} token={this.state.order || null}/></>
+          tokenInfo={{}} token={this.state.order || null}/>
+        {!this.isVideo ? <ModalViewMedia
+          inShowModal={this.state.modalMediaShow}
+          onHideModal={() => this.hideMediaModal()}
+          media={{ src: this.state.order?.metadata.media || cardPreview }}
+        /> : ''}</>
     )
   }
 }

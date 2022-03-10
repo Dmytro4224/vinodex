@@ -1,17 +1,16 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import styles from './header.module.css';
 import { HeaderNavigation } from "../navigation/HeaderNavigation";
 import InputView, { InputStyleType } from "../common/inputView/InputView";
 import LoginButton from "../header/loginButton";
 import searchIcon from "../../assets/icons/search.svg";
-import ButtonView, { buttonColors } from "../common/button/ButtonView";
 import { dropdownColors, DropdownView } from "../common/dropdown/dropdownView";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import { NavLink } from "react-router-dom";
 import logo from '../../assets/icons/logo.svg';
 import MediaQuery from 'react-responsive'
 import Menu from "./menu/Menu";
-import CreateTokenDropdownView  from "../createTokenDropdown/createTokenDropdownView";
+import CreateTokenDropdownView from "../createTokenDropdown/createTokenDropdownView";
 
 interface IHeader extends IProps {
   setToUpdateUser: (updateMtd) => void;
@@ -67,7 +66,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
           <MediaQuery minWidth={992}>
             <div className={styles.inputSearchWrap}>
               <InputView
-                onChange={(e) => { console.log(e) }}
+                onChange={(e) => {  }}
                 placeholder={'Search'}
                 icon={searchIcon}
                 inputStyleType={InputStyleType.round}
@@ -78,7 +77,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
                 colorType={dropdownColors.selectGray}
                 title={'En'}
                 disabled={true}
-                onChange={(item) => { console.log(item) }}
+                onChange={(item) => {  }}
                 childrens={[
                   {
                     id: 1,

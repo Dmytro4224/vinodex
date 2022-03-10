@@ -36,9 +36,7 @@ class SelectView extends Component<ISelectView, ISelectState>{
       this.props.onChange(selectedOption);
     }
 
-    this.setState({ selectedOption }, () =>
-      console.log(`Option selected:`, this.state.selectedOption)
-    );
+    // this.setState({ selectedOption }, () => {});
   }
 
   public get selectedOption(){

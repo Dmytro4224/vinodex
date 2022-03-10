@@ -39,12 +39,32 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
+    this.getAuthors();
+  }
+
+  private getAuthors() {
+    if (this.isProfilePageView) {
+      this.getFollowingAuthors();
+    } else {
+      this.getAllAuthors();
+    }
+  }
+
+  private getFollowingAuthors() {
+    this.props.nftContractContext.followed_authors_for_account(this.props.params.userId!, this._pageIndex, this._pageSize).then(response => {
       let list = response.filter(item => item !== null);
 
-      if (this.isProfilePageView) {
-        list = list.filter(item => item.is_following);
-      }
+      this.setState({
+        ...this.state,
+        list,
+        isLoading: false,
+      });
+    });
+  }
+
+  private getAllAuthors() {
+    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
+      let list = response.filter(item => item !== null);
 
       this.setState({
         ...this.state,
@@ -101,6 +121,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
               isFollow={item.is_following}
               followBtnText={this.followBtnText}
               isDisabledFollowBtn={this.isProfilePageView}
+              isForceVisible={this.isProfilePageView}
             />),
           )}
         </div>

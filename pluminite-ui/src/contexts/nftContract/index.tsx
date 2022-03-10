@@ -6,7 +6,7 @@ import { IProfile } from '../../types/IProfile';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 
 export const initialNftContractState = {
-  nftContract: null
+  nftContract: null,
 };
 export const NftContractContext = React.createContext<INftContractContext>(initialNftContractState as INftContractContext);
 
@@ -19,15 +19,19 @@ export interface INftContractContext {
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number) => Promise<Array<any>>;
+  sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
+  token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
+  sale_get: (token_id: string, with_bids: boolean) => Promise<any>;
   authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
+  followed_authors_for_account: (account_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_mint: (data: any) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
   nftContract: INftContract;
-  children: any
+  children: any;
 }
 
 export class NftContractContextProvider extends Component<INftContractContextProviderProps> implements INftContractContext {
@@ -38,26 +42,59 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public get myAccountId() {
     return this.nftContract.account.accountId;
   }
+
   public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
     return this.props.nftContract.authors_by_filter({
       parameter,
       is_reverse,
       page_index,
       page_size,
-      asked_account_id: this.myAccountId
+      asked_account_id: this.myAccountId,
     });
-  }
+  };
+
+  public followed_authors_for_account = (account_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.followed_authors_for_account({
+      account_id,
+      page_index,
+      page_size,
+    });
+  };
+
+  public sale_history = (token_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.sale_history({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
+  };
+
+  public token_owners_history = (token_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.token_owners_history({
+      token_id,
+      page_index,
+      page_size,
+      asked_account_id: this.myAccountId,
+    });
+  };
+
   public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number) => {
-    return this.props.nftContract.nft_tokens_by_filter({ catalog, page_index, page_size, sort, account_id: this.myAccountId });
-  }
+    return this.props.nftContract.nft_tokens_by_filter({
+      catalog,
+      page_index,
+      page_size,
+      sort,
+      account_id: this.myAccountId,
+    });
+  };
 
   public nft_tokens_catalogs = () => {
     return this.props.nftContract.nft_tokens_catalogs();
-  }
+  };
 
   public nft_token_get = (token_id: string) => {
     return this.props.nftContract.nft_token_get({ token_id });
-  }
+  };
+
+  public sale_get = (token_id: string, with_bids: boolean) => {
+    return this.props.nftContract.sale_get({ token_id, with_bids, asked_account_id: this.myAccountId });
+  };
 
   public get nftContract() {
     return this.props.nftContract;
@@ -70,7 +107,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public async getGems(fromIndex: number, limit: number) {
     this.nftContract.nft_tokens_from_end({
       from_index: fromIndex,
-      limit
+      limit,
     });
   }
 
@@ -78,15 +115,15 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     return this.nftContract.nft_tokens_for_owner({
       account_id: accountId,
       from_index: fromIndex,
-      limit: Number(limit)
+      limit: Number(limit),
     });
   }
 
   public getProfile = async (accountId: string) => {
     return this.nftContract.get_profile({
-      account_id: accountId
+      account_id: accountId,
     });
-  }
+  };
 
   public set_profile = async ({ profile: { name, bio, image, email, accountId } }) => {
     return this.nftContract.set_profile({
@@ -95,31 +132,31 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         name: name,
         image: image,
         email: email,
-        account_id: accountId
-      }
+        account_id: accountId,
+      },
     });
-  }
+  };
 
   public like_artist_account = async (accountId: string) => {
     return this.nftContract.like_artist_account({
-      account_id: accountId
+      account_id: accountId,
     });
-  }
+  };
   public token_set_like = async (token_id: string) => {
     return this.nftContract.token_set_like({ token_id: token_id });
-  }
+  };
 
   public view_artist_account = async (accountId: string) => {
     return this.nftContract.view_artist_account({
-      account_id: accountId
+      account_id: accountId,
     });
-  }
+  };
 
   public follow_artist_account = async (accountId: string) => {
     return this.nftContract.follow_artist_account({
-      account_id: accountId
+      account_id: accountId,
     });
-  }
+  };
 
   public render() {
     const value: INftContractContext = {
@@ -127,7 +164,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_tokens_by_filter: this.nft_tokens_by_filter,
       nft_tokens_catalogs: this.nft_tokens_catalogs,
       nft_token_get: this.nft_token_get,
+      sale_get: this.sale_get,
+      sale_history: this.sale_history,
+      token_owners_history: this.token_owners_history,
       authors_by_filter: this.authors_by_filter,
+      followed_authors_for_account: this.followed_authors_for_account,
       getProfile: this.getProfile,
       set_profile: this.set_profile,
       like_artist_account: this.like_artist_account,
@@ -156,8 +197,9 @@ export class NftContractContextProvider extends Component<INftContractContextPro
 
   nft_mint = (data: any) => {
     return this.nftContract.nft_mint(data);
-  }
+  };
 }
+
 /*
 export const NftContractContextProvider = ({ nftContract, children }: { nftContract: Contract, children: any }) => {
   const getGem = useCallback(async (id) => nftContract.nft_token({ token_id: id }), [nftContract]);

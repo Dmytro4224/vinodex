@@ -82,7 +82,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
               colorType={dropdownColors.selectGray}
               title={'En'}
               disabled={true}
-              onChange={(item) => { console.log(item) }}
+              onChange={(item) => {  }}
               childrens={[]}
             />
           </div>

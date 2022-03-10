@@ -30,4 +30,5 @@ export interface ITokenResponseItem {
   token_id: string;
   token_type: string;
   is_like: boolean;
+  sale: any;
 }
