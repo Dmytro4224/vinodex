@@ -198,6 +198,12 @@ pub struct Contract {
     //Історія продажу токенів
     pub sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
 
+    //Історія продажів користувача
+    pub my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
+
+    //Історія покупок користувача
+    pub my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+
     //================sales==========================//
 
 
@@ -233,7 +239,9 @@ pub enum StorageKey {
     MyTokensFollowed,
     SalesActive,
     SalesHistoryByTokenId,
-    StorageDeposit
+    StorageDeposit,
+    MySales,
+    MyPurchases
 }
 
 #[near_bindgen]
@@ -283,6 +291,8 @@ impl Contract {
             sales_active:UnorderedMap::new (StorageKey::SalesActive.try_to_vec().unwrap()),
             sales_history_by_token_id:LookupMap::new (StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap()),
             storage_deposits:LookupMap::new (StorageKey::StorageDeposit.try_to_vec().unwrap()),
+            my_sales:LookupMap::new (StorageKey::MySales.try_to_vec().unwrap()),
+            my_purchases:LookupMap::new (StorageKey::MyPurchases.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -335,6 +345,8 @@ impl Contract {
             sales_active: UnorderedMap<TokenId, Sale>,
             sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
             storage_deposits: LookupMap<AccountId, Balance>,
+            my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
+            my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -370,7 +382,9 @@ impl Contract {
             my_tokens_followed: old_contract.my_tokens_followed,
             sales_active: old_contract.sales_active,
             sales_history_by_token_id: old_contract.sales_history_by_token_id,
-            storage_deposits: old_contract.storage_deposits
+            storage_deposits: old_contract.storage_deposits,
+            my_sales: old_contract.my_sales,
+            my_purchases: old_contract.my_purchases
         }
     }
 
