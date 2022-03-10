@@ -250,81 +250,91 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     });
   }
 
+  private getContent() {
+    return (
+      <div
+        className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
+        <div className={styles.cardImage}>
+          {this.props.linkTo ? (
+            <NavLink to={this.props.linkTo}>
+              {/*<img className={styles.imageStyle} src={this.icon}*/}
+              {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
+              {/*     alt={this.props.alt || 'preview image'} />*/}
+              <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
+                         model={this.props.model} />
+            </NavLink>
+          ) : (
+            //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
+            //     alt={this.props.alt || 'preview image'} />
+            <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
+                       model={this.props.model} />
+          )}
+
+          <div className={styles.cardDetail}>
+            {(this.props.countL > 0 || this.props.countR > 0) && (
+              <div className={styles.count}>
+                {this.props.countL}/{this.props.countR}
+              </div>
+            )}
+
+            {this.props.days !== '' && this.props.days !== null && (
+              <div className={styles.daysInfo}>
+                {this.props.days}
+              </div>
+            )}
+          </div>
+
+          {this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (
+            <ButtonView
+              text={''}
+              icon={transferIcon}
+              withoutText={true}
+              onClick={() => {
+                this.transferAction();
+              }}
+              color={buttonColors.goldFill}
+              customClass={styles.btnTransfer}
+            />
+          )}
+        </div>
+        <div className={styles.cardFooter}>
+          <div className={styles.cardInfo}>
+            {this.props.linkTo ? (
+              <NavLink to={this.props.linkTo}>
+                <div className={styles.infoName}>{this.props.name}</div>
+              </NavLink>
+            ) : (
+              <div className={styles.infoName}>{this.props.name}</div>
+            )}
+            <div className={styles.authorName}>{this.props.author}</div>
+          </div>
+
+          {this.getCardControls()}
+
+        </div>
+      </div>
+    );
+  }
+
   public render() {
     return (
       <>
-        <LazyLoad
-          unmountIfInvisible={true}
-          height={200}
-          placeholder={
-            <div style={{ width: this.isSmall ? '296px' : '100%' }}>
-              <Skeleton count={1} height={340} />
-              <Skeleton count={3} />
-            </div>
-          }
-          debounce={100}>
-          <div
-            className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
-            <div className={styles.cardImage}>
-              {this.props.linkTo ? (
-                <NavLink to={this.props.linkTo}>
-                  {/*<img className={styles.imageStyle} src={this.icon}*/}
-                  {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
-                  {/*     alt={this.props.alt || 'preview image'} />*/}
-                  <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                             model={this.props.model} />
-                </NavLink>
-              ) : (
-                //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
-                //     alt={this.props.alt || 'preview image'} />
-                <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                           model={this.props.model} />
-              )}
-
-              <div className={styles.cardDetail}>
-                {(this.props.countL > 0 || this.props.countR > 0) && (
-                  <div className={styles.count}>
-                    {this.props.countL}/{this.props.countR}
-                  </div>
-                )}
-
-                {this.props.days !== '' && this.props.days !== null && (
-                  <div className={styles.daysInfo}>
-                    {this.props.days}
-                  </div>
-                )}
+        {this.props.isView ? (
+          this.getContent()
+        ) : (
+          <LazyLoad
+            unmountIfInvisible={true}
+            height={200}
+            placeholder={
+              <div style={{ width: this.isSmall ? '296px' : '100%' }}>
+                <Skeleton count={1} height={340} />
+                <Skeleton count={3} />
               </div>
-
-              {this.typeView === TokensType.created && this.isMyToken &&(
-                <ButtonView
-                  text={''}
-                  icon={transferIcon}
-                  withoutText={true}
-                  onClick={() => {
-                    this.transferAction();
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.btnTransfer}
-                />
-              )}
-            </div>
-            <div className={styles.cardFooter}>
-              <div className={styles.cardInfo}>
-                {this.props.linkTo ? (
-                  <NavLink to={this.props.linkTo}>
-                    <div className={styles.infoName}>{this.props.name}</div>
-                  </NavLink>
-                ) : (
-                  <div className={styles.infoName}>{this.props.name}</div>
-                )}
-                <div className={styles.authorName}>{this.props.author}</div>
-              </div>
-
-              {this.getCardControls()}
-
-            </div>
-          </div>
-        </LazyLoad>
+            }
+            debounce={100}>
+            {this.getContent()}
+          </LazyLoad>
+        )}
 
         {this.typeView === TokensType.created && (
           <>
