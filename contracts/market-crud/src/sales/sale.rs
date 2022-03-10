@@ -27,6 +27,18 @@ pub struct SaleHistoryJson {
     pub date: u128
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct MySaleHistory {
+    //second user
+    pub account: AccountId,
+    //reciever of token
+    pub token_id: TokenId,
+    //sale price in yoctoNEAR that the token is listed for
+    pub price: U128,
+    /// utc timestamp
+    pub date: u128
+}
 
 //Структура однієї ставки на аукціоні
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -555,8 +567,8 @@ impl Contract {
             {
                 history.push(SaleHistory
                 {
-                    account_from: owner_id,
-                    account_to: buyer_id,
+                    account_from: owner_id.clone(),
+                    account_to: buyer_id.clone(),
                     date: time,
                     price: U128(price),
 
@@ -570,14 +582,74 @@ impl Contract {
 
                 history.push(SaleHistory
                 {
-                    account_from: owner_id,
-                    account_to: buyer_id,
+                    account_from: owner_id.clone(),
+                    account_to: buyer_id.clone(),
                     date: time,
                     price: U128(price),
 
                 });
     
                 self.sales_history_by_token_id.insert(&token_id, &history);
+            }
+        }
+
+        match self.my_sales.get(&owner_id)
+        {
+            Some(mut sales) =>
+            {
+                sales.push(MySaleHistory
+                {
+                    account: buyer_id.clone(),
+                    token_id: token_id.clone(),
+                    date: time,
+                    price: U128(price),
+                });
+
+                self.my_sales.insert(&owner_id, &sales);
+            },
+            None =>
+            {
+                let mut sales : Vec<MySaleHistory> = Vec::new();
+
+                sales.push(MySaleHistory
+                {
+                    account: buyer_id.clone(),
+                    token_id: token_id.clone(),
+                    date: time,
+                    price: U128(price),
+                });
+    
+                self.my_sales.insert(&owner_id, &sales);
+            }
+        }
+
+        match self.my_purchases.get(&buyer_id)
+        {
+            Some(mut purchases) =>
+            {
+                purchases.push(MySaleHistory
+                {
+                    account: owner_id.clone(),
+                    token_id: token_id.clone(),
+                    date: time,
+                    price: U128(price),
+                });
+
+                self.my_purchases.insert(&buyer_id, &purchases);
+            },
+            None =>
+            {
+                let mut purchases : Vec<MySaleHistory> = Vec::new();
+
+                purchases.push(MySaleHistory
+                {
+                    account: owner_id.clone(),
+                    token_id: token_id.clone(),
+                    date: time,
+                    price: U128(price),
+                });
+    
+                self.my_purchases.insert(&buyer_id, &purchases);
             }
         }
 

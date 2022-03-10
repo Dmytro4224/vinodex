@@ -75,6 +75,76 @@ impl Contract {
         }
     }
 
+    #[private]
+    fn check_filter_in_set(&self, set: &Option<HashSet<String>>, value: &String, contains: Option<bool>) -> bool
+    {
+        match contains
+        {
+            Some(contains) =>
+            {
+                match set
+                {
+                    Some(set) =>
+                    {
+                        return set.contains(value) == contains;
+                    },
+                    None =>
+                    {
+                        if contains
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
+            },
+            None => 
+            {
+                return true;
+            }
+        }
+    }
+
+    #[private]
+    fn check_owner(&self, set: &Option<UnorderedSet<String>>, value: &String) -> bool
+    {
+        match set
+        {
+            Some(set) =>
+            {
+                return set.contains(value);
+            },
+            None =>
+            {
+                return true;
+            }
+        }
+    }
+
+    #[private]
+    fn check_filter_in_map(&self, map: &UnorderedMap<String, Sale>, key: &String, contains: Option<bool>) -> bool
+    {
+        match contains
+        {
+            Some(contains) =>
+            {
+                let value = map.get(key);
+
+                if (value.is_none() && contains)
+                    || (value.is_some() && !contains)
+                {
+                    return false;
+                }
+            },
+            None => {}
+        }
+
+        return true;
+    }
+
     pub fn nft_tokens_for_type(
         &self,
         token_type: String,
@@ -110,6 +180,172 @@ impl Contract {
         tmp
     }
     
+    // ///колекція токенів по фільтру
+    // pub fn nft_tokens_by_filter(
+    //     &self,
+    //     // каталог або null|none
+    //     catalog: Option<String>,
+    //    // order by шось
+    //     sort: u8, 
+    //     //пагінація
+    //     page_index: u64,
+    //     //ксть елементів на сторінкі
+    //     page_size: u64,
+    //     account_id:Option<AccountId>
+    // ) ->Vec<JsonToken> 
+    // {
+    //     let token_ids : HashSet<String>;
+
+    //     let mut skip = 0;
+    //     if page_index > 1
+    //     {
+    //         skip = (page_index - 1) * page_size;
+    //     }
+
+    //     if catalog.is_some()
+    //     {
+    //         let tokens = self.tokens_per_type.get(&catalog.unwrap());
+    //         if tokens.is_none()
+    //         {
+    //             return Vec::new();
+    //         }
+
+    //         token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
+    //     }
+    //     else
+    //     {
+    //         token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+    //     }
+
+    //     let mut available_amount = token_ids.len() as i64 - skip as i64;
+
+    //     if available_amount <= 0
+    //     {
+    //         return Vec::new();
+    //     }
+
+    //     if available_amount > page_size as i64
+    //     {
+    //         available_amount = page_size as i64;
+    //     }
+       
+    //     let mut is_reverse : bool = false;
+    //     let sorted : Vec<SortedToken>;
+
+    //     let mut result : Vec<JsonToken> = Vec::new();
+
+    //     match sort
+    //     {
+    //         9 =>
+    //         {
+    //             sorted = self.tokens_sorted.get(&5).unwrap_or(Vec::new());
+    //             is_reverse = true;
+    //         },
+    //         10 =>
+    //         {
+    //             sorted = self.tokens_sorted.get(&2).unwrap_or(Vec::new());
+    //             is_reverse = true;
+    //         }
+    //         _ =>
+    //         {
+    //             sorted = self.tokens_sorted.get(&sort).unwrap_or(Vec::new());
+    //         }
+    //     }
+
+    //     if sorted.len() < skip as usize
+    //     {
+    //         return Vec::new();
+    //     }
+
+    //     let limit = available_amount as usize;
+    //     let mut stop = false;
+
+    //     if is_reverse
+    //     {
+    //         let mut start_index = token_ids.len() as i64 - skip as i64 - 1;
+
+    //         //while start_index > end_index && !stop
+    //         while result.len() < limit && !stop
+    //         {
+    //             let _index = start_index as usize;
+    //             let _token = sorted.get(_index);
+
+    //             match _token
+    //             {
+    //                 Some(_token) =>
+    //                 {
+    //                     if token_ids.contains(&_token.token_id)
+    //                     {
+    //                         match self.nft_token_for_account
+    //                         (
+    //                             &_token.token_id,
+    //                             account_id.clone()
+    //                         )
+    //                         {
+    //                             Some(res) =>
+    //                             {
+    //                                 result.push(res);
+    //                             },
+    //                             None =>
+    //                             {
+    //                                 continue;
+    //                             }
+    //                         }
+    //                     }
+    //                 },
+    //                 None =>
+    //                 {
+    //                     stop = true;
+    //                 }
+    //             }
+
+    //             start_index = start_index - 1;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         //while skip < skip + available_amount as u64 && !stop
+    //         while result.len() < limit && !stop
+    //         {
+    //             let _index = skip as usize;
+    //             let _token = sorted.get(_index);
+
+    //             match _token
+    //             {
+    //                 Some(_token) =>
+    //                 {
+    //                     if token_ids.contains(&_token.token_id)
+    //                     {
+    //                         match self.nft_token_for_account
+    //                         (
+    //                             &_token.token_id,
+    //                             account_id.clone()
+    //                         )
+    //                         {
+    //                             Some(res) =>
+    //                             {
+    //                                 result.push(res);
+    //                             },
+    //                             None =>
+    //                             {
+    //                                 continue;
+    //                             }
+    //                         }
+    //                     }
+    //                 },
+    //                 None =>
+    //                 {
+    //                     stop = true;
+    //                 }
+    //             }
+
+    //             skip = skip + 1;
+    //         }
+    //     }
+
+    //     return result;
+    // }
+
     ///колекція токенів по фільтру
     pub fn nft_tokens_by_filter(
         &self,
@@ -121,10 +357,36 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
-        account_id:Option<AccountId>
-    ) ->Vec<JsonToken> {
+        account_id:AccountId,
+        is_for_sale: Option<bool>,
+        owner_id: Option<AccountId>,
+        is_liked: Option<bool>,
+        is_followed: Option<bool>,
+    ) ->Vec<JsonToken> 
+    {
 
         let token_ids : HashSet<String>;
+        let tokens_per_owner : Option<UnorderedSet<TokenId>>;
+
+        if owner_id.is_some()
+        {
+            match self.tokens_per_owner.get(&owner_id.unwrap())
+            {
+                Some(value) =>
+                {
+                    tokens_per_owner = Some(value);
+                },
+                None =>
+                {
+                    return Vec::new();
+                }
+            }
+        }
+        else
+        {
+            tokens_per_owner = None;
+        }
+
         let mut skip = 0;
         if page_index > 1
         {
@@ -189,6 +451,9 @@ impl Contract {
         let limit = available_amount as usize;
         let mut stop = false;
 
+        let my_likes : Option<HashSet<String>> = self.my_tokens_likes.get(&account_id);
+        let my_follows : Option<HashSet<String>> = self.my_tokens_followed.get(&account_id);
+
         if is_reverse
         {
             let mut start_index = token_ids.len() as i64 - skip as i64 - 1;
@@ -205,10 +470,30 @@ impl Contract {
                     {
                         if token_ids.contains(&_token.token_id)
                         {
+                            if !self.check_owner(&tokens_per_owner, &_token.token_id)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_map(&self.sales_active, &_token.token_id, is_for_sale)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_set(&my_likes, &_token.token_id, is_liked)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_set(&my_follows, &_token.token_id, is_followed)
+                            {
+                                continue;
+                            }
+
                             match self.nft_token_for_account
                             (
                                 &_token.token_id,
-                                account_id.clone()
+                                Some(account_id.clone())
                             )
                             {
                                 Some(res) =>
@@ -245,10 +530,30 @@ impl Contract {
                     {
                         if token_ids.contains(&_token.token_id)
                         {
+                            if !self.check_owner(&tokens_per_owner, &_token.token_id)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_map(&self.sales_active, &_token.token_id, is_for_sale)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_set(&my_likes, &_token.token_id, is_liked)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_filter_in_set(&my_follows, &_token.token_id, is_followed)
+                            {
+                                continue;
+                            }
+
                             match self.nft_token_for_account
                             (
                                 &_token.token_id,
-                                account_id.clone()
+                                Some(account_id.clone())
                             )
                             {
                                 Some(res) =>
