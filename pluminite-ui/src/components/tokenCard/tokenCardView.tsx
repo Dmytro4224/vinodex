@@ -280,13 +280,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             <div className={styles.cardImage}>
               {this.props.linkTo ? (
                 <NavLink to={this.props.linkTo}>
-                  <img className={styles.imageStyle} src={this.icon}
-                       onError={this.setDefaultImage} ref={this._refImage}
-                       alt={this.props.alt || 'preview image'} />
+                  {/*<img className={styles.imageStyle} src={this.icon}*/}
+                  {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
+                  {/*     alt={this.props.alt || 'preview image'} />*/}
+                  <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
                 </NavLink>
               ) : (
-                <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
-                     alt={this.props.alt || 'preview image'} />
+                //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
+                //     alt={this.props.alt || 'preview image'} />
+                  <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
               )}
 
               <div className={styles.cardDetail}>
