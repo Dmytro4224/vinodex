@@ -7,6 +7,7 @@ import { isVideoFile } from '../../utils/sys';
 
 interface IMediaView extends IProps {
   model: ITokenResponseItem;
+  customClass?: string;
   alt?: string;
 }
 
@@ -44,7 +45,7 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
     this.state = {
       showVideo: false,
       preview: extra === null || !extra.media_lowres ? this.props.model.metadata.media : extra.media_lowres,
-      
+
     };
   }
 
@@ -91,7 +92,7 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
       />): (
         <img
           ref={this._ref}
-          className={styles.imageStyle}
+          className={`${styles.imageStyle} ${this.props.customClass ? this.props.customClass : ''}`}
           src={this._url}
           onError={this.setDefaultImage}
           alt={this._alt}

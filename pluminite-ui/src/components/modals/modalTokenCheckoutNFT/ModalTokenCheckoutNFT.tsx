@@ -151,7 +151,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
             name={this.props.token.metadata.title}
             author={this.props.token.owner_id}
             icon={this.props.token.metadata.media}
-            isSmall={true}
+            isSmall={false}
             isView={true}
             tokenID={this.props.token.token_id}
             isLike={this.props.token.is_like}
