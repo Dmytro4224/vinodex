@@ -77,7 +77,6 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps> {
           return <TokenCardView
             key={`alltokens-${item.token_id}`}
             model={item}
-            tokenData={item}
             countL={1}
             countR={1}
             days={item.metadata.expires_at}
