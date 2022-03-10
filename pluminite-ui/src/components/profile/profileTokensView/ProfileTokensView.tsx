@@ -207,7 +207,8 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
             {this.state.list.map(item => {
               return (
                 <TokenCardView
-                  key={item.token_id}
+                  key={`profiletoken-${item.token_id}`}
+                  model={item}
                   countL={1}
                   countR={1}
                   days={item.metadata.expires_at}
@@ -223,6 +224,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   typeView={this.typeViewTokens}
                   price={item.metadata.price}
                   isTransferAction={this.isTransferAction}
+                  isForceVisible={true}
                   onClick={() => {
                   }}
                 />

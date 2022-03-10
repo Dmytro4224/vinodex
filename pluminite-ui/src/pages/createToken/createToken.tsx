@@ -19,6 +19,7 @@ import Big from 'big.js';
 import TokenCardView from "../../components/tokenCard/tokenCardView";
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return new Big(yoctoNears)
@@ -231,7 +232,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     return (<div className={styles.container}>
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
-          <TokenCardView key={this.tokenId}
+          <TokenCardView key={`createtoken-${this.tokenId}`}
+                        model={{} as ITokenResponseItem}
                          countL={1}
                          countR={1}
                          name={this.previewTitle}

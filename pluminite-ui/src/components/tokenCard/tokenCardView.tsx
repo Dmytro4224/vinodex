@@ -13,8 +13,13 @@ import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
 import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import MediaView from '../media/MediaView';
+import LazyLoad, { forceVisible } from 'react-lazyload';
+import Skeleton from 'react-loading-skeleton';
 
 interface ITokenCardView extends IProps {
+  model: ITokenResponseItem;
   icon?: any;
   alt?: string;
   countL: number;
@@ -34,6 +39,7 @@ interface ITokenCardView extends IProps {
   price?: number;
   isTransferAction?: boolean;
   isView?: boolean;
+  isForceVisible?: boolean;
 }
 
 type stateTypes = {
@@ -60,6 +66,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this._isProcessLike = false;
 
     this._refImage = React.createRef();
+  }
+
+  public componentDidUpdate() {
+    this.props.isForceVisible && forceVisible();
   }
 
   private get icon() {
@@ -106,17 +116,17 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       this.changeLikeCount();
 
       await this.props.nftContractContext.token_set_like(this.tokenID);
-
-      this._isProcessLike = false;
-    } catch (ex) {
-      this._isProcessLike = false;
-
+    }
+    catch (ex) {
       this.changeLikeCount();
 
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error,
       });
+    }
+    finally {
+      this._isProcessLike = false; 
     }
   };
 
@@ -254,64 +264,76 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   public render() {
     return (
       <>
-        <div
-          className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
-          <div className={styles.cardImage}>
-            {this.props.linkTo ? (
-              <NavLink to={this.props.linkTo}>
-                <img className={styles.imageStyle} src={this.icon}
-                     onError={this.setDefaultImage} ref={this._refImage}
-                     alt={this.props.alt || 'preview image'} />
-              </NavLink>
-            ) : (
-              <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
-                   alt={this.props.alt || 'preview image'} />
-            )}
-
-            <div className={styles.cardDetail}>
-              {(this.props.countL > 0 || this.props.countR > 0) && (
-                <div className={styles.count}>
-                  {this.props.countL}/{this.props.countR}
-                </div>
-              )}
-
-              {this.props.days !== '' && this.props.days !== null && (
-                <div className={styles.daysInfo}>
-                  {this.props.days}
-                </div>
-              )}
+        <LazyLoad
+          unmountIfInvisible={true}
+          height={200}
+          placeholder={
+            <div style={{ width: this.isSmall ? '296px' : '100%' }}>
+              <Skeleton count={1} height={340} />
+              <Skeleton count={3} />
             </div>
-
-            {this.isTransferAction && (
-              <ButtonView
-                text={''}
-                icon={transferIcon}
-                withoutText={true}
-                onClick={() => {
-                  this.transferAction();
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.btnTransfer}
-              />
-            )}
-          </div>
-          <div className={styles.cardFooter}>
-            <div className={styles.cardInfo}>
+          }
+          debounce={400}>
+          <div
+            className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
+            <div className={styles.cardImage}>
               {this.props.linkTo ? (
                 <NavLink to={this.props.linkTo}>
-                  <div className={styles.infoName}>{this.props.name}</div>
+                  {/*<img className={styles.imageStyle} src={this.icon}*/}
+                  {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
+                  {/*     alt={this.props.alt || 'preview image'} />*/}
+                  <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
                 </NavLink>
               ) : (
-                <div className={styles.infoName}>{this.props.name}</div>
+                //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
+                //     alt={this.props.alt || 'preview image'} />
+                  <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
               )}
-              <div className={styles.authorName}>{this.props.author}</div>
+
+              <div className={styles.cardDetail}>
+                {(this.props.countL > 0 || this.props.countR > 0) && (
+                  <div className={styles.count}>
+                    {this.props.countL}/{this.props.countR}
+                  </div>
+                )}
+
+                {this.props.days !== '' && this.props.days !== null && (
+                  <div className={styles.daysInfo}>
+                    {this.props.days}
+                  </div>
+                )}
+              </div>
+
+              {this.isTransferAction && (
+                <ButtonView
+                  text={''}
+                  icon={transferIcon}
+                  withoutText={true}
+                  onClick={() => {
+                    this.transferAction();
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.btnTransfer}
+                />
+              )}
             </div>
+            <div className={styles.cardFooter}>
+              <div className={styles.cardInfo}>
+                {this.props.linkTo ? (
+                  <NavLink to={this.props.linkTo}>
+                    <div className={styles.infoName}>{this.props.name}</div>
+                  </NavLink>
+                ) : (
+                  <div className={styles.infoName}>{this.props.name}</div>
+                )}
+                <div className={styles.authorName}>{this.props.author}</div>
+              </div>
 
-            {this.getCardControls()}
+              {this.getCardControls()}
 
+            </div>
           </div>
-        </div>
-
+        </LazyLoad>
         {this.isTransferAction && (
           <>
             <ModalTransferNFT

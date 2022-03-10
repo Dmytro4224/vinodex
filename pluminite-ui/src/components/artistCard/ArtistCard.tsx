@@ -10,6 +10,8 @@ import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import React from 'react';
+import Skeleton from 'react-loading-skeleton';
+import LazyLoad, { forceVisible } from 'react-lazyload';
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
@@ -22,6 +24,7 @@ interface IArtistCard extends IProps {
   customClass?: string;
   followBtnText?: string;
   isDisabledFollowBtn?: boolean;
+  isForceVisible?: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -40,6 +43,10 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     super(props);
 
     this._refAvatar = React.createRef();
+  }
+
+  public componentDidUpdate() {
+    this.props.isForceVisible && forceVisible();
   }
 
   private get avatar() {
@@ -155,7 +162,18 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   isCardType() {
     return (
-      <div className={`${styles.artistCard} ${this.props.customClass || ''}`}>
+      <LazyLoad
+        unmountIfInvisible={true}
+        height={200}
+        placeholder={
+          <div style={{ width: '100%' }}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+        }
+        debounce={400}
+        className={`${styles.artistCard} ${this.props.customClass || ''}`}
+      >
         <div className={styles.artistWrap}>
           <NavLink to={`/userProfile/${this.identification}`}>
             <img ref={this._refAvatar} onError={() => {
@@ -196,7 +214,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             />
           </div>
         </div>
-      </div>
+      </LazyLoad>
     );
   }
 
