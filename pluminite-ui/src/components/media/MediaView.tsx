@@ -34,7 +34,7 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
 
     this._ref = React.createRef();
 
-    const extra: IMetadataExtra | null = this.props.model.metadata.extra ? JSON.parse(this.props.model.metadata.extra) : null;
+    const extra: IMetadataExtra | null = this.props.model.metadata && this.props.model.metadata.extra ? JSON.parse(this.props.model.metadata.extra) : null;
 
     this._isVideo = extra === null ? false : isVideoFile(extra.media_type);
     this._url = extra === null || !extra.media_lowres ? this.props.model.metadata.media : extra.media_lowres;
