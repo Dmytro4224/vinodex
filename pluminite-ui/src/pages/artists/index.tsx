@@ -121,6 +121,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
               isFollow={item.is_following}
               followBtnText={this.followBtnText}
               isDisabledFollowBtn={this.isProfilePageView}
+              isForceVisible={this.isProfilePageView}
             />),
           )}
         </div>

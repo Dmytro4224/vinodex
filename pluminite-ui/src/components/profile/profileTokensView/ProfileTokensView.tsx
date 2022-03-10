@@ -223,6 +223,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   typeView={this.typeViewTokens}
                   price={item.metadata.price}
                   isTransferAction={this.isTransferAction}
+                  isForceVisible={true}
                   onClick={() => {
                   }}
                 />
