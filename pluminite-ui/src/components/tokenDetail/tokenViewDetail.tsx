@@ -71,6 +71,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   public componentDidMount() {
     window.scrollTo(0, 0);
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
+      console.log(`response d`, response);
       this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
     });
   }
@@ -253,11 +254,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                       <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!}/>
                     </div>
                   </Tab>
-                  <Tab eventKey="bids" title="BIDS">
+                  {this.state.order?.sale !== null && (this.state.order?.sale.sale_type === 2 || this.state.order?.sale.sale_type === 3 ? <Tab eventKey="bids" title="BIDS">
                     <div className={styles.tabContainer}>
                       <BidsView tokenId={this.state.order?.token_id!}/>
                     </div>
-                  </Tab>
+                  </Tab> : '')}
                   <Tab eventKey="contact" title="HISTORY">
                     <div className={styles.tabContainer}>
                       <HistoryView tokenId={this.state.order?.token_id!} />
