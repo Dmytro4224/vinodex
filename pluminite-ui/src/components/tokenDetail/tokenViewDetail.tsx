@@ -275,10 +275,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <div className={styles.titleWrap}>
                 <div className={styles.titleInfo}>
                   <h3>{this.state.order?.metadata.title}</h3>
-                  <div className={styles.avalialbeItems}>
+                  {/*<div className={styles.avalialbeItems}>
                     <p className={styles.title}>Available items:</p>
                     <span className={styles.counts}>{1}/{2}</span>
-                  </div>
+                  </div>*/}
                 </div>
                 <div className={styles.likesInfo}>
                   <LikeView
