@@ -46,12 +46,7 @@ const showToast = (params: IShowToast) => {
 };
 
 const validateDotNum = (element) => {
-  let stringVal = element.value.trim();
-
-  stringVal = stringVal.replace(/[^0-9\,.]/g, '');
-  stringVal = stringVal.replace(/,/gi, '.');
-
-  element.value = stringVal;
+  element.value = element.value.replace(/^\.|[^\d\.]|\.(?=.*\.)|^0+(?=\d)/g, '');
 };
 
 const onlyNumber = (element) => {
