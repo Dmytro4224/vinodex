@@ -108,7 +108,9 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
 
     this.props.onSubmit && this.props.onSubmit();
   };
-
+  private get isMyToken() {
+    return this.props.token?.owner_id === this.props.near.user?.accountId;
+  }
   render() {
     return (
       <ModalSample
@@ -130,7 +132,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
             />
 
             <ButtonView
-              text={'Buy'}
+              text={(!this.props.token?.sale || (this.props.token?.sale && this.props.token.sale.sale_type === 1)) && this.isMyToken ? `Sell` : 'Buy'}
               onClick={() => {
                 this.onSubmit();
               }}
