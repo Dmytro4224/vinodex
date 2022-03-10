@@ -40,6 +40,19 @@ pub struct MySaleHistory {
     pub date: u128
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct MySaleHistoryJson {
+    //second user
+    pub account: Option<JsonProfile>,
+    //reciever of token
+    pub token: Option<JsonToken>,
+    //sale price in yoctoNEAR that the token is listed for
+    pub price: U128,
+    /// utc timestamp
+    pub date: u128
+}
+
 //Структура однієї ставки на аукціоні
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
