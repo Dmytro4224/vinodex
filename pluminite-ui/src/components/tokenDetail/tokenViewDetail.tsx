@@ -54,10 +54,11 @@ interface ITokenViewState{
   likesCount: number;
   modalTransferIsShow: boolean;
   modalMediaShow: boolean;
+  creator: any
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false, modalMediaShow: false };
+  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false, modalMediaShow: false, creator: null };
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _isProcessLike: boolean;
 
@@ -165,6 +166,21 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       });
     }
   };
+
+  private get getUserId(){
+    return this.state.order?.owner_id;
+  }
+
+  private getCreatorData() {
+    if(!this.getUserId){ return }
+
+    this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
+      if (profile) {
+        console.log(`response profile`, profile);
+        this.setState({...this.state, creator: profile });
+      }
+    });
+  }
 
   render(){
     if(this.state.isLoading){
