@@ -75,7 +75,7 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
         {this.state.list.map(item => {
           return <TokenCardView
             key={item.token_id}
-            tokenData={item}
+            model={item}
             countL={1}
             countR={1}
             days={item.metadata.expires_at}
@@ -89,7 +89,6 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
             tokenID={item.token_id}
             isLike={item.is_like}
             onClick={() => {
-              //this.props.navigate('/token/qwewqq-1231-weq-123');
             }} />;
         })}
       </div>

@@ -75,7 +75,8 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps> {
       <div className={`d-flex align-items-center flex-gap-36 ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView
-            key={item.token_id}
+            key={`alltokens-${item.token_id}`}
+            model={item}
             tokenData={item}
             countL={1}
             countR={1}

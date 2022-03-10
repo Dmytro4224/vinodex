@@ -205,8 +205,8 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
               return (
                 <TokenCardView
-                  tokenData={item}
-                  key={item.token_id}
+                  key={`profiletoken-${item.token_id}`}
+                  model={item}
                   countL={1}
                   countR={1}
                   days={item.metadata.expires_at}

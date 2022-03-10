@@ -19,6 +19,7 @@ import Big from 'big.js';
 import TokenCardView from '../../components/tokenCard/tokenCardView';
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return new Big(yoctoNears)
@@ -236,7 +237,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
           <TokenCardView
-            key={this.tokenId}
+            model={{ token_id: this.tokenId, metadata: { media: this.previewImage } } as ITokenResponseItem}
+            key={`createtoken-${this.tokenId}`}
             countL={1}
             countR={1}
             name={this.previewTitle}
@@ -268,10 +270,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                         {acceptedFiles.length > 0 ?
                           <>{acceptedFiles[0].type.startsWith('video/') ?
                             <iframe ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
-                                    src={''}
-                                    title='' frameBorder='0'
-                                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                                    allowFullScreen></iframe>
+                              src={''}
+                              title='' frameBorder='0'
+                              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                              allowFullScreen></iframe>
                             : <img ref={this._imageRef} src={''} />}</> :
                           <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                             <ButtonView
@@ -497,14 +499,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 label: catalog,
               };
             })}
-                        customCLass={styles.selectStyle}
-                        placeholder={'Category'}
-                        onChange={(opt) => {
-                          console.log(opt);
-                        }}
-                        setRef={(ref) => {
-                          this._refCatalogSelect = ref;
-                        }}
+              customCLass={styles.selectStyle}
+              placeholder={'Category'}
+              onChange={(opt) => {
+                console.log(opt);
+              }}
+              setRef={(ref) => {
+                this._refCatalogSelect = ref;
+              }}
             />
           </div>
           <div>

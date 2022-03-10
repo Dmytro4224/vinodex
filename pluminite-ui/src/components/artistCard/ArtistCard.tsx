@@ -11,8 +11,7 @@ import { changeAvatarRefSrc, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
-import LazyLoad from 'react-lazyload';
-import { forceVisible } from 'react-lazyload';
+import LazyLoad, { forceVisible } from 'react-lazyload';
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;

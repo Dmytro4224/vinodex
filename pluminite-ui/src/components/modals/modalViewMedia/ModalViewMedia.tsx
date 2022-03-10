@@ -33,6 +33,7 @@ class ModalViewMedia extends Component<IModalViewMedia & IBaseComponentProps> {
       <ModalSample
         size={ModalSampleSizeType.xl}
         modalTitle={''}
+        customClass={'transparent'}
         isShow={this.modalIsShow}
         onHide={() => {
           this.onHideModal();
@@ -45,7 +46,7 @@ class ModalViewMedia extends Component<IModalViewMedia & IBaseComponentProps> {
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen></iframe>*/}
         <div className="d-flex align-items-center justify-content-center w-100">
-          <img src={this.props.media.src} alt=""/>
+          <img className={style.image} src={this.props.media.src} alt=""/>
         </div>
       </ModalSample>
     );

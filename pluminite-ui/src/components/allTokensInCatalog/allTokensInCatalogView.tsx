@@ -64,7 +64,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
       <div className={`d-flex align-items-center flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView
-            key={item.token_id}
+            key={`alltokensincatalog-${item.token_id}`}
             tokenData={item}
             countL={1}
             countR={1}

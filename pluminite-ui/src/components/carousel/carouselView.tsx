@@ -6,7 +6,8 @@ import prev from '../../assets/icons/arrow-slider-left.svg';
 import Slider from "react-slick";
 import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-interface ICarouselView extends IProps{
+interface ICarouselView extends IProps {
+  catalog: string;
   customCLass: string,
   childrens: any[]
 }
@@ -104,11 +105,14 @@ class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
     return settings;
   }
 
-  render(){
+  public render() {
+    console.log('CarouselView', this.props.catalog);
     return (
       <div className={`${styles.carouselWrap} ${this.props.customCLass || ''}`}>
         <Slider {...this.settings} className={styles.gap}>
-          {this.props.childrens.map(ch => ch)}
+          {this.props.childrens.map(item => {
+            return item;
+          })}
         </Slider>
       </div>
     )
