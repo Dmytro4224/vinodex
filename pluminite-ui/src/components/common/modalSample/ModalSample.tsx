@@ -10,6 +10,7 @@ interface IModalSample extends IProps{
   onHide: () => void;
   size: ModalSampleSizeType;
   buttons?: any;
+  customClass?: string;
 }
 
 enum ModalSampleSizeType {
@@ -53,7 +54,7 @@ class ModalSample extends Component<IModalSample & IBaseComponentProps> {
         show={this.isShow}
         onHide={() => { this.onHide() }}
         size={this.size}
-        className={styles.modal}
+        className={`${styles.modal} ${this.props.customClass ? this.props.customClass : ''}`}
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
