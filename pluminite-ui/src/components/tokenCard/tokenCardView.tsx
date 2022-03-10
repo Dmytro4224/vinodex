@@ -69,6 +69,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this.props.isForceVisible && forceVisible();
   }
 
+  private get isMyToken() {
+    return this.props.model.owner_id === this.props.near.user?.accountId;
+  }
+
   private get icon() {
     return this.props.icon || cardPreview;
   }
@@ -86,11 +90,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
     switch (this.tokenData.sale.sale_type) {
       case 1:
-        return TokensType.fixedPrice
+        return TokensType.fixedPrice;
       case 2:
-        return TokensType.timedAuction
+        return TokensType.timedAuction;
       case 3:
-        return TokensType.unlimitedAuction
+        return TokensType.unlimitedAuction;
     }
   }
 
@@ -122,16 +126,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       this.changeLikeCount();
 
       await this.props.nftContractContext.token_set_like(this.tokenID);
-    }
-    catch (ex) {
+    } catch (ex) {
       this.changeLikeCount();
 
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error,
       });
-    }
-    finally {
+    } finally {
       this._isProcessLike = false;
     }
   };
@@ -147,27 +149,56 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       case TokensType.created:
       case TokensType.fixedPrice:
         return (
-          <div className={styles.cardControls}>
-            <LikeView
-              customClass={styles.likes}
-              isChanged={this.state.isLike}
-              isActive={true}
-              type={LikeViewType.like}
-              count={this.state.likesCount}
-              onClick={this.toggleLikeToken}
-            />
-            {this.props.buttonText && <ButtonView
-              text={this.typeView === TokensType.created ? 'Sell' : this.props.buttonText}
-              onClick={() => {
-                this.onClick();
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.buttonSecondControls}
-              disabled={this.typeView === TokensType.fixedPrice}
-            />}
-          </div>
+          <>
+            <div className={styles.cardControls}>
+              <LikeView
+                customClass={styles.likes}
+                isChanged={this.state.isLike}
+                isActive={true}
+                type={LikeViewType.like}
+                count={this.state.likesCount}
+                onClick={this.toggleLikeToken}
+              />
+              {this.props.buttonText && <ButtonView
+                text={this.isMyToken ? 'Sell' : this.props.buttonText}
+                onClick={() => {
+                  this.onClick();
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.buttonSecondControls}
+                disabled={this.typeView === TokensType.fixedPrice}
+              />}
+            </div>
+
+            {/*{this.isMyToken && (*/}
+            {/*  <>*/}
+            {/*    <p className='line-separator' />*/}
+
+            {/*    <div className='d-flex align-items-center justify-content-between w-100'>*/}
+            {/*      <Form className='w-100'>*/}
+            {/*        <FormCheck.Label className='w-100'>*/}
+            {/*          <div*/}
+            {/*            className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>*/}
+            {/*            <div>*/}
+            {/*              <p className={styles.toggleTitle}>Put on marketplace</p>*/}
+            {/*            </div>*/}
+
+            {/*            <Form.Check*/}
+            {/*              type='switch'*/}
+            {/*              className={styles.customFormCheck}*/}
+            {/*              label=''*/}
+            {/*              ref={this._radioNFTApproveRef}*/}
+            {/*            />*/}
+            {/*          </div>*/}
+            {/*        </FormCheck.Label>*/}
+            {/*      </Form>*/}
+            {/*    </div>*/}
+            {/*  </>*/}
+            {/*)}*/}
+          </>
         );
       case TokensType.timedAuction:
+      case TokensType.unlimitedAuction:
         return (
           <>
             <div className={styles.cardControls}>
@@ -203,62 +234,19 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             </div>
           </>
         );
-      case TokensType.unlimitedAuction:
-        return (
-          <>
-            <div className={styles.cardControls}>
-              <LikeView
-                customClass={styles.likes}
-                isChanged={this.state.isLike}
-                isActive={true}
-                type={LikeViewType.like}
-                count={this.state.likesCount}
-                onClick={this.toggleLikeToken}
-              />
-              <p className={styles.priceText}>5/5 Sale on marketplace</p>
-            </div>
-
-            <p className='line-separator' />
-
-            <div className='d-flex align-items-center justify-content-between w-100'>
-              <Form className='w-100'>
-                <FormCheck.Label className='w-100'>
-                  <div
-                    className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>
-                    <div>
-                      <p className={styles.toggleTitle}>Put on marketplace</p>
-                    </div>
-
-                    <Form.Check
-                      type='switch'
-                      className={styles.customFormCheck}
-                      label=''
-                      ref={this._radioNFTApproveRef}
-                    />
-                  </div>
-                </FormCheck.Label>
-              </Form>
-            </div>
-          </>
-        );
     }
   }
 
   private transferAction() {
-    this.showModal();
+    this.modalToggleVisibility({ modalTransferIsShow: true });
   }
 
-  private showModal() {
-    this.setState({
-      ...this.state,
-      modalTransferIsShow: true,
-    });
-  }
+  private modalToggleVisibility(data: object) {
+    // data === { modalStateKeyIsShow: true }
 
-  private hideModal() {
     this.setState({
       ...this.state,
-      modalTransferIsShow: false,
+      ...data,
     });
   }
 
@@ -283,12 +271,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   {/*<img className={styles.imageStyle} src={this.icon}*/}
                   {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
                   {/*     alt={this.props.alt || 'preview image'} />*/}
-                  <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`} model={this.props.model} />
+                  <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
+                             model={this.props.model} />
                 </NavLink>
               ) : (
                 //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
                 //     alt={this.props.alt || 'preview image'} />
-                <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`} model={this.props.model} />
+                <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
+                           model={this.props.model} />
               )}
 
               <div className={styles.cardDetail}>
@@ -305,7 +295,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 )}
               </div>
 
-              {this.typeView === TokensType.created && (
+              {this.typeView === TokensType.created && this.isMyToken &&(
                 <ButtonView
                   text={''}
                   icon={transferIcon}
@@ -340,7 +330,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <>
             <ModalTransferNFT
               inShowModal={this.state.modalTransferIsShow}
-              onHideModal={() => this.hideModal()}
+              onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
               onSubmit={() => {
               }}
               tokenInfo={{}}
