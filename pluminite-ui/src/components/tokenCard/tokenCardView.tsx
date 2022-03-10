@@ -245,20 +245,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private transferAction() {
-    this.showModal();
+    this.modalToggleVisibility({ modalTransferIsShow: true });
   }
 
-  private showModal() {
-    this.setState({
-      ...this.state,
-      modalTransferIsShow: true,
-    });
-  }
+  private modalToggleVisibility(data: object) {
+    // data === { modalStateKeyIsShow: true }
 
-  private hideModal() {
     this.setState({
       ...this.state,
-      modalTransferIsShow: false,
+      ...data
     });
   }
 
@@ -340,7 +335,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <>
             <ModalTransferNFT
               inShowModal={this.state.modalTransferIsShow}
-              onHideModal={() => this.hideModal()}
+              onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
               onSubmit={() => {
               }}
               tokenInfo={{}}
