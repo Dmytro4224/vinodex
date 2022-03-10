@@ -94,6 +94,7 @@
 }
 .card.cardSmall .imageStyle {
   min-height: 297px;
+  max-height: 297px;
   object-fit: none;
   background-position: center;
 }
