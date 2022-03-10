@@ -92,7 +92,11 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
   }
 
   private onSubmit = async () => {
-    if (!this.isValidForm()) return;
+    if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1){
+      if(!this.isValidForm()){
+        return;
+      }
+    }
 
     this.setState({
       ...this.state,
@@ -150,8 +154,8 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
                                             isLike={this.props.token.is_like}
                                             customClass={style.viewCard}
                                             onClick={() => { }} /> : '' }
-        <p className={style.price}>Price {this.props.token?.metadata.price} ETH</p>
-        <InputView
+        <p className={style.price}>Price {this.props.token?.metadata.price} NEAR</p>
+        {this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1 ? <InputView
           inputType={InputType.text}
           placeholder={'Number of copies*'}
           customClass={'mb-1'}
@@ -166,11 +170,11 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           onChange={(e) => {
             onlyNumber(e.target);
           }}
-        />
+        /> : ''}
         <p className={style.line}></p>
         <div className={style.totalWrap}>
           <p className={style.totalTitle}>Total amount</p>
-          <p className={style.total}>{this.props.token?.metadata.price}ETH</p>
+          <p className={style.total}>{this.props.token?.metadata.price}NEAR</p>
         </div>
       </ModalSample>
     );
