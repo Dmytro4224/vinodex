@@ -174,7 +174,7 @@ class ModalTransferNFT extends Component<IModalTransferNFT & IBaseComponentProps
             onlyNumber(e.target);
           }}
         />
-        <p className={styles.inputSubText}>0 Available</p>
+        <p className={styles.inputSubText}>1 Available</p>
       </ModalSample>
     );
   }
