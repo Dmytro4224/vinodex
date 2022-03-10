@@ -20,6 +20,7 @@ import {isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
+import { TokensType } from '../../types/TokenTypes';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -182,6 +183,64 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     });
   }
 
+  private get typeView() {
+    if (!this.state.order || !this.state.order?.sale) return TokensType.created;
+
+    switch (this.state.order.sale.sale_type) {
+      case 1:
+        return TokensType.fixedPrice;
+      case 2:
+        return TokensType.timedAuction;
+      case 3:
+        return TokensType.unlimitedAuction;
+    }
+  }
+
+  private get isMyToken() {
+    return this.state.order?.owner_id === this.props.near.user?.accountId;
+  }
+
+  private getCardControls() {
+    switch (this.typeView) {
+      case TokensType.created:
+      case TokensType.fixedPrice:
+        return (
+          <>
+            <ButtonView
+              text={this.isMyToken ? 'Sell' : `Place a bid ${this.state.order?.metadata.price} NEAR`}
+              onClick={() => {
+                this.buyAction();
+              }}
+              color={buttonColors.goldFill}
+              customClass={styles.button}
+            />
+          </>
+
+        );
+      case TokensType.timedAuction:
+      case TokensType.unlimitedAuction:
+        return (
+          <>
+            <div className='d-flex align-items-center justify-content-between w-100'>
+              <ButtonView
+                text={`Edit lot`}
+                onClick={() => {
+                }}
+                color={buttonColors.goldFill}
+                disabled={true}
+              />
+              <ButtonView
+                text={`Stop selling`}
+                onClick={() => {
+                }}
+                color={buttonColors.redButton}
+              />
+            </div>
+          </>
+        );
+    }
+  }
+
   render(){
     if(this.state.isLoading){
       return <div className={`d-flex align-items-center flex-gap-36 p-5 ${styles.scrollWrap}`}>
@@ -288,13 +347,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 </Tabs>
               </div>
               <div className={styles.buttonWrap}>
-                <ButtonView
-                  text={`Place a bid ${this.state.order?.metadata.price} NEAR`}
-                  onClick={() => {
-                    this.buyAction();
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.button}/>
+                {this.getCardControls()}
               </div>
             </div>
           </div>

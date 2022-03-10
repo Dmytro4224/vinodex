@@ -579,6 +579,210 @@ impl Contract {
 
         return result;
     }
+
+    ///історія покупок токенів користувачем
+    pub fn my_purchases(
+        &self,
+        // каталог або null|none
+        catalog: Option<String>,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        account_id:AccountId
+    ) ->Vec<MySaleHistoryJson> 
+    {
+        let token_ids : HashSet<String>;
+
+        let mut skip = 0;
+        if page_index > 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        if catalog.is_some()
+        {
+            let tokens = self.tokens_per_type.get(&catalog.unwrap());
+            if tokens.is_none()
+            {
+                return Vec::new();
+            }
+
+            token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
+        }
+        else
+        {
+            token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+        }
+
+        let mut available_amount = token_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        let mut result : Vec<MySaleHistoryJson> = Vec::new();
+
+        let limit = available_amount as usize;
+        let mut stop = false;
+
+        match self.my_purchases.get(&account_id)
+        {
+            Some(my_purchases) =>
+            {
+                while result.len() < limit && !stop
+                {
+                    let _index = skip as usize;
+                    let item = my_purchases.get(_index);
+
+                    match item
+                    {
+                        Some(item) =>
+                        {
+                            if token_ids.contains(&item.token_id)
+                            {
+                                result.push(MySaleHistoryJson
+                                {
+                                    price: item.price,
+                                    date: item.date,
+                                    account: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account,
+                                        &Some(account_id.clone()),
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        true
+                                    ),
+                                    token: self.nft_token_for_account
+                                    (
+                                        &item.token_id,
+                                        Some(account_id.clone())
+                                    )
+                                });
+                            }
+                        },
+                        None =>
+                        {
+                            stop = true;
+                        }
+                    }
+
+                    skip = skip + 1;
+                }
+            },
+            None => {}
+        }
+
+        return result;
+    }
+
+    ///історія продажу токенів користувачем
+    pub fn my_sales(
+        &self,
+        // каталог або null|none
+        catalog: Option<String>,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        account_id:AccountId
+    ) ->Vec<MySaleHistoryJson> 
+    {
+        let token_ids : HashSet<String>;
+
+        let mut skip = 0;
+        if page_index > 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        if catalog.is_some()
+        {
+            let tokens = self.tokens_per_type.get(&catalog.unwrap());
+            if tokens.is_none()
+            {
+                return Vec::new();
+            }
+
+            token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
+        }
+        else
+        {
+            token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+        }
+
+        let mut available_amount = token_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        let mut result : Vec<MySaleHistoryJson> = Vec::new();
+
+        let limit = available_amount as usize;
+        let mut stop = false;
+
+        match self.my_sales.get(&account_id)
+        {
+            Some(my_sales) =>
+            {
+                while result.len() < limit && !stop
+                {
+                    let _index = skip as usize;
+                    let item = my_sales.get(_index);
+
+                    match item
+                    {
+                        Some(item) =>
+                        {
+                            if token_ids.contains(&item.token_id)
+                            {
+                                result.push(MySaleHistoryJson
+                                {
+                                    price: item.price,
+                                    date: item.date,
+                                    account: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account,
+                                        &Some(account_id.clone()),
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        true
+                                    ),
+                                    token: self.nft_token_for_account
+                                    (
+                                        &item.token_id,
+                                        Some(account_id.clone())
+                                    )
+                                });
+                            }
+                        },
+                        None =>
+                        {
+                            stop = true;
+                        }
+                    }
+
+                    skip = skip + 1;
+                }
+            },
+            None => {}
+        }
+
+        return result;
+    }
     
     ///отримати дані по токену
     pub fn nft_token_get(
