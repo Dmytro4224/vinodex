@@ -231,6 +231,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       title: this._refInputTitle.value,
     });
   };
+  private royaltyValid = (inp) => {
+    if(inp.value > 100){
+      inp.value = 100;
+    }
+  }
 
   public render() {
     return (<div className={styles.container}>
@@ -478,6 +483,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             <InputView
               onChange={(e) => {
                 validateDotNum(e.target);
+                this.royaltyValid(e.target);
               }}
               placeholder={'Royalties*'}
               absPlaceholder={'Royalties*'}
