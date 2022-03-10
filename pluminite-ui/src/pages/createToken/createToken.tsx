@@ -233,7 +233,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
           <TokenCardView key={`createtoken-${this.tokenId}`}
-                        model={{} as ITokenResponseItem}
+            model={{ token_id: this.tokenId, metadata: { media: this.previewImage } } as ITokenResponseItem}
                          countL={1}
                          countR={1}
                          name={this.previewTitle}
