@@ -274,7 +274,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               <Skeleton count={3} />
             </div>
           }
-          debounce={400}>
+          debounce={100}>
           <div
             className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
             <div className={styles.cardImage}>
@@ -335,6 +335,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             </div>
           </div>
         </LazyLoad>
+
         {this.typeView === TokensType.created && (
           <>
             <ModalTransferNFT

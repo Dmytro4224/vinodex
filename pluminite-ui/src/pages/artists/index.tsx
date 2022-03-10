@@ -5,6 +5,8 @@ import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import Loader from '../../components/common/loader/loader';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
+import styles from '../../components/bestArtists/bestArtists.module.css';
+import Skeleton from 'react-loading-skeleton';
 
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
@@ -94,7 +96,24 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     if (this.state.isLoading) {
       return (
         <div className='my-5 container'>
-          <Loader />
+          <div className={'d-flex align-items-center justify-content-between flex-wrap'}>
+            <div className={styles.loaderWrap}>
+              <Skeleton count={1} height={60} />
+              <Skeleton count={2} height={20} />
+            </div>
+            <div className={styles.loaderWrap}>
+              <Skeleton count={1} height={60} />
+              <Skeleton count={2} height={20} />
+            </div>
+            <div className={styles.loaderWrap}>
+              <Skeleton count={1} height={60} />
+              <Skeleton count={2} height={20} />
+            </div>
+            <div className={styles.loaderWrap}>
+              <Skeleton count={1} height={60} />
+              <Skeleton count={2} height={20} />
+            </div>
+          </div>
         </div>
       );
     }

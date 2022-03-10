@@ -8,6 +8,8 @@ import Loader from "../common/loader/loader";
 import { EmptyListView } from "../common/emptyList/emptyListView";
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import styles from './bestArtists.module.css';
+import Skeleton from 'react-loading-skeleton';
+import { toast } from 'react-toastify';
 
 interface IBestArtists extends IProps {
   parameter?: BestArtistsParameter;
@@ -62,7 +64,26 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
 
   public render() {
     if (this.state.isLoading) {
-      return <Loader />
+      return (
+        <div className={'d-flex align-items-center justify-content-between flex-wrap'}>
+          <div className={styles.loaderWrap}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+          <div className={styles.loaderWrap}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+          <div className={styles.loaderWrap}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+          <div className={styles.loaderWrap}>
+            <Skeleton count={1} height={60} />
+            <Skeleton count={2} height={20} />
+          </div>
+        </div>
+      )
     }
 
     if (!this.list.length) {
