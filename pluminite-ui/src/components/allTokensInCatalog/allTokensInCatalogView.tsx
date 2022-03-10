@@ -65,7 +65,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
         {this.state.list.map(item => {
           return <TokenCardView
             key={`alltokensincatalog-${item.token_id}`}
-            tokenData={item}
+            model={item}
             countL={1}
             countR={1}
             days={item.metadata.expires_at}

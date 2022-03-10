@@ -70,27 +70,27 @@ class Marketplace2 extends Component {
                     buttonText={'Place a bid 0.08 ETH'}
                     onClick={() => { alert('buy Place a bid 0.08 ETH') }} />*/}
 
-        <CarouselView
-          customCLass={'carousel-owl-tokens'}
-          childrens={[{ id: 1 }, { id: 2 }, { id: 3 }].map(item => {
-            return (
-              <TokenCardView
-                key={item.id}
-                countL={item.id}
-                countR={10}
-                days={'121 days left'}
-                name={'Item Name'}
-                author={'Creat name'}
-                likesCount={99}
-                isSmall={false}
-                tokenID={'item.token_id'}
-                isLike={false}
-                buttonText={'Place a bid 0.08 ETH'}
-                onClick={() => {
-                  alert('buy Place a bid 0.08 ETH');
-                }} />
-            );
-          })} />
+        {/*<CarouselView*/}
+        {/*  customCLass={'carousel-owl-tokens'}*/}
+        {/*  childrens={[{ id: 1 }, { id: 2 }, { id: 3 }].map(item => {*/}
+        {/*    return (*/}
+        {/*      <TokenCardView*/}
+        {/*        key={item.id}*/}
+        {/*        countL={item.id}*/}
+        {/*        countR={10}*/}
+        {/*        days={'121 days left'}*/}
+        {/*        name={'Item Name'}*/}
+        {/*        author={'Creat name'}*/}
+        {/*        likesCount={99}*/}
+        {/*        isSmall={false}*/}
+        {/*        tokenID={'item.token_id'}*/}
+        {/*        isLike={false}*/}
+        {/*        buttonText={'Place a bid 0.08 ETH'}*/}
+        {/*        onClick={() => {*/}
+        {/*          alert('buy Place a bid 0.08 ETH');*/}
+        {/*        }} />*/}
+        {/*    );*/}
+        {/*  })} />*/}
       </>
     );
   }
