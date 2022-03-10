@@ -23,39 +23,39 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
     super(props);
   }
 
-  private get sort(){
+  private get sort() {
     return this.props.sort || 7;
   }
 
   public componentDidMount() {
     this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, 7).then(response => {
-      this.setState({...this.state, list: response, isLoading: false });
+      this.setState({ ...this.state, list: response, isLoading: false });
     });
   }
 
   public componentDidUpdate(prevProps: IAllTokensInCatalogView, prevState: any) {
-    if(prevProps.catalog !== this.props.catalog || prevProps.sort !== this.props.sort){
+    if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.props.sort) {
       this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, 7).then(response => {
-        this.setState({...this.state, list: response, isLoading: false });
+        this.setState({ ...this.state, list: response, isLoading: false });
       });
     }
   }
 
-  render(){
-    if(this.state.isLoading){
+  render() {
+    if (this.state.isLoading) {
       return <div className={`d-flex align-items-center flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
-        <div className="w-100"><Skeleton  count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+        <div className="w-100"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
       </div>
     }
 
     if (!this.state.list.length) {
       return (
         <>
-          <LabelView  text={'Popular'}/>
-          <EmptyListView/>
+          <LabelView text={'Popular'} />
+          <EmptyListView />
         </>
       )
     }
@@ -63,23 +63,24 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
     return <div>
       <div className={`d-flex align-items-center flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
-          return <TokenCardView key={item.token_id}
-                                countL={1}
-                                countR={1}
-                                days={item.metadata.expires_at}
-                                name={item.metadata.title}
-                                author={item.owner_id}
+          return <TokenCardView key={`alltokensincatalog-${item.token_id}`}
+            model={item}
+            countL={1}
+            countR={1}
+            days={item.metadata.expires_at}
+            name={item.metadata.title}
+            author={item.owner_id}
             likesCount={item.metadata.likes_count}
             icon={mediaUrl(item.metadata)}
-                                isSmall={true}
-                                buttonText={`Place a bid ${item.metadata.price} NEAR`}
-                                linkTo={`/token/${item.token_id}`}
-                                tokenID={item.token_id}
-                                isLike={item.is_like}
-                                customClass={styles.tokenWidth}
-                                onClick={() => {
-                                  //this.props.navigate('/token/qwewqq-1231-weq-123');
-                                }}/>
+            isSmall={true}
+            buttonText={`Place a bid ${item.metadata.price} NEAR`}
+            linkTo={`/token/${item.token_id}`}
+            tokenID={item.token_id}
+            isLike={item.is_like}
+            customClass={styles.tokenWidth}
+            onClick={() => {
+              //this.props.navigate('/token/qwewqq-1231-weq-123');
+            }} />
         })}
       </div>
     </div>

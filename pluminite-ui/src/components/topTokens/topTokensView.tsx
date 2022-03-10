@@ -60,7 +60,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     }
     const catalog = this.props.catalog;
     this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
-      console.log(`Home loadData`, catalog, response);
+      //console.log(`Home top loadData`, catalog, response);
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
       console.error('loadData ex => ', ex);
@@ -97,25 +97,25 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
             color={buttonColors.gold}
           />
         </div>
-        <CarouselView customCLass={'carousel-owl-tokens'}
-          childrens={this.state.list.map(item => {
-            return <TokenCardView key={item.token_id}
-              countL={1}
-              countR={1}
-              days={item.metadata.expires_at}
-              name={item.metadata.title}
-              author={item.owner_id}
-              likesCount={item.metadata.likes_count}
-              icon={mediaUrl(item.metadata)}
-              isSmall={false}
-              buttonText={`Place a bid ${item.metadata.price} NEAR`}
-              linkTo={`/token/${item.token_id}`}
-              tokenID={item.token_id}
-              isLike={item.is_like}
-              onClick={() => {
-                //this.props.navigate('/token/qwewqq-1231-weq-123');
-              }} />;
-          })} />
+        <CarouselView customCLass={'carousel-owl-tokens'} catalog={this.props.catalog}
+          childrens={this.state.list.map(item => <TokenCardView key={`${this.props.catalog}-toptoken-${item.token_id}`}
+            model={item}
+            countL={1}
+            countR={1}
+            days={item.metadata.expires_at}
+            name={item.metadata.title}
+            author={item.owner_id}
+            likesCount={item.metadata.likes_count}
+            icon={mediaUrl(item.metadata)}
+            isSmall={false}
+            buttonText={`Place a bid ${item.metadata.price} NEAR`}
+            linkTo={`/token/${item.token_id}`}
+            tokenID={item.token_id}
+            isLike={item.is_like}
+            onClick={() => {
+              //this.props.navigate('/token/qwewqq-1231-weq-123');
+            }} />
+          )} />
       </div>
     )
   }

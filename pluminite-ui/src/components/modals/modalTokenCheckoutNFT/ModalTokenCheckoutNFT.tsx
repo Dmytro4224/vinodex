@@ -137,7 +137,8 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           </>
         }
       >
-        { this.props.token ? <TokenCardView key={this.props.token.token_id}
+        { this.props.token ? <TokenCardView key={`${ModalTokenCheckoutNFT.name}-${this.props.token.token_id}`}
+                                            model={this.props.token}
                                             countL={0}
                                             countR={0}
                                             days={this.props.token.metadata.expires_at}

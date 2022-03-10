@@ -13,8 +13,11 @@ import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
 import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
+import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import MediaView from '../media/MediaView';
 
 interface ITokenCardView extends IProps {
+  model: ITokenResponseItem;
   icon?: any;
   alt?: string;
   countL: number;
@@ -106,17 +109,17 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       this.changeLikeCount();
 
       await this.props.nftContractContext.token_set_like(this.tokenID);
-
-      this._isProcessLike = false;
-    } catch (ex) {
-      this._isProcessLike = false;
-
+    }
+    catch (ex) {
       this.changeLikeCount();
 
       showToast({
         message: `Error! Please try again later`,
         type: EShowTost.error,
       });
+    }
+    finally {
+      this._isProcessLike = false; 
     }
   };
 
@@ -252,7 +255,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   public render() {
-    console.log('icon', this.props.icon);
     return (
       <>
         <div
@@ -260,13 +262,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={styles.cardImage}>
             {this.props.linkTo ? (
               <NavLink to={this.props.linkTo}>
-                <img className={styles.imageStyle} src={this.icon}
-                     onError={this.setDefaultImage} ref={this._refImage}
-                     alt={this.props.alt || 'preview image'} />
+                {/*<img className={styles.imageStyle} src={this.icon}*/}
+                {/*     onError={this.setDefaultImage} ref={this._refImage}*/}
+                {/*     alt={this.props.alt || 'preview image'} />*/}
+                <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
               </NavLink>
             ) : (
-              <img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
-                   alt={this.props.alt || 'preview image'} />
+              //<img onError={this.setDefaultImage} ref={this._refImage} className={styles.imageStyle} src={this.icon}
+              //    alt={this.props.alt || 'preview image'} />
+                <MediaView key={`media-${this.props.model.token_id}`} model={this.props.model} />
             )}
 
             <div className={styles.cardDetail}>
