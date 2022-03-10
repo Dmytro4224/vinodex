@@ -7,14 +7,14 @@ import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withC
 import { onlyNumber } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
-import TokenCardView from "../../tokenCard/tokenCardView";
+import TokenCardView from '../../tokenCard/tokenCardView';
 
 interface IModalTokenCheckoutNFT extends IProps {
   onHideModal: () => void;
   onSubmit: () => void;
   inShowModal: boolean;
   tokenInfo: any;
-  token: ITokenResponseItem | null
+  token: ITokenResponseItem | null;
 }
 
 interface IModalTokenCheckoutNFTState {
@@ -92,8 +92,8 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
   }
 
   private onSubmit = async () => {
-    if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1){
-      if(!this.isValidForm()){
+    if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1) {
+      if (!this.isValidForm()) {
         return;
       }
     }
@@ -141,19 +141,25 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           </>
         }
       >
-        { this.props.token ? <TokenCardView key={this.props.token.token_id}
-                                            countL={0}
-                                            countR={0}
-                                            days={this.props.token.metadata.expires_at}
-                                            name={this.props.token.metadata.title}
-                                            author={this.props.token.owner_id}
-                                            icon={this.props.token.metadata.media}
-                                            isSmall={true}
-                                            isView={true}
-                                            tokenID={this.props.token.token_id}
-                                            isLike={this.props.token.is_like}
-                                            customClass={style.viewCard}
-                                            onClick={() => { }} /> : '' }
+        {this.props.token ? (
+          <TokenCardView
+            key={this.props.token.token_id}
+            tokenData={this.props.token}
+            countL={0}
+            countR={0}
+            days={this.props.token.metadata.expires_at}
+            name={this.props.token.metadata.title}
+            author={this.props.token.owner_id}
+            icon={this.props.token.metadata.media}
+            isSmall={true}
+            isView={true}
+            tokenID={this.props.token.token_id}
+            isLike={this.props.token.is_like}
+            customClass={style.viewCard}
+            isForceVisible={true}
+            onClick={() => {
+            }} />
+        ) : ''}
         <p className={style.price}>Price {this.props.token?.metadata.price} NEAR</p>
         {this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1 ? <InputView
           inputType={InputType.text}

@@ -16,6 +16,7 @@ import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
 import filterIcon from '../../../assets/icons/filter-icon.svg';
 import { mediaUrl } from '../../../utils/sys';
+import { TokensType } from '../../../types/TokenTypes';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -176,14 +177,6 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     }
   }
 
-  private get isTransferAction() {
-    return (
-      this.typeViewTokens === ProfileTokensType.activeBids
-      || this.typeViewTokens === ProfileTokensType.purchases
-      || this.typeViewTokens === ProfileTokensType.createdItems
-    );
-  }
-
   public render() {
     if (this.state.isLoading) {
       return (
@@ -205,8 +198,14 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         ) : (
           <div className={`d-flex align-items-center flex-gap-36 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
+              // Якщо об'єкт sale не null, то значіть він на продажі
+              // І в тому об'єкті є поле sale_type. 2 і 3 це аукціони
+
+              let typeView = TokensType.created;
+
               return (
                 <TokenCardView
+                  tokenData={item}
                   key={item.token_id}
                   countL={1}
                   countR={1}
@@ -220,9 +219,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   linkTo={`/token/${item.token_id}`}
                   tokenID={item.token_id}
                   isLike={item.is_like}
-                  typeView={this.typeViewTokens}
                   price={item.metadata.price}
-                  isTransferAction={this.isTransferAction}
                   isForceVisible={true}
                   onClick={() => {
                   }}

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import styles from './tokenCardView.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
@@ -7,15 +7,13 @@ import { NavLink } from 'react-router-dom';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import { showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
-import React from 'react';
-import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
 import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
-import LazyLoad from 'react-lazyload';
+import LazyLoad, { forceVisible } from 'react-lazyload';
 import Skeleton from 'react-loading-skeleton';
-import { forceVisible } from 'react-lazyload';
+import { TokensType } from '../../types/TokenTypes';
 
 interface ITokenCardView extends IProps {
   icon?: any;
@@ -33,11 +31,10 @@ interface ITokenCardView extends IProps {
   isLike: boolean;
   customClass?: string;
   onClick?: () => void;
-  typeView?: ProfileTokensType;
   price?: number;
-  isTransferAction?: boolean;
   isView?: boolean;
   isForceVisible?: boolean;
+  tokenData?: any;
 }
 
 type stateTypes = {
@@ -78,12 +75,21 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     return this.props.tokenID;
   }
 
-  private get typeView() {
-    return this.props.typeView || 'default';
+  private get tokenData() {
+    return this.props.tokenData;
   }
 
-  private get isTransferAction() {
-    return this.props.isTransferAction || false;
+  private get typeView() {
+    if (!this.tokenData || !this.tokenData?.sale) return TokensType.created;
+
+    switch (this.tokenData.sale.sale_type) {
+      case 1:
+        return TokensType.fixedPrice
+      case 2:
+        return TokensType.timedAuction
+      case 3:
+        return TokensType.unlimitedAuction
+    }
   }
 
   private onClick() {
@@ -136,10 +142,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private getCardControls() {
     switch (this.typeView) {
-      case 'default':
-      case ProfileTokensType.favourites:
-      case ProfileTokensType.activeBids:
-      case ProfileTokensType.purchases:
+      case TokensType.created:
+      case TokensType.fixedPrice:
         return (
           <div className={styles.cardControls}>
             <LikeView
@@ -151,18 +155,18 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               onClick={this.toggleLikeToken}
             />
             {this.props.buttonText && <ButtonView
-              text={this.typeView === ProfileTokensType.purchases ? 'Sell' : this.props.buttonText}
+              text={this.typeView === TokensType.created ? 'Sell' : this.props.buttonText}
               onClick={() => {
                 this.onClick();
               }}
               color={buttonColors.goldFill}
               customClass={styles.buttonSecondControls}
-              disabled={this.typeView === ProfileTokensType.purchases}
+              disabled={this.typeView === TokensType.fixedPrice}
             />}
           </div>
         );
         break;
-      case ProfileTokensType.onSale:
+      case TokensType.timedAuction:
         return (
           <>
             <div className={styles.cardControls}>
@@ -199,7 +203,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           </>
         );
         break;
-      case ProfileTokensType.createdItems:
+      case TokensType.unlimitedAuction:
         return (
           <>
             <div className={styles.cardControls}>
@@ -300,7 +304,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 )}
               </div>
 
-              {this.isTransferAction && (
+              {this.typeView === TokensType.created && (
                 <ButtonView
                   text={''}
                   icon={transferIcon}
@@ -330,7 +334,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             </div>
           </div>
         </LazyLoad>
-        {this.isTransferAction && (
+        {this.typeView === TokensType.created && (
           <>
             <ModalTransferNFT
               inShowModal={this.state.modalTransferIsShow}
@@ -340,13 +344,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               tokenInfo={{}}
             />
 
-            {/*<ModalSaleToken*/}
-            {/*  inShowModal={false}*/}
-            {/*  onHideModal={() => {}}*/}
-            {/*  onSubmit={() => {*/}
-            {/*  }}*/}
-            {/*  tokenInfo={{}}*/}
-            {/*/>*/}
+            <ModalSaleToken
+              inShowModal={false}
+              onHideModal={() => {
+              }}
+              onSubmit={() => {
+              }}
+              tokenInfo={{}}
+            />
           </>
         )}
       </>

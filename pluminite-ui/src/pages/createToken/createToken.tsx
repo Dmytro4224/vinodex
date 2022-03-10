@@ -1,22 +1,22 @@
-import React from "react";
-import { Component } from "react";
-import { Form, FormCheck, Spinner } from "react-bootstrap";
-import Dropzone, { DropzoneRef } from "react-dropzone";
-import { pinataAPI } from "../../api/Pinata";
-import { IUploadFileResponse } from "../../api/IUploadFileResponse";
-import ButtonView, { buttonColors } from "../../components/common/button/ButtonView";
-import InputView, { ViewType } from "../../components/common/inputView/InputView";
-import { ISelectViewItem, SelectView } from "../../components/common/select/selectView";
-import { ITokenCreateItem } from "../../types/ITokenCreateItem";
-import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import React from 'react';
+import { Component } from 'react';
+import { Form, FormCheck, Spinner } from 'react-bootstrap';
+import Dropzone, { DropzoneRef } from 'react-dropzone';
+import { pinataAPI } from '../../api/Pinata';
+import { IUploadFileResponse } from '../../api/IUploadFileResponse';
+import ButtonView, { buttonColors } from '../../components/common/button/ButtonView';
+import InputView, { ViewType } from '../../components/common/inputView/InputView';
+import { ISelectViewItem, SelectView } from '../../components/common/select/selectView';
+import { ITokenCreateItem } from '../../types/ITokenCreateItem';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import defaultImage from '../../assets/icons/card-preview.jpg';
 import styles from './createToken.module.css';
-import { validateDotNum } from "../../utils/sys";
+import { validateDotNum } from '../../utils/sys';
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
 import Big from 'big.js';
-import TokenCardView from "../../components/tokenCard/tokenCardView";
+import TokenCardView from '../../components/tokenCard/tokenCardView';
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
 
@@ -31,7 +31,7 @@ interface ICreateToken extends IProps {
 
 }
 
-class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
+class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _ref: React.RefObject<DropzoneRef>;
   private _refCoverFile: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
@@ -47,19 +47,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
   private _refCoverFileWrap: any;
   private _refTypePrice: Array<any> = [];
   private _selectFile?: File;
-  private _fileResponse: IUploadFileResponse | undefined
-  private _fileCoverResponse: IUploadFileResponse | undefined
+  private _fileResponse: IUploadFileResponse | undefined;
+  private _fileCoverResponse: IUploadFileResponse | undefined;
   private _imageRef: React.RefObject<any>;
   private _refCoverImg: React.RefObject<any>;
-  private _renderType: number
-  private _isVideo: boolean
+  private _renderType: number;
+  private _isVideo: boolean;
 
   public state = {
     file: null,
     isLoadFile: false,
     fileCover: null,
     isLoadCoverFile: false,
-    title: "",
+    title: '',
     putOnMarket: false,
     price: 0,
     royaltes: 0,
@@ -74,9 +74,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       isPriceValid: true,
       isBidsValid: true,
       isRoyaltiesValid: true,
-      isDescrValid: true
-    }
-  }
+      isDescrValid: true,
+    },
+  };
 
   constructor(props: ICreateToken & IBaseComponentProps) {
     super(props);
@@ -98,51 +98,55 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     if (this._ref.current) {
       this._ref.current.open();
     }
-  }
+  };
 
   private openCoverDialog = () => {
     if (this._refCoverFile.current) {
       this._refCoverFile.current.open();
     }
-  }
+  };
 
   public setSelectFile = async (files: Array<File>) => {
     this._selectFile = files[0];
 
-    if (this._selectFile === undefined) { return }
+    if (this._selectFile === undefined) {
+      return;
+    }
 
-    if(this._selectFile.type.startsWith('video/')){
+    if (this._selectFile.type.startsWith('video/')) {
       this._isVideo = true;
       this._refCoverFileWrap.current.hidden = false;
     }
 
-    this.setState({...this.state, isLoadFile: true});
+    this.setState({ ...this.state, isLoadFile: true });
 
     this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
     if (this._fileResponse && this._imageRef?.current) {
-      this.setState({...this.state, file: this._fileResponse.url, isLoadFile: false});
+      this.setState({ ...this.state, file: this._fileResponse.url, isLoadFile: false });
 
       this._imageRef.current.src = this._fileResponse.url;
     }
-  }
+  };
 
   public setSelectCoverFile = async (files: Array<File>) => {
     let _selectFile = files[0];
 
-    if (_selectFile === undefined) { return }
+    if (_selectFile === undefined) {
+      return;
+    }
 
-    this.setState({...this.state, isLoadCoverFile: true});
+    this.setState({ ...this.state, isLoadCoverFile: true });
     this._fileCoverResponse = await nftStorage.uploadFile(_selectFile as File, 'name', 'descr');
 
     if (this._fileCoverResponse && this._refCoverImg?.current) {
-      this.setState({...this.state, fileCover: this._fileCoverResponse.url, isLoadCoverFile: false});
+      this.setState({ ...this.state, fileCover: this._fileCoverResponse.url, isLoadCoverFile: false });
 
       this._refCoverImg.current.src = this._fileCoverResponse.url;
     }
-  }
+  };
 
-  private get isMultiple(){
-    if(this.props.params.type === 'multiple'){
+  private get isMultiple() {
+    if (this.props.params.type === 'multiple') {
       return true;
     }
 
@@ -161,8 +165,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       putOnMarket: this._refPutOnMarket.checked,
       price: 0,
       startDate: '',
-      expDate: ''
-    }
+      expDate: '',
+    };
 
     switch (this._renderType) {
       case 1:
@@ -178,25 +182,25 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
     this.setState({
       ...this.state,
-      ...state
-    })
+      ...state,
+    });
   }
 
-  private get tokenId(){
-    if(this._fileResponse !== undefined){
+  private get tokenId() {
+    if (this._fileResponse !== undefined) {
       return `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
     }
 
     return `${new Date().getTime()}`;
   }
 
-  private get previewImage(){
-    if(!this._isVideo){
-      if(this._fileResponse !== undefined){
+  private get previewImage() {
+    if (!this._isVideo) {
+      if (this._fileResponse !== undefined) {
         return this._fileResponse.url;
       }
-    }else{
-      if(this._fileCoverResponse !== undefined){
+    } else {
+      if (this._fileCoverResponse !== undefined) {
         return this._fileCoverResponse.url;
       }
     }
@@ -204,46 +208,47 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     return cardPreview;
   }
 
-  private get previewTitle(){
-    if(this._refInputTitle && this._refInputTitle.value !== ""){
+  private get previewTitle() {
+    if (this._refInputTitle && this._refInputTitle.value !== '') {
       return this._refInputTitle.value;
     }
 
     return 'Title';
   }
 
-  private get previewAuthor(){
-    if(this.props.near.user !== null){
+  private get previewAuthor() {
+    if (this.props.near.user !== null) {
       return `${this.props.near.user.accountId}`;
     }
 
     return 'Creator name';
   }
 
-  private setTitle = () =>{
+  private setTitle = () => {
     this.setState({
       ...this.state,
-      title: this._refInputTitle.value
-    })
-  }
+      title: this._refInputTitle.value,
+    });
+  };
 
   public render() {
     return (<div className={styles.container}>
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
-          <TokenCardView key={this.tokenId}
-                         countL={1}
-                         countR={1}
-                         name={this.previewTitle}
-                         author={this.previewAuthor}
-                         icon={this.previewImage}
-                         isSmall={true}
-                         buttonText={`Buy now`}
-                         tokenID={this.tokenId}
-                         isLike={false}
-                         customClass={styles.preview}
-                         onClick={() => {
-                         }} days={""} />
+          <TokenCardView
+            key={this.tokenId}
+            countL={1}
+            countR={1}
+            name={this.previewTitle}
+            author={this.previewAuthor}
+            icon={this.previewImage}
+            isSmall={true}
+            buttonText={`Buy now`}
+            tokenID={this.tokenId}
+            isLike={false}
+            customClass={styles.preview}
+            onClick={() => {
+            }} days={''} />
         </div>
       </MediaQuery>
 
@@ -252,7 +257,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         <div className={styles.createWrap}>
           <label className={styles.label}>Upload file</label>
           <div className={styles.dropzone}>
-            <Dropzone accept="image/*,video/*" onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
+            <Dropzone accept='image/*,video/*' onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
               {({ getRootProps, getInputProps, acceptedFiles }) => {
 
                 return (
@@ -261,20 +266,21 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                       <input {...getInputProps()} />
                       <div className={styles.dropzoneControls}>
                         {acceptedFiles.length > 0 ?
-                          <>{ acceptedFiles[0].type.startsWith('video/') ?
-                              <iframe ref={this._imageRef} className={styles.iFrameStyle} width="550" height="300" src={""}
-                                      title="" frameBorder="0"
-                                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                      allowFullScreen></iframe>
-                              : <img ref={this._imageRef} src={""} /> }</> :
+                          <>{acceptedFiles[0].type.startsWith('video/') ?
+                            <iframe ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
+                                    src={''}
+                                    title='' frameBorder='0'
+                                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                    allowFullScreen></iframe>
+                            : <img ref={this._imageRef} src={''} />}</> :
                           <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                             <ButtonView
-                            text={'Upload file'}
-                            onClick={() => {
-                              this.openDialog();
-                            }}
-                            color={buttonColors.goldFill}
-                            customClass={styles.button} /></>
+                              text={'Upload file'}
+                              onClick={() => {
+                                this.openDialog();
+                              }}
+                              color={buttonColors.goldFill}
+                              customClass={styles.button} /></>
                         }
 
                       </div>
@@ -287,10 +293,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               <div className={styles.spinnerWrap}><Spinner animation='grow' variant='light' /></div>}
           </div>
 
-          <div ref={this._refCoverFileWrap} className={"mt-5"} hidden>
+          <div ref={this._refCoverFileWrap} className={'mt-5'} hidden>
             <label className={styles.label}>Upload cover</label>
             <div className={styles.dropzone}>
-              <Dropzone accept="image/*" onDrop={this.setSelectCoverFile} ref={this._refCoverFile} noClick noKeyboard>
+              <Dropzone accept='image/*' onDrop={this.setSelectCoverFile} ref={this._refCoverFile} noClick noKeyboard>
                 {({ getRootProps, getInputProps, acceptedFiles }) => {
                   return (
                     <div>
@@ -298,7 +304,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
                           {acceptedFiles.length > 0 ?
-                            <img ref={this._refCoverImg} src={""} /> :
+                            <img ref={this._refCoverImg} src={''} /> :
                             <><p className={styles.dropzoneTitle}>PNG, GIF. Max 100mb</p>
                               <ButtonView
                                 text={'Upload file'}
@@ -321,29 +327,36 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           </div>
 
           <InputView
-            onChange={(e) => { this.setTitle() }}
+            onChange={(e) => {
+              this.setTitle();
+            }}
             placeholder={'Title*'}
             absPlaceholder={'Title*'}
             customClass={`mb-4 ${styles.titleInpWrap}`}
             viewType={ViewType.input}
-            setRef={(ref) => { this._refInputTitle = ref; }}
+            setRef={(ref) => {
+              this._refInputTitle = ref;
+            }}
             value={this._refInputTitle && this._refInputTitle.value}
             isError={!this.state.validate.isTitleValid}
             errorMessage={`Enter title in the correct format.`}
           />
           <p></p>
           <Form>
-            <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor="switch-nft-approve">
-              <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
+            <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>
+              <div
+                className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
                 <div>
                   <p className={styles.itemTitle}>Put on marketplace</p>
                 </div>
 
                 <Form.Check
-                  type="switch"
-                  id="switch-nft-approve"
-                  ref={(ref) => { this._refPutOnMarket = ref }}
-                  label=""
+                  type='switch'
+                  id='switch-nft-approve'
+                  ref={(ref) => {
+                    this._refPutOnMarket = ref;
+                  }}
+                  label=''
                 />
               </div>
             </FormCheck.Label>
@@ -351,35 +364,48 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           <div className={styles.checkboxes}>
             <Form className={`d-flex align-items-center flex-gap-36 ${styles.formChecked}`}>
               <div key={1} className={`mb-3 ${styles.checkItem}`}>
-                <Form.Check className="pl-0" type={'radio'} id={`check-fixed`} name='checkbox'>
-                  <Form.Check.Input onChange={() => { this.setMState(1) }} id="inp-field-check" className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[0] = ref }} type={'radio'} name='checkbox' />
-                  <Form.Check.Label htmlFor="inp-field-check" className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
+                <Form.Check className='pl-0' type={'radio'} id={`check-fixed`} name='checkbox'>
+                  <Form.Check.Input onChange={() => {
+                    this.setMState(1);
+                  }} id='inp-field-check' className={`d-none ${styles.priceTypeInput}`} ref={(ref) => {
+                    this._refTypePrice[0] = ref;
+                  }} type={'radio'} name='checkbox' />
+                  <Form.Check.Label htmlFor='inp-field-check' className={styles.priceTyleLabel}>
+                    <div className='d-flex align-items-center justify-content-center flex-column'>
                       <i className={`${styles.icon} ${styles.fixedPriceIcon}`}></i>
-                      <p className="mt-1">Fixed price</p>
+                      <p className='mt-1'>Fixed price</p>
                     </div>
                   </Form.Check.Label>
                 </Form.Check>
               </div>
               {this.isMultiple ? '' : <div key={2} className={`mb-3 ${styles.checkItem}`}>
-                <Form.Check className="pl-0" type={'radio'} id={`check-auction`} name='checkbox'>
-                  <Form.Check.Input onChange={() => { this.setMState(2) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[1] = ref }} type={'radio'} name='checkbox' />
+                <Form.Check className='pl-0' type={'radio'} id={`check-auction`} name='checkbox'>
+                  <Form.Check.Input onChange={() => {
+                    this.setMState(2);
+                  }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => {
+                    this._refTypePrice[1] = ref;
+                  }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
+                    <div className='d-flex align-items-center justify-content-center flex-column'>
                       <i className={`${styles.icon} ${styles.timedAuctionIcon}`}></i>
-                      <p className="mt-1">Timed auction</p>
+                      <p className='mt-1'>Timed auction</p>
                     </div>
                   </Form.Check.Label>
                 </Form.Check>
               </div>}
               <div key={3} className={`mb-3 ${styles.checkItem}`}>
-                <Form.Check className="pl-0" type={'radio'} id={`check-Unlimited`} name='checkbox'>
-                  <Form.Check.Input onChange={() => { this.setMState(3) }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => { this._refTypePrice[2] = ref }} type={'radio'} name='checkbox' />
+                <Form.Check className='pl-0' type={'radio'} id={`check-Unlimited`} name='checkbox'>
+                  <Form.Check.Input onChange={() => {
+                    this.setMState(3);
+                  }} className={`d-none ${styles.priceTypeInput}`} ref={(ref) => {
+                    this._refTypePrice[2] = ref;
+                  }} type={'radio'} name='checkbox' />
                   <Form.Check.Label className={styles.priceTyleLabel}>
-                    <div className="d-flex align-items-center justify-content-center flex-column">
+                    <div className='d-flex align-items-center justify-content-center flex-column'>
                       <i className={`${styles.icon} ${styles.unlimitedAuctionIcon}`}></i>
-                      <p className="mt-1">Unlimited auction</p>
-                    </div></Form.Check.Label>
+                      <p className='mt-1'>Unlimited auction</p>
+                    </div>
+                  </Form.Check.Label>
                 </Form.Check>
               </div>
             </Form>
@@ -388,12 +414,16 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <div className={styles.copies}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
               <InputView
-                onChange={(e) => { validateDotNum(e.target) }}
+                onChange={(e) => {
+                  validateDotNum(e.target);
+                }}
                 placeholder={'Price*'}
                 absPlaceholder={'Price*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
-                setRef={(ref) => { this._refInputPrice = ref; }}
+                setRef={(ref) => {
+                  this._refInputPrice = ref;
+                }}
                 value={this._refInputPrice && this._refInputPrice.value}
                 isError={!this.state.validate.isPriceValid}
                 errorMessage={`Enter price in the correct format.`}
@@ -402,12 +432,16 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             </div> : this._renderType === 2 ? <div className={styles.copies}>
               <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
               <InputView
-                onChange={(e) => { validateDotNum(e.target) }}
+                onChange={(e) => {
+                  validateDotNum(e.target);
+                }}
                 placeholder={'Minimum bid**'}
                 absPlaceholder={'Minimum bid**'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
-                setRef={(ref) => { this._refInputBids = ref; }}
+                setRef={(ref) => {
+                  this._refInputBids = ref;
+                }}
                 value={this._refInputBids && this._refInputBids.value}
                 isError={!this.state.validate.isBidsValid}
                 errorMessage={`Enter minimum bid in the correct format.`}
@@ -416,17 +450,21 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
                 <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
                 <div className={'d-flex align-items-centerjustify-content-between flex-gap-36 mt-3'}>
                   <Form.Control
-                    type="date"
-                    id="date-start"
+                    type='date'
+                    id='date-start'
                     placeholder={'Starting Date*'}
-                    ref={(ref) => { this._refStartDate = ref }}
+                    ref={(ref) => {
+                      this._refStartDate = ref;
+                    }}
                     value={this._refStartDate && this._refStartDate.value}
                   />
                   <Form.Control
-                    type="date"
-                    id="date-exp"
+                    type='date'
+                    id='date-exp'
                     placeholder={'Expiration Date*'}
-                    ref={(ref) => { this._refExpDate = ref }}
+                    ref={(ref) => {
+                      this._refExpDate = ref;
+                    }}
                     value={this._refExpDate && this._refExpDate.value}
                   />
                 </div>
@@ -436,7 +474,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
 
           <div>
             <InputView
-              onChange={(e) => { validateDotNum(e.target) }}
+              onChange={(e) => {
+                validateDotNum(e.target);
+              }}
               placeholder={'Royalties*'}
               absPlaceholder={'Royalties*'}
               customClass={`${styles.titleInpWrap}`}
@@ -444,7 +484,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               value={this._refRoyalitiesInput && this._refRoyalitiesInput.value}
               isError={!this.state.validate.isRoyaltiesValid}
               errorMessage={`Enter royalties in the correct format.`}
-              setRef={(ref) => { this._refRoyalitiesInput = ref; }}
+              setRef={(ref) => {
+                this._refRoyalitiesInput = ref;
+              }}
             />
             <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
           </div>
@@ -452,18 +494,24 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
             <SelectView options={this.props.near.catalogs.map(catalog => {
               return {
                 value: catalog,
-                label: catalog
-              }
+                label: catalog,
+              };
             })}
-              customCLass={styles.selectStyle}
-              placeholder={'Category'}
-              onChange={(opt) => { console.log(opt) }}
-              setRef={(ref) => { this._refCatalogSelect = ref; }}
+                        customCLass={styles.selectStyle}
+                        placeholder={'Category'}
+                        onChange={(opt) => {
+                          console.log(opt);
+                        }}
+                        setRef={(ref) => {
+                          this._refCatalogSelect = ref;
+                        }}
             />
           </div>
           <div>
             <InputView
-              onChange={(e) => { console.log(e) }}
+              onChange={(e) => {
+                console.log(e);
+              }}
               placeholder={'Description*'}
               absPlaceholder={'Description*'}
               customClass={`${styles.titleInpWrap}`}
@@ -471,14 +519,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
               viewType={ViewType.input}
               isError={!this.state.validate.isDescrValid}
               errorMessage={`Enter description in the correct format.`}
-              setRef={(ref) => { this._refInputDescription = ref; }}
+              setRef={(ref) => {
+                this._refInputDescription = ref;
+              }}
             />
           </div>
         </div>
-        <div className="d-flex align-items-center justify-content-center mt-2">
+        <div className='d-flex align-items-center justify-content-center mt-2'>
           <ButtonView
             text={'CANCEL'}
-            onClick={() => { this.props.navigate(-1) }}
+            onClick={() => {
+              this.props.navigate(-1);
+            }}
             color={buttonColors.gold}
           />
           <ButtonView
@@ -488,7 +540,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           />
         </div>
       </div>
-    </div>)
+    </div>);
   }
 
   private isValidForm() {
@@ -534,9 +586,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
           isPriceValid: validInfo.price,
           isBidsValid: validInfo.bids,
           isRoyaltiesValid: validInfo.royal,
-          isDescrValid: validInfo.descr
-        }
-      })
+          isDescrValid: validInfo.descr,
+        },
+      });
 
       return false;
     }
@@ -553,10 +605,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
     const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
     const price = parseFloat(this._refInputPrice.value);
 
-    if (this._fileResponse === undefined) { return }
+    if (this._fileResponse === undefined) {
+      return;
+    }
 
-    if(this._isVideo){
-      if (this._fileCoverResponse === undefined) { return }
+    if (this._isVideo) {
+      if (this._fileCoverResponse === undefined) {
+        return;
+      }
     }
 
     const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
@@ -570,7 +626,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         media_lowres: preview,
         creator_id: this.props.near.user!.accountId,
         media_size: this._selectFile!.size,
-        media_type: this._selectFile!.type
+        media_type: this._selectFile!.type,
       }),
       issued_at: null,
       likes_count: 0,
@@ -583,7 +639,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       starts_at: null,
       title: title,
       updated_at: null,
-      views_count: 0
+      views_count: 0,
     };
 
     const tokenId = `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
@@ -593,7 +649,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
       receiver_id: null,
       perpetual_royalties: null,
       token_id: tokenId,
-      token_type: catalog?.value
+      token_type: catalog?.value,
     };
 
     console.log('save model', JSON.stringify(model));
@@ -607,7 +663,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         'nft_mint',
         model,
         APP.PREPAID_GAS_LIMIT_HALF,
-        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '100000000000000000000000' : '0'
+        APP.USE_STORAGE_FEES || !isFreeMintAvailable ? '100000000000000000000000' : '0',
       ),
       /*transactions.functionCall(
         'nft_approve',
@@ -629,7 +685,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps>{
         APP.USE_STORAGE_FEES ? marketContractState.minStorage : 1
       ),*/
     ]);
-  }
+  };
 }
 
 export default withComponent(CreateToken);
