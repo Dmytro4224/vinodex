@@ -15,9 +15,8 @@ import ModalTransferNFT from '../modals/modalTransferNFT/ModalTransferNFT';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import MediaView from '../media/MediaView';
-import LazyLoad from 'react-lazyload';
+import LazyLoad, { forceVisible } from 'react-lazyload';
 import Skeleton from 'react-loading-skeleton';
-import { forceVisible } from 'react-lazyload';
 
 interface ITokenCardView extends IProps {
   model: ITokenResponseItem;
