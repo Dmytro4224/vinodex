@@ -7,7 +7,7 @@ import multiplyIcon from '../../assets/icons/multipleToken.svg';
 import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
 interface ICreateTokenDropdownView extends IProps {
-
+  onNavigated?: () => void;
 }
 
 class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBaseComponentProps>{
@@ -16,6 +16,8 @@ class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBase
   }
 
   private createAction(isMultiple: boolean) {
+    this.props.onNavigated && this.props.onNavigated();
+
     if (this.props.near.isAuth) {
       if(isMultiple){
         this.props.navigate('/create/multiple');
@@ -28,8 +30,8 @@ class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBase
   }
 
   render(){
-    return <Dropdown className="ml-12">
-      <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.isHiddenArrow} ${styles.goldFill}`}>
+    return <Dropdown className={styles.dropWrap}>
+      <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.isHiddenArrow} ${styles.goldFill} ${styles.fixMobileBtn}`}>
         CREATE
       </Dropdown.Toggle>
 

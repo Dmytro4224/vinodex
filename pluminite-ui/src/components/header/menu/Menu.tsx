@@ -17,6 +17,7 @@ import ButtonView, { buttonColors } from "../../common/button/ButtonView";
 import ButtonCopy from "../../common/buttonCopy/ButtonCopy";
 import React from "react";
 import { changeAvatarRefSrc } from "../../../utils/sys";
+import CreateTokenDropdownView from '../../createTokenDropdown/createTokenDropdownView';
 
 interface IMenu extends IProps {
   user: ICurrentUser | null;
@@ -147,6 +148,8 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
                 </ul>
 
                 <p className="line-separator" />
+
+                <CreateTokenDropdownView onNavigated={() => {this.toggleMenu()}} />
 
                 <ButtonView
                   text={'Disconnect'}
