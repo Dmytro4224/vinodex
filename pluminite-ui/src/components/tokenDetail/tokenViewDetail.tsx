@@ -395,6 +395,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   likesCount={0}
                   isCard={false}
                   isFollow={false}
+                  withoutControls={true}
                   isLike={false}/>
               </div>
               <div className={styles.tabsWrap}>

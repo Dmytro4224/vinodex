@@ -25,6 +25,7 @@ interface IArtistCard extends IProps {
   followBtnText?: string;
   isDisabledFollowBtn?: boolean;
   isForceVisible?: boolean;
+  withoutControls?: boolean;
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -231,7 +232,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
-        <div className={`d-flex align-items-center ${this.isMyUser ? styles.pointerNone : ''}`}>
+        <div className={`d-flex align-items-center ${this.isMyUser ? styles.pointerNone : ''} ${this.props.withoutControls ? 'd-none' : ''}`}>
           <LikeView
             onClick={this.toggleLikeAccount}
             customClass={`${styles.likes} ${styles.likesCustom}`}
