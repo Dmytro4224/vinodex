@@ -12,7 +12,12 @@ import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 
 interface IModalSaleToken extends IProps {
   onHideModal: () => void;
-  onSubmit: ({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any  }) => void;
+  onSubmit: ({
+               saleType,
+               price,
+               start_date,
+               end_date,
+             }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => void;
   inShowModal: boolean;
   tokenInfo: ITokenResponseItem | null | undefined;
 }
@@ -79,7 +84,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
   private isValidForm() {
     let validInfo = {
       price: true,
-      errorMessage: ''
+      errorMessage: '',
     };
 
     switch (this.state.selectType) {
@@ -90,11 +95,12 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
 
         break;
       case '2':
-      case '3':
         if (this._refStartDate.value === '' || this._refExpDate.value === '') {
           validInfo.errorMessage = 'Enter start and end date';
         }
 
+        break;
+      case '3':
         break;
     }
 
@@ -129,7 +135,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
       saleType: +this.state.selectType,
       price: +this._refInputPrice.value,
       start_date: this._refStartDate?.value || '',
-      end_date: this._refExpDate?.value || ''
+      end_date: this._refExpDate?.value || '',
     });
   };
 
@@ -215,7 +221,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             />
             {/*<p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p> */}
           </>
-        ) : (
+        ) : this.state.selectType === '2' ? (
           <div className={'mt-4'}>
             <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
             <div className={'d-flex align-items-center justify-content-between flex-gap-36 mt-3'}>
@@ -239,7 +245,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
               />
             </div>
           </div>
-        )}
+        ) : ''}
 
         {this.state.errorMessage && <p className={styles.errorMessage}>{this.state.errorMessage}</p>}
       </ModalSample>
