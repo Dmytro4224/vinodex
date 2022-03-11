@@ -5,7 +5,7 @@ import { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import LikeView, {LikeViewType } from '../like/likeView';
 import ArtistCard from '../artistCard/ArtistCard';
-import { Form, FormCheck, Tab, Tabs } from 'react-bootstrap';
+import {Badge, Form, FormCheck, Tab, Tabs } from 'react-bootstrap';
 import ButtonView, {buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
@@ -241,7 +241,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       case TokensType.created:
         return (
           <>
-            {this.isMyToken && (
+            {this.isMyToken ? (
               <ButtonView
                 text={'Put on marketplace'}
                 onClick={() => {
@@ -250,7 +250,16 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 color={buttonColors.goldFill}
                 customClass={styles.button}
               />
-            )}
+            ) : (<div className="w-100 align-items-center justify-content-center d-flex">
+              <ButtonView
+                text={'Not for sale'}
+                onClick={() => {
+
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+                disabled={true}
+              /></div>)}
           </>
         );
       case TokensType.fixedPrice:
