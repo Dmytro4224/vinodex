@@ -16,7 +16,7 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
-import { convertNearToYoctoString, isVideoFile, showToast } from '../../utils/sys';
+import { convertNearToYoctoString, convertYoctoNearsToNears, isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
@@ -303,7 +303,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 color={buttonColors.redButton}
               />
             </div> : <ButtonView
-              text={'Place a bid'}
+              text={`Place a bid ${convertYoctoNearsToNears(this.state.order?.sale.price)}`}
               onClick={() => {
                 this.buyAction();
               }}
