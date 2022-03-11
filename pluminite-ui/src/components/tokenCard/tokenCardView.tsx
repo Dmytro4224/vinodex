@@ -323,7 +323,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
         {this.getCardControls()}
 
-        {this.isMyToken && (
+        {(this.isMyToken && !this.props.isView) && (
           <div className={styles.puOnMarketplaceWrap}>
             <p className='line-separator' />
             <div className={`d-flex align-items-center justify-content-between w-100 mt-2`}>

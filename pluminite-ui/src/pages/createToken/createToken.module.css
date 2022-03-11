@@ -184,7 +184,7 @@
 }
 
 .preview img {
-  /*object-fit: contain;*/
+  object-fit: contain !important;
 }
 
 .iFrameStyle {

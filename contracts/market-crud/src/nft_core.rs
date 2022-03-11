@@ -105,9 +105,9 @@ impl NonFungibleTokenCore for Contract {
         assert_one_yocto();
 
         let token_data = self.nft_token(token_id.clone());
-        if let Some(token_data_unwrapped) = token_data {
-            assert!(token_data_unwrapped.approved_account_ids.len() == 0, "Token already approved on a marketplace. Abort");
-        }
+        // if let Some(token_data_unwrapped) = token_data {
+        //     assert!(token_data_unwrapped.approved_account_ids.len() == 0, "Token already approved on a marketplace. Abort");
+        // }
 
         let sender_id = env::predecessor_account_id();
         let previous_token = self.internal_transfer(

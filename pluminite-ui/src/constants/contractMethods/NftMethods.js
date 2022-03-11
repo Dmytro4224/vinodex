@@ -23,6 +23,7 @@ const NftMethods = {
     'nft_mint',
     'set_profile',
     'sale_create',
+    'sale_offer',
     'sale_remove',
     'nft_transfer',
     'like_artist_account',

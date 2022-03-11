@@ -308,15 +308,6 @@ impl Contract {
         );
     }
 
-    #[private]
-    pub fn hash_account_id(account_id: &AccountId) -> CryptoHash {
-        //get the default hash
-        let mut hash = CryptoHash::default();
-        //we hash the account ID and return it
-        hash.copy_from_slice(&env::sha256(account_id.as_bytes()));
-        hash
-    }
-
     //updates the price for a sale on the market
     #[payable]
     pub fn sale_update_price(
@@ -522,7 +513,7 @@ impl Contract {
 
                 sale.bids.push(SaleBid
                 {
-                    account_id: buyer_id,
+                    account_id: buyer_id.clone(),
                     date: time,
                     price: price
                 });
@@ -530,6 +521,31 @@ impl Contract {
                 self.sales_active.insert(&token_id, &sale);
 
                 self.tokens_resort(token_id.clone(), 5, Some(price));
+
+                match self.my_bids_active.get(&buyer_id)
+                {
+                    Some(mut bids) =>
+                    {
+                        if !bids.contains(&token_id)
+                        {
+                            bids.insert(&token_id);
+                            self.my_bids_active.insert(&buyer_id, &bids);
+                        }
+                    },
+                    None =>
+                    {
+                        let mut bids = UnorderedSet::new(
+                            StorageKey::MyBidsActiveSet {
+                                account_id_hash: hash_account_id(&buyer_id),
+                            }
+                                .try_to_vec()
+                                .unwrap(),
+                        );
+
+                        bids.insert(&token_id);
+                        self.my_bids_active.insert(&buyer_id, &bids);
+                    }
+                }
             },
             _ =>
             {
@@ -663,6 +679,25 @@ impl Contract {
                 });
     
                 self.my_purchases.insert(&buyer_id, &purchases);
+            }
+        }
+
+        if sale.sale_type == 2 || sale.sale_type == 3
+        {
+            for i in 0..sale.bids.len()
+            {
+                match self.my_bids_active.get(&sale.bids[i].account_id)
+                {
+                    Some(mut bids) =>
+                    {
+                        if bids.contains(&token_id)
+                        {
+                            bids.remove(&token_id);
+                            self.my_bids_active.insert(&sale.bids[i].account_id, &bids);
+                        }
+                    },
+                    None => {}
+                }
             }
         }
 
