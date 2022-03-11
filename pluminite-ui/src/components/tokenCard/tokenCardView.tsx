@@ -211,7 +211,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   this.showCheckoutModal();
                 }}
                 color={buttonColors.goldFill}
-                customClass={styles.button}
+                customClass={styles.buttonSecondControls}
               /></div>}
             </div>
           </div>

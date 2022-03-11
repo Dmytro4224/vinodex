@@ -211,7 +211,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             <InputView
               placeholder={'Price*'}
               customClass={'mt-4'}
-              value={this._refInputPrice?.value || this.tokenInfo?.metadata.price || ''}
+              value={this._refInputPrice?.value || ''}
               absPlaceholder={'Price*'}
               setRef={(ref) => {
                 this._refInputPrice = ref;
