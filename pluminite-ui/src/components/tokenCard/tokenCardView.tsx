@@ -328,18 +328,18 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             )}
           </div>
 
-          {this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (
-            <ButtonView
-              text={''}
-              icon={transferIcon}
-              withoutText={true}
-              onClick={() => {
-                this.transferAction();
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.btnTransfer}
-            />
-          )}
+          {/*{this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (*/}
+          {/*  <ButtonView*/}
+          {/*    text={''}*/}
+          {/*    icon={transferIcon}*/}
+          {/*    withoutText={true}*/}
+          {/*    onClick={() => {*/}
+          {/*      this.transferAction();*/}
+          {/*    }}*/}
+          {/*    color={buttonColors.goldFill}*/}
+          {/*    customClass={styles.btnTransfer}*/}
+          {/*  />*/}
+          {/*)}*/}
         </div>
 
         {this.getCardControls()}
