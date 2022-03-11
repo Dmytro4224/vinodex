@@ -16,6 +16,7 @@ import ProfileTokensView from '../../components/profile/profileTokensView/Profil
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import ArtistsView, { ArtistViewType } from '../artists';
+import { nftStorage } from '../../api/NftStorage';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -109,10 +110,10 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
       isLoadAvatar: true,
     });
 
-    this._fileResponse = await pinataAPI.uploadFile(this._selectFile as File);
+    this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
 
     if (this._fileResponse) {
-      const src = pinataAPI.createUrl(this._fileResponse.IpfsHash!);
+      const src = this._fileResponse.url;// pinataAPI.createUrl(this._fileResponse.IpfsHash!);
 
       this.updateUser({
         name: this.state.profile.name,
