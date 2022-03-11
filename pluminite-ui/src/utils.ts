@@ -26,6 +26,7 @@ export type INftContract = nearAPI.Contract & {
     token_owners_history: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<any>>;
     nft_token_get: ({ token_id }: { token_id: string}) => Promise<ITokenResponseItem>;
     sale_get: ({ token_id, with_bids, asked_account_id }: { token_id: string, with_bids: boolean, asked_account_id: string}) => Promise<any>;
+    sale_create: ({ token_id, sale_type, price, start_date, end_date } : { token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any }) => Promise<any>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     like_artist_account: ({account_id }: {account_id:string}) => Promise<any>;
     token_set_like: ({token_id }: {token_id:string}) => Promise<any>;

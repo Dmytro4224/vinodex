@@ -43,6 +43,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+  /*border-top: 1px solid var(--pirateCold);*/
 }
 .cardFooter .cardInfo .infoName {
   font-weight: 500;
@@ -107,7 +108,7 @@
 }
 .card.cardSmall .cardControls {
   justify-content: space-between;
-  margin-top: 16px;
+  /*margin-top: 16px;*/
   width: 100%;
   flex-direction: row-reverse;
 }
@@ -152,4 +153,8 @@
 }
 .onlyViewed .cardControls{
   display: none;
+}
+
+.puOnMarketplaceWrap {
+  padding: 10px 16px;
 }
