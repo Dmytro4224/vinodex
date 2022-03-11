@@ -2,6 +2,7 @@ import { toast } from 'react-toastify';
 import { IShowToast } from '../types/ISysTypes';
 import defaultAvatar from '../assets/images/avatar-def.png';
 import { IMetaData } from '../types/ITokenCreateItem';
+import Big from 'big.js';
 
 const classList = (...args: string[]) => {
   return args.join(' ');
@@ -107,6 +108,13 @@ const formatDate = (date) => {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
+const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
+  return new Big(yoctoNears)
+    .div(10 ** 24)
+    .round(precision)
+    .toString();
+};
+
 export {
   classList,
   transformArtistId,
@@ -118,6 +126,7 @@ export {
   isVideoFile,
   onlyNumber,
   mediaUrl,
-  formatDate
+  formatDate,
+  convertYoctoNearsToNears
 };
 
