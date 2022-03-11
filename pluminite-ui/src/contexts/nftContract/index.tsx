@@ -15,6 +15,7 @@ export interface INftContractContext {
   getProfile: (account_id: string) => Promise<IProfile>;
   set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
   sale_create: (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => Promise<any>;
+  sale_remove: (token_id: string) => Promise<any>;
   like_artist_account: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
@@ -158,6 +159,12 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public sale_remove = async (token_id: string) => {
+    return this.nftContract.sale_remove({
+      token_id: token_id,
+    });
+  };
+
   public view_artist_account = async (accountId: string) => {
     return this.nftContract.view_artist_account({
       account_id: accountId,
@@ -186,6 +193,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       like_artist_account: this.like_artist_account,
       token_set_like: this.token_set_like,
       sale_create: this.sale_create,
+      sale_remove: this.sale_remove,
       nft_mint: this.nft_mint,
       follow_artist_account: this.follow_artist_account,
       view_artist_account: this.view_artist_account,
