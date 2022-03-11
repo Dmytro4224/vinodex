@@ -129,6 +129,11 @@ impl Contract {
             assert_eq!(self.token_types_locked.contains(&token.token_type.clone().unwrap()), false, "Token transfers are locked");
         }
 
+        if !sender_id.eq(&token.owner_id)
+        {
+            panic!("You are not token owner");
+        }
+
         assert_ne!(
             &token.owner_id, receiver_id,
             "The token owner and the receiver should be different"

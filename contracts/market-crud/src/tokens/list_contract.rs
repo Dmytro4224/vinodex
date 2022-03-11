@@ -109,13 +109,30 @@ impl Contract {
     }
 
     #[private]
-    fn check_owner(&self, set: &Option<UnorderedSet<String>>, value: &String) -> bool
+    fn check_unordered_set(&self, set: &Option<UnorderedSet<String>>, value: &String, check: Option<bool>) -> bool
     {
-        match set
+        match check
         {
-            Some(set) =>
+            Some(check) =>
             {
-                return set.contains(value);
+                match set
+                {
+                    Some(set) =>
+                    {
+                        return check == set.contains(value);
+                    },
+                    None =>
+                    {
+                        if check
+                        {
+                            return false;
+                        }
+                        else
+                        {
+                            return true;
+                        }
+                    }
+                }
             },
             None =>
             {
@@ -137,6 +154,88 @@ impl Contract {
                     || (value.is_some() && !contains)
                 {
                     return false;
+                }
+            },
+            None => {}
+        }
+
+        return true;
+    }
+
+    #[private]
+    fn check_price(&self, token_id: &TokenId, price_from: Option<U128>, price_to: Option<U128>) -> bool
+    {
+        if price_from.is_some() || price_to.is_some()
+        {
+            match self.sales_active.get(token_id)
+            {
+                Some(sale) =>
+                {
+                    let price: u128;
+
+                    if sale.sale_type == 1
+                    {
+                        price = sale.price.unwrap().0;
+                    }
+                    else
+                    {
+                        if sale.bids.len() == 0
+                        {
+                            return false;
+                        }
+
+                        price = sale.bids[sale.bids.len() - 1].price;
+                    }
+
+                    if (price_from.is_some() && price < price_from.unwrap().0)
+                        || (price_to.is_some() && price > price_to.unwrap().0)
+                    {
+                        return false;
+                    }
+                },
+                None =>
+                {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+
+    fn check_copies(&self, token_id: &TokenId, is_single: Option<bool>) -> bool
+    {
+        match is_single
+        {
+            Some(is_single) =>
+            {
+                let copies : Option<U64>;
+
+                match self.token_metadata_by_id.get(token_id)
+                {
+                    Some(meta) =>
+                    {
+                        copies = meta.copies;
+                    },
+                    None =>
+                    {
+                        copies = None;
+                    }
+                }
+
+                if is_single
+                {
+                    if copies.unwrap_or(U64(1)).0 > 1 
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if copies.unwrap_or(U64(0)).0 < 2
+                    {
+                        return false;
+                    }
                 }
             },
             None => {}
@@ -357,16 +456,21 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
-        account_id:AccountId,
+        account_id:Option<AccountId>,
         is_for_sale: Option<bool>,
         owner_id: Option<AccountId>,
         is_liked: Option<bool>,
         is_followed: Option<bool>,
+        is_active_bid: Option<bool>,
+        price_from: Option<U128>,
+        price_to: Option<U128>,
+        is_single: Option<bool>
     ) ->Vec<JsonToken> 
     {
 
         let token_ids : HashSet<String>;
         let tokens_per_owner : Option<UnorderedSet<TokenId>>;
+        let check_owner : Option<bool>;
 
         if owner_id.is_some()
         {
@@ -381,10 +485,13 @@ impl Contract {
                     return Vec::new();
                 }
             }
+
+            check_owner = Some(true);
         }
         else
         {
             tokens_per_owner = None;
+            check_owner = None;
         }
 
         let mut skip = 0;
@@ -451,8 +558,25 @@ impl Contract {
         let limit = available_amount as usize;
         let mut stop = false;
 
-        let my_likes : Option<HashSet<String>> = self.my_tokens_likes.get(&account_id);
-        let my_follows : Option<HashSet<String>> = self.my_tokens_followed.get(&account_id);
+        let my_likes : Option<HashSet<String>>;
+        let my_follows : Option<HashSet<String>>;
+        let my_bids : Option<UnorderedSet<TokenId>>;
+
+        match account_id.clone()
+        {
+            Some(account_id) =>
+            {
+                my_likes = self.my_tokens_likes.get(&account_id);
+                my_follows = self.my_tokens_followed.get(&account_id);
+                my_bids = self.my_bids_active.get(&account_id);
+            },
+            None =>
+            {
+                my_likes = None;
+                my_follows = None;
+                my_bids = None;
+            }
+        }
 
         if is_reverse
         {
@@ -470,7 +594,12 @@ impl Contract {
                     {
                         if token_ids.contains(&_token.token_id)
                         {
-                            if !self.check_owner(&tokens_per_owner, &_token.token_id)
+                            if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
                             {
                                 continue;
                             }
@@ -490,10 +619,20 @@ impl Contract {
                                 continue;
                             }
 
+                            if !self.check_price(&_token.token_id, price_from, price_to)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_copies(&_token.token_id, is_single)
+                            {
+                                continue;
+                            }
+
                             match self.nft_token_for_account
                             (
                                 &_token.token_id,
-                                Some(account_id.clone())
+                                account_id.clone()
                             )
                             {
                                 Some(res) =>
@@ -530,7 +669,12 @@ impl Contract {
                     {
                         if token_ids.contains(&_token.token_id)
                         {
-                            if !self.check_owner(&tokens_per_owner, &_token.token_id)
+                            if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
                             {
                                 continue;
                             }
@@ -550,10 +694,20 @@ impl Contract {
                                 continue;
                             }
 
+                            if !self.check_price(&_token.token_id, price_from, price_to)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_copies(&_token.token_id, is_single)
+                            {
+                                continue;
+                            }
+
                             match self.nft_token_for_account
                             (
                                 &_token.token_id,
-                                Some(account_id.clone())
+                                account_id.clone()
                             )
                             {
                                 Some(res) =>
