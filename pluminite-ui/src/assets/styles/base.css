@@ -107,6 +107,10 @@ a:hover {
   padding-left: 0;
 }
 
+.pr-5px {
+  padding-right: 5px;
+}
+
 button[disabled] {
   opacity: 0.6;
   pointer-events: none;
