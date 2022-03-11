@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { ChangeEvent, Component } from 'react';
 import styles from './tokenCardView.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
@@ -16,6 +16,7 @@ import MediaView from '../media/MediaView';
 import LazyLoad, { forceVisible } from 'react-lazyload';
 import Skeleton from 'react-loading-skeleton';
 import { TokensType } from '../../types/TokenTypes';
+import { debug } from 'util';
 
 interface ITokenCardView extends IProps {
   model: ITokenResponseItem;
@@ -43,6 +44,7 @@ type stateTypes = {
   isLike: boolean;
   likesCount: number;
   modalTransferIsShow: boolean;
+  modalSaleShow: boolean;
 };
 
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
@@ -50,12 +52,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     isLike: this.props.isLike,
     likesCount: this.props.likesCount || 0,
     modalTransferIsShow: false,
+    modalSaleShow: false,
   };
 
   private readonly isSmall: boolean;
   private _isProcessLike: boolean;
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _radioNFTApproveRef: any;
+  private _eTargetSwitch: any;
 
   constructor(props: ITokenCardView & IBaseComponentProps) {
     super(props);
@@ -96,6 +100,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       case 3:
         return TokensType.unlimitedAuction;
     }
+  }
+
+  private get model() {
+    return this.props.model;
   }
 
   private onClick() {
@@ -144,6 +152,16 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     }
   };
 
+  private onToggleSale(e: ChangeEvent<HTMLInputElement>) {
+    this._eTargetSwitch = e.target;
+
+    if (e.target.checked) {
+      this.modalToggleVisibility({ modalSaleShow: true })
+    } else {
+      console.log('off sale');
+    }
+  }
+
   private getCardControls() {
     switch (this.typeView) {
       case TokensType.created:
@@ -169,32 +187,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 disabled={this.typeView === TokensType.fixedPrice}
               />}
             </div>
-
-            {/*{this.isMyToken && (*/}
-            {/*  <>*/}
-            {/*    <p className='line-separator' />*/}
-
-            {/*    <div className='d-flex align-items-center justify-content-between w-100'>*/}
-            {/*      <Form className='w-100'>*/}
-            {/*        <FormCheck.Label className='w-100'>*/}
-            {/*          <div*/}
-            {/*            className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>*/}
-            {/*            <div>*/}
-            {/*              <p className={styles.toggleTitle}>Put on marketplace</p>*/}
-            {/*            </div>*/}
-
-            {/*            <Form.Check*/}
-            {/*              type='switch'*/}
-            {/*              className={styles.customFormCheck}*/}
-            {/*              label=''*/}
-            {/*              ref={this._radioNFTApproveRef}*/}
-            {/*            />*/}
-            {/*          </div>*/}
-            {/*        </FormCheck.Label>*/}
-            {/*      </Form>*/}
-            {/*    </div>*/}
-            {/*  </>*/}
-            {/*)}*/}
           </>
         );
       case TokensType.timedAuction:
@@ -312,6 +304,31 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           {this.getCardControls()}
 
         </div>
+        {this.isMyToken && (
+          <>
+            <p className='line-separator' />
+
+            <div className={`d-flex align-items-center justify-content-between w-100 ${styles.puOnMarketplaceWrap}`}>
+              <Form className='w-100'>
+                <FormCheck.Label className='w-100'>
+                  <div
+                    className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>
+                    <div>
+                      <p className={styles.toggleTitle}>Put on marketplace</p>
+                    </div>
+
+                    <Form.Check
+                      type='switch'
+                      className={styles.customFormCheck}
+                      label=''
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => { this.onToggleSale(e) }}
+                    />
+                  </div>
+                </FormCheck.Label>
+              </Form>
+            </div>
+          </>
+        )}
       </div>
     );
   }
@@ -347,10 +364,24 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             />
 
             <ModalSaleToken
-              inShowModal={false}
+              inShowModal={this.state.modalSaleShow}
               onHideModal={() => {
+                this.modalToggleVisibility({ modalSaleShow: false });
+                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               }}
               onSubmit={() => {
+                console.table({
+                  token_id: this.model.token_id,
+                  sale_type: 1,
+                  price: (this.model.metadata.price * Math.pow(10, 24)).toString()
+                });
+
+                this.props.nftContractContext.sale_create(
+                  this.model.token_id,
+                  1,
+                  (this.model.metadata.price * Math.pow(10, 24)).toString()).then(res => {
+                    console.log('sale_create', res);
+                  })
               }}
               tokenInfo={{}}
             />
