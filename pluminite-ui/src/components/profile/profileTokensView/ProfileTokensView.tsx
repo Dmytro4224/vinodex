@@ -9,8 +9,6 @@ import { dropdownColors, DropdownView } from '../../common/dropdown/dropdownView
 import { dropdownData } from '../../common/dropdown/data';
 import TabsFilterView from '../../tabsFilterView/tabsFilterView';
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
-import searchIcon from '../../../assets/icons/search.svg';
-import InputView, { InputStyleType } from '../../common/inputView/InputView';
 import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
@@ -26,6 +24,14 @@ interface IProfileTokensView extends IProps {
 }
 
 class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentProps> {
+  private _typeViewParams = {
+    [ProfileTokensType.onSale]: [true, this.props.params.userId],
+    [ProfileTokensType.createdItems]: [null, this.props.params.userId],
+    [ProfileTokensType.purchases]: [null, this.props.params.userId],
+    [ProfileTokensType.activeBids]: [null, this.props.params.userId, null, null, true],
+    [ProfileTokensType.favourites]: [null, this.props.params.userId, true, null, true],
+  };
+
   public state = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
@@ -49,7 +55,13 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   private loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(this.catalog, 1, 4, this.sort).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(
+      this.catalog,
+      1,
+      4,
+      this.sort,
+      // ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]
+    ).then(response => {
       this.setState({
         ...this.state,
         list: response,
@@ -90,6 +102,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       case ProfileTokensType.activeBids:
       case ProfileTokensType.favourites:
       case ProfileTokensType.owned:
+      case ProfileTokensType.createdItems:
         return (
           <>
             <MediaQuery minWidth={992}>
@@ -155,25 +168,23 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
             <p className='line-separator my-4' />
           </>
         );
-        break;
-      case ProfileTokensType.createdItems:
-        return (
-          <>
-            <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
-              <InputView
-                customClass={styles.inputSearch}
-                onChange={(e) => {
-                  console.log(e);
-                }}
-                placeholder={'Search'}
-                icon={searchIcon}
-                inputStyleType={InputStyleType.round}
-              />
-            </div>
-            <p className='line-separator my-4' />
-          </>
-        );
-        break;
+      // case ProfileTokensType.createdItems:
+      //   return (
+      //     <>
+      //       <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
+      //         <InputView
+      //           customClass={styles.inputSearch}
+      //           onChange={(e) => {
+      //             console.log(e);
+      //           }}
+      //           placeholder={'Search'}
+      //           icon={searchIcon}
+      //           inputStyleType={InputStyleType.round}
+      //         />
+      //       </div>
+      //       <p className='line-separator my-4' />
+      //     </>
+      //   );
     }
   }
 
@@ -196,7 +207,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         {!this.state.list.length ? (
           <EmptyListView />
         ) : (
-          <div className={`d-flex align-items-center flex-gap-36 pb-4 ${styles.scrollWrap}`}>
+          <div className={`d-flex flex-gap-36 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
               // Якщо об'єкт sale не null, то значіть він на продажі
               // І в тому об'єкті є поле sale_type. 2 і 3 це аукціони
