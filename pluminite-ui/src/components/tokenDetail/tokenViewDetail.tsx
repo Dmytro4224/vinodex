@@ -272,7 +272,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 color={buttonColors.redButton}
               />
             </div> : <ButtonView
-              text={'Buy'}
+              text={`Buy now ${convertYoctoNearsToNears(this.state.order?.sale.price)} NEAR`}
               onClick={() => {
                 this.buyAction();
               }}
@@ -382,8 +382,8 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     followers_count: 0
                   }}
                   identification={this.state.order?.owner_id!}
-                  usersCount={22}
-                  likesCount={12}
+                  usersCount={0}
+                  likesCount={0}
                   isCard={false}
                   isFollow={false}
                   isLike={false}/>
