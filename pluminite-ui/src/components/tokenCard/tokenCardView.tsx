@@ -397,7 +397,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 const result = {
                   token_id: this.model.token_id,
                   sale_type: saleType,
-                  price: convertedPrice,
+                  price: convertedPrice || '',
                   startDate: start_date ? new Date(start_date).getTime() : '',
                   endDate: end_date ? new Date(end_date).getTime() : '',
                 };
@@ -407,7 +407,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 this.props.nftContractContext.sale_create(
                   this.model.token_id,
                   saleType,
-                  result.price || '',
+                  result.price,
                   result.startDate,
                   result.endDate,
                 ).then(res => {
