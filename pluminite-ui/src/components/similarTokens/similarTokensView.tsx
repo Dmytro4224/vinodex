@@ -46,7 +46,7 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
     }
 
     return <div>
-      <div className='d-flex align-items-center justify-content-between mt-3 flex-wrap'>
+      <div className='d-flex justify-content-between mt-3 flex-wrap'>
         <LabelView text={'SIMILAR ITEMS'} />
         <ButtonView
           text={'Show all'}
