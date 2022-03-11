@@ -12,7 +12,7 @@ import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 
 interface IModalSaleToken extends IProps {
   onHideModal: () => void;
-  onSubmit: ({ saleType, price }: { saleType: number, price: number }) => void;
+  onSubmit: ({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any  }) => void;
   inShowModal: boolean;
   tokenInfo: ITokenResponseItem;
 }
@@ -125,7 +125,12 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
       isLoading: true,
     });
 
-    this.props.onSubmit && this.props.onSubmit({ saleType: +this.state.selectType, price: +this._refInputPrice.value });
+    this.props.onSubmit && this.props.onSubmit({
+      saleType: +this.state.selectType,
+      price: +this._refInputPrice.value,
+      start_date: this._refStartDate?.value || '',
+      end_date: this._refExpDate?.value || ''
+    });
   };
 
   render() {
@@ -221,7 +226,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
                 ref={(ref) => {
                   this._refStartDate = ref;
                 }}
-                value={this._refStartDate?.value || ''}
+                value={this._refStartDate && this._refStartDate.value}
               />
               <Form.Control
                 type='date'
@@ -230,7 +235,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
                 ref={(ref) => {
                   this._refExpDate = ref;
                 }}
-                value={this._refExpDate?.value || ''}
+                value={this._refExpDate && this._refExpDate.value}
               />
             </div>
           </div>
