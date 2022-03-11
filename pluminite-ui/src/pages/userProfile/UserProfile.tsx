@@ -63,15 +63,15 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    if (!this.isMyProfile) {
-      this.props.nftContractContext.view_artist_account(this.getUserId)
-        .then(res => {
-
-        })
-        .catch(error => {
-          console.warn('🚀 ~ file: view_artist_account ~ error', error);
-        });
-    }
+    // if (!this.isMyProfile) {
+    //   this.props.nftContractContext.view_artist_account(this.getUserId)
+    //     .then(res => {
+    //
+    //     })
+    //     .catch(error => {
+    //       console.warn('🚀 ~ file: view_artist_account ~ error', error);
+    //     });
+    // }
 
     this.getData();
   }
@@ -352,13 +352,13 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             {!this.isMyProfile ? (
               <>
                 <div className={styles.bioWrap}>{this.state.profile.bio}</div>
-                <ButtonView
-                  text={'Follow'}
-                  onClick={() => {
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.buttonFollow}
-                />
+                {/*<ButtonView*/}
+                {/*  text={'Follow'}*/}
+                {/*  onClick={() => {*/}
+                {/*  }}*/}
+                {/*  color={buttonColors.goldFill}*/}
+                {/*  customClass={styles.buttonFollow}*/}
+                {/*/>*/}
                 <InfoCounters />
               </>
             ) : null}

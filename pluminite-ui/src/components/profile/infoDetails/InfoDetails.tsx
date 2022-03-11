@@ -96,17 +96,17 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       bio: true
     };
 
-    if (this._refInputUserName.value.trim() === '') {
-      validInfo.name = false;
-    }
+    // if (this._refInputUserName.value.trim() === '') {
+    //   validInfo.name = false;
+    // }
 
-    if (this._refInputUserEmail.value.trim() === '' || !isValidEmail(this._refInputUserEmail.value.trim())) {
+    if (this._refInputUserEmail.value.trim() !== '' && !isValidEmail(this._refInputUserEmail.value.trim())) {
       validInfo.email = false;
     }
 
-    if (this._refInputUserBio.value.trim() === '') {
-      validInfo.bio = false;
-    }
+    // if (this._refInputUserBio.value.trim() === '') {
+    //   validInfo.bio = false;
+    // }
 
     if (!validInfo.name || !validInfo.email || !validInfo.bio) {
       this.setState({
@@ -219,7 +219,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             color={buttonColors.gold}
           />}
         </div>
-        <ul className={styles.ulInfoList}>
+        <ul style={{ cursor: 'pointer' }} onClick={() => { this.isMyProfile && this.changeToFormTemplate() }} className={styles.ulInfoList}>
           <li>
             <div className={`d-flex align-items-center w-100 ${styles.itemWrap}`}>
               <img className={styles.iconStyle} width="20" height="20" src={userIcon} alt="icon" />
@@ -258,32 +258,32 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
           </li>
         </ul>
 
-        <div className="d-flex align-items-center justify-content-between my-3">
-          <h3 className={styles.profileBlockTitle}>Settings</h3>
-        </div>
+        {/*<div className="d-flex align-items-center justify-content-between my-3">*/}
+        {/*  <h3 className={styles.profileBlockTitle}>Settings</h3>*/}
+        {/*</div>*/}
 
-        <ul className={styles.ulSettingsList}>
-          <li>
-            <Form>
-              <FormCheck.Label htmlFor="switch-nft-approve">
-                <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
-                  <div>
-                    <p className={styles.itemTitle}>Approve NFT on Marketplace</p>
-                    <p className={styles.itemSubTitle}>Description</p>
-                  </div>
+        {/*<ul className={styles.ulSettingsList}>*/}
+        {/*  <li>*/}
+        {/*    <Form>*/}
+        {/*      <FormCheck.Label htmlFor="switch-nft-approve">*/}
+        {/*        <div className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>*/}
+        {/*          <div>*/}
+        {/*            <p className={styles.itemTitle}>Approve NFT on Marketplace</p>*/}
+        {/*            <p className={styles.itemSubTitle}>Description</p>*/}
+        {/*          </div>*/}
 
-                  <Form.Check
-                    type="switch"
-                    id="switch-nft-approve"
-                    label=""
-                    ref={this._radioNFTApproveRef}
-                    disabled={!this.isMyProfile}
-                  />
-                </div>
-              </FormCheck.Label>
-            </Form>
-          </li>
-        </ul>
+        {/*          <Form.Check*/}
+        {/*            type="switch"*/}
+        {/*            id="switch-nft-approve"*/}
+        {/*            label=""*/}
+        {/*            ref={this._radioNFTApproveRef}*/}
+        {/*            disabled={!this.isMyProfile}*/}
+        {/*          />*/}
+        {/*        </div>*/}
+        {/*      </FormCheck.Label>*/}
+        {/*    </Form>*/}
+        {/*  </li>*/}
+        {/*</ul>*/}
       </div>
     )
   }
