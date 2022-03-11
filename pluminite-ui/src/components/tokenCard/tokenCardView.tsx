@@ -206,7 +206,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 customClass={styles.buttonSecondControls}
                 disabled={this.typeView === TokensType.fixedPrice}
               /> : (this.typeView === TokensType.fixedPrice) ? <div className="w-100 falign-items-start"><ButtonView
-                text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)}} NEAR`}
+                text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
                 onClick={() => {
                   this.showCheckoutModal();
                 }}
