@@ -41,6 +41,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _refPriceSelect: any;
   private _refRoyalitiesInput: any;
   private _refInputBids: any;
+  private _refInputCopies: any;
   private _refCatalogSelect: any;
   private _refStartDate: any;
   private _refExpDate: any;
@@ -160,7 +161,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     let state = {
       description: this._refInputDescription.value,
       category: this._refCatalogSelect.value,
-      royaltes: this._refRoyalitiesInput.value,
+      royaltes: /*this._refRoyalitiesInput.value*/ '',
       title: this._refInputTitle.value,
       file: this._fileResponse !== undefined ? this._fileResponse.url : null,
       putOnMarket: this._refPutOnMarket.checked,
@@ -260,7 +261,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       </MediaQuery>
 
       <div className={styles.containerWrap}>
-        <h3 className={styles.title}>Create Single NFT</h3>
+        <h3 className={styles.title}>{this.isMultiple ? `Create Multiple NFT` : `Create Single NFT`}</h3>
         <div className={styles.createWrap}>
           <label className={styles.label}>Upload file</label>
           <div className={styles.dropzone}>
@@ -275,10 +276,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                         {acceptedFiles.length > 0 ?
                           <>{acceptedFiles[0].type.startsWith('video/') ?
                             <iframe ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
-                              src={''}
-                              title='' frameBorder='0'
-                              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                              allowFullScreen></iframe>
+                                    src={''}
+                                    title='' frameBorder='0'
+                                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                                    allowFullScreen></iframe>
                             : <img ref={this._imageRef} src={''} />}</> :
                           <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                             <ButtonView
@@ -348,6 +349,24 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             isError={!this.state.validate.isTitleValid}
             errorMessage={`Enter title in the correct format.`}
           />
+          {this.isMultiple ?
+            <div className={`${styles.copies} mb-3`}>
+              <InputView
+                onChange={(e) => {
+                  validateDotNum(e.target);
+                }}
+                placeholder={'Number of copies*'}
+                absPlaceholder={'Number of copies*'}
+                customClass={`${styles.titleInpWrap}`}
+                viewType={ViewType.input}
+                setRef={(ref) => {
+                  this._refInputCopies = ref;
+                }}
+                value={this._refInputCopies && this._refInputCopies.value}
+              />
+              <p className={styles.inputSubText}>At least 1, cannot be negative, only integer value.</p>
+            </div>
+            : ''}
           <p></p>
           <Form>
             <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>
@@ -435,15 +454,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 isError={!this.state.validate.isPriceValid}
                 errorMessage={`Enter price in the correct format.`}
               />
-              <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>
+              {/*<p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>*/}
             </div> : this._renderType === 2 ? <div className={styles.copies}>
               <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
               <InputView
                 onChange={(e) => {
                   validateDotNum(e.target);
                 }}
-                placeholder={'Minimum bid**'}
-                absPlaceholder={'Minimum bid**'}
+                placeholder={'Minimum bid*'}
+                absPlaceholder={'Minimum bid*'}
                 customClass={`${styles.titleInpWrap}`}
                 viewType={ViewType.input}
                 setRef={(ref) => {
@@ -460,26 +479,26 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                     type='date'
                     id='date-start'
                     placeholder={'Starting Date*'}
+                    onChange={() => {}}
                     ref={(ref) => {
                       this._refStartDate = ref;
                     }}
-                    value={this._refStartDate && this._refStartDate.value}
                   />
                   <Form.Control
                     type='date'
                     id='date-exp'
                     placeholder={'Expiration Date*'}
+                    onChange={() => {}}
                     ref={(ref) => {
                       this._refExpDate = ref;
                     }}
-                    value={this._refExpDate && this._refExpDate.value}
                   />
                 </div>
               </div>
             </div> : <div></div>
           }
 
-          <div>
+          {/*<div>
             <InputView
               onChange={(e) => {
                 validateDotNum(e.target);
@@ -497,7 +516,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               }}
             />
             <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
-          </div>
+          </div>*/}
           <div className={styles.categories}>
             <SelectView options={this.props.near.catalogs.map(catalog => {
               return {
@@ -505,14 +524,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 label: catalog,
               };
             })}
-              customCLass={styles.selectStyle}
-              placeholder={'Category'}
-              onChange={(opt) => {
-                console.log(opt);
-              }}
-              setRef={(ref) => {
-                this._refCatalogSelect = ref;
-              }}
+                        customCLass={styles.selectStyle}
+                        placeholder={'Category'}
+                        onChange={(opt) => {
+                          console.log(opt);
+                        }}
+                        setRef={(ref) => {
+                          this._refCatalogSelect = ref;
+                        }}
             />
           </div>
           <div>
@@ -559,6 +578,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       royal: true,
       descr: true,
       bids: true,
+      copies: true,
     };
 
     if (this._fileResponse === undefined) {
@@ -577,9 +597,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.bids = false;
     }
 
-    if (this._refRoyalitiesInput.value === '') {
+    /*if (this._refRoyalitiesInput.value === '') {
       validInfo.royal = false;
-    }
+    }*/
 
     if (this._refInputDescription.value.trim() === '') {
       validInfo.descr = false;
@@ -611,7 +631,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
     const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
-    const price = parseFloat(this._refInputPrice.value);
+    const price = this._renderType === 1 ? parseFloat(this._refInputPrice.value) : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
 
     if (this._fileResponse === undefined) {
       return;
@@ -626,7 +646,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     const url = this._fileResponse.url || pinataAPI.createUrl(this._fileResponse.IpfsHash);
     const preview = this._isVideo && this._fileCoverResponse !== void 0 ? this._fileCoverResponse.url || pinataAPI.createUrl(this._fileCoverResponse.IpfsHash) : url;
 
-    const metadata = {
+    let metadata = {
       copies: '1',
       description: description,
       expires_at: null,
@@ -649,6 +669,22 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       updated_at: null,
       views_count: 0,
     };
+
+    if(this.isMultiple){
+      metadata.copies = `${this._refInputCopies.value}` || '1';
+    }
+
+    if(this._renderType === 2){
+      if(this._refStartDate.value != ''){
+        // @ts-ignore
+        metadata.starts_at = new Date(this._refStartDate.value).getTime();
+      }
+
+      if(this._refExpDate.value != ''){
+        // @ts-ignore
+        metadata.expires_at = new Date(this._refExpDate.value).getTime();
+      }
+    }
 
     const tokenId = `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
 
