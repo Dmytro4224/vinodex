@@ -2,7 +2,7 @@ import React, { ChangeEvent, Component } from 'react';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import styles from './inputView.module.css';
 
-interface IInputView extends IProps {
+export interface IInputView extends IProps {
   placeholder: string;
   onChange?: (e: ChangeEvent) => void;
   setRef?: any;
