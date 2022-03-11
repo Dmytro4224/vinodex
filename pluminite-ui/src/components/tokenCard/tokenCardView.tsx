@@ -5,7 +5,7 @@ import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import LikeView, { LikeViewType } from '../like/likeView';
 import { NavLink } from 'react-router-dom';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { convertYoctoNearsToNears, showToast } from '../../utils/sys';
+import { convertNearToYoctoString, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
@@ -193,7 +193,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               {this.props.buttonText && <ButtonView
                 text={this.isMyToken ? 'Sell' : this.props.buttonText}
                 onClick={() => {
-                  this.onClick();
+                  if (this.isMyToken) {
+                    this.modalToggleVisibility({ modalSaleShow: true })
+                  } else {
+                    this.onClick();
+                  }
                 }}
                 color={buttonColors.goldFill}
                 customClass={styles.buttonSecondControls}
@@ -232,26 +236,30 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </div>
             </div>
 
-            <p className='line-separator' />
+            {this.isMyToken && (
+              <>
+                <p className='line-separator' />
 
-            <div className='d-flex align-items-center justify-content-between w-100'>
-              <ButtonView
-                text={`Edit lot`}
-                onClick={() => {
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.buttonSecondControls}
-                disabled={true}
-              />
-              <ButtonView
-                text={`Stop selling`}
-                onClick={() => {
-                  this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
-                }}
-                color={buttonColors.redButton}
-                customClass={styles.buttonSecondControls}
-              />
-            </div>
+                <div className='d-flex align-items-center justify-content-between w-100'>
+                  <ButtonView
+                    text={`Edit lot`}
+                    onClick={() => {
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.buttonSecondControls}
+                    disabled={true}
+                  />
+                  <ButtonView
+                    text={`Stop selling`}
+                    onClick={() => {
+                      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+                    }}
+                    color={buttonColors.redButton}
+                    customClass={styles.buttonSecondControls}
+                  />
+                </div>
+              </>
+            )}
           </div>
         );
     }
@@ -313,7 +321,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           )}
         </div>
 
-        { this.getCardControls() }
+        {this.getCardControls()}
 
         {this.isMyToken && (
           <div className={styles.puOnMarketplaceWrap}>
@@ -372,7 +380,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               inShowModal={this.state.modalTransferIsShow}
               onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
               onSubmit={() => {
-                this.modalToggleVisibility({ modalTransferIsShow: false })
+                this.modalToggleVisibility({ modalTransferIsShow: false });
               }}
               tokenInfo={{}}
             />
@@ -384,7 +392,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               }}
               onSubmit={({ saleType, price, start_date, end_date, }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
-                const convertedPrice = price ? convertYoctoNearsToNears(price) : null;
+                const convertedPrice = price ? convertNearToYoctoString(price) : null;
 
                 const result = {
                   token_id: this.model.token_id,
@@ -399,7 +407,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 this.props.nftContractContext.sale_create(
                   this.model.token_id,
                   saleType,
-                  result.price,
+                  result.price || '',
                   result.startDate,
                   result.endDate,
                 ).then(res => {
@@ -421,7 +429,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
               this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
                 console.log('sale_remove', res);
-              })
+              });
             }}
             confirmText={`Do you want to withdraw the token from sale?`}
           />

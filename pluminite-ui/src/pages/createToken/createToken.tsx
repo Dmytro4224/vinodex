@@ -96,6 +96,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     }
   }
 
+  public componentDidMount() {
+    if (window.location.href.search('transaction')) {
+      debugger
+      // /userProfile/dxd.testnet?tab=items
+      this.props.navigate('/userProfile?tab=created')
+    }
+  }
+
   private openDialog = () => {
     if (this._ref.current) {
       this._ref.current.open();
@@ -164,7 +172,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       royaltes: /*this._refRoyalitiesInput.value*/ '',
       title: this._refInputTitle.value,
       file: this._fileResponse !== undefined ? this._fileResponse.url : null,
-      putOnMarket: this._refPutOnMarket.checked,
+      putOnMarket: false, // this._refPutOnMarket.checked
       price: 0,
       startDate: '',
       expDate: '',
@@ -368,25 +376,25 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             </div>
             : ''}
           <p></p>
-          <Form>
-            <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>
-              <div
-                className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
-                <div>
-                  <p className={styles.itemTitle}>Put on marketplace</p>
-                </div>
+          {/*<Form>*/}
+          {/*  <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>*/}
+          {/*    <div*/}
+          {/*      className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>*/}
+          {/*      <div>*/}
+          {/*        <p className={styles.itemTitle}>Put on marketplace</p>*/}
+          {/*      </div>*/}
 
-                <Form.Check
-                  type='switch'
-                  id='switch-nft-approve'
-                  ref={(ref) => {
-                    this._refPutOnMarket = ref;
-                  }}
-                  label=''
-                />
-              </div>
-            </FormCheck.Label>
-          </Form>
+          {/*      <Form.Check*/}
+          {/*        type='switch'*/}
+          {/*        id='switch-nft-approve'*/}
+          {/*        ref={(ref) => {*/}
+          {/*          this._refPutOnMarket = ref;*/}
+          {/*        }}*/}
+          {/*        label=''*/}
+          {/*      />*/}
+          {/*    </div>*/}
+          {/*  </FormCheck.Label>*/}
+          {/*</Form>*/}
           <div className={styles.checkboxes}>
             <Form className={`d-flex align-items-center flex-gap-36 ${styles.formChecked}`}>
               <div key={1} className={`mb-3 ${styles.checkItem}`}>
