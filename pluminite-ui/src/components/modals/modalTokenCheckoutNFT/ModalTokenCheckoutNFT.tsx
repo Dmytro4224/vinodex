@@ -257,7 +257,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
             onClick={() => {
             }} />
         ) : ''}
-        <p className={style.price}>Price {convertYoctoNearsToNears(this.props.token?.sale.price)} NEAR</p>
+        {this.props.token?.sale && <p className={style.price}>Price {convertYoctoNearsToNears(this.props.token?.sale.price)} NEAR</p>}
         {this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1 ? <InputView
           inputType={InputType.text}
           placeholder={'Number of copies*'}
@@ -294,7 +294,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
         <p className={style.line}></p>
         <div className={style.totalWrap}>
           <p className={style.totalTitle}>Total amount</p>
-          <p className={style.total}>{convertYoctoNearsToNears(this.props.token?.sale.price)}NEAR</p>
+          {this.props.token?.sale && <p className={style.total}>{convertYoctoNearsToNears(this.props.token?.sale.price)}NEAR</p>}
         </div>
       </ModalSample>
     );
