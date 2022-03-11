@@ -96,10 +96,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     }
   }
 
-  public componentDidMount() {
-    // if (window.location.href.search(/transaction/g) !== -1) {
-    //   this.props.navigate('/userProfile?tab=created')
-    // }
+  public componentDidUpdate() {
+     if (window.location.href.search(/transaction/g) !== -1) {
+       this.props.navigate(`/userProfile/${this.props.near.user?.accountId!}?tab=items`);
+     }
   }
 
   private openDialog = () => {
@@ -443,7 +443,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             </Form>
           </div>
           {this._renderType === 1 ?
-            <div className={styles.copies}>
+            <div className={`${styles.copies} d-none`}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
               <InputView
                 onChange={(e) => {
@@ -462,14 +462,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               />
               {/*<p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will recive: <b>0.00 NEAR</b></p>*/}
             </div> : this._renderType === 2 ? <div className={styles.copies}>
-              <label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>
+              {/*<label className={styles.inputLabel}>Bids below this amount won’t be allowed</label>*/}
               <InputView
                 onChange={(e) => {
                   validateDotNum(e.target);
                 }}
                 placeholder={'Minimum bid*'}
                 absPlaceholder={'Minimum bid*'}
-                customClass={`${styles.titleInpWrap}`}
+                customClass={`${styles.titleInpWrap} d-none`}
                 viewType={ViewType.input}
                 setRef={(ref) => {
                   this._refInputBids = ref;
@@ -596,11 +596,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     }
 
     if (this._renderType === 1 && this._refInputPrice.value === '') {
-      validInfo.price = false;
+      validInfo.price = true;
     }
 
     if (this._renderType === 2 && this._refInputBids.value === '') {
-      validInfo.bids = false;
+      validInfo.bids = true;
     }
 
     /*if (this._refRoyalitiesInput.value === '') {
@@ -637,7 +637,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
     const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
-    const price = this._renderType === 1 ? parseFloat(this._refInputPrice.value) : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
+    const price = 0;//this._renderType === 1 ? 0/*parseFloat(this._refInputPrice.value)*/ : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
 
     if (this._fileResponse === undefined) {
       return;
