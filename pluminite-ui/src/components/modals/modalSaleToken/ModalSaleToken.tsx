@@ -206,14 +206,14 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
               setRef={(ref) => {
                 this._refInputPrice = ref;
               }}
-              disabled={this.state.isLoading}
+              disabled={true}
               isError={!this.state.validate.isPriceValid}
               errorMessage={`Enter the price`}
               onChange={(e) => {
                 onlyNumber(e.target);
               }}
             />
-            <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p>
+            {/*<p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p> */}
           </>
         ) : (
           <div className={'mt-4'}>
