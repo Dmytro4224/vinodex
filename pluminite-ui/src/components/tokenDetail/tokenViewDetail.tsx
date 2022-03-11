@@ -203,25 +203,22 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   private getCardControls() {
     switch (this.typeView) {
       case TokensType.created:
-      case TokensType.fixedPrice:
         return (
           <>
-            <ButtonView
-              text={this.isMyToken ? 'Sell' : `Place a bid ${this.state.order?.metadata.price} NEAR`}
+            {this.isMyToken ? <ButtonView
+              text={'Sell'}
               onClick={() => {
                 this.buyAction();
               }}
               color={buttonColors.goldFill}
               customClass={styles.button}
-            />
+            /> : ''}
           </>
-
         );
-      case TokensType.timedAuction:
-      case TokensType.unlimitedAuction:
+      case TokensType.fixedPrice:
         return (
           <>
-            <div className='d-flex align-items-center justify-content-between w-100'>
+            {this.isMyToken ? <div className='d-flex align-items-center justify-content-between w-100'>
               <ButtonView
                 text={`Edit lot`}
                 onClick={() => {
@@ -235,7 +232,44 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 }}
                 color={buttonColors.redButton}
               />
-            </div>
+            </div> : <ButtonView
+              text={'Buy'}
+              onClick={() => {
+                this.buyAction();
+              }}
+              color={buttonColors.goldFill}
+              customClass={styles.button}
+            />}
+
+          </>
+
+        );
+      case TokensType.timedAuction:
+      case TokensType.unlimitedAuction:
+        return (
+          <>
+            {this.isMyToken ? <div className='d-flex align-items-center justify-content-between w-100'>
+              <ButtonView
+                text={`Edit lot`}
+                onClick={() => {
+                }}
+                color={buttonColors.goldFill}
+                disabled={true}
+              />
+              <ButtonView
+                text={`Stop selling`}
+                onClick={() => {
+                }}
+                color={buttonColors.redButton}
+              />
+            </div> : <ButtonView
+              text={'Place a bid'}
+              onClick={() => {
+                this.buyAction();
+              }}
+              color={buttonColors.goldFill}
+              customClass={styles.button}
+            />}
           </>
         );
     }

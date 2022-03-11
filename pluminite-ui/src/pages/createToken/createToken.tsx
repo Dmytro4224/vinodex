@@ -98,7 +98,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
   public componentDidMount() {
     if (window.location.href.search('transaction')) {
-      debugger
       // /userProfile/dxd.testnet?tab=items
       this.props.navigate('/userProfile?tab=created')
     }

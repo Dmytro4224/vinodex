@@ -4,10 +4,11 @@ import ModalSample, { ModalSampleSizeType } from '../../common/modalSample/Modal
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import InputView, { InputType } from '../../common/inputView/InputView';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
-import { onlyNumber } from '../../../utils/sys';
+import {convertNearToYoctoString, onlyNumber } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 import TokenCardView from '../../tokenCard/tokenCardView';
+import { TokensType } from '../../../types/TokenTypes';
 
 interface IModalTokenCheckoutNFT extends IProps {
   onHideModal: () => void;
@@ -21,17 +22,20 @@ interface IModalTokenCheckoutNFTState {
   isLoading: boolean;
   validate: {
     isNumbersCopyValid: boolean,
+    isOfferValid: boolean,
   };
 }
 
 class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComponentProps> {
   private _initialState: IModalTokenCheckoutNFTState | undefined;
   private _refNumberOfCopies: any;
+  private _refOffer: any;
 
   public state: IModalTokenCheckoutNFTState = {
     isLoading: false,
     validate: {
       isNumbersCopyValid: true,
+      isOfferValid: true,
     },
   };
 
@@ -53,6 +57,10 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     } catch (e) {
       console.warn(e);
     }
+
+    try {
+      if(this._refOffer) this._refOffer.value = ``;
+    } catch (e) {}
   }
 
   private get modalIsShow() {
@@ -71,17 +79,27 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
   private isValidForm() {
     let validInfo = {
       numberCopies: true,
+      offer: true,
     };
 
-    if (this._refNumberOfCopies.value.trim() === '' || Number(this._refNumberOfCopies.value) === 0) {
-      validInfo.numberCopies = false;
+    if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1) {
+      if (this._refNumberOfCopies.value.trim() === '' || Number(this._refNumberOfCopies.value) === 0) {
+        validInfo.numberCopies = false;
+      }
     }
 
-    if (!validInfo.numberCopies) {
+    if(this.typeView === TokensType.timedAuction || this.typeView === TokensType.unlimitedAuction){
+      if (this._refOffer.value.trim() === '' || Number(this._refOffer.value) === 0) {
+        validInfo.offer = false;
+      }
+    }
+
+    if (!validInfo.numberCopies || !validInfo.offer) {
       this.setState({
         ...this.state,
         validate: {
           isNumbersCopyValid: validInfo.numberCopies,
+          isOfferValid: validInfo.offer,
         },
       });
 
@@ -92,6 +110,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
   }
 
   private onSubmit = async () => {
+
     if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1) {
       if (!this.isValidForm()) {
         return;
@@ -102,15 +121,100 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       ...this.state,
       validate: {
         isNumbersCopyValid: true,
+        isOfferValid: true,
       },
       isLoading: true,
     });
 
-    this.props.onSubmit && this.props.onSubmit();
+    if(!this.props.token?.token_id){ return }
+
+    this.props.nftContractContext.sale_offer(
+      this.props.token?.token_id,
+      new Date().getTime(),
+    ).then(res => {
+      console.log(`res`, res);
+      this.onHideModal();
+      this.props.onSubmit && this.props.onSubmit();
+    });
+  };
+
+  private onStartPlace = async () => {
+    if (!this.isValidForm()) {
+      return;
+    }
+
+    this.setState({
+      ...this.state,
+      validate: {
+        isNumbersCopyValid: true,
+        isOfferValid: true,
+      },
+      isLoading: true,
+    });
+
+    if(!this.props.token?.token_id){ return }
+
+    this.props.nftContractContext.sale_offer(
+      this.props.token?.token_id,
+      new Date().getTime(),
+      this._refOffer && convertNearToYoctoString(parseFloat(this._refOffer.value)),
+    ).then(res => {
+      console.log(`res`, res);
+      this.onHideModal();
+      this.props.onSubmit && this.props.onSubmit();
+    });
   };
   private get isMyToken() {
     return this.props.token?.owner_id === this.props.near.user?.accountId;
   }
+
+  private get typeView() {
+    if (!this.props.token || !this.props.token?.sale) return TokensType.created;
+
+    switch (this.props.token.sale.sale_type) {
+      case 1:
+        return TokensType.fixedPrice;
+      case 2:
+        return TokensType.timedAuction;
+      case 3:
+        return TokensType.unlimitedAuction;
+    }
+  }
+
+  private getCardControls() {
+    switch (this.typeView) {
+      case TokensType.fixedPrice:
+        return (
+          <>
+            <ButtonView
+              text={'Buy'}
+              onClick={() => {
+                this.onSubmit();
+              }}
+              isLoading={this.state.isLoading}
+              color={buttonColors.goldFill}
+              customClass={`${style.modalBtn} ${style.buyBtn}`}
+            />
+          </>
+        );
+      case TokensType.timedAuction:
+      case TokensType.unlimitedAuction:
+        return (
+          <>
+            <ButtonView
+              text={'Place a bid'}
+              onClick={() => {
+                this.onStartPlace();
+              }}
+              isLoading={this.state.isLoading}
+              color={buttonColors.goldFill}
+              customClass={`${style.modalBtn} ${style.buyBtn}`}
+            />
+          </>
+        );
+    }
+  }
+
   render() {
     return (
       <ModalSample
@@ -130,16 +234,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
               color={buttonColors.gray}
               customClass={style.modalBtn}
             />
-
-            <ButtonView
-              text={(!this.props.token?.sale || (this.props.token?.sale && this.props.token.sale.sale_type === 1)) && this.isMyToken ? `Sell` : 'Buy'}
-              onClick={() => {
-                this.onSubmit();
-              }}
-              isLoading={this.state.isLoading}
-              color={buttonColors.goldFill}
-              customClass={`${style.modalBtn} ${style.buyBtn}`}
-            />
+            {this.getCardControls()}
           </>
         }
       >
@@ -179,6 +274,23 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
             onlyNumber(e.target);
           }}
         /> : ''}
+        {this.typeView === TokensType.timedAuction || this.typeView === TokensType.unlimitedAuction ? <InputView
+          inputType={InputType.text}
+          placeholder={'Offer*'}
+          customClass={'mb-1'}
+          value={this._refOffer?.value || ''}
+          absPlaceholder={'Offer*'}
+          setRef={(ref) => {
+            this._refOffer = ref;
+          }}
+          disabled={this.state.isLoading}
+          isError={!this.state.validate.isOfferValid}
+          errorMessage={`Enter offer*`}
+          onChange={(e) => {
+            onlyNumber(e.target);
+          }}
+        /> : ''}
+
         <p className={style.line}></p>
         <div className={style.totalWrap}>
           <p className={style.totalTitle}>Total amount</p>

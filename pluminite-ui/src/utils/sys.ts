@@ -166,5 +166,6 @@ export {
   mediaUrl,
   formatDate,
   convertNearToYoctoString,
+  convertYoctoNearsToNears,
 };
 
