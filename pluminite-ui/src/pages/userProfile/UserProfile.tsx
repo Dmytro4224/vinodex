@@ -247,24 +247,28 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
+            typeViewTokens={ProfileTokensType.onSale}
           />
         </Tab>
         <Tab eventKey='items' title='Created Items'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
+            typeViewTokens={ProfileTokensType.createdItems}
           />
         </Tab>
         <Tab eventKey='owned' title='Owned'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
+            typeViewTokens={ProfileTokensType.purchases}
           />
         </Tab>
         <Tab eventKey='favourites' title='Favorites'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
+            typeViewTokens={ProfileTokensType.favourites}
           />
         </Tab>
       </Tabs>
