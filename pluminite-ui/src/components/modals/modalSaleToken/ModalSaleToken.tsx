@@ -89,7 +89,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
 
     switch (this.state.selectType) {
       case '1':
-        if (this._refInputPrice.value.trim() === '') {
+        if (this._refInputPrice.value.trim() === '' || +this._refInputPrice.value === 0) {
           validInfo.price = false;
         }
 
@@ -193,6 +193,10 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             onChange={(opt) => {
               this.setState({
                 ...this.state,
+                errorMessage: '',
+                validate: {
+                  isPriceValid: true,
+                },
                 selectType: opt?.value,
               });
             }}
@@ -207,7 +211,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             <InputView
               placeholder={'Price*'}
               customClass={'mt-4'}
-              value={this._refInputPrice?.value || this.tokenInfo?.metadata.price || '0'}
+              value={this._refInputPrice?.value || this.tokenInfo?.metadata.price || ''}
               absPlaceholder={'Price*'}
               setRef={(ref) => {
                 this._refInputPrice = ref;
