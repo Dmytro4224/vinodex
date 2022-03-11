@@ -21,7 +21,7 @@ export interface INftContractContext {
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean) => Promise<Array<any>>;
+  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null) => Promise<Array<any>>;
   sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
@@ -77,7 +77,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean) => {
+  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null) => {
     return this.props.nftContract.nft_tokens_by_filter({
       catalog,
       page_index,

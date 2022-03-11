@@ -60,7 +60,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       1,
       4,
       this.sort,
-      // ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]
+      ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]
     ).then(response => {
       this.setState({
         ...this.state,
