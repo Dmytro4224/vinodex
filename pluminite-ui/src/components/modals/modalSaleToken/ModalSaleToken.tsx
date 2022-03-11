@@ -221,7 +221,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
                 ref={(ref) => {
                   this._refStartDate = ref;
                 }}
-                value={this._refStartDate.value || ''}
+                value={this._refStartDate?.value || ''}
               />
               <Form.Control
                 type='date'
@@ -230,7 +230,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
                 ref={(ref) => {
                   this._refExpDate = ref;
                 }}
-                value={this._refExpDate.value || ''}
+                value={this._refExpDate?.value || ''}
               />
             </div>
           </div>
