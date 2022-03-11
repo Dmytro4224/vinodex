@@ -136,6 +136,9 @@ button[disabled] {
   border: none;
   /*height: 100%;*/
 }
+.modal.transparent .modal-content .btn-close{
+  border: 2px solid rgba(3,3,3, .3);
+}
 /*.modal.transparent .btn-close{
   position: fixed;
   right: 20px;
