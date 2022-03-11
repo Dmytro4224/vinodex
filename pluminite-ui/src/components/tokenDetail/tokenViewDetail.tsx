@@ -298,6 +298,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <ButtonView
                 text={`Stop selling`}
                 onClick={() => {
+                  this.onToggleSale(false);
                 }}
                 color={buttonColors.redButton}
               />
