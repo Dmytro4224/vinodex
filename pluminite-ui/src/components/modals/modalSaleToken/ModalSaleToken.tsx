@@ -6,32 +6,39 @@ import InputView, { InputType } from '../../common/inputView/InputView';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import { onlyNumber } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
+import { SelectView } from '../../common/select/selectView';
+import { Form } from 'react-bootstrap';
+import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 
 interface IModalSaleToken extends IProps {
   onHideModal: () => void;
-  onSubmit: () => void;
+  onSubmit: ({ saleType, price }: { saleType: number, price: number }) => void;
   inShowModal: boolean;
-  tokenInfo: any;
+  tokenInfo: ITokenResponseItem;
 }
 
 interface ModalSaleTokenState {
   isLoading: boolean;
+  selectType: string;
+  errorMessage: string;
   validate: {
     isPriceValid: boolean,
-    isNumbersCopyValid: boolean,
   };
 }
 
 class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
   private _initialState: ModalSaleTokenState | undefined;
   private _refInputPrice: any;
-  private _refNumberOfCopies: any;
+  private _refCatalogSelect: any;
+  private _refStartDate: any;
+  private _refExpDate: any;
 
   public state: ModalSaleTokenState = {
     isLoading: false,
+    selectType: '1',
+    errorMessage: '',
     validate: {
       isPriceValid: true,
-      isNumbersCopyValid: true,
     },
   };
 
@@ -49,7 +56,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
     }
 
     try {
-      this._refNumberOfCopies.value = ``;
+      this._refCatalogSelect.value = ``;
       this._refInputPrice.value = ``;
     } catch (e) {
       console.warn(e);
@@ -72,23 +79,31 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
   private isValidForm() {
     let validInfo = {
       price: true,
-      numberCopies: true,
+      errorMessage: ''
     };
 
-    if (this._refInputPrice.value.trim() === '') {
-      validInfo.price = false;
+    switch (this.state.selectType) {
+      case '1':
+        if (this._refInputPrice.value.trim() === '') {
+          validInfo.price = false;
+        }
+
+        break;
+      case '2':
+      case '3':
+        if (this._refStartDate.value === '' || this._refExpDate.value === '') {
+          validInfo.errorMessage = 'Enter start and end date';
+        }
+
+        break;
     }
 
-    if (this._refNumberOfCopies.value.trim() === '' || Number(this._refNumberOfCopies.value) === 0) {
-      validInfo.numberCopies = false;
-    }
-
-    if (!validInfo.price || !validInfo.numberCopies) {
+    if (!validInfo.price || validInfo.errorMessage) {
       this.setState({
         ...this.state,
+        errorMessage: validInfo.errorMessage,
         validate: {
           isPriceValid: validInfo.price,
-          isNumbersCopyValid: validInfo.numberCopies,
         },
       });
 
@@ -105,12 +120,12 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
       ...this.state,
       validate: {
         isPriceValid: true,
-        isNumbersCopyValid: true,
+        isSelectTypeValid: true,
       },
       isLoading: true,
     });
 
-    this.props.onSubmit && this.props.onSubmit();
+    this.props.onSubmit && this.props.onSubmit({ saleType: +this.state.selectType, price: +this._refInputPrice.value });
   };
 
   render() {
@@ -145,39 +160,83 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
           </>
         }
       >
-        <InputView
-          placeholder={'User address or name*'}
-          customClass={'mb-4'}
-          value={this._refInputPrice?.value || ''}
-          absPlaceholder={'Number of copies*'}
-          setRef={(ref) => {
-            this._refInputPrice = ref;
-          }}
-          disabled={this.state.isLoading}
-          isError={!this.state.validate.isNumbersCopyValid}
-          errorMessage={`Enter number of copies`}
-          onChange={(e) => {
-            onlyNumber(e.target);
-          }}
-        />
+        <label className={`w-100`}>
+          <p className={`mb-1 ${styles.inputSubText}`}>Sale type</p>
+          <SelectView
+            options={[
+              {
+                value: '1',
+                label: 'Fixed price',
+              },
+              {
+                value: '2',
+                label: 'Timed auction',
+              }, {
+                value: '3',
+                label: 'Unlimited auction',
+              },
+            ]}
+            selectedOpt={{ value: '1', label: 'Fixed price' }}
+            customCLass={styles.selectStyle}
+            placeholder={'Sale type'}
+            onChange={(opt) => {
+              this.setState({
+                ...this.state,
+                selectType: opt?.value,
+              });
+            }}
+            setRef={(ref) => {
+              this._refCatalogSelect = ref;
+            }}
+          />
+        </label>
 
-        <InputView
-          inputType={InputType.text}
-          placeholder={'Number of copies*'}
-          customClass={'mb-1'}
-          value={this._refNumberOfCopies?.value || ''}
-          absPlaceholder={'Price*'}
-          setRef={(ref) => {
-            this._refNumberOfCopies = ref;
-          }}
-          disabled={this.state.isLoading}
-          isError={!this.state.validate.isPriceValid}
-          errorMessage={`Enter the price`}
-          onChange={(e) => {
-            onlyNumber(e.target);
-          }}
-        />
-        <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p>
+        {this.state.selectType === '1' ? (
+          <>
+            <InputView
+              placeholder={'Price*'}
+              customClass={'mt-4'}
+              value={this._refInputPrice?.value || this.tokenInfo.metadata.price}
+              absPlaceholder={'Price*'}
+              setRef={(ref) => {
+                this._refInputPrice = ref;
+              }}
+              disabled={this.state.isLoading}
+              isError={!this.state.validate.isPriceValid}
+              errorMessage={`Enter the price`}
+              onChange={(e) => {
+                onlyNumber(e.target);
+              }}
+            />
+            <p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p>
+          </>
+        ) : (
+          <div className={'mt-4'}>
+            <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
+            <div className={'d-flex align-items-center justify-content-between flex-gap-36 mt-3'}>
+              <Form.Control
+                type='date'
+                id='date-start'
+                placeholder={'Starting Date*'}
+                ref={(ref) => {
+                  this._refStartDate = ref;
+                }}
+                value={this._refStartDate.value || ''}
+              />
+              <Form.Control
+                type='date'
+                id='date-exp'
+                placeholder={'Expiration Date*'}
+                ref={(ref) => {
+                  this._refExpDate = ref;
+                }}
+                value={this._refExpDate.value || ''}
+              />
+            </div>
+          </div>
+        )}
+
+        {this.state.errorMessage && <p className={styles.errorMessage}>{this.state.errorMessage}</p>}
       </ModalSample>
     );
   }

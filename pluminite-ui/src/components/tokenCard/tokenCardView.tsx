@@ -156,7 +156,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this._eTargetSwitch = e.target;
 
     if (e.target.checked) {
-      this.modalToggleVisibility({ modalSaleShow: true })
+      this.modalToggleVisibility({ modalSaleShow: true });
     } else {
       console.log('off sale');
     }
@@ -321,7 +321,9 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                       type='switch'
                       className={styles.customFormCheck}
                       label=''
-                      onChange={(e: ChangeEvent<HTMLInputElement>) => { this.onToggleSale(e) }}
+                      onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                        this.onToggleSale(e);
+                      }}
                     />
                   </div>
                 </FormCheck.Label>
@@ -369,21 +371,22 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 this.modalToggleVisibility({ modalSaleShow: false });
                 if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               }}
-              onSubmit={() => {
+              onSubmit={({ saleType, price }: { saleType: number, price: number }) => {
                 console.table({
                   token_id: this.model.token_id,
-                  sale_type: 1,
-                  price: (this.model.metadata.price * Math.pow(10, 24)).toString()
+                  sale_type: saleType,
+                  price: (price * Math.pow(10, 24)).toString(),
                 });
 
                 this.props.nftContractContext.sale_create(
                   this.model.token_id,
-                  1,
-                  (this.model.metadata.price * Math.pow(10, 24)).toString()).then(res => {
-                    console.log('sale_create', res);
-                  })
+                  saleType,
+                  (price * Math.pow(10, 24)).toString(),
+                ).then(res => {
+                  console.log('sale_create', res);
+                });
               }}
-              tokenInfo={{}}
+              tokenInfo={this.model}
             />
           </>
         )}
