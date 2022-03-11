@@ -50,6 +50,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
   }
 
   public componentDidUpdate() {
+    this.props.setRef && this.props.setRef(this);
     this.ref.current.value = this.initialValue || '';
   }
 

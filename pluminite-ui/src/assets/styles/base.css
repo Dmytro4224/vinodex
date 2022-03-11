@@ -12,6 +12,10 @@ main {
   min-height: 60vh;
 }
 
+select, button {
+  cursor: pointer;
+}
+
 ul,
 li,
 h1,
@@ -101,6 +105,10 @@ a:hover {
 
 .pl-0 {
   padding-left: 0;
+}
+
+.pr-5px {
+  padding-right: 5px;
 }
 
 button[disabled] {

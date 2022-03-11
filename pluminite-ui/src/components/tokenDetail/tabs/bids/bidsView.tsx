@@ -5,6 +5,7 @@ import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
 import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
 import { formatDate } from "../../../../utils/sys";
 import Skeleton from "react-loading-skeleton";
+import {convertYoctoNearsToNears, onlyNumber } from '../../../../utils/sys';
 
 interface IBidsItemView extends IProps{
   avatar?: any;
@@ -59,7 +60,7 @@ class BidsItemView extends Component<IBidsItemView & IBaseComponentProps>{
         </div>
         <div className={styles.bidsPrice}>
             <span className={styles.price}>
-              {this.price}&nbsp;{this.currency}
+              {convertYoctoNearsToNears(this.price)}&nbsp;{this.currency}
             </span>
         </div>
       </div>
