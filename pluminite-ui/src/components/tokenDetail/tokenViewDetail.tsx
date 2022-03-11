@@ -205,6 +205,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       case TokensType.created:
         return (
           <>
+            {/*туй*/}
             {this.isMyToken ? <ButtonView
               text={'Sell'}
               onClick={() => {
