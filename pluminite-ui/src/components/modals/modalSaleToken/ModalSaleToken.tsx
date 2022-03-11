@@ -212,7 +212,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
               setRef={(ref) => {
                 this._refInputPrice = ref;
               }}
-              disabled={true}
+              disabled={this.state.isLoading}
               isError={!this.state.validate.isPriceValid}
               errorMessage={`Enter the price`}
               onChange={(e) => {
