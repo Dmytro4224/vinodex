@@ -17,6 +17,7 @@ import LazyLoad, { forceVisible } from 'react-lazyload';
 import Skeleton from 'react-loading-skeleton';
 import { TokensType } from '../../types/TokenTypes';
 import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
+import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 
 interface ITokenCardView extends IProps {
   model: ITokenResponseItem;
@@ -45,6 +46,7 @@ type stateTypes = {
   likesCount: number;
   modalTransferIsShow: boolean;
   modalConfirmRemoveSaleShow: boolean;
+  modalCeckoutIsShow: boolean;
   modalSaleShow: boolean;
 };
 
@@ -54,6 +56,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     likesCount: this.props.likesCount || 0,
     modalConfirmRemoveSaleShow: false,
     modalTransferIsShow: false,
+    modalCeckoutIsShow: false,
     modalSaleShow: false,
   };
 
@@ -190,7 +193,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 count={this.state.likesCount}
                 onClick={this.toggleLikeToken}
               />
-              {this.props.buttonText && <ButtonView
+              {this.isMyToken ? this.props.buttonText && <ButtonView
                 text={this.isMyToken ? 'Sell' : this.props.buttonText}
                 onClick={() => {
                   if (this.isMyToken) {
@@ -202,7 +205,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 color={buttonColors.goldFill}
                 customClass={styles.buttonSecondControls}
                 disabled={this.typeView === TokensType.fixedPrice}
-              />}
+              /> : (this.typeView === TokensType.fixedPrice) && <div className="w-100 falign-items-start"><ButtonView
+                text={'Buy'}
+                onClick={() => {
+                  this.showCheckoutModal();
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+              /></div>}
             </div>
           </div>
         );
@@ -236,7 +246,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </div>
             </div>
 
-            {this.isMyToken && (
+            {this.isMyToken ? (
               <>
                 <p className='line-separator' />
 
@@ -259,6 +269,17 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   />
                 </div>
               </>
+            ) : (
+              <div className="w-100 falign-items-start">
+                <ButtonView
+                  text={'Place a bid'}
+                  onClick={() => {
+                    this.showCheckoutModal();
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.button}
+                />
+              </div>
             )}
           </div>
         );
@@ -354,6 +375,20 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     );
   }
 
+  private hideCheckoutModal() {
+    this.setState({
+      ...this.state,
+      modalCeckoutIsShow: false,
+    });
+  }
+
+  private showCheckoutModal() {
+    this.setState({
+      ...this.state,
+      modalCeckoutIsShow: true,
+    });
+  }
+
   public render() {
     return (
       <>
@@ -433,7 +468,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             }}
             confirmText={`Do you want to withdraw the token from sale?`}
           />
-        )}
+        )
+        }
+        {(this.typeView !== TokensType.created && !this.isMyToken) && <ModalTokenCheckoutNFT
+          inShowModal={this.state.modalCeckoutIsShow}
+          onHideModal={() => this.hideCheckoutModal()}
+          onSubmit={() => {
+          }}
+          tokenInfo={{}} token={this.model || null}/>}
       </>
     );
   }

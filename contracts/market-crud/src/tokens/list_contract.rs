@@ -588,6 +588,8 @@ impl Contract {
                 let _index = start_index as usize;
                 let _token = sorted.get(_index);
 
+                start_index = start_index - 1;
+
                 match _token
                 {
                     Some(_token) =>
@@ -651,8 +653,6 @@ impl Contract {
                         stop = true;
                     }
                 }
-
-                start_index = start_index - 1;
             }
         }
         else
@@ -663,6 +663,8 @@ impl Contract {
                 let _index = skip as usize;
                 let _token = sorted.get(_index);
 
+                skip = skip + 1;
+
                 match _token
                 {
                     Some(_token) =>
@@ -726,8 +728,6 @@ impl Contract {
                         stop = true;
                     }
                 }
-
-                skip = skip + 1;
             }
         }
 
