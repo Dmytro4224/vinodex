@@ -5,7 +5,7 @@ import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import LikeView, { LikeViewType } from '../like/likeView';
 import { NavLink } from 'react-router-dom';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { showToast } from '../../utils/sys';
+import { convertYoctoNearsToNears, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
@@ -372,16 +372,18 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               }}
               onSubmit={({ saleType, price }: { saleType: number, price: number }) => {
+                const convertedPrice = convertYoctoNearsToNears(price);
+
                 console.table({
                   token_id: this.model.token_id,
                   sale_type: saleType,
-                  price: (price * Math.pow(10, 24)).toString(),
+                  price: convertedPrice,
                 });
 
                 this.props.nftContractContext.sale_create(
                   this.model.token_id,
                   saleType,
-                  (price * Math.pow(10, 24)).toString(),
+                  convertedPrice,
                 ).then(res => {
                   console.log('sale_create', res);
                 });
