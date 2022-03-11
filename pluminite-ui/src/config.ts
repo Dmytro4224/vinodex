@@ -1,6 +1,6 @@
 // todo: get contract name from environment variable
 //const CONTRACT_NAME = 'ondrashdev.testnet';
-const CONTRACT_NAME = 'vinodex_test_v2.testnet';
+const CONTRACT_NAME = 'vinodex_test_v8.testnet';
 
 export interface IConfig {
     networkId: 'production' | 'mainnet' | 'development' | 'testnet' | 'betanet' | 'local' | 'test' | 'ci' | 'ci-betanet' | 'shared-test' | 'shared-test-staging';
@@ -17,17 +17,19 @@ export interface IConfig {
 
 function getConfig(env: string): IConfig {
     switch (env) {
+        //case 'production':
+        //case 'mainnet':
+        //    return {
+        //        networkId: 'mainnet',
+        //        nodeUrl: 'https://rpc.mainnet.near.org',
+        //        contractName: 'pluminite.near',
+        //        walletUrl: 'https://wallet.near.org',
+        //        helperUrl: 'https://helper.mainnet.near.org',
+        //        explorerUrl: 'https://explorer.mainnet.near.org',
+        //        headers: {}
+        //};
+      case 'mainnet':
         case 'production':
-        case 'mainnet':
-            return {
-                networkId: 'mainnet',
-                nodeUrl: 'https://rpc.mainnet.near.org',
-                contractName: 'pluminite.near',
-                walletUrl: 'https://wallet.near.org',
-                helperUrl: 'https://helper.mainnet.near.org',
-                explorerUrl: 'https://explorer.mainnet.near.org',
-                headers: {}
-            };
         case 'development':
         case 'testnet':
             return {
