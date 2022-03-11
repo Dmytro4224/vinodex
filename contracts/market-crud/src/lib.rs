@@ -198,6 +198,9 @@ pub struct Contract {
     //Історія продажу токенів
     pub sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
 
+    //Токени які продаються на аукціоні, і по ним користувач зробив ставку
+    pub my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
+
     //Історія продажів користувача
     pub my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
 
@@ -241,7 +244,9 @@ pub enum StorageKey {
     SalesHistoryByTokenId,
     StorageDeposit,
     MySales,
-    MyPurchases
+    MyPurchases,
+    MyBidsActive,
+    MyBidsActiveSet { account_id_hash: CryptoHash }
 }
 
 #[near_bindgen]
@@ -293,6 +298,7 @@ impl Contract {
             storage_deposits:LookupMap::new (StorageKey::StorageDeposit.try_to_vec().unwrap()),
             my_sales:LookupMap::new (StorageKey::MySales.try_to_vec().unwrap()),
             my_purchases:LookupMap::new (StorageKey::MyPurchases.try_to_vec().unwrap()),
+            my_bids_active:LookupMap::new (StorageKey::MyBidsActive.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -347,6 +353,7 @@ impl Contract {
             storage_deposits: LookupMap<AccountId, Balance>,
             my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
             my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+            my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -384,7 +391,8 @@ impl Contract {
             sales_history_by_token_id: old_contract.sales_history_by_token_id,
             storage_deposits: old_contract.storage_deposits,
             my_sales: old_contract.my_sales,
-            my_purchases: old_contract.my_purchases
+            my_purchases: old_contract.my_purchases,
+            my_bids_active: old_contract.my_bids_active
         }
     }
 
