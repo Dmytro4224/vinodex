@@ -64,6 +64,8 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   }
 
   public componentDidMount() {
+    window.scrollTo(0, 0);
+
     // if (!this.isMyProfile) {
     //   this.props.nftContractContext.view_artist_account(this.getUserId)
     //     .then(res => {

@@ -78,6 +78,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this.props.isForceVisible && forceVisible();
   }
 
+  private get isAuth() {
+    return this.props.near.isAuth;
+  }
+
   private get isMyToken() {
     return this.props.model.owner_id === this.props.near.user?.accountId;
   }
@@ -112,6 +116,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private onClick() {
+    if (!this.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     this.props.onClick && this.props.onClick();
   }
 
@@ -158,6 +167,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   };
 
   private onToggleSale(e: ChangeEvent<HTMLInputElement>) {
+    if (!this.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     this._eTargetSwitch = e.target;
 
     if (e.target.checked) {
@@ -298,6 +312,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private modalToggleVisibility(data: object) {
+    if (!this.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     // data === { modalStateKeyIsShow: true }
 
     this.setState({
@@ -314,11 +333,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           {this.props.linkTo ? (
             <NavLink to={this.props.linkTo}>
               <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                         model={this.props.model} />
+                model={this.props.model} />
             </NavLink>
           ) : (
             <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                       model={this.props.model} />
+              model={this.props.model} />
           )}
 
           <div className={styles.cardDetail}>
@@ -390,6 +409,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private showCheckoutModal() {
+    if (!this.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
     this.setState({
       ...this.state,
       modalCeckoutIsShow: true,
@@ -482,7 +506,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           onHideModal={() => this.hideCheckoutModal()}
           onSubmit={() => {
           }}
-          tokenInfo={{}} token={this.model || null}/>}
+          tokenInfo={{}} token={this.model || null} />}
       </>
     );
   }
