@@ -5,7 +5,7 @@ import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import LikeView, { LikeViewType } from '../like/likeView';
 import { NavLink } from 'react-router-dom';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { convertNearToYoctoString, showToast } from '../../utils/sys';
+import { convertNearToYoctoString, convertYoctoNearsToNears, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import transferIcon from '../../assets/icons/transfer-icon.svg';
 import { Form, FormCheck } from 'react-bootstrap';
@@ -206,12 +206,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 customClass={styles.buttonSecondControls}
                 disabled={this.typeView === TokensType.fixedPrice}
               /> : (this.typeView === TokensType.fixedPrice) && <div className="w-100 falign-items-start"><ButtonView
-                text={'Buy'}
+                text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)}} NEAR`}
                 onClick={() => {
                   this.showCheckoutModal();
                 }}
                 color={buttonColors.goldFill}
-                customClass={styles.button}
+                customClass={styles.buttonSecondControls}
               /></div>}
             </div>
           </div>
@@ -272,7 +272,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             ) : (
               <div className="w-100 falign-items-start">
                 <ButtonView
-                  text={'Place a bid'}
+                  text={`Place a bid ${convertYoctoNearsToNears(this.props.model?.sale.price)}} NEAR`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
