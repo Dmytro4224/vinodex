@@ -14,7 +14,7 @@ interface IModalSaleToken extends IProps {
   onHideModal: () => void;
   onSubmit: ({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any  }) => void;
   inShowModal: boolean;
-  tokenInfo: ITokenResponseItem;
+  tokenInfo: ITokenResponseItem | null | undefined;
 }
 
 interface ModalSaleTokenState {
@@ -201,7 +201,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
             <InputView
               placeholder={'Price*'}
               customClass={'mt-4'}
-              value={this._refInputPrice?.value || this.tokenInfo.metadata.price}
+              value={this._refInputPrice?.value || this.tokenInfo?.metadata.price || '0'}
               absPlaceholder={'Price*'}
               setRef={(ref) => {
                 this._refInputPrice = ref;

@@ -1,11 +1,11 @@
-import { Component } from 'react';
+import { ChangeEvent, Component } from 'react';
 import styles from './tokenViewDetail.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import LikeView, {LikeViewType } from '../like/likeView';
 import ArtistCard from '../artistCard/ArtistCard';
-import {Tab, Tabs } from 'react-bootstrap';
+import { Form, FormCheck, Tab, Tabs } from 'react-bootstrap';
 import ButtonView, {buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView  from '../description/descrtiptionView';
 import TokenDetailView  from './tabs/detail/tokenDetailView';
@@ -16,11 +16,13 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from "../../components/similarTokens/similarTokensView";
 import React from 'react';
-import {isVideoFile, showToast } from '../../utils/sys';
+import { convertNearToYoctoString, isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
 import { TokensType } from '../../types/TokenTypes';
+import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
+import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -55,13 +57,27 @@ interface ITokenViewState{
   likesCount: number;
   modalTransferIsShow: boolean;
   modalMediaShow: boolean;
-  creator: any
+  modalSaleShow: boolean;
+  modalConfirmRemoveSaleShow: boolean;
+  creator: any;
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
-  public state:ITokenViewState = { order: null, isLoading: true, isLike: false, likesCount: 0, modalTransferIsShow: false, modalMediaShow: false, creator: null };
+  public state: ITokenViewState = {
+    order: null,
+    isLoading: true,
+    isLike: false,
+    likesCount: 0,
+    modalTransferIsShow: false,
+    modalSaleShow: false,
+    modalConfirmRemoveSaleShow: false,
+    modalMediaShow: false,
+    creator: null
+  };
+
   private readonly _refImage: React.RefObject<HTMLImageElement>;
   private _isProcessLike: boolean;
+  private _eTargetSwitch: any;
 
   constructor(props: ITokenViewDetail & IBaseComponentProps) {
     super(props);
@@ -74,7 +90,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     window.scrollTo(0, 0);
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`response d`, response);
-      this.setState({...this.state, order: response, isLoading: false, isLike: response.is_like, likesCount: response.metadata.likes_count });
+      this.setState({...this.state,
+        order: response,
+        isLoading: false,
+        isLike: response.is_like,
+        likesCount: response.metadata.likes_count
+      });
     });
   }
 
@@ -200,20 +221,36 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     return this.state.order?.owner_id === this.props.near.user?.accountId;
   }
 
+  private modalToggleVisibility(data: object) {
+    this.setState({
+      ...this.state,
+      ...data,
+    });
+  }
+
+  private onToggleSale(isSaleAction: boolean) {
+    if (isSaleAction) {
+      this.modalToggleVisibility({ modalSaleShow: true });
+    } else {
+      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+    }
+  }
+
   private getCardControls() {
     switch (this.typeView) {
       case TokensType.created:
         return (
           <>
-            {/*туй*/}
-            {this.isMyToken ? <ButtonView
-              text={'Sell'}
-              onClick={() => {
-                this.buyAction();
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.button}
-            /> : ''}
+            {this.isMyToken && (
+              <ButtonView
+                text={'Put on marketplace'}
+                onClick={() => {
+                  this.onToggleSale(true);
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+              />
+            )}
           </>
         );
       case TokensType.fixedPrice:
@@ -230,6 +267,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <ButtonView
                 text={`Stop selling`}
                 onClick={() => {
+                  this.onToggleSale(false);
                 }}
                 color={buttonColors.redButton}
               />
@@ -403,7 +441,58 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           inShowModal={this.state.modalMediaShow}
           onHideModal={() => this.hideMediaModal()}
           media={{ src: this.state.order?.metadata.media || cardPreview }}
-        /> : ''}</>
+        /> : ''}
+
+        <ModalSaleToken
+          inShowModal={this.state.modalSaleShow}
+          onHideModal={() => {
+            this.modalToggleVisibility({ modalSaleShow: false });
+            if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
+          }}
+          onSubmit={({ saleType, price, start_date, end_date, }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
+            const convertedPrice = price ? convertNearToYoctoString(price) : null;
+
+            const result = {
+              token_id: this.state.order?.token_id,
+              sale_type: saleType,
+              price: convertedPrice || '',
+              startDate: start_date ? new Date(start_date).getTime() : '',
+              endDate: end_date ? new Date(end_date).getTime() : '',
+            };
+
+            console.table(result);
+
+            this.props.nftContractContext.sale_create(
+              this.state.order?.token_id || '',
+              saleType,
+              result.price,
+              result.startDate,
+              result.endDate,
+            ).then(res => {
+              console.log('sale_create', res);
+            });
+          }}
+          tokenInfo={this.state.order}
+        />
+
+        <ModalConfirm
+          inShowModal={this.state.modalConfirmRemoveSaleShow}
+          onHideModal={() => {
+            if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
+            this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+          }}
+          onSubmit={() => {
+            this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+
+            if (this.state.order?.token_id) {
+              this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
+                console.log('sale_remove', res);
+              });
+            }
+          }}
+          confirmText={`Do you want to withdraw the token from sale?`}
+        />
+      </>
     )
   }
 }

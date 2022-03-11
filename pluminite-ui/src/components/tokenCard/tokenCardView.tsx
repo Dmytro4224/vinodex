@@ -468,8 +468,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             }}
             confirmText={`Do you want to withdraw the token from sale?`}
           />
-        )
-        }
+        )}
+
         {(this.typeView !== TokensType.created && !this.isMyToken) && <ModalTokenCheckoutNFT
           inShowModal={this.state.modalCeckoutIsShow}
           onHideModal={() => this.hideCheckoutModal()}
