@@ -14,6 +14,9 @@ export interface INftContractContext {
   nftContract: INftContract | null;
   getProfile: (account_id: string) => Promise<IProfile>;
   set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
+  sale_create: (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => Promise<any>;
+  sale_offer: (token_id: string, time: any, offer?: string) => Promise<any>;
+  sale_remove: (token_id: string) => Promise<any>;
   like_artist_account: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
@@ -142,8 +145,32 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       account_id: accountId,
     });
   };
+
   public token_set_like = async (token_id: string) => {
     return this.nftContract.token_set_like({ token_id: token_id });
+  };
+
+  public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {
+    return this.nftContract.sale_create({
+      token_id: token_id,
+      sale_type: sale_type,
+      ...(price && { price }),
+      ...(start_date && { start_date }),
+      ...(end_date && { end_date }),
+    });
+  };
+  public sale_offer = async (token_id: string, time: any, offer?: string) => {
+    return this.nftContract.sale_offer({
+      token_id: token_id,
+      time: time,
+      ...(offer && { offer }),
+    });
+  };
+
+  public sale_remove = async (token_id: string) => {
+    return this.nftContract.sale_remove({
+      token_id: token_id,
+    });
   };
 
   public view_artist_account = async (accountId: string) => {
@@ -173,6 +200,9 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       set_profile: this.set_profile,
       like_artist_account: this.like_artist_account,
       token_set_like: this.token_set_like,
+      sale_create: this.sale_create,
+      sale_offer: this.sale_offer,
+      sale_remove: this.sale_remove,
       nft_mint: this.nft_mint,
       follow_artist_account: this.follow_artist_account,
       view_artist_account: this.view_artist_account,

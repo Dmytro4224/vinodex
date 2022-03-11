@@ -72,7 +72,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps> {
           color={buttonColors.gold}
         />
       </div>
-      <div className={`d-flex align-items-center flex-gap-36 ${styles.scrollWrap}`}>
+      <div className={`d-flex flex-gap-36 ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView
             key={`alltokens-${item.token_id}`}

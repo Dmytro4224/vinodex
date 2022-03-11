@@ -1,16 +1,17 @@
-import { Component } from "react";
-import Select, { ActionMeta } from "react-select";
+import { Component } from 'react';
+import Select, { ActionMeta } from 'react-select';
 
-export interface ISelectViewItem{
+export interface ISelectViewItem {
   value: string;
   label: string;
 }
 
-interface ISelectView{
+interface ISelectView {
   options: Array<ISelectViewItem>;
   placeholder?: string;
   customCLass?: string;
   setRef?: any;
+  selectedOpt?: any;
   onChange: (item: ISelectViewItem | null) => void;
 }
 
@@ -18,17 +19,17 @@ interface ISelectState {
   selectedOption: ISelectViewItem | null;
 }
 
-class SelectView extends Component<ISelectView, ISelectState>{
+class SelectView extends Component<ISelectView, ISelectState> {
+  public state = {
+    selectedOption: this.props.selectedOpt || null,
+  };
+
   private _ref: any;
 
   constructor(props: ISelectView) {
     super(props);
 
     this.props.setRef && this.props.setRef(this);
-
-    this.state = {
-      selectedOption: null
-    };
   }
 
   handleChange = (selectedOption: ISelectViewItem | null, actionMeta: ActionMeta<ISelectViewItem>) => {
@@ -36,10 +37,11 @@ class SelectView extends Component<ISelectView, ISelectState>{
       this.props.onChange(selectedOption);
     }
 
-    this.setState({ selectedOption }, () => {});
-  }
+    this.setState({ selectedOption }, () => {
+    });
+  };
 
-  public get selectedOption(){
+  public get selectedOption() {
     return this.state.selectedOption;
   }
 
@@ -49,7 +51,7 @@ class SelectView extends Component<ISelectView, ISelectState>{
     const customStyles = {
       option: (provided, state) => ({
         ...provided,
-        cursor: 'pointer'
+        cursor: 'pointer',
       }),
       valueContainer: (provided, state) => ({
         ...provided,
@@ -68,17 +70,21 @@ class SelectView extends Component<ISelectView, ISelectState>{
         const transition = 'opacity 300ms';
 
         return { ...provided, opacity, transition };
-      }
-    }
+      },
+    };
+
 
     return (
-      <Select className={this.props?.customCLass || ''} value={selectedOption}
+      <Select
+        className={this.props?.customCLass || ''}
+        value={selectedOption}
         placeholder={this.props.placeholder || ''}
         styles={customStyles}
         onChange={this.handleChange}
-        options={this.props.options}></Select>
+        options={this.props.options}
+      />
     );
   }
 }
 
-export { SelectView }
+export { SelectView };

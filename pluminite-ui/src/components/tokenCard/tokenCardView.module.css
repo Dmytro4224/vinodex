@@ -43,6 +43,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+  /*border-top: 1px solid var(--pirateCold);*/
 }
 .cardFooter .cardInfo .infoName {
   font-weight: 500;
@@ -65,7 +66,7 @@
 .imageStyle {
   width: 100%;
   height: 100%;
-  object-fit: none;
+  object-fit: contain !important;
 }
 .button {
   padding: 6px 12px;
@@ -95,7 +96,7 @@
 .card.cardSmall .imageStyle {
   min-height: 297px;
   max-height: 297px;
-  object-fit: none;
+  object-fit: contain;
   background-position: center;
 }
 .card .cardFooter {
@@ -107,7 +108,7 @@
 }
 .card.cardSmall .cardControls {
   justify-content: space-between;
-  margin-top: 16px;
+  /*margin-top: 16px;*/
   width: 100%;
   flex-direction: row-reverse;
 }
@@ -152,4 +153,8 @@
 }
 .onlyViewed .cardControls{
   display: none;
+}
+
+.puOnMarketplaceWrap {
+  padding: 0 16px 10px 16px ;
 }
