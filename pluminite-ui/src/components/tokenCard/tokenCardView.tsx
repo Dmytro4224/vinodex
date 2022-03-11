@@ -205,14 +205,21 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 color={buttonColors.goldFill}
                 customClass={styles.buttonSecondControls}
                 disabled={this.typeView === TokensType.fixedPrice}
-              /> : (this.typeView === TokensType.fixedPrice) && <div className="w-100 falign-items-start"><ButtonView
+              /> : (this.typeView === TokensType.fixedPrice) ? <div className="w-100 falign-items-start"><ButtonView
                 text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)}} NEAR`}
                 onClick={() => {
                   this.showCheckoutModal();
                 }}
                 color={buttonColors.goldFill}
                 customClass={styles.buttonSecondControls}
-              /></div>}
+              /></div> : <ButtonView
+                text={'Not for sale'}
+                onClick={() => {
+
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+                disabled={true} />}
             </div>
           </div>
         );
