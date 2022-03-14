@@ -11,7 +11,7 @@ import { ITokenCreateItem } from '../../types/ITokenCreateItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import defaultImage from '../../assets/icons/card-preview.jpg';
 import styles from './createToken.module.css';
-import { validateDotNum } from '../../utils/sys';
+import {convertNearToYoctoString, validateDotNum } from '../../utils/sys';
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
@@ -374,25 +374,25 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             </div>
             : ''}
           <p></p>
-          {/*<Form>*/}
-          {/*  <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>*/}
-          {/*    <div*/}
-          {/*      className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>*/}
-          {/*      <div>*/}
-          {/*        <p className={styles.itemTitle}>Put on marketplace</p>*/}
-          {/*      </div>*/}
+          <Form>
+            <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>
+              <div
+                className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.itemWrap}`}>
+                <div>
+                  <p className={styles.itemTitle}>Put on marketplace</p>
+                </div>
 
-          {/*      <Form.Check*/}
-          {/*        type='switch'*/}
-          {/*        id='switch-nft-approve'*/}
-          {/*        ref={(ref) => {*/}
-          {/*          this._refPutOnMarket = ref;*/}
-          {/*        }}*/}
-          {/*        label=''*/}
-          {/*      />*/}
-          {/*    </div>*/}
-          {/*  </FormCheck.Label>*/}
-          {/*</Form>*/}
+                <Form.Check
+                  type='switch'
+                  id='switch-nft-approve'
+                  ref={(ref) => {
+                    this._refPutOnMarket = ref;
+                  }}
+                  label=''
+                />
+              </div>
+            </FormCheck.Label>
+          </Form>
           <div className={styles.checkboxes}>
             <Form className={`d-flex align-items-center flex-gap-36 ${styles.formChecked}`}>
               <div key={1} className={`mb-3 ${styles.checkItem}`}>
@@ -443,7 +443,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             </Form>
           </div>
           {this._renderType === 1 ?
-            <div className={`${styles.copies} d-none`}>
+            <div className={`${styles.copies}`}>
               <label className={styles.inputLabel}>Enter price to allow users instantly purchase your NFT</label>
               <InputView
                 onChange={(e) => {
@@ -596,7 +596,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     }
 
     if (this._renderType === 1 && this._refInputPrice.value === '') {
-      validInfo.price = true;
+      validInfo.price = false;
     }
 
     if (this._renderType === 2 && this._refInputBids.value === '') {
@@ -700,8 +700,27 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       perpetual_royalties: null,
       token_id: tokenId,
       token_type: catalog?.value,
+      sale: null
     };
 
+    if(this._refPutOnMarket.checked){
+      //@ts-ignore
+      model.sale = {
+        sale_type: this._renderType,
+        price: null,
+        start_date: this._renderType === 2 ? this._refStartDate.value === '' ? new Date().getTime() : new Date(this._refStartDate.value).getTime() : null,
+        end_date: this._renderType === 2 ? this._refExpDate.value === '' ? new Date().getTime() : new Date(this._refExpDate.value).getTime() : null,
+        is_closed: false,
+        bids: []
+      }
+
+      if(this._renderType === 1){
+        //@ts-ignore
+        model.sale.price = convertNearToYoctoString(parseFloat(this._refInputPrice.value)) || 0;
+      }
+    }
+
+    //console.log('save model', JSON.stringify(model));
     console.log('save model', JSON.stringify(model));
 
     const isFreeMintAvailable = false;
