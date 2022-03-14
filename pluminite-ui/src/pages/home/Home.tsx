@@ -105,10 +105,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
                 color={buttonColors.select}
               />
             </div>
-            <CatalogFilterView
-              setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
-              setRef={cmp => this._catalogFilterView = cmp}
-            />
           </MediaQuery>
           <MediaQuery maxWidth={991}>
             <div className="d-flex flex-column w-100">
@@ -131,7 +127,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
                   text={""}
                   withoutText={true}
                   icon={filterIcon}
-                  onClick={() => { }}
+                  onClick={this.onFilterClick}
                   color={buttonColors.select}
                 />
               </div>
@@ -142,6 +138,11 @@ class Home extends Component<IHome & IBaseComponentProps> {
               </div>
             </div>
           </MediaQuery>
+
+          <CatalogFilterView
+            setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
+            setRef={cmp => this._catalogFilterView = cmp}
+          />
 
           <p className="separator-horizontal" />
 
