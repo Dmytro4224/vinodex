@@ -15,11 +15,15 @@ import searchIcon from "../../assets/icons/search.svg";
 import MediaQuery from 'react-responsive';
 import InputView, { InputStyleType } from "../../components/common/inputView/InputView";
 import { dropdownData } from '../../components/common/dropdown/data';
+import CatalogFilterView, { ICatalogFilterView, ICatalogFilterViewState } from '../../components/catalogFilterView/CatalogFilterView';
 
 interface IHome extends IProps {
 
 }
 class Home extends Component<IHome & IBaseComponentProps> {
+
+  private _catalogFilterView: any;
+
   public state = {
     catalogs: new Array<any>(),
     sort: 7,
@@ -29,6 +33,8 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
   constructor(props: IHome & IBaseComponentProps) {
     super(props);
+
+    this._catalogFilterView = React.createRef();
   }
 
   public componentDidMount() {
@@ -57,6 +63,12 @@ class Home extends Component<IHome & IBaseComponentProps> {
     return this.state.sort;
   }
 
+  private onFilterClick = async (e: React.MouseEvent<Element>) => {
+    e.preventDefault();
+    console.log('onFilterClick', this._catalogFilterView);
+    //this._catalogFilterView.toogle();
+  }
+
   render() {
     if (this.state.isLoading) {
       return null;
@@ -79,15 +91,16 @@ class Home extends Component<IHome & IBaseComponentProps> {
               />
 
               <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                this.setCatalog(index)
+                this.setCatalog(index);
               }} />
 
               <ButtonView
                 text={"Filter"}
-                onClick={() => { }}
+                onClick={this.onFilterClick}
                 color={buttonColors.select}
               />
             </div>
+            {/*<CatalogFilterView setRef={cmp => this._catalogFilterView = cmp} />*/}
           </MediaQuery>
           <MediaQuery maxWidth={991}>
               <div className="d-flex flex-column w-100">
