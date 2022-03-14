@@ -60,6 +60,60 @@ impl Contract {
         return self.tokens_sorted.get(&sort).unwrap_or(Vec::new());
     }
 
+    pub fn nft_tokens_sorted_fix(&mut self, sort : u8)
+    {
+        match self.tokens_sorted.get(&sort)
+        {
+            Some(mut list) =>
+            {
+                let mut tokens: HashSet<String> = HashSet::new();
+
+                let mut i = 0;
+
+                while i < list.len()
+                {
+                    if tokens.contains(&list[i].token_id)
+                    {
+                        list.remove(i);
+                    }
+                    else
+                    {
+                        tokens.insert(list[i].token_id.clone());
+
+                        i = i + 1;
+                    }
+                }
+
+
+                self.tokens_sorted.insert(&sort, &list);
+            },
+            None => {}
+        }
+    }
+
+    pub fn nft_tokens_sorted_fix_all(&mut self)
+    {
+        for i in 1..9
+        {
+            self.nft_tokens_sorted_fix(i);
+        }
+    }
+
+    pub fn nft_tokens_sorted_get_token_ids(&self, sort: u8) -> Vec<TokenId>
+    {
+        match self.tokens_sorted.get(&sort)
+        {
+            Some(list) =>
+            {
+                return Vec::new();
+            },
+            None =>
+            {
+                return Vec::new();
+            }
+        }
+    }
+
     ///к-сть токенів типу token_type
     pub fn nft_supply_for_type(
         &self,
@@ -811,6 +865,7 @@ impl Contract {
                                         &Some(account_id.clone()),
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.tokens_per_owner,
                                         true
                                     ),
                                     token: self.nft_token_for_account
@@ -913,6 +968,7 @@ impl Contract {
                                         &Some(account_id.clone()),
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.tokens_per_owner,
                                         true
                                     ),
                                     token: self.nft_token_for_account
@@ -1081,6 +1137,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.tokens_per_owner,
                             true
                         ),
                         account_to: Profile::get_full_profile(
@@ -1089,6 +1146,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.tokens_per_owner,
                             true
                         ),
                         price: item_unwrapped.price,
@@ -1172,6 +1230,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.tokens_per_owner,
                             true
                         );
                     }
@@ -1183,6 +1242,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.tokens_per_owner,
                             true
                         );
                     }
@@ -1211,6 +1271,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.tokens_per_owner,
                                 true
                             );
     
@@ -1295,6 +1356,7 @@ impl Contract {
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.tokens_per_owner,
                         true
                     ));
                 }
@@ -1319,6 +1381,7 @@ impl Contract {
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.tokens_per_owner,
                         true
                   ));
             }
@@ -1389,6 +1452,7 @@ impl Contract {
                         &_accoutn_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.tokens_per_owner,
                         true
                   ));
             }
@@ -1460,6 +1524,7 @@ impl Contract {
                             &_accoutn_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.tokens_per_owner,
                             true
                         )
                     );

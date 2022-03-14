@@ -12,6 +12,7 @@ impl Contract {
         perpetual_royalties: Option<HashMap<AccountId, u32>>,
         receiver_id: Option<ValidAccountId>,
         token_type: Option<TokenType>,
+        sale: Option<Sale>
     ) {
 
         let mut final_token_id = format!("{}", self.token_metadata_by_id.len() + 1);
@@ -98,6 +99,15 @@ impl Contract {
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
             }
+        }
+
+        match sale
+        {
+            Some(sale) =>
+            {
+                self.sale_create(final_token_id.clone(), sale.sale_type, sale.price, sale.start_date, sale.end_date);
+            },
+            None => {}
         }
 
         //Оновлення словників фільтрів
