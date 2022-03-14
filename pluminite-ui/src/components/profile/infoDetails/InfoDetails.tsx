@@ -211,7 +211,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   private infoTemplate() {
     return (
       <div className={styles.profileDetailsWrap}>
-        <div className="d-flex align-items-center justify-content-between my-3">
+        <div className="d-flex align-items-center justify-content-between pt-3 mb-3">
           <h3 className={styles.profileBlockTitle}>Profile details</h3>
           {this.isMyProfile && <ButtonView
             text={'EDIT'}
@@ -291,7 +291,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
   private formTemplate() {
     return (
       <form onSubmit={(e) => { e.preventDefault() }} className={styles.profileDetailsWrap}>
-        <div className="d-flex align-items-center justify-content-between my-3">
+        <div className="d-flex align-items-center justify-content-between pt-3 mb-3">
           <h3 className={styles.profileBlockTitle}>Edit profile</h3>
         </div>
 

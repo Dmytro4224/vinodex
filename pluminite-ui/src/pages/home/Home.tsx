@@ -57,7 +57,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   private setFilter(filterOptions: IFilterOptions) {
-    console.log("🚀 ~ file: Home.tsx ~ line 60 ~ Home ~ setFilter ~ filterOptions", filterOptions)
     this.setState({ ...this.state, filterOptions })
   }
 
