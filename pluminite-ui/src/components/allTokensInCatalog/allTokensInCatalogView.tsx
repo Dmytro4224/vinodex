@@ -29,6 +29,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
   }
 
   public componentDidMount() {
+    window.scrollTo(0, 0);
     this.loadData();
   }
 
