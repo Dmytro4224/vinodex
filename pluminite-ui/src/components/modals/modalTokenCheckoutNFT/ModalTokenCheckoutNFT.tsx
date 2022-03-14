@@ -4,11 +4,12 @@ import ModalSample, { ModalSampleSizeType } from '../../common/modalSample/Modal
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import InputView, { InputType } from '../../common/inputView/InputView';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
-import {convertNearToYoctoString, convertYoctoNearsToNears, onlyNumber } from '../../../utils/sys';
+import {convertNearToYoctoString, convertYoctoNearsToNears, onlyNumber, showToast } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 import TokenCardView from '../../tokenCard/tokenCardView';
 import { TokensType } from '../../../types/TokenTypes';
+import { EShowTost } from '../../../types/ISysTypes';
 
 interface IModalTokenCheckoutNFT extends IProps {
   onHideModal: () => void;
@@ -132,9 +133,17 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       this.props.token?.token_id,
       new Date().getTime(),
     ).then(res => {
-      console.log(`res`, res);
       this.onHideModal();
       this.props.onSubmit && this.props.onSubmit();
+    }).catch(ex => {
+      showToast({
+        message: ex.kind.ExecutionError || `Error. Please, try again`,
+        type: EShowTost.error
+      });
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
     });
   };
 

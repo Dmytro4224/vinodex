@@ -3,6 +3,7 @@ import Skeleton from 'react-loading-skeleton';
 import { IFilterOptions } from '../../types/IFilterOptions';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { convertNearToYoctoString, mediaUrl } from '../../utils/sys';
+import { TokensSortType } from '../../types/TokensSortType';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import CarouselView from '../carousel/carouselView';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
@@ -47,13 +48,13 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   private get sort() {
-    return this.props.sort || 7;
+    return this.props.sort || TokensSortType.Most_viewed;
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
     if (
       prevProps.catalog !== this.props.catalog ||
-      prevProps.sort !== this.props.sort ||
+      prevProps.sort !== this.sort ||
       prevProps.priceFrom !== this.props.priceFrom ||
       prevProps.priceTo !== this.props.priceTo ||
       prevProps.type !== this.props.type
@@ -84,7 +85,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
       catalog,
       1,
       8,
-      TokensSortType.Most_viewed,
+      this.sort,
       null,
       null,
       null,
@@ -96,6 +97,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
     ).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
+      console.log('TopTokensView loadData ex =>', ex);
     });
   }
 

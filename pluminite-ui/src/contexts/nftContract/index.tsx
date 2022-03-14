@@ -99,7 +99,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public nft_token_get = (token_id: string) => {
-    return this.props.nftContract.nft_token_get({ token_id });
+    return this.props.nftContract.nft_token_get({ token_id, account_id: this.myAccountId });
   };
 
   public sale_get = (token_id: string, with_bids: boolean) => {

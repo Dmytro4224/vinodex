@@ -73,7 +73,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
     return this.state.sort;
   }
 
-  render() {
+  public render() {
     if (this.state.isLoading) {
       return null;
     }
