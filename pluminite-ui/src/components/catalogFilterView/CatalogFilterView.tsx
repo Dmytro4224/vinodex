@@ -76,6 +76,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
   }
 
   private clearState() {
+    this.resetSelectType();
     this.setState(this._initialState);
   }
 
@@ -131,6 +132,10 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
           break;
       }
     }, 600);
+  }
+
+  private resetSelectType() {
+    this._typeSelect.handleChange({ label: 'All', value: 'all' });
   }
 
   public render() {
@@ -198,7 +203,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                 <div className="d-flex align-items-center gap-5px">
                   <p>Type:</p>
                   <button
-                    onClick={() => { this.setState({ ...this.state, type: null }) }}
+                    onClick={() => { this.resetSelectType(); this.setState({ ...this.state, type: null }) }}
                     className={`${style.resultItem} ${style.clearButton}`}
                   >
                     {this.getTypeFromState()}
