@@ -230,17 +230,20 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
               {this.isMyToken ? this.props.buttonText && (
                 <ButtonView
-                  text={this.isMyToken ? 'Sell' : this.props.buttonText}
+                  text={this.isMyToken ? this.typeView === TokensType.fixedPrice ? 'Stop selling' : 'Sell' : this.props.buttonText}
                   onClick={() => {
                     if (this.isMyToken) {
-                      this.modalToggleVisibility({ modalSaleShow: true })
+                      if (this.typeView === TokensType.fixedPrice) {
+                        this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+                      } else {
+                        this.modalToggleVisibility({ modalSaleShow: true })
+                      }
                     } else {
                       this.onClick();
                     }
                   }}
-                  color={buttonColors.goldFill}
+                  color={this.isMyToken && this.typeView === TokensType.fixedPrice ? buttonColors.redButton : buttonColors.goldFill}
                   customClass={styles.buttonSecondControls}
-                  disabled={this.typeView === TokensType.fixedPrice}
                 />
               ) : (this.typeView === TokensType.fixedPrice) ? (
                 <div className="w-100 align-items-start">

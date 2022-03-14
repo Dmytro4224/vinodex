@@ -199,6 +199,8 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                 <img src={close} alt="clear" />&nbsp;Clear all
               </button>
 
+              <span className={style.separator} />
+
               {this.getTypeFromState() && (
                 <div className="d-flex align-items-center gap-5px">
                   <p>Type:</p>
