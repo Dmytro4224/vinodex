@@ -6,6 +6,7 @@ use std::collections::HashSet;
 
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::serde::{Deserialize, Serialize};
+use near_sdk::collections::{UnorderedSet};
 
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
 #[serde(crate = "near_sdk::serde")]
@@ -26,6 +27,8 @@ pub struct JsonProfile {
 
     pub is_like:bool,
     pub likes_count:u32,
+
+    pub items_count:u32
 }
 
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
@@ -58,6 +61,7 @@ impl Profile {
         asked_account_id: &Option<AccountId>,
         autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>,
+        autors_tokens: &LookupMap<AccountId, UnorderedSet<String>>,
         default_if_none: bool
        ) -> Option<JsonProfile> {
        let account_id: AccountId = account_id.into();
@@ -73,8 +77,14 @@ impl Profile {
                is_following:false,
                is_like:false,
                followers_count:Profile::get_profile_followers_count(&autors_followers,&account_id),
-               likes_count:Profile::get_profile_like_count(&autors_likes,&account_id)
+               likes_count:Profile::get_profile_like_count(&autors_likes,&account_id),
+               items_count: 0
            };
+
+           if let Some(tokens) = autors_tokens.get(&account_id)
+           {
+                result.items_count = tokens.len() as u32;
+           }
 
            if let Some(_asked_account_id)=asked_account_id
            {
@@ -107,7 +117,8 @@ impl Profile {
                     is_following:false,
                     is_like:false,
                     followers_count: 0,
-                    likes_count: 0
+                    likes_count: 0,
+                    items_count: 0
                 });
             }
             else

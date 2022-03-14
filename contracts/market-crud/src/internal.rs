@@ -120,7 +120,7 @@ impl Contract {
         sender_id: &AccountId,
         receiver_id: &AccountId,
         token_id: &TokenId,
-        memo: Option<String>,
+        memo: Option<String>
     ) -> Token {
         let token = self.tokens_by_id.get(token_id).expect("Token not found");
 

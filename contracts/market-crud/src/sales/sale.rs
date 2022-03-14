@@ -194,6 +194,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.tokens_per_owner,
                                 true
                             )
                         });
@@ -217,6 +218,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.tokens_per_owner,
                                 true
                             )
                         });
@@ -580,6 +582,7 @@ impl Contract {
             */
             Some(price),
 			Some(10), //the maximum amount of accounts the market can payout at once (this is limited by GAS)
+            Some(owner_id.clone())
         );
 
         //after the transfer payout has been initiated, we resolve the promise by calling our own resolve_purchase function. 

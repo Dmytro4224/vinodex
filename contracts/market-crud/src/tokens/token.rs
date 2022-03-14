@@ -48,10 +48,15 @@ impl Resort for Contract
 {
     fn tokens_resort(&mut self, token_id: TokenId, sort: u8, criterion: Option<u128>)
     {
-        let key = SortedToken{token_id: token_id, criterion: criterion};
+        let key = SortedToken{token_id: token_id.clone(), criterion: criterion};
 
         match self.tokens_sorted.get(&sort) {
             Some(mut tokens) => {
+
+                if let Some(index) = tokens.iter().position(|x| x.token_id.eq(&token_id))
+                {
+                    tokens.remove(index);
+                }
 
                 if criterion.is_none()
                 {

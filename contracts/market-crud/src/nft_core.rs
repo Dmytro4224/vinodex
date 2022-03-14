@@ -23,6 +23,7 @@ pub trait NonFungibleTokenCore {
         memo: Option<String>,
         balance: Option<u128>,
         max_len_payout: Option<u32>,
+        sender_id: Option<String>
     ) -> Option<Payout>;
 
     /// Returns `true` if the token was transferred from the sender's account.
@@ -114,7 +115,7 @@ impl NonFungibleTokenCore for Contract {
             &sender_id,
             receiver_id.as_ref(),
             &token_id,
-            memo,
+            memo
         );
         if self.use_storage_fees {
             refund_approved_account_ids(
@@ -133,13 +134,19 @@ impl NonFungibleTokenCore for Contract {
         memo: Option<String>,
         balance: Option<u128>,
         max_len_payout: Option<u32>,
+        mut sender_id : Option<String>
     ) -> Option<Payout> {
-        let sender_id = env::predecessor_account_id();
+
+        if sender_id.is_none()
+        {
+            sender_id = Some(env::predecessor_account_id());
+        }
+        
         let previous_token = self.internal_transfer(
-            &sender_id,
+            &sender_id.unwrap(),
             &receiver_id,
             &token_id,
-            memo,
+            memo
         );
         if self.use_storage_fees {
             refund_approved_account_ids(
@@ -202,7 +209,7 @@ impl NonFungibleTokenCore for Contract {
             &sender_id,
             receiver_id.as_ref(),
             &token_id,
-            memo,
+            memo
         );
         
         ext_self::nft_resolve_transfer(

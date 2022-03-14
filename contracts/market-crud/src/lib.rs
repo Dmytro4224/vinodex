@@ -507,9 +507,17 @@ impl Contract {
     }
 
     //Отримати дані профілю для юзера AccountId
-    pub fn get_profile(&self, account_id: AccountId) -> Profile {
+    pub fn get_profile(&self, account_id: AccountId, asked_account_id: Option<AccountId>) -> Option<JsonProfile> {
         let account_id: AccountId = account_id.into();
-        return self.profiles.get(&account_id).unwrap_or(Profile::get_default_data(account_id.clone()));
+        //return self.profiles.get(&account_id).unwrap_or(Profile::get_default_data(account_id.clone()));
+        return Profile::get_full_profile(
+            &self.profiles, 
+            &account_id, 
+            &asked_account_id, 
+            &self.autors_likes, 
+            &self.autors_followers, 
+            &self.tokens_per_owner,
+            true);
     }
 
     //Встановити дані профілю
