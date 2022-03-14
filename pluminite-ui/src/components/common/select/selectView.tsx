@@ -45,6 +45,8 @@ class SelectView extends Component<ISelectView, ISelectState> {
     return this.state.selectedOption;
   }
 
+
+
   render() {
     const { selectedOption } = this.state;
 
@@ -74,7 +76,6 @@ class SelectView extends Component<ISelectView, ISelectState> {
         return { ...provided, opacity, transition };
       },
     };
-
 
     return (
       <Select
