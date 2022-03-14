@@ -12,28 +12,49 @@ import searchIcon from "../../assets/icons/search.svg";
 import MediaQuery from 'react-responsive';
 import InputView, { InputStyleType } from "../../components/common/inputView/InputView";
 import { dropdownData } from "../../components/common/dropdown/data";
+import { IFilterOptions } from "../../types/IFilterOptions";
+import CatalogFilterView from "../../components/catalogFilterView/CatalogFilterView";
 
 interface ICatalogTokens extends IProps {
 
 }
+
 class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
   public state = {
     catalogs: new Array<any>(),
     sort: 7,
     currentCatalog: 0,
-    isLoading: true
+    isLoading: true,
+    filterOptions: {
+      type: null,
+      priceFrom: null,
+      priceTo: null,
+    }
   };
+
+  private _catalogFilterView: any;
 
   constructor(props: ICatalogTokens & IBaseComponentProps) {
     super(props);
+
+    this._catalogFilterView = React.createRef();
+  }
+
+  private setFilter(filterOptions: IFilterOptions) {
+    this.setState({ ...this.state, filterOptions })
+  }
+
+  private onFilterClick = async (e: React.MouseEvent<Element>) => {
+    e.preventDefault();
+    this._catalogFilterView.toogle();
   }
 
   private get type() {
     let type = 'Top 10';
 
-    if(this.props.params.type === undefined){ return type  }
+    if (this.props.params.type === undefined) { return type }
 
-    switch (+this.props.params.type){
+    switch (+this.props.params.type) {
       case 1:
         type = 'Top 10';
         break;
@@ -100,46 +121,57 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
 
               <ButtonView
                 text={"Filter"}
-                onClick={() => { }}
+                onClick={this.onFilterClick}
                 color={buttonColors.select}
               />
             </div>
           </MediaQuery>
           <MediaQuery maxWidth={991}>
-              <div className="d-flex flex-column w-100">
-                <div className="d-flex align-items-center justify-content-between">
-                  <DropdownView
-                    colorType={dropdownColors.select}
-                    title={''}
-                    icon={sortIcon}
-                    hideArrow={true}
-                    onChange={(item) => { this.setSort(item.id) }}
-                    childrens={dropdownData}
-                  />
-                  <InputView
-                    onChange={(e) => { console.log(e) }}
-                    placeholder={'Search'}
-                    icon={searchIcon}
-                    inputStyleType={InputStyleType.round}
-                  />
-                  <ButtonView
-                    text={""}
-                    withoutText={true}
-                    icon={filterIcon}
-                    onClick={() => { }}
-                    color={buttonColors.select}
-                  />
-                </div>
-                <div className="d-flex align-items-center mt-4">
-                  <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                    this.setCatalog(index)
-                  }} />
-                </div>
+            <div className="d-flex flex-column w-100">
+              <div className="d-flex align-items-center justify-content-between">
+                <DropdownView
+                  colorType={dropdownColors.select}
+                  title={''}
+                  icon={sortIcon}
+                  hideArrow={true}
+                  onChange={(item) => { this.setSort(item.id) }}
+                  childrens={dropdownData}
+                />
+                <InputView
+                  onChange={(e) => { console.log(e) }}
+                  placeholder={'Search'}
+                  icon={searchIcon}
+                  inputStyleType={InputStyleType.round}
+                />
+                <ButtonView
+                  text={""}
+                  withoutText={true}
+                  icon={filterIcon}
+                  onClick={this.onFilterClick}
+                  color={buttonColors.select}
+                />
               </div>
+              <div className="d-flex align-items-center mt-4">
+                <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
+                  this.setCatalog(index)
+                }} />
+              </div>
+            </div>
           </MediaQuery>
 
+          <CatalogFilterView
+            setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
+            setRef={cmp => this._catalogFilterView = cmp}
+          />
+
           <p className="separator-horizontal" />
-          <AllTokensInCatalogView sort={this.sort} catalog={this.catalog} />
+          <AllTokensInCatalogView
+            priceFrom={this.state.filterOptions.priceFrom}
+            priceTo={this.state.filterOptions.priceTo}
+            type={this.state.filterOptions.type}
+            sort={this.sort}
+            catalog={this.catalog}
+          />
         </div>
       </div>
     );
