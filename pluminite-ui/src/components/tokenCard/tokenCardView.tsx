@@ -293,7 +293,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             ) : (
               <div className="w-100 falign-items-start">
                 <ButtonView
-                  text={`Place a bid ${convertYoctoNearsToNears(this.props.model?.sale.price)}} NEAR`}
+                  text={`Place a bid ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
