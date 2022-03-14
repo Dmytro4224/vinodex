@@ -223,8 +223,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   onClick={this.toggleLikeToken}
                 />
 
-                {this.state.model?.sale && <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>}
+                {this.state.model?.sale && this.typeView !== TokensType.fixedPrice && (
+                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                )}
               </div>
+
               {this.isMyToken ? this.props.buttonText && (
                 <ButtonView
                   text={this.isMyToken ? 'Sell' : this.props.buttonText}
@@ -289,7 +292,9 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   onClick={this.toggleLikeToken}
                 />
 
-                {this.state.model?.sale && <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>}
+                {this.state.model?.sale && this.isMyToken && (
+                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                )}
               </div>
             </div>
 
