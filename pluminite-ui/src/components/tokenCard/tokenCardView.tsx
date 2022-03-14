@@ -48,6 +48,8 @@ type stateTypes = {
   modalConfirmRemoveSaleShow: boolean;
   modalCeckoutIsShow: boolean;
   modalSaleShow: boolean;
+  isFetch: boolean;
+  model: ITokenResponseItem;
 };
 
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
@@ -58,6 +60,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     modalTransferIsShow: false,
     modalCeckoutIsShow: false,
     modalSaleShow: false,
+    isFetch: false,
+    model: this.props.model,
   };
 
   private readonly isSmall: boolean;
@@ -74,6 +78,16 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this._refImage = React.createRef();
   }
 
+  private getInfo(){
+    this.props.nftContractContext.nft_token_get(this.tokenID).then(response => {
+      this.setState({
+        ...this.state,
+        isFetch: true,
+        model: response,
+      });
+    });
+  }
+
   public componentDidUpdate() {
     this.props.isForceVisible && forceVisible();
   }
@@ -83,7 +97,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get isMyToken() {
-    return this.props.model.owner_id === this.props.near.user?.accountId;
+    return this.state.model.owner_id === this.props.near.user?.accountId;
   }
 
   private get icon() {
@@ -95,7 +109,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get tokenData() {
-    return this.props.model;
+    return this.state.model;
   }
 
   private get typeView() {
@@ -112,7 +126,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get model() {
-    return this.props.model;
+    return this.state.model;
   }
 
   private onClick() {
@@ -224,7 +238,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               ) : (this.typeView === TokensType.fixedPrice) ? (
                 <div className="w-100 align-items-start">
                   <ButtonView
-                    text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
+                    text={`Buy now ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
                     onClick={() => {
                       this.showCheckoutModal();
                     }}
@@ -301,7 +315,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             ) : (
               <div className="w-100 falign-items-start">
                 <ButtonView
-                  text={`Place a bid ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
+                  text={`Place a bid ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
@@ -340,12 +354,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
         <div className={styles.cardImage}>
           {this.props.linkTo ? (
             <NavLink to={this.props.linkTo}>
-              <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                model={this.props.model} />
+              <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
+                model={this.state.model} />
             </NavLink>
           ) : (
-            <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-              model={this.props.model} />
+            <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
+              model={this.state.model} />
           )}
 
           <div className={styles.cardDetail}>
@@ -454,6 +468,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               inShowModal={this.state.modalTransferIsShow}
               onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
               onSubmit={() => {
+                this.getInfo();
                 this.modalToggleVisibility({ modalTransferIsShow: false });
               }}
               tokenInfo={{}}
@@ -485,6 +500,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   result.startDate,
                   result.endDate,
                 ).then(res => {
+                  this.getInfo();
+                  this.modalToggleVisibility({ modalSaleShow: false });
                   console.log('sale_create', res);
                 });
               }}
@@ -502,6 +519,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
 
               this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+                this.getInfo();
                 console.log('sale_remove', res);
               });
             }}
@@ -513,6 +531,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           inShowModal={this.state.modalCeckoutIsShow}
           onHideModal={() => this.hideCheckoutModal()}
           onSubmit={() => {
+            this.getInfo();
+            this.hideCheckoutModal()
           }}
           tokenInfo={{}} token={this.model || null} />}
       </>
