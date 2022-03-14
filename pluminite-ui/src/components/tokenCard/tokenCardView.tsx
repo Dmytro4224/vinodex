@@ -207,33 +207,41 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 count={this.state.likesCount}
                 onClick={this.toggleLikeToken}
               />
-              {this.isMyToken ? this.props.buttonText && <ButtonView
-                text={this.isMyToken ? 'Sell' : this.props.buttonText}
-                onClick={() => {
-                  if (this.isMyToken) {
-                    this.modalToggleVisibility({ modalSaleShow: true })
-                  } else {
-                    this.onClick();
-                  }
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.buttonSecondControls}
-                disabled={this.typeView === TokensType.fixedPrice}
-              /> : (this.typeView === TokensType.fixedPrice) ? <div className="w-100 falign-items-start"><ButtonView
-                text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
-                onClick={() => {
-                  this.showCheckoutModal();
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.buttonSecondControls}
-              /></div> : <ButtonView
+              {this.isMyToken ? this.props.buttonText && (
+                <ButtonView
+                  text={this.isMyToken ? 'Sell' : this.props.buttonText}
+                  onClick={() => {
+                    if (this.isMyToken) {
+                      this.modalToggleVisibility({ modalSaleShow: true })
+                    } else {
+                      this.onClick();
+                    }
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.buttonSecondControls}
+                  disabled={this.typeView === TokensType.fixedPrice}
+                />
+              ) : (this.typeView === TokensType.fixedPrice) ? (
+                <div className="w-100 align-items-start">
+                  <ButtonView
+                    text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
+                    onClick={() => {
+                      this.showCheckoutModal();
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.buttonSecondControls}
+                  />
+                </div>
+              ) : (
+                <ButtonView
                 text={'Not for sale'}
                 onClick={() => {
 
                 }}
                 color={buttonColors.goldFill}
                 customClass={styles.button}
-                disabled={true} />}
+                disabled={true} />
+              )}
             </div>
           </div>
         );
@@ -370,7 +378,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
         {this.getCardControls()}
 
-        {(this.isMyToken && !this.props.isView) && (
+        {/* {(this.isMyToken && !this.props.isView) && (
           <div className={styles.puOnMarketplaceWrap}>
             <p className='line-separator' />
             <div className={`d-flex align-items-center justify-content-between w-100 mt-2`}>
@@ -396,7 +404,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </Form>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     );
   }
