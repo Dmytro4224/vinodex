@@ -13,8 +13,10 @@ import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
 import filterIcon from '../../../assets/icons/filter-icon.svg';
-import { mediaUrl } from '../../../utils/sys';
+import { convertNearToYoctoString, mediaUrl } from '../../../utils/sys';
 import { TokensType } from '../../../types/TokenTypes';
+import CatalogFilterView from '../../catalogFilterView/CatalogFilterView';
+import { IFilterOptions } from '../../../types/IFilterOptions';
 
 interface IProfileTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
@@ -24,24 +26,40 @@ interface IProfileTokensView extends IProps {
 }
 
 class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentProps> {
-  private _typeViewParams = {
-    [ProfileTokensType.onSale]: [true, this.props.params.userId],
-    [ProfileTokensType.createdItems]: [null, this.props.params.userId],
-    [ProfileTokensType.purchases]: [null, this.props.params.userId],
-    [ProfileTokensType.activeBids]: [null, this.props.params.userId, null, null, true],
-    [ProfileTokensType.favourites]: [null, this.props.params.userId, true, null, true],
-  };
-
   public state = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
     currentCatalog: 0,
     catalog: this.props.near.catalogs[0],
     isLoading: true,
+    filterOptions: {
+      type: null,
+      priceFrom: null,
+      priceTo: null,
+    }
+  };
+
+  private _catalogFilterView: any;
+  private _typeViewParams = {
+    [ProfileTokensType.onSale]: [true, this.props.params.userId, null, null, null],
+    [ProfileTokensType.createdItems]: [null, this.props.params.userId, null, null, null],
+    [ProfileTokensType.activeBids]: [null, this.props.params.userId, null, null, true],
+    [ProfileTokensType.favourites]: [null, this.props.params.userId, true, null, true],
   };
 
   constructor(props: IProfileTokensView & IBaseComponentProps) {
     super(props);
+
+    this._catalogFilterView = React.createRef();
+  }
+
+  private setFilter(filterOptions: IFilterOptions) {
+    this.setState({ ...this.state, filterOptions })
+  }
+
+  private onFilterClick = async (e: React.MouseEvent<Element>) => {
+    e.preventDefault();
+    this._catalogFilterView.toogle();
   }
 
   public componentDidMount() {
@@ -49,18 +67,39 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   public componentDidUpdate(prevProps, prevState) {
-    if (prevState.catalog !== this.catalog || prevState.sort !== this.sort) {
+    if (
+      prevState.catalog !== this.catalog ||
+      prevState.sort !== this.sort ||
+      prevState.filterOptions.priceFrom !== this.state.filterOptions.priceFrom ||
+      prevState.filterOptions.priceTo !== this.state.filterOptions.priceTo ||
+      prevState.filterOptions.type !== this.state.filterOptions.type
+    ) {
       this.loadData();
     }
   }
 
+  private get priceFrom() {
+    if (!this.state.filterOptions.priceFrom) return null;
+
+    return convertNearToYoctoString(Number(this.state.filterOptions.priceFrom));
+  }
+
+  private get priceTo() {
+    if (!this.state.filterOptions.priceTo) return null;
+
+    return convertNearToYoctoString(Number(this.state.filterOptions.priceTo));
+  }
+
   private loadData() {
+    const data = [...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]];
+    data.push(this.priceFrom, this.priceTo, this.state.filterOptions.type);
+
     this.props.nftContractContext.nft_tokens_by_filter(
       this.catalog,
       1,
       4,
       this.sort,
-      ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]
+      ...data
     ).then(response => {
       this.setState({
         ...this.state,
@@ -98,7 +137,6 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   private getFilter() {
     switch (this.typeViewTokens) {
       case ProfileTokensType.onSale:
-      case ProfileTokensType.purchases:
       case ProfileTokensType.activeBids:
       case ProfileTokensType.favourites:
       case ProfileTokensType.owned:
@@ -125,8 +163,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
                 <ButtonView
                   text={'Filter'}
-                  onClick={() => {
-                  }}
+                  onClick={this.onFilterClick}
                   color={buttonColors.select}
                 />
               </div>
@@ -149,8 +186,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                     text={''}
                     withoutText={true}
                     icon={filterIcon}
-                    onClick={() => {
-                    }}
+                    onClick={this.onFilterClick}
                     color={buttonColors.select}
                   />
                 </div>
@@ -164,6 +200,11 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                 </div>
               </div>
             </MediaQuery>
+
+            <CatalogFilterView
+              setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
+              setRef={cmp => this._catalogFilterView = cmp}
+            />
 
             <p className='line-separator my-4' />
           </>
@@ -209,9 +250,6 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         ) : (
           <div className={`d-flex flex-gap-36 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
-              // Якщо об'єкт sale не null, то значіть він на продажі
-              // І в тому об'єкті є поле sale_type. 2 і 3 це аукціони
-
               let typeView = TokensType.created;
 
               return (
