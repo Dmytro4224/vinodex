@@ -77,6 +77,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       isBidsValid: true,
       isRoyaltiesValid: true,
       isDescrValid: true,
+      isDatesValid: true,
     },
   };
 
@@ -500,6 +501,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                     }}
                   />
                 </div>
+                {!this.state.validate.isDatesValid && <div className={styles.dateError}>
+                  <p>Enter start and end date</p>
+                </div>}
               </div>
             </div> : <div></div>
           }
@@ -585,6 +589,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       descr: true,
       bids: true,
       copies: true,
+      dates: true,
     };
 
     if (this._fileResponse === undefined) {
@@ -595,12 +600,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.title = false;
     }
 
-    if (this._renderType === 1 && this._refInputPrice.value === '') {
-      validInfo.price = false;
-    }
-
     if (this._renderType === 2 && this._refInputBids.value === '') {
       validInfo.bids = true;
+    }
+
+    if(this._refPutOnMarket.checked){
+      if (this._renderType === 1 && this._refInputPrice.value === '') {
+        validInfo.price = false;
+      }
+
+      if (this._renderType === 2 && (this._refStartDate.value === '' || this._refExpDate.value === '')) {
+        validInfo.dates = false;
+      }
     }
 
     /*if (this._refRoyalitiesInput.value === '') {
@@ -611,7 +622,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.descr = false;
     }
 
-    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids || !validInfo.royal) {
+    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids || !validInfo.royal || !validInfo.dates) {
       this.setState({
         ...this.state,
         validate: {
@@ -621,6 +632,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           isBidsValid: validInfo.bids,
           isRoyaltiesValid: validInfo.royal,
           isDescrValid: validInfo.descr,
+          isDatesValid: validInfo.dates,
         },
       });
 
