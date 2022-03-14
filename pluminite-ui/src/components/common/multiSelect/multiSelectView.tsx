@@ -5,7 +5,7 @@ export interface IMultiSelectViewItem {
   label: string;
   value: string;
   checked?: boolean;
-  
+
 }
 
 interface IMultiSelectView extends IProps {
@@ -16,7 +16,7 @@ interface IMultiSelectView extends IProps {
 }
 
 interface IIMultiSelectViewState {
-  
+
 }
 
 class MultiSelectView extends Component<IMultiSelectView & IBaseComponentProps, IIMultiSelectViewState> {
@@ -37,7 +37,7 @@ class MultiSelectView extends Component<IMultiSelectView & IBaseComponentProps, 
       <div>
         <div></div>
         <div>
-          {this._options.map(opt => <ItemComponent value={opt.value} label={opt.label} checked={opt.checked} />)}
+          {this._options.map((opt, key) => <ItemComponent key={key} value={opt.value} label={opt.label} checked={opt.checked} />)}
         </div>
       </div>
     );
