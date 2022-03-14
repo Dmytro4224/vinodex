@@ -99,17 +99,17 @@ impl Contract {
         }
     }
 
-    pub fn nft_tokens_sorted_get_token_ids(&self, sort: u8) -> Vec<TokenId>
+    pub fn nft_tokens_sorted_get_token_ids(&self, sort: u8) -> usize
     {
         match self.tokens_sorted.get(&sort)
         {
             Some(list) =>
             {
-                return Vec::new();
+                return list.len();
             },
             None =>
             {
-                return Vec::new();
+                return 0;
             }
         }
     }
