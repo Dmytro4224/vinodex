@@ -234,13 +234,13 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 </div>
               ) : (
                 <ButtonView
-                text={'Not for sale'}
-                onClick={() => {
+                  text={'Not for sale'}
+                  onClick={() => {
 
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.button}
-                disabled={true} />
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.button}
+                  disabled={true} />
               )}
             </div>
           </div>
@@ -378,7 +378,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
         {this.getCardControls()}
 
-        {/* {(this.isMyToken && !this.props.isView) && (
+        {(this.isMyToken && !this.props.isView) && (
           <div className={styles.puOnMarketplaceWrap}>
             <p className='line-separator' />
             <div className={`d-flex align-items-center justify-content-between w-100 mt-2`}>
@@ -404,7 +404,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </Form>
             </div>
           </div>
-        )} */}
+        )}
       </div>
     );
   }
@@ -485,7 +485,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   result.startDate,
                   result.endDate,
                 ).then(res => {
-                  console.log('sale_create', res);
+                  this.modalToggleVisibility({ modalSaleShow: false });
+                  if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
                 });
               }}
               tokenInfo={this.model}
@@ -502,7 +503,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
 
               this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
-                console.log('sale_remove', res);
+                this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               });
             }}
             confirmText={`Do you want to withdraw the token from sale?`}
