@@ -238,3 +238,7 @@
   color: var(--thunderbird);
   font-size: 16px;
 }
+
+.datePickWrap input{
+  background-color: var(--wildSand);
+}

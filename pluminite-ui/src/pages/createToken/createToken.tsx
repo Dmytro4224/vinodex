@@ -481,7 +481,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               />
               <div className={'mt-4'}>
                 <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
-                <div className={'d-flex align-items-centerjustify-content-between flex-gap-36 mt-3'}>
+                <div className={`${styles.datePickWrap} d-flex align-items-centerjustify-content-between flex-gap-36 mt-3`}>
                   <Form.Control
                     type='date'
                     id='date-start'
