@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import { TokensSortType } from '../../types/TokensSortType';
 import { mediaUrl } from '../../utils/sys';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import CarouselView from '../carousel/carouselView';
@@ -13,22 +14,7 @@ import TokenCardView from '../tokenCard/tokenCardView';
 interface ITopTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
-  sort: number;
-}
-
-enum TokensSortType {
-  'Recently_Listed' = 1,
-  //Recently Created (Oldest ��� ����� �����)
-  'Recently_Created' = 2,
-  'Recently_Sold' = 3,
-  'Ending_Soon' = 4,
-  //Price Low to High (High to Low ��� ����� �����)
-  'Price_Low_to_High' = 5,
-  'Highest_last_sale' = 6,
-  'Most_viewed' = 7,
-  'Most_Favorited' = 8,
-  'Price_High_to_Low' = 9,
-  'Oldest' = 10
+  sort: TokensSortType;
 }
 
 class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, any> {
@@ -43,11 +29,11 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   private get sort() {
-    return this.props.sort || 7;
+    return this.props.sort || TokensSortType.Most_viewed;
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
-    if (prevProps.catalog !== this.props.catalog) {
+    if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.sort) {
       this.loadData();
     }
   }
@@ -57,9 +43,10 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
       return;
     }
     const catalog = this.props.catalog;
-    this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, this.sort).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
+      console.log('TopTokensView loadData ex =>', ex);
     });
   }
 

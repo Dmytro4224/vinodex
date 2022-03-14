@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import { TokensSortType } from '../../types/TokensSortType';
 import { mediaUrl } from '../../utils/sys';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
@@ -13,7 +14,7 @@ import styles from './allTokensInCatalogView.module.css';
 interface IAllTokensInCatalogView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
-  sort: number;
+  sort: TokensSortType;
 }
 
 class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseComponentProps> {
@@ -24,24 +25,27 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
   }
 
   private get sort() {
-    return this.props.sort || 7;
+    return this.props.sort || TokensSortType.Most_viewed;
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, 7).then(response => {
-      this.setState({ ...this.state, list: response, isLoading: false });
-    });
+    this.loadData();
   }
 
   public componentDidUpdate(prevProps: IAllTokensInCatalogView, prevState: any) {
     if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.props.sort) {
-      this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, 7).then(response => {
-        this.setState({ ...this.state, list: response, isLoading: false });
-      });
+      this.loadData();
     }
   }
 
-  render() {
+  private async loadData() {
+    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, this.sort).then(response => {
+      console.log('loadData', response);
+      this.setState({ ...this.state, list: response, isLoading: false });
+    });
+  }
+
+  public render() {
     if (this.state.isLoading) {
       return <div className={`d-flex align-items-center flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
         <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
