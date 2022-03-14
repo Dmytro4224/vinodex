@@ -152,7 +152,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
           />
           <InputView
             placeholder={'Price*'}
-            customClass={'ml-4'}
+            customClass={`ml-4 ${style.inputView}`}
             value={this._inputPriceFrom?.value || ''}
             absPlaceholder={'Price from'}
             setRef={(ref) => {
@@ -167,7 +167,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
           />
           <InputView
             placeholder={'Price*'}
-            customClass={'ml-4'}
+            customClass={`ml-4 ${style.inputView}`}
             value={this._inputPriceTo?.value || ''}
             absPlaceholder={'Price to'}
             setRef={(ref) => {

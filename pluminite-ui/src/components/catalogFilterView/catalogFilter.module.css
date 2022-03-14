@@ -30,3 +30,14 @@
 .resultItem img {
   margin-left: 5px;
 }
+
+@media (max-width: 560px) {
+  .filterWrap {
+    flex-direction: column;
+  }
+
+  .select,
+  .inputView {
+    width: 100%;
+  }
+}
