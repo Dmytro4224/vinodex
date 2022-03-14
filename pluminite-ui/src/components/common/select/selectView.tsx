@@ -56,10 +56,12 @@ class SelectView extends Component<ISelectView, ISelectState> {
       valueContainer: (provided, state) => ({
         ...provided,
         background: '#F8F8F8',
+        minHeight: '56px',
       }),
       indicatorsContainer: (provided, state) => ({
         ...provided,
         background: '#F8F8F8',
+
       }),
       indicatorSeparator: (provided, state) => ({
         ...provided,

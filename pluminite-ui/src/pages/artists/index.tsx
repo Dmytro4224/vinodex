@@ -41,6 +41,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   }
 
   public componentDidMount() {
+    window.scrollTo(0, 0);
     this.getAuthors();
   }
 

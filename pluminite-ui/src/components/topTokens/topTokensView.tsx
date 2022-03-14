@@ -1,7 +1,9 @@
 import { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
+import { IFilterOptions } from '../../types/IFilterOptions';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
-import { mediaUrl } from '../../utils/sys';
+import { convertNearToYoctoString, mediaUrl } from '../../utils/sys';
+import { TokensSortType } from '../../types/TokensSortType';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import CarouselView from '../carousel/carouselView';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
@@ -14,21 +16,9 @@ interface ITopTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
   sort: number;
-}
-
-enum TokensSortType {
-  'Recently_Listed' = 1,
-  //Recently Created (Oldest ��� ����� �����)
-  'Recently_Created' = 2,
-  'Recently_Sold' = 3,
-  'Ending_Soon' = 4,
-  //Price Low to High (High to Low ��� ����� �����)
-  'Price_Low_to_High' = 5,
-  'Highest_last_sale' = 6,
-  'Most_viewed' = 7,
-  'Most_Favorited' = 8,
-  'Price_High_to_Low' = 9,
-  'Oldest' = 10
+  priceFrom?: number | string | null;
+  priceTo?: number | string | null;
+  type?: boolean | null;
 }
 
 class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, any> {
@@ -43,13 +33,31 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   private get sort() {
-    return this.props.sort || 7;
+    return this.props.sort || TokensSortType.Most_viewed;
   }
 
   public componentDidUpdate(prevProps: ITopTokensView, prevState: any) {
-    if (prevProps.catalog !== this.props.catalog) {
+    if (
+      prevProps.catalog !== this.props.catalog ||
+      prevProps.sort !== this.sort ||
+      prevProps.priceFrom !== this.props.priceFrom ||
+      prevProps.priceTo !== this.props.priceTo ||
+      prevProps.type !== this.props.type
+    ) {
       this.loadData();
     }
+  }
+
+  private get priceFrom() {
+    if (!this.props.priceFrom) return null;
+
+    return convertNearToYoctoString(Number(this.props.priceFrom));
+  }
+
+  private get priceTo() {
+    if (!this.props.priceTo) return null;
+
+    return convertNearToYoctoString(Number(this.props.priceTo));
   }
 
   private loadData() {
@@ -57,9 +65,24 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
       return;
     }
     const catalog = this.props.catalog;
-    this.props.nftContractContext.nft_tokens_by_filter(catalog, 1, 8, TokensSortType.Most_viewed).then(response => {
+
+    this.props.nftContractContext.nft_tokens_by_filter(
+      catalog,
+      1,
+      8,
+      this.sort,
+      null,
+      null,
+      null,
+      null,
+      null,
+      this.priceFrom,
+      this.priceTo,
+      typeof this.props.type === 'undefined' ? null : this.props.type,
+    ).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     }).catch(ex => {
+      console.log('TopTokensView loadData ex =>', ex);
     });
   }
 

@@ -21,7 +21,7 @@ export interface INftContractContext {
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null) => Promise<Array<any>>;
+  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => Promise<Array<any>>;
   sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
@@ -77,7 +77,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null) => {
+  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => {
     return this.props.nftContract.nft_tokens_by_filter({
       catalog,
       page_index,
@@ -88,6 +88,9 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       owner_id,
       is_liked,
       is_active_bid,
+      price_from,
+      price_to,
+      is_single
     });
   };
 
@@ -96,7 +99,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public nft_token_get = (token_id: string) => {
-    return this.props.nftContract.nft_token_get({ token_id });
+    return this.props.nftContract.nft_token_get({ token_id, account_id: this.myAccountId });
   };
 
   public sale_get = (token_id: string, with_bids: boolean) => {

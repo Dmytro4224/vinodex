@@ -15,29 +15,36 @@ import searchIcon from "../../assets/icons/search.svg";
 import MediaQuery from 'react-responsive';
 import InputView, { InputStyleType } from "../../components/common/inputView/InputView";
 import { dropdownData } from '../../components/common/dropdown/data';
+import CatalogFilterView from '../../components/catalogFilterView/CatalogFilterView';
+import { IFilterOptions } from "../../types/IFilterOptions";
 
 interface IHome extends IProps {
 
 }
+
 class Home extends Component<IHome & IBaseComponentProps> {
+
+  private _catalogFilterView: any;
+
   public state = {
     catalogs: new Array<any>(),
     sort: 7,
     currentCatalog: 0,
-    isLoading: true
+    isLoading: true,
+    filterOptions: {
+      type: null,
+      priceFrom: null,
+      priceTo: null,
+    }
   };
 
   constructor(props: IHome & IBaseComponentProps) {
     super(props);
+
+    this._catalogFilterView = React.createRef();
   }
 
   public componentDidMount() {
-    /*this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-      this.props.near.setCatalogs(response);
-
-      this.setState({...this.state, catalogs: response, currentCatalog: 0, sort: 7, isLoading: false });
-    });*/
-
     this.setState({ ...this.state, currentCatalog: 0, sort: 7, isLoading: false });
   }
 
@@ -49,12 +56,22 @@ class Home extends Component<IHome & IBaseComponentProps> {
     this.setState({ ...this.state, sort: sort });
   }
 
+  private setFilter(filterOptions: IFilterOptions) {
+    console.log("🚀 ~ file: Home.tsx ~ line 60 ~ Home ~ setFilter ~ filterOptions", filterOptions)
+    this.setState({ ...this.state, filterOptions })
+  }
+
   private get catalog() {
     return this.props.near.catalogs[this.state.currentCatalog];
   }
 
   private get sort() {
     return this.state.sort;
+  }
+
+  private onFilterClick = async (e: React.MouseEvent<Element>) => {
+    e.preventDefault();
+    this._catalogFilterView.toogle();
   }
 
   render() {
@@ -79,56 +96,73 @@ class Home extends Component<IHome & IBaseComponentProps> {
               />
 
               <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                this.setCatalog(index)
+                this.setCatalog(index);
               }} />
 
               <ButtonView
                 text={"Filter"}
-                onClick={() => { }}
+                onClick={this.onFilterClick}
                 color={buttonColors.select}
               />
             </div>
           </MediaQuery>
           <MediaQuery maxWidth={991}>
-              <div className="d-flex flex-column w-100">
-                <div className="d-flex align-items-center justify-content-between">
-                  <DropdownView
-                    colorType={dropdownColors.select}
-                    title={''}
-                    icon={sortIcon}
-                    hideArrow={true}
-                    onChange={(item) => { this.setSort(item.id) }}
-                    childrens={dropdownData}
-                  />
-                  <InputView
-                    onChange={(e) => { console.log(e) }}
-                    placeholder={'Search'}
-                    icon={searchIcon}
-                    inputStyleType={InputStyleType.round}
-                  />
-                  <ButtonView
-                    text={""}
-                    withoutText={true}
-                    icon={filterIcon}
-                    onClick={() => { }}
-                    color={buttonColors.select}
-                  />
-                </div>
-                <div className="d-flex align-items-center mt-4">
-                  <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                    this.setCatalog(index)
-                  }} />
-                </div>
+            <div className="d-flex flex-column w-100">
+              <div className="d-flex align-items-center justify-content-between">
+                <DropdownView
+                  colorType={dropdownColors.select}
+                  title={''}
+                  icon={sortIcon}
+                  hideArrow={true}
+                  onChange={(item) => { this.setSort(item.id) }}
+                  childrens={dropdownData}
+                />
+                <InputView
+                  onChange={(e) => { console.log(e) }}
+                  placeholder={'Search'}
+                  icon={searchIcon}
+                  inputStyleType={InputStyleType.round}
+                />
+                <ButtonView
+                  text={""}
+                  withoutText={true}
+                  icon={filterIcon}
+                  onClick={this.onFilterClick}
+                  color={buttonColors.select}
+                />
               </div>
+              <div className="d-flex align-items-center mt-4">
+                <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
+                  this.setCatalog(index)
+                }} />
+              </div>
+            </div>
           </MediaQuery>
 
+          <CatalogFilterView
+            setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
+            setRef={cmp => this._catalogFilterView = cmp}
+          />
+
           <p className="separator-horizontal" />
 
-          <TopTokensView sort={this.sort} catalog={this.catalog} />
+          <TopTokensView
+            priceFrom={this.state.filterOptions.priceFrom}
+            priceTo={this.state.filterOptions.priceTo}
+            type={this.state.filterOptions.type}
+            sort={this.sort}
+            catalog={this.catalog}
+          />
 
           <p className="separator-horizontal" />
 
-          <PopularTokensView sort={this.sort} catalog={this.catalog} />
+          <PopularTokensView
+            priceFrom={this.state.filterOptions.priceFrom}
+            priceTo={this.state.filterOptions.priceTo}
+            type={this.state.filterOptions.type}
+            sort={this.sort}
+            catalog={this.catalog}
+          />
 
           <p className="separator-horizontal" />
 
@@ -136,7 +170,13 @@ class Home extends Component<IHome & IBaseComponentProps> {
 
           <p className="separator-horizontal" />
 
-          <AllTokensView sort={this.sort} catalog={this.catalog} />
+          <AllTokensView
+            priceFrom={this.state.filterOptions.priceFrom}
+            priceTo={this.state.filterOptions.priceTo}
+            type={this.state.filterOptions.type}
+            sort={this.sort}
+            catalog={this.catalog}
+          />
 
           {/*<div className="d-flex align-items-center justify-content-center mt-5 w-100">
             <ButtonView

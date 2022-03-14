@@ -88,6 +88,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   public componentDidMount() {
     window.scrollTo(0, 0);
+    this.getInfo();
+  }
+
+  private getInfo(){
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`response d`, response);
       this.setState({
@@ -477,6 +481,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           inShowModal={this.state.modalTransferIsShow}
           onHideModal={() => this.hideModal()}
           onSubmit={() => {
+            this.getInfo();
           }}
           tokenInfo={{}} token={this.state.order || null} />
         {!this.isVideo ? <ModalViewMedia
@@ -511,7 +516,8 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               result.startDate,
               result.endDate,
             ).then(res => {
-              console.log('sale_create', res);
+              this.modalToggleVisibility({ modalSaleShow: false });
+              this.getInfo();
             });
           }}
           tokenInfo={this.state.order}
@@ -528,6 +534,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
             if (this.state.order?.token_id) {
               this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
+                this.getInfo();
                 console.log('sale_remove', res);
               });
             }
