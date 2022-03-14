@@ -1,0 +1,32 @@
+.filterWrap {
+  gap: 15px;
+}
+
+.select {
+  min-width: 200px;
+}
+
+.resultWrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.clearButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+}
+
+.resultItem {
+  padding: 6px 12px;
+  background: rgba(174, 126, 3, 0.2);
+  border-radius: 4px;
+  color: var(--mineShaftS);
+}
+
+.resultItem img {
+  margin-left: 5px;
+}
