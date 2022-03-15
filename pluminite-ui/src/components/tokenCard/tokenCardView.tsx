@@ -381,8 +381,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 model={this.state.model} />
             </NavLink>
           ) : (
-              <MediaView customClass={styles.imageStyle}
-                model={this.state.model} />
+            <MediaView customClass={styles.imageStyle}
+              model={this.state.model} />
           )}
 
           <div className={styles.cardDetail}>

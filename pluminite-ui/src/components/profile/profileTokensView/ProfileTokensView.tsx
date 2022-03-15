@@ -97,7 +97,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     this.props.nftContractContext.nft_tokens_by_filter(
       this.catalog,
       1,
-      4,
+      1000,
       this.sort,
       ...data
     ).then(response => {
