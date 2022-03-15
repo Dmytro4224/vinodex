@@ -44,7 +44,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     [ProfileTokensType.onSale]: [true, this.props.params.userId, null, null, null],
     [ProfileTokensType.createdItems]: [null, this.props.params.userId, null, null, null],
     [ProfileTokensType.activeBids]: [null, this.props.params.userId, null, null, true],
-    [ProfileTokensType.favourites]: [null, this.props.params.userId, true, null, true],
+    [ProfileTokensType.favourites]: [null, null, true, null, null],
   };
 
   constructor(props: IProfileTokensView & IBaseComponentProps) {
