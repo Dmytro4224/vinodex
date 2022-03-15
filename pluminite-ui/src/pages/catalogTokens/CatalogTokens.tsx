@@ -23,7 +23,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
   public state = {
     catalogs: new Array<any>(),
     sort: 7,
-    currentCatalog: 0,
+    currentCatalog: -1,
     isLoading: true,
     filterOptions: {
       type: null,
@@ -72,10 +72,10 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
     /*this.props.nftContractContext.nft_tokens_catalogs().then(response => {
       this.props.near.setCatalogs(response);
 
-      this.setState({...this.state, catalogs: response, currentCatalog: 0, sort: 7, isLoading: false });
+      this.setState({...this.state, catalogs: response, -1, sort: 7, isLoading: false });
     });*/
 
-    this.setState({ ...this.state, currentCatalog: 0, sort: 7, isLoading: false });
+    this.setState({ ...this.state, currentCatalog: -1, sort: 7, isLoading: false });
   }
 
   private setCatalog(catalog: number) {

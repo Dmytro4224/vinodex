@@ -29,7 +29,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   public state = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
-    currentCatalog: 0,
+    currentCatalog: -1,
     catalog: this.props.near.catalogs[0],
     isLoading: true,
     filterOptions: {
