@@ -29,7 +29,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   public state = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
-    currentCatalog: 0,
+    currentCatalog: -1,
     catalog: this.props.near.catalogs[0],
     isLoading: true,
     filterOptions: {
@@ -146,7 +146,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
             <MediaQuery minWidth={992}>
               <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
                 <DropdownView
-                  colorType={dropdownColors.select}
+                  colorType={dropdownColors.selectFilter}
                   title={'Sort by'}
                   onChange={(item) => {
                     this.setSort(item.id);
@@ -165,6 +165,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   text={'Filter'}
                   onClick={this.onFilterClick}
                   color={buttonColors.select}
+                  customClass={'btn-filter'}
                 />
               </div>
             </MediaQuery>

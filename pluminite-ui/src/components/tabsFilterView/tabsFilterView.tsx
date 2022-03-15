@@ -26,7 +26,7 @@ class TabsFilterView extends Component<ITabsFilterView & IBaseComponentProps> {
     }
 
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-      this.setState({ ...this.state, catalogs: response, isLoading: false });
+      this.setState({ ...this.state, catalogs: ['All', ...response], isLoading: false });
     });
   }
 
@@ -41,9 +41,9 @@ class TabsFilterView extends Component<ITabsFilterView & IBaseComponentProps> {
 
     return (
       <TabsView
-        tabItems={this.state.catalogs?.map((catalog, i) => {
-          return { title: catalog, id: i, link: '#' };
-        })}
+        tabItems={this.state.catalogs?.map((catalog, i) => (
+          { title: catalog, id: i === 0 ? -1 : i, link: '#' }
+        ))}
         type={tabType.button}
         onClick={(item) => {
           this.onClick(item.id);

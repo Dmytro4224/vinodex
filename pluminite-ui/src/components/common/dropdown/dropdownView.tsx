@@ -23,6 +23,7 @@ enum dropdownColors {
   gray = 'gray',
   whiteGray = 'whiteGray',
   select = 'select',
+  selectFilter = 'selectFilter',
   primary = 'primary',
   selectGray = 'selectGray',
   darkGray = 'darkGray',
@@ -49,6 +50,9 @@ class DropdownView extends Component<IDropdownView> {
         break;
       case 'select':
         color = styles.dropdownSelect;
+        break;
+      case 'selectFilter':
+        color = styles.dropdownSelectFilter;
         break;
       case 'primary':
         color = styles.dropdownPrimary;
@@ -79,7 +83,7 @@ class DropdownView extends Component<IDropdownView> {
       <>
         <Dropdown className={`${styles.customDropdown}`}>
           <Dropdown.Toggle disabled={this.props.disabled || false} variant='' id='dropdown-basic'
-                           className={`${styles.dropdownButton} ${this.dropdownColor} ${this.props.hideArrow ? styles.isHiddenArrow : ''}`}>
+            className={`${styles.dropdownButton} ${this.dropdownColor} ${this.props.hideArrow ? styles.isHiddenArrow : ''}`}>
             {<img src={this.props.icon} alt='' /> || ''}{this.props.title}
           </Dropdown.Toggle>
 

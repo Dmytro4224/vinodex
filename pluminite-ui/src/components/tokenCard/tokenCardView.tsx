@@ -392,11 +392,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </div>
             )}
 
-            {this.props.days !== '' && this.props.days !== null && (
+            {/*{this.props.days !== '' && this.props.days !== null && (
               <div className={styles.daysInfo}>
                 {this.props.days}
               </div>
-            )}
+            )}*/}
           </div>
 
           {/*{this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (*/}

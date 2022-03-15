@@ -1,22 +1,22 @@
 import styles from './tabsView.module.css';
-import React, {Component, MouseEvent, useState} from "react";
-import {buttonColors} from "../button/ButtonView";
-import {classList} from "../../../utils/sys";
-import {IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
+import React, { Component, MouseEvent, useState } from "react";
+import { buttonColors } from "../button/ButtonView";
+import { classList } from "../../../utils/sys";
+import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 
 enum tabType {
   button = 'button',
   link = 'link',
 }
 
-interface ITabsView extends IProps{
+interface ITabsView extends IProps {
   tabItems: ITabsViewItem[];
   type: tabType;
   currentTabIndex: number;
   onClick: (item: ITabsViewItem) => void;
 }
 
-export interface ITabsViewItem{
+export interface ITabsViewItem {
   title: string;
   link: string;
   id: number;
@@ -36,11 +36,11 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
     this._currentTab = this._currentTabIndex === -1 ? null : this.props.tabItems[this._currentTabIndex];
   }
 
-  private get tabs(){
+  private get tabs() {
     return this.props.tabItems;
   }
 
-  private get type(){
+  private get type() {
     return this.props.type;
   }
 
@@ -49,9 +49,11 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
   }
 
   private onTabClick = async (item: ITabsViewItem) => {
-    if (this._currentTab !== null) {
-      this._refs[this.tabs.findIndex(tab => tab.id === this._currentTab?.id)].current?.classList.remove(styles.active);
-    }
+    // if (this._currentTab !== null) {
+    //   this._refs[this.tabs.findIndex(tab => tab.id === this._currentTab?.id)].current?.classList.remove(styles.active);
+    // }
+
+    this._refs.forEach(ref => ref.current?.classList.remove(styles.active));
 
     this._refs[this.tabs.findIndex(tab => tab.id === item.id)].current?.classList.add(styles.active);
     this._currentTab = item;
@@ -60,7 +62,7 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
   }
 
   render() {
-    switch(this.type){
+    switch (this.type) {
       case 'link':
         return this.renderLinkType();
         break;
@@ -73,7 +75,9 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
     }
   }
 
-  private renderButtonType(){
+  private renderButtonType() {
+    const currTabIndex = this._currentTabIndex === -1 ? 0 : this._currentTabIndex;
+
     return (
       <ul className={classList(styles.tabsWrap, styles.buttonTabs)}>
         {this.tabs.map((item, i) => {
@@ -81,9 +85,9 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
             <li key={i}>
               <span
                 ref={this._refs[i]}
-                onClick={() => {this.onTabClick(item) } }
-                className={`${styles.tabItem} ${this._currentTabIndex === i ? styles.active : ''}`}>
-                  {item.title}
+                onClick={() => { this.onTabClick(item) }}
+                className={`${styles.tabItem} ${currTabIndex === i ? styles.active : ''}`}>
+                {item.title}
               </span>
             </li>
           )
@@ -92,7 +96,9 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
     )
   }
 
-  private renderLinkType(){
+  private renderLinkType() {
+    const currTabIndex = this._currentTabIndex === -1 ? 0 : this._currentTabIndex;
+
     return (
       <ul className={classList(styles.tabsWrap, styles.linkTabs)}>
         {this.tabs.map((item, i) => {
@@ -100,9 +106,9 @@ class TabsView extends Component<ITabsView & IBaseComponentProps>{
             <li key={i}>
               <span
                 ref={this._refs[i]}
-                onClick={() => {this.onTabClick(item) } }
-                className={`${styles.tabItem} ${this._currentTabIndex === i ? styles.active : ''}`}>
-                  {item.title}
+                onClick={() => { this.onTabClick(item) }}
+                className={`${styles.tabItem} ${currTabIndex === i ? styles.active : ''}`}>
+                {item.title}
               </span>
             </li>
           )

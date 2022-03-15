@@ -168,10 +168,18 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       new Date().getTime(),
       this._refOffer && convertNearToYoctoString(parseFloat(this._refOffer.value)),
     ).then(res => {
-      console.log(`res`, res);
       this.onHideModal();
       this.props.onSubmit && this.props.onSubmit();
-    });
+    }).catch(ex => {
+      showToast({
+        message: ex.kind.ExecutionError || `Error. Please, try again`,
+        type: EShowTost.error
+      });
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
+    });;
   };
   private get isMyToken() {
     return this.props.token?.owner_id === this.props.near.user?.accountId;

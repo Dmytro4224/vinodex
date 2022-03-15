@@ -61,9 +61,10 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
   }
 
   private loadData() {
-    if (this.props.catalog === void 0) {
-      return;
-    }
+    // if (this.props.catalog === void 0) {
+    //   return;
+    // }
+
     const catalog = this.props.catalog;
 
     this.props.nftContractContext.nft_tokens_by_filter(
