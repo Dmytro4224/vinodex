@@ -52,9 +52,9 @@ class InputSubscribe extends Component<ISubscribe & IBaseComponentProps> {
 
   render() {
     return (
-      <div className={`d-flex align-center w-100 ${styles.subscrWrap}`}>
+      <div className={`disabled d-flex align-center w-100 ${styles.subscrWrap}`}>
         <InputView
-          onChange={(e) => {  }}
+          onChange={(e) => { }}
           placeholder={'Info@yourgmail.com'}
           inputStyleType={InputStyleType.round}
           customClass={`${styles.inputSubscribe}`}
