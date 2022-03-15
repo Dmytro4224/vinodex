@@ -17,6 +17,7 @@ import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import ArtistsView, { ArtistViewType } from '../artists';
 import { nftStorage } from '../../api/NftStorage';
+import UserPurchases from '../../components/userPurchases/UserPurchases';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -209,13 +210,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
               typeViewTokens={ProfileTokensType.createdItems}
             />
           </Tab>
-          {/* <Tab eventKey='purchases' title='Purchases'>
-            <ProfileTokensView
-              catalog={this.catalog}
-              sort={this.sort}
-              typeViewTokens={ProfileTokensType.purchases}
-            />
-          </Tab> */}
+          <Tab eventKey='purchases' title='Purchases'>
+            <UserPurchases />
+          </Tab>
           <Tab eventKey='birds' title='Active Bids'>
             <ProfileTokensView
               catalog={this.catalog}

@@ -43,8 +43,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                   <NavLink to={`/userProfile/${this.accountId}?tab=details`}>Profile</NavLink>
                 </li>
                 <li>
-                  {/* <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>My Auctions</NavLink>Active Bids */}
-                  <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>My Active Bids</NavLink>
+                  <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>My Auctions</NavLink>
                 </li>
                 <li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>

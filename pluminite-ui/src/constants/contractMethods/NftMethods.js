@@ -7,6 +7,7 @@ const NftMethods = {
     'nft_tokens_for_creator',
     'nft_tokens_batch',
     'nft_tokens_by_filter',
+    'my_purchases',
     'nft_tokens_catalogs',
     'nft_token_get',
     'sale_get',

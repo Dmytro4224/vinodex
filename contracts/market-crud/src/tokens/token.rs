@@ -20,6 +20,7 @@ pub struct Token {
 pub struct JsonToken {
     pub token_id: TokenId,
     pub owner_id: AccountId,
+    pub creator_id: AccountId,
     pub metadata: TokenMetadata,
     pub approved_account_ids: HashMap<AccountId, U64>,
 

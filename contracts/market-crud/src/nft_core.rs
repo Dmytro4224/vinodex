@@ -387,6 +387,7 @@ impl NonFungibleTokenCore for Contract {
             Some(JsonToken {
                 token_id: token_id.clone(),
                 owner_id: token.owner_id,
+                creator_id: self.creator_per_token.get(&token_id).unwrap_or(String::from("")),
                 metadata,
                 royalty: token.royalty,
                 approved_account_ids: token.approved_account_ids,

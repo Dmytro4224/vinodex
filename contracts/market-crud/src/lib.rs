@@ -99,6 +99,8 @@ pub struct Contract {
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
     //токени автора
     pub tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
+    //хто створювач нового токена
+    pub creator_per_token: LookupMap<TokenId, AccountId>,
     //токени по ідентифікатру
     pub tokens_by_id: LookupMap<TokenId, Token>,
     //метадані токену по ідентифікатору токена
@@ -246,7 +248,8 @@ pub enum StorageKey {
     MySales,
     MyPurchases,
     MyBidsActive,
-    MyBidsActiveSet { account_id_hash: CryptoHash }
+    MyBidsActiveSet { account_id_hash: CryptoHash },
+    CreatorPerToken
 }
 
 #[near_bindgen]
@@ -265,6 +268,7 @@ impl Contract {
             tokens_users_views: LookupMap::new(StorageKey::TokensUsersViews.try_to_vec().unwrap()),
             tokens_sorted: LookupMap::new(StorageKey::TokensSorted.try_to_vec().unwrap()),
             tokens_per_creator: LookupMap::new(StorageKey::TokensPerCreator.try_to_vec().unwrap()),
+            creator_per_token: LookupMap::new(StorageKey::CreatorPerToken.try_to_vec().unwrap()),
             tokens_by_id: LookupMap::new(StorageKey::TokensById.try_to_vec().unwrap()),
             token_metadata_by_id: UnorderedMap::new(
                 StorageKey::TokenMetadataById.try_to_vec().unwrap(),
@@ -354,6 +358,7 @@ impl Contract {
             my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
             my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
+            creator_per_token: LookupMap<TokenId, AccountId>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -392,7 +397,8 @@ impl Contract {
             storage_deposits: old_contract.storage_deposits,
             my_sales: old_contract.my_sales,
             my_purchases: old_contract.my_purchases,
-            my_bids_active: old_contract.my_bids_active
+            my_bids_active: old_contract.my_bids_active,
+            creator_per_token: old_contract.creator_per_token
         }
     }
 
