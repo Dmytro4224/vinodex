@@ -4,7 +4,7 @@ import ModalSample, { ModalSampleSizeType } from '../../common/modalSample/Modal
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import InputView, { InputType } from '../../common/inputView/InputView';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
-import {convertNearToYoctoString, convertYoctoNearsToNears, onlyNumber, showToast } from '../../../utils/sys';
+import {convertNearToYoctoString, convertYoctoNearsToNears, onlyNumber, showToast, validateDotNum } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 import TokenCardView from '../../tokenCard/tokenCardView';
@@ -24,6 +24,7 @@ interface IModalTokenCheckoutNFTState {
   validate: {
     isNumbersCopyValid: boolean,
     isOfferValid: boolean,
+    isBidValid: boolean,
   };
 }
 
@@ -37,6 +38,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     validate: {
       isNumbersCopyValid: true,
       isOfferValid: true,
+      isBidValid: true,
     },
   };
 
@@ -81,8 +83,10 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     let validInfo = {
       numberCopies: true,
       offer: true,
+      bid: true,
     };
 
+    // @ts-ignore
     if (this.props.token?.metadata.copies && parseFloat(this.props.token?.metadata.copies) > 1) {
       if (this._refNumberOfCopies.value.trim() === '' || Number(this._refNumberOfCopies.value) === 0) {
         validInfo.numberCopies = false;
@@ -93,14 +97,23 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       if (this._refOffer.value.trim() === '' || Number(this._refOffer.value) === 0) {
         validInfo.offer = false;
       }
+
+      if(this.props.token?.sale.bids.length > 0){
+        let lastBid = this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1];
+
+        if(lastBid && (convertYoctoNearsToNears(lastBid.price) >= Number(this._refOffer.value))){
+          validInfo.bid = false
+        }
+      }
     }
 
-    if (!validInfo.numberCopies || !validInfo.offer) {
+    if (!validInfo.numberCopies || !validInfo.offer || !validInfo.bid) {
       this.setState({
         ...this.state,
         validate: {
           isNumbersCopyValid: validInfo.numberCopies,
           isOfferValid: validInfo.offer,
+          isBidValid: validInfo.bid,
         },
       });
 
@@ -123,6 +136,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       validate: {
         isNumbersCopyValid: true,
         isOfferValid: true,
+        isBidValid: true,
       },
       isLoading: true,
     });
@@ -157,6 +171,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       validate: {
         isNumbersCopyValid: true,
         isOfferValid: true,
+        isBidValid: true,
       },
       isLoading: true,
     });
@@ -304,7 +319,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           isError={!this.state.validate.isOfferValid}
           errorMessage={`Enter offer*`}
           onChange={(e) => {
-            onlyNumber(e.target);
+            validateDotNum(e.target);
           }}
         /> : ''}
 
@@ -313,6 +328,9 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           <p className={style.totalTitle}>Total amount</p>
           {this.props.token?.sale && <p className={style.total}>{convertYoctoNearsToNears(this.props.token?.sale.price)}NEAR</p>}
         </div>
+        {!this.state.validate.isBidValid && <div className={style.errorBox}>
+          <p>The bid must be greater than {convertYoctoNearsToNears(this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1].price)} NEAR</p>
+        </div>}
       </ModalSample>
     );
   }

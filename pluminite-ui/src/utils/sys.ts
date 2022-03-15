@@ -110,11 +110,13 @@ const formatDate = (date) => {
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   if (!yoctoNears) return 0;
-  
-  return new Big(yoctoNears)
+
+  let val = new Big(yoctoNears)
     .div(10 ** 24)
     .round(precision)
     .toString();
+
+  return +val * 10
 };
 
 // 1 ... = x NEAR
