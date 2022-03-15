@@ -349,7 +349,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 color={buttonColors.redButton}
               />
             </div> : <ButtonView
-              text={`Place a bid ${convertYoctoNearsToNears(this.state.order?.sale.price)}`}
+              text={`Place a bid`}
               onClick={() => {
                 if (!this.isAuth) {
                   this.props.near.signIn();

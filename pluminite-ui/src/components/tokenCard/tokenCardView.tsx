@@ -304,7 +304,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
               {!this.isMyToken ? (
                 <ButtonView
-                  text={`Place a bid ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
+                  text={`Place a bid`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
