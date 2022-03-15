@@ -472,7 +472,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           this.getContent()
         ) : (
           <LazyLoad
-            unmountIfInvisible={true}
+            unmountIfInvisible={false}
             height={200}
             placeholder={
               <div style={{ width: this.isSmall ? '296px' : '100%' }}>
