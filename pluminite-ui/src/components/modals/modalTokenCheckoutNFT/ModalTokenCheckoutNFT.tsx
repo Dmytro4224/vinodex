@@ -329,7 +329,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           {this.props.token?.sale && <p className={style.total}>{convertYoctoNearsToNears(this.props.token?.sale.price)}NEAR</p>}
         </div>
         {!this.state.validate.isBidValid && <div className={style.errorBox}>
-          <p>The bid must be greater than {convertYoctoNearsToNears(this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1].price)} NEAR</p>
+          <p>The offer must be greater than {convertYoctoNearsToNears(this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1].price)} NEAR</p>
         </div>}
       </ModalSample>
     );

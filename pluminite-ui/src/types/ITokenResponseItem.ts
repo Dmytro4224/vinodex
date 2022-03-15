@@ -26,6 +26,7 @@ export interface ITokenResponseItem {
   approved_account_ids: Array<any>;
   metadata: IMetaData;
   owner_id: string;
+  creator_id: string;
   royalty: any;
   token_id: string;
   token_type: string;

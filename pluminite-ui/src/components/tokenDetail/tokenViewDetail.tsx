@@ -425,14 +425,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     bio: '',
                     email: '',
                     image: '',
-                    name: this.state.order?.owner_id!,
+                    name: this.state.order?.creator_id!,
                     account_id: '',
                     likes_count: 0,
                     is_like: false,
                     is_following: false,
                     followers_count: 0
                   }}
-                  identification={this.state.order?.owner_id!}
+                  identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}
                   isCard={false}
