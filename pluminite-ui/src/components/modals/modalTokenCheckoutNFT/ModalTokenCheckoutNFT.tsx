@@ -141,11 +141,17 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       isLoading: true,
     });
 
-    if(!this.props.token?.token_id){ return }
+    if (!this.props.token?.token_id) { return }
+
+    const price = this.props.token.sale.price ? this.props.token.sale.price : null;
+    console.log(price);
+    
 
     this.props.nftContractContext.sale_offer(
       this.props.token?.token_id,
       new Date().getTime(),
+      void 0,
+      price
     ).then(res => {
       this.onHideModal();
       this.props.onSubmit && this.props.onSubmit();
