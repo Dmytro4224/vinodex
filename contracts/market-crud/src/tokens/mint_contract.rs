@@ -83,7 +83,7 @@ impl Contract {
         self.token_metadata_by_id.insert(&final_token_id, &metadata);
         self.internal_add_token_to_owner(&token.owner_id, &final_token_id);
 
-        match self.tokens_per_creator.get(&owner_id.clone()) {
+        match self.tokens_per_creator.get(&owner_id) {
             Some(mut tokens) => {
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
@@ -100,6 +100,8 @@ impl Contract {
                 self.tokens_per_creator.insert(&owner_id, &tokens);
             }
         }
+
+        self.creator_per_token.insert(&final_token_id, &owner_id);
 
         match sale
         {

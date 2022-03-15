@@ -1173,13 +1173,40 @@ impl Contract {
     {
         let mut result : Vec<JsonProfile> = Vec::new();
 
+        if page_index <= 1
+        {
+            let token = self.tokens_by_id.get(&token_id);
+
+            match token
+            {
+                Some(token) =>
+                {
+                    let res = Profile::get_full_profile(
+                        &self.profiles,
+                        &token.owner_id,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers,
+                        &self.tokens_per_owner,
+                        true
+                    );
+
+                    if res.is_some()
+                    {
+                        result.push(res.unwrap());
+                    }
+                },
+                None => {}
+            }
+        }
+
         match self.sales_history_by_token_id.get(&token_id)
         {
             Some(history) =>
             {
                 if history.len() == 0
                 {
-                    return Vec::new();
+                    return result;
                 }
 
                 let mut start_index : i64 = 0;
@@ -1187,31 +1214,24 @@ impl Contract {
                 if page_index > 1
                 {
                     start_index = (page_index as i64 - 1) * page_size as i64;
-                }
-
-                let history_len = history.len() as i64 + 1;
-                if start_index >= history_len
-                {
-                    return Vec::new();
-                }
-
-                let mut end_index = start_index + page_size as i64;
-                if end_index > history_len
-                {
-                    end_index = history_len;
-                }
-
-                for i in start_index..end_index
-                {
-                    let _index : usize;
-                    if i as usize == history.len()
+                    if start_index > 0
                     {
-                        _index = (i - 1) as usize;
+                        start_index = start_index - 1;
                     }
-                    else
-                    {
-                        _index = i as usize;
-                    }
+                }
+
+                let history_len = history.len() as u64;
+                if start_index >= history_len as i64
+                {
+                    return result;
+                }
+
+                let mut i = start_index as u64;
+
+                while result.len() < page_size as usize
+                    && i < history_len
+                {
+                    let _index = i as usize;
 
                     let item = history.get(_index);
                     if item.is_none()
@@ -1220,70 +1240,27 @@ impl Contract {
                     }
 
                     let item_unwrapped = item.unwrap();
-                    let res : Option<JsonProfile>;
-
-                    if _index == history.len()
-                    {
-                        res = Profile::get_full_profile(
-                            &self.profiles,
-                            &item_unwrapped.account_to,
-                            &asked_account_id,
-                            &self.autors_likes,
-                            &self.autors_followers,
-                            &self.tokens_per_owner,
-                            true
-                        );
-                    }
-                    else
-                    {
-                        res = Profile::get_full_profile(
-                            &self.profiles,
-                            &item_unwrapped.account_from,
-                            &asked_account_id,
-                            &self.autors_likes,
-                            &self.autors_followers,
-                            &self.tokens_per_owner,
-                            true
-                        );
-                    }
+                    let res = Profile::get_full_profile(
+                        &self.profiles,
+                        &item_unwrapped.account_to,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers,
+                        &self.tokens_per_owner,
+                        true
+                    );
 
                     if res.is_some()
                     {
                         result.push(res.unwrap());
                     }
+
+                    i = i + 1;
                 }
 
                 return result;
             },
-            None =>
-            {
-                if page_index <= 1
-                {
-                    let token = self.tokens_by_id.get(&token_id);
-
-                    match token
-                    {
-                        Some(token) =>
-                        {
-                            let res = Profile::get_full_profile(
-                                &self.profiles,
-                                &token.owner_id,
-                                &asked_account_id,
-                                &self.autors_likes,
-                                &self.autors_followers,
-                                &self.tokens_per_owner,
-                                true
-                            );
-    
-                            if res.is_some()
-                            {
-                                result.push(res.unwrap());
-                            }
-                        },
-                        None => {}
-                    }
-                }
-            }
+            None => {}
         }
             
         return result;

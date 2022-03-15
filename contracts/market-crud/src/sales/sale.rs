@@ -68,8 +68,8 @@ pub struct SaleBid
 #[serde(crate = "near_sdk::serde")]
 pub struct SaleBidJson
 {
-    pub date: u128,
-    pub price: u128,
+    pub date: U128,
+    pub price: U128,
     pub account: Option<JsonProfile>
 }
 
@@ -186,8 +186,8 @@ impl Contract {
                     {
                         sale_json.bids.push(SaleBidJson
                         {
-                            price: sale.bids[i].price,
-                            date: sale.bids[i].date,
+                            price: U128(sale.bids[i].price),
+                            date: U128(sale.bids[i].date),
                             account: Profile::get_full_profile(
                                 &self.profiles,
                                 &sale.bids[i].account_id,
@@ -210,8 +210,8 @@ impl Contract {
 
                         sale_json.bids.push(SaleBidJson
                         {
-                            price: sale.bids[i].price,
-                            date: sale.bids[i].date,
+                            price: U128(sale.bids[i].price),
+                            date: U128(sale.bids[i].date),
                             account: Profile::get_full_profile(
                                 &self.profiles,
                                 &sale.bids[i].account_id,
@@ -403,7 +403,6 @@ impl Contract {
     ) {
         //get the attached deposit and make sure it's greater than 0
         let deposit = env::attached_deposit();
-        assert!(deposit > 0, "Attached deposit must be greater than 0");
 
         let token = self.nft_token(token_id.clone()).expect("Token not found");
 
@@ -458,7 +457,10 @@ impl Contract {
             {
                  //get the u128 price of the token (dot 0 converts from U128 to u128)
                 let price = sale.price.unwrap();
-                assert!(deposit < price.0, "Attached deposit must be greater than or equal to the current price: {:?}", price);
+                if deposit < price.0
+                {
+                    panic!("Attached deposit must be greater than or equal to the current price");
+                }
 
                 //process the purchase (which will remove the sale, transfer and get the payout from the nft contract, and then distribute royalties) 
                 self.process_purchase(
