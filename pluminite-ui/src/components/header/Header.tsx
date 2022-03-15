@@ -69,6 +69,8 @@ class Header extends Component<IHeader & IBaseComponentProps> {
                 onChange={(e) => {  }}
                 placeholder={'Search'}
                 icon={searchIcon}
+                disabled={true}
+                customClass={"setOpacity"}
                 inputStyleType={InputStyleType.round}
               />
             </div>

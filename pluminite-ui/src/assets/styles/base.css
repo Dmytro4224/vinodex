@@ -155,3 +155,6 @@ button[disabled] {
 .gap-5px {
   gap: 5px;
 }
+.setOpacity{
+  opacity: .7;
+}
