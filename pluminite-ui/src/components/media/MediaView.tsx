@@ -45,7 +45,6 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
     this.state = {
       showVideo: false,
       preview: extra === null || !extra.media_lowres ? this.props.model.metadata.media : extra.media_lowres,
-
     };
   }
 
@@ -89,16 +88,15 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
           /*ref={this._ref}*/
           onLoadedData={() => { }}
           onError={() => { }}
-      />): (
-        <img
-          ref={this._ref}
-          className={`${styles.imageStyle} ${this.props.customClass ? this.props.customClass : ''}`}
-          src={this._url}
-          onError={this.setDefaultImage}
-          alt={this._alt}
-          /*onClick={this.onClick}*/
-      />
-      )
+        />) : (
+          <img
+            ref={this._ref}
+            className={`${styles.imageStyle} ${this.props.customClass ? this.props.customClass : ''}`}
+            src={this.url}
+            onError={this.setDefaultImage}
+            alt={this._alt}
+          />
+        )
     );
   }
 }

@@ -11,7 +11,7 @@ import { ITokenCreateItem } from '../../types/ITokenCreateItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import defaultImage from '../../assets/icons/card-preview.jpg';
 import styles from './createToken.module.css';
-import {convertNearToYoctoString, validateDotNum } from '../../utils/sys';
+import { convertNearToYoctoString, validateDotNum } from '../../utils/sys';
 import { APP } from '../../constants';
 import { transactions } from 'near-api-js';
 import { nftStorage } from '../../api/NftStorage';
@@ -98,9 +98,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   }
 
   public componentDidUpdate() {
-     if (window.location.href.search(/transaction/g) !== -1) {
-       this.props.navigate(`/userProfile/${this.props.near.user?.accountId!}?tab=items`);
-     }
+    if (window.location.href.search(/transaction/g) !== -1) {
+      this.props.navigate(`/userProfile/${this.props.near.user?.accountId!}?tab=items`);
+    }
   }
 
   private openDialog = () => {
@@ -240,7 +240,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     });
   };
   private royaltyValid = (inp) => {
-    if(inp.value > 100){
+    if (inp.value > 100) {
       inp.value = 100;
     }
   }
@@ -283,10 +283,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                         {acceptedFiles.length > 0 ?
                           <>{acceptedFiles[0].type.startsWith('video/') ?
                             <iframe ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
-                                    src={''}
-                                    title='' frameBorder='0'
-                                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                                    allowFullScreen></iframe>
+                              src={''}
+                              title='' frameBorder='0'
+                              allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                              allowFullScreen></iframe>
                             : <img ref={this._imageRef} src={''} />}</> :
                           <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                             <ButtonView
@@ -486,7 +486,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                     type='date'
                     id='date-start'
                     placeholder={'Starting Date*'}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     ref={(ref) => {
                       this._refStartDate = ref;
                     }}
@@ -495,7 +495,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                     type='date'
                     id='date-exp'
                     placeholder={'Expiration Date*'}
-                    onChange={() => {}}
+                    onChange={() => { }}
                     ref={(ref) => {
                       this._refExpDate = ref;
                     }}
@@ -528,20 +528,20 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
           </div>*/}
           <div className={styles.categories}>
-            <SelectView options={this.props.near.catalogs.map(catalog => {
+            <SelectView options={this.props.near.catalogs.filter(catalog => catalog !== 'All').map(catalog => {
               return {
                 value: catalog,
                 label: catalog,
               };
             })}
-                        customCLass={styles.selectStyle}
-                        placeholder={'Category'}
-                        onChange={(opt) => {
-                          console.log(opt);
-                        }}
-                        setRef={(ref) => {
-                          this._refCatalogSelect = ref;
-                        }}
+              customCLass={styles.selectStyle}
+              placeholder={'Category'}
+              onChange={(opt) => {
+                console.log(opt);
+              }}
+              setRef={(ref) => {
+                this._refCatalogSelect = ref;
+              }}
             />
           </div>
           <div>
@@ -604,7 +604,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.bids = true;
     }
 
-    if(this._refPutOnMarket.checked){
+    if (this._refPutOnMarket.checked) {
       if (this._renderType === 1 && this._refInputPrice.value === '') {
         validInfo.price = false;
       }
@@ -688,17 +688,17 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       views_count: 0,
     };
 
-    if(this.isMultiple){
+    if (this.isMultiple) {
       metadata.copies = `${this._refInputCopies.value}` || '1';
     }
 
-    if(this._renderType === 2){
-      if(this._refStartDate.value != ''){
+    if (this._renderType === 2) {
+      if (this._refStartDate.value != '') {
         // @ts-ignore
         metadata.starts_at = new Date(this._refStartDate.value).getTime();
       }
 
-      if(this._refExpDate.value != ''){
+      if (this._refExpDate.value != '') {
         // @ts-ignore
         metadata.expires_at = new Date(this._refExpDate.value).getTime();
       }
@@ -715,7 +715,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       sale: null
     };
 
-    if(this._refPutOnMarket.checked){
+    if (this._refPutOnMarket.checked) {
       //@ts-ignore
       model.sale = {
         sale_type: this._renderType,
@@ -726,7 +726,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
         bids: []
       }
 
-      if(this._renderType === 1){
+      if (this._renderType === 1) {
         //@ts-ignore
         model.sale.price = convertNearToYoctoString(parseFloat(this._refInputPrice.value)) || 0;
       }
