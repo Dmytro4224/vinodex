@@ -39,6 +39,8 @@ interface ITokenCardView extends IProps {
   price?: number;
   isView?: boolean;
   isForceVisible?: boolean;
+  catalog?: string;
+  containerName?: string;
 }
 
 type stateTypes = {
@@ -375,12 +377,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
         <div className={styles.cardImage}>
           {this.props.linkTo ? (
             <NavLink to={this.props.linkTo}>
-              <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
+              <MediaView customClass={styles.imageStyle}
                 model={this.state.model} />
             </NavLink>
           ) : (
-            <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
-              model={this.state.model} />
+              <MediaView customClass={styles.imageStyle}
+                model={this.state.model} />
           )}
 
           <div className={styles.cardDetail}>
