@@ -91,6 +91,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     this.getInfo();
   }
 
+  public componentDidUpdate(prevProps: any, prevState: any) {
+    if(prevProps.params.tokenId !== this.tokenId){
+      window.scrollTo(0, 0);
+      this.getInfo();
+    }
+  }
+
   private getInfo(){
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`response d`, response);
