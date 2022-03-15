@@ -88,7 +88,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           <MediaQuery minWidth={992}>
             <div className="d-flex align-items-center justify-content-between">
               <DropdownView
-                colorType={dropdownColors.select}
+                colorType={dropdownColors.selectFilter}
                 title={'Sort by'}
                 onChange={(item) => { this.setSort(item.id) }}
                 childrens={dropdownData}

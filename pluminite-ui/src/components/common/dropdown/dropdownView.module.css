@@ -1,12 +1,17 @@
 .customDropdown {
 }
-.dropdownSelect {
+.dropdownSelect,
+.dropdownSelectFilter {
   background-color: var(--white);
   border: 1px solid var(--pirateCold);
   color: var(--pirateCold);
   text-transform: uppercase;
   border-radius: 30px;
   font-size: 14px;
+}
+
+.dropdownSelectFilter {
+  border-radius: 4px;
 }
 
 .dropdownButton.isHiddenArrow:after {
@@ -17,6 +22,8 @@
   color: var(--pirateCold);
 }
 
+.customDropdown .dropdownSelectFilter:hover,
+.customDropdown .dropdownSelectFilter:focus,
 .customDropdown .dropdownSelect:hover,
 .customDropdown .dropdownSelect:focus {
   background-color: rgba(174, 126, 3, 0.2);
