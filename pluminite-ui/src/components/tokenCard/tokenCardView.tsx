@@ -346,74 +346,74 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           //     </div>
           //   </>
           // )} */}
-            );
+        );
     }
   }
 
-            private transferAction() {
-              this.modalToggleVisibility({ modalTransferIsShow: true });
+  private transferAction() {
+    this.modalToggleVisibility({ modalTransferIsShow: true });
   }
 
-            private modalToggleVisibility(data: object) {
+  private modalToggleVisibility(data: object) {
     if (!this.isAuth) {
-              this.props.near.signIn();
-            return;
+      this.props.near.signIn();
+      return;
     }
 
     // data === {modalStateKeyIsShow: true }
 
-            this.setState({
-              ...this.state,
+    this.setState({
+      ...this.state,
       ...data,
     });
   }
 
-            private getContent() {
+  private getContent() {
     return (
-            <div
-              className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
-              <div className={styles.cardImage}>
-                {this.props.linkTo ? (
-                  <NavLink to={this.props.linkTo}>
-                    <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
-                      model={this.state.model} />
-                  </NavLink>
-                ) : (
-                  <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
-                    model={this.state.model} />
-                )}
+      <div
+        className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
+        <div className={styles.cardImage}>
+          {this.props.linkTo ? (
+            <NavLink to={this.props.linkTo}>
+              <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
+                model={this.state.model} />
+            </NavLink>
+          ) : (
+            <MediaView customClass={styles.imageStyle} key={`media-${this.state.model.token_id}`}
+              model={this.state.model} />
+          )}
 
-                <div className={styles.cardDetail}>
-                  {(this.props.countL > 0 || this.props.countR > 0) && (
-                    <div className={styles.count}>
-                      {this.props.countL}/{this.props.countR}
-                    </div>
-                  )}
-
-                  {this.props.days !== '' && this.props.days !== null && (
-                    <div className={styles.daysInfo}>
-                      {this.props.days}
-                    </div>
-                  )}
-                </div>
-
-                {/*{this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (*/}
-                {/*  <ButtonView*/}
-                {/*    text={''}*/}
-                {/*    icon={transferIcon}*/}
-                {/*    withoutText={true}*/}
-                {/*    onClick={() => {*/}
-                {/*      this.transferAction();*/}
-                {/*    }}*/}
-                {/*    color={buttonColors.goldFill}*/}
-                {/*    customClass={styles.btnTransfer}*/}
-                {/*  />*/}
-                {/*)}*/}
+          <div className={styles.cardDetail}>
+            {(this.props.countL > 0 || this.props.countR > 0) && (
+              <div className={styles.count}>
+                {this.props.countL}/{this.props.countR}
               </div>
+            )}
 
-              {this.getCardControls()}
+            {this.props.days !== '' && this.props.days !== null && (
+              <div className={styles.daysInfo}>
+                {this.props.days}
+              </div>
+            )}
+          </div>
 
-              {/* {(this.isMyToken && !this.props.isView) && (
+          {/*{this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (*/}
+          {/*  <ButtonView*/}
+          {/*    text={''}*/}
+          {/*    icon={transferIcon}*/}
+          {/*    withoutText={true}*/}
+          {/*    onClick={() => {*/}
+          {/*      this.transferAction();*/}
+          {/*    }}*/}
+          {/*    color={buttonColors.goldFill}*/}
+          {/*    customClass={styles.btnTransfer}*/}
+          {/*  />*/}
+          {/*)}*/}
+        </div>
+
+        {this.getCardControls()}
+
+        {/* {(this.isMyToken && !this.props.isView) && (
           <div className={styles.puOnMarketplaceWrap}>
             <p className='line-separator' />
             <div className={`d-flex align-items-center justify-content-between w-100 mt-2`}>
@@ -440,132 +440,132 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             </div>
           </div>
         )} */}
-            </div>
-            );
+      </div>
+    );
   }
 
-            private hideCheckoutModal() {
-              this.setState({
-                ...this.state,
-                modalCeckoutIsShow: false,
-              });
-  }
-
-            private showCheckoutModal() {
-    if (!this.isAuth) {
-              this.props.near.signIn();
-            return;
-    }
-
-            this.setState({
-              ...this.state,
-              modalCeckoutIsShow: true,
+  private hideCheckoutModal() {
+    this.setState({
+      ...this.state,
+      modalCeckoutIsShow: false,
     });
   }
 
-            public render() {
+  private showCheckoutModal() {
+    if (!this.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
+    this.setState({
+      ...this.state,
+      modalCeckoutIsShow: true,
+    });
+  }
+
+  public render() {
     return (
-            <>
-              {this.props.isView ? (
-                this.getContent()
-              ) : (
-                <LazyLoad
-                  unmountIfInvisible={true}
-                  height={200}
-                  placeholder={
-                    <div style={{ width: this.isSmall ? '296px' : '100%' }}>
-                      <Skeleton count={1} height={340} />
-                      <Skeleton count={3} />
-                    </div>
-                  }
-                  debounce={100}>
-                  {this.getContent()}
-                </LazyLoad>
-              )}
+      <>
+        {this.props.isView ? (
+          this.getContent()
+        ) : (
+          <LazyLoad
+            unmountIfInvisible={true}
+            height={200}
+            placeholder={
+              <div style={{ width: this.isSmall ? '296px' : '100%' }}>
+                <Skeleton count={1} height={340} />
+                <Skeleton count={3} />
+              </div>
+            }
+            debounce={100}>
+            {this.getContent()}
+          </LazyLoad>
+        )}
 
-              {this.typeView === TokensType.created ? (
-                <>
-                  <ModalTransferNFT
-                    inShowModal={this.state.modalTransferIsShow}
-                    onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
-                    onSubmit={() => {
-                      this.getInfo();
-                      this.modalToggleVisibility({ modalTransferIsShow: false });
-                    }}
-                    tokenInfo={{}}
-                  />
+        {this.typeView === TokensType.created ? (
+          <>
+            <ModalTransferNFT
+              inShowModal={this.state.modalTransferIsShow}
+              onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
+              onSubmit={() => {
+                this.getInfo();
+                this.modalToggleVisibility({ modalTransferIsShow: false });
+              }}
+              tokenInfo={{}}
+            />
 
-                  <ModalSaleToken
-                    inShowModal={this.state.modalSaleShow}
-                    onHideModal={() => {
-                      this.modalToggleVisibility({ modalSaleShow: false });
-                      if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
-                    }}
-                    onSubmit={({ saleType, price, start_date, end_date, }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
-                      const convertedPrice = price ? convertNearToYoctoString(price) : null;
+            <ModalSaleToken
+              inShowModal={this.state.modalSaleShow}
+              onHideModal={() => {
+                this.modalToggleVisibility({ modalSaleShow: false });
+                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
+              }}
+              onSubmit={({ saleType, price, start_date, end_date, }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
+                const convertedPrice = price ? convertNearToYoctoString(price) : null;
 
-                      const result = {
-                        token_id: this.model.token_id,
-                        sale_type: saleType,
-                        price: convertedPrice || '',
-                        startDate: start_date ? new Date(start_date).getTime() : '',
-                        endDate: end_date ? new Date(end_date).getTime() : '',
-                      };
+                const result = {
+                  token_id: this.model.token_id,
+                  sale_type: saleType,
+                  price: convertedPrice || '',
+                  startDate: start_date ? new Date(start_date).getTime() : '',
+                  endDate: end_date ? new Date(end_date).getTime() : '',
+                };
 
-                      console.table(result);
+                console.table(result);
 
-                      this.props.nftContractContext.sale_create(
-                        this.model.token_id,
-                        saleType,
-                        result.price,
-                        result.startDate,
-                        result.endDate,
-                      ).then(res => {
-                        if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
+                this.props.nftContractContext.sale_create(
+                  this.model.token_id,
+                  saleType,
+                  result.price,
+                  result.startDate,
+                  result.endDate,
+                ).then(res => {
+                  if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
 
-                        this.modalToggleVisibility({ modalSaleShow: false });
-                        this.getInfo();
-
-                        console.log('sale_create', res);
-                      });
-                    }}
-                    tokenInfo={this.model}
-                  />
-                </>
-              ) : (
-                <ModalConfirm
-                  inShowModal={this.state.modalConfirmRemoveSaleShow}
-                  onHideModal={() => {
-                    if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
-                    this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-                  }}
-                  onSubmit={() => {
-                    this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-
-                    this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
-                      if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
-
-                      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-                      this.getInfo();
-                      console.log('sale_remove', res);
-                    });
-                  }}
-                  confirmText={`Do you want to withdraw the token from sale?`}
-                />
-              )}
-
-              {(this.typeView !== TokensType.created && !this.isMyToken) && <ModalTokenCheckoutNFT
-                inShowModal={this.state.modalCeckoutIsShow}
-                onHideModal={() => this.hideCheckoutModal()}
-                onSubmit={() => {
+                  this.modalToggleVisibility({ modalSaleShow: false });
                   this.getInfo();
-                  this.hideCheckoutModal()
-                }}
-                tokenInfo={{}} token={this.model || null} />}
-            </>
-            );
+
+                  console.log('sale_create', res);
+                });
+              }}
+              tokenInfo={this.model}
+            />
+          </>
+        ) : (
+          <ModalConfirm
+            inShowModal={this.state.modalConfirmRemoveSaleShow}
+            onHideModal={() => {
+              if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
+              this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+            }}
+            onSubmit={() => {
+              this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+
+              this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
+
+                this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+                this.getInfo();
+                console.log('sale_remove', res);
+              });
+            }}
+            confirmText={`Do you want to withdraw the token from sale?`}
+          />
+        )}
+
+        {(this.typeView !== TokensType.created && !this.isMyToken) && <ModalTokenCheckoutNFT
+          inShowModal={this.state.modalCeckoutIsShow}
+          onHideModal={() => this.hideCheckoutModal()}
+          onSubmit={() => {
+            this.getInfo();
+            this.hideCheckoutModal()
+          }}
+          tokenInfo={{}} token={this.model || null} />}
+      </>
+    );
   }
 }
 
-            export default withComponent(TokenCardView);
-            export type {ITokenCardView};
+export default withComponent(TokenCardView);
+export type { ITokenCardView };
