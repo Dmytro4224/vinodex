@@ -117,44 +117,9 @@ const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return parseFloat(nearAPI.utils.format.formatNearAmount(yoctoNears.toString(), precision));
 };
 
-// 1 ... = x NEAR
-// eslint-disable-next-line no-unused-vars
-const toNearFromX: {[key: string]: (_: number) => number} = {
-  'NEAR': (f: number) => f, // no-op
-  'milliNEAR': (f: number) => f * 0.0001,
-  'yoctoNEAR': (f: number) => f * Math.pow(10, -24),
-  'TGas': (f: number) => f * Math.pow(10, -5)
-};
-
-// X amount of Y in 1 NEAR
-// eslint-disable-next-line no-unused-vars
-const toXFromNear: {[key: string]: (_: number) => number} = {
-  /* Y: X */
-  'NEAR': (f: number) => f,
-  'milliNEAR': (f: number) => f * 10000,
-  'yoctoNEAR': (f: number) => f * Math.pow(10, 24),
-  'TGas': (f: number) => f * Math.pow(10, 5)
-};
-
-const precisionTable: {[key: string]: number} = {
-  'NEAR': 0,
-  'milliNEAR': 4,
-  'yoctoNEAR': 24,
-  'TGas': 0
-};
-
-const scientificToString = (value: number): string => {
-  return (''+value).replace(/(-?)(\d*)\.?(\d+)e([+-]\d+)/, function(a, b, c, d, e) {
-    return e < 0
-      ? b + '0.' + Array(1-e-c.length).join('0') + c + d
-      : b + c + d + Array(e-d.length+1).join('0');
-  });
-};
-
 // converts NEAR amount into yoctoNEAR (10^-24)
 const convertNearToYoctoString = (value: number) => {
   return nearAPI.utils.format.parseNearAmount(value.toString());
-  //return scientificToString(toXFromNear['yoctoNEAR'](value));
 };
 
 export {
