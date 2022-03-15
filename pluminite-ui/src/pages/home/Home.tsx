@@ -102,6 +102,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
                 text={"Filter"}
                 onClick={this.onFilterClick}
                 color={buttonColors.select}
+                customClass={'btn-filter'}
               />
             </div>
           </MediaQuery>

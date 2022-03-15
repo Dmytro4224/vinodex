@@ -3,16 +3,18 @@
 .dropdownSelect {
   background-color: var(--white);
   border: 1px solid var(--pirateCold);
+  color: var(--pirateCold);
   text-transform: uppercase;
   border-radius: 30px;
-  font-size: 16px;
+  font-size: 14px;
 }
 
-.dropdownButton.isHiddenArrow:after{
+.dropdownButton.isHiddenArrow:after {
   display: none;
 }
 
-.dropdownButton {
+.dropdownButton:hover {
+  color: var(--pirateCold);
 }
 
 .customDropdown .dropdownSelect:hover,

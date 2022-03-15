@@ -165,6 +165,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   text={'Filter'}
                   onClick={this.onFilterClick}
                   color={buttonColors.select}
+                  customClass={'btn-filter'}
                 />
               </div>
             </MediaQuery>

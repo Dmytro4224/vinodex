@@ -123,6 +123,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                 text={"Filter"}
                 onClick={this.onFilterClick}
                 color={buttonColors.select}
+                customClass={'btn-filter'}
               />
             </div>
           </MediaQuery>
