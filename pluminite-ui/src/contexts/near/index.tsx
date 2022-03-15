@@ -5,145 +5,145 @@ import { Near, WalletConnection } from 'near-api-js';
 import { IConfig } from '../../config';
 
 const initialNearContext = {
-    user: null,
-    isAuth: false,
-    isLoading: true,
-    error: null,
-    signIn: () => { },
-    signOut: () => { },
-    setUser: () => { },
-    catalogs: [],
-    setCatalogs: () => {}
+  user: null,
+  isAuth: false,
+  isLoading: true,
+  error: null,
+  signIn: () => { },
+  signOut: () => { },
+  setUser: () => { },
+  catalogs: [],
+  setCatalogs: () => { }
 };
 
 export const NearContext = React.createContext<INearContext>(initialNearContext);
 
 export interface INearContext {
-    isLoading: boolean;
-    error: Error | string | null;
-    signIn: () => void;
-    signOut: () => void;
-    user: ICurrentUser | null;
-    isAuth: boolean,
-    setUser: (user: ICurrentUser) => void;
-    catalogs: Array<string>,
-    setCatalogs: (catalogs: Array<string>) => void
+  isLoading: boolean;
+  error: Error | string | null;
+  signIn: () => void;
+  signOut: () => void;
+  user: ICurrentUser | null;
+  isAuth: boolean,
+  setUser: (user: ICurrentUser) => void;
+  catalogs: Array<string>,
+  setCatalogs: (catalogs: Array<string>) => void
 }
 
 interface INearContextProviderProps {
-    user: ICurrentUser | null;
-    nearConfig: IConfig;
-    wallet: WalletConnection;
-    near: Near;
-    children: any;
+  user: ICurrentUser | null;
+  nearConfig: IConfig;
+  wallet: WalletConnection;
+  near: Near;
+  children: any;
 }
 
 interface INearContextState {
-    user: ICurrentUser | null;
-    isLoading: boolean;
-    error: Error | string | null;
-    catalogs: Array<string>;
+  user: ICurrentUser | null;
+  isLoading: boolean;
+  error: Error | string | null;
+  catalogs: Array<string>;
 }
 
 export class NearContextProvider extends React.Component<INearContextProviderProps, INearContextState> {
 
-    public state: INearContextState = {
-        user: null,
-        isLoading: true,
-        error: null,
-        catalogs: []
+  public state: INearContextState = {
+    user: null,
+    isLoading: true,
+    error: null,
+    catalogs: []
+  };
+
+  constructor(props: INearContextProviderProps) {
+    super(props);
+
+    this.state.user = this.props.user || null;
+  }
+
+  public get near() {
+    return this.props.near;
+  }
+
+  public get wallet() {
+    return this.props.wallet;
+  }
+
+  public get user() {
+    return this.props.user;
+  }
+
+  public get isAuth() {
+    return typeof this.props.user !== 'undefined' && this.props.user !== null;
+  }
+
+  public setUser = (user: ICurrentUser) => {
+    this.setState({
+      ...this.state,
+      user
+    });
+  }
+
+  public setCatalogs = (catalogs: Array<string>) => {
+    this.setState({
+      ...this.state,
+      catalogs
+    });
+  }
+
+  public loadingStart() {
+    this.setState({
+      ...this.state,
+      isLoading: true,
+      error: null
+    });
+  }
+
+  public loadingSuccess() {
+    this.setState({
+      ...this.state,
+      isLoading: false,
+      error: null
+    });
+  }
+
+  public clearState() {
+    this.setState({ ...initialNearContext });
+  }
+
+  private get nearConfig() {
+    return this.props.nearConfig;
+  }
+
+  public signIn = () => {
+    this.wallet.requestSignIn(this.nearConfig.contractName, `NEAR ${APP.NAME}`, `${window.location.origin}/#/mint`);
+  };
+
+  public signOut = () => {
+    this.wallet.signOut();
+
+    this.clearState();
+
+    window.location.reload();
+  };
+
+  public render() {
+    const value: INearContext = {
+      user: this.state.user,
+      isAuth: this.isAuth,
+      signIn: this.signIn,
+      signOut: this.signOut,
+      isLoading: this.state.isLoading,
+      error: this.state.error,
+      setUser: this.setUser,
+      catalogs: this.state.catalogs,
+      setCatalogs: this.setCatalogs,
     };
-
-    constructor(props: INearContextProviderProps) {
-        super(props);
-
-        this.state.user = this.props.user || null;
-    }
-
-    public get near() {
-        return this.props.near;
-    }
-
-    public get wallet() {
-        return this.props.wallet;
-    }
-
-    public get user() {
-        return this.props.user;
-    }
-
-    public get isAuth() {
-        return typeof this.props.user !== 'undefined' && this.props.user !== null;
-    }
-
-    public setUser = (user: ICurrentUser) => {
-        this.setState({
-            ...this.state,
-            user
-        });
-    }
-
-    public setCatalogs = (catalogs: Array<string>) => {
-        this.setState({
-            ...this.state,
-            catalogs
-        });
-    }
-
-    public loadingStart() {
-        this.setState({
-            ...this.state,
-            isLoading: true,
-            error: null
-        });
-    }
-
-    public loadingSuccess() {
-        this.setState({
-            ...this.state,
-            isLoading: false,
-            error: null
-        });
-    }
-
-    public clearState() {
-        this.setState({ ...initialNearContext });
-    }
-
-    private get nearConfig() {
-        return this.props.nearConfig;
-    }
-
-    public signIn = () => {
-        this.wallet.requestSignIn(this.nearConfig.contractName, `NEAR ${APP.NAME}`, `${window.location.origin}/#/mint`);
-    };
-
-    public signOut = () => {
-        this.wallet.signOut();
-
-        this.clearState();
-
-        window.location.reload();
-    };
-
-    public render() {
-        const value: INearContext = {
-            user: this.state.user,
-            isAuth: this.isAuth,
-            signIn: this.signIn,
-            signOut: this.signOut,
-            isLoading: this.state.isLoading,
-            error: this.state.error,
-            setUser: this.setUser,
-            catalogs: this.state.catalogs,
-            setCatalogs: this.setCatalogs,
-        };
-        return (
-            <NearContext.Provider value={value}>
-                {this.props.children}
-            </NearContext.Provider>
-        );
-    }
+    return (
+      <NearContext.Provider value={value}>
+        {this.props.children}
+      </NearContext.Provider>
+    );
+  }
 }
 
 /*

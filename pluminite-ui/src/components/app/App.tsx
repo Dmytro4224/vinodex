@@ -26,7 +26,10 @@ class App extends Component<IApp & IBaseComponentProps> {
 
   public componentDidMount() {
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
-      this.props.near.setCatalogs(response);
+      const catalogs = ['All'];
+      catalogs.push(...response);
+
+      this.props.near.setCatalogs(catalogs);
     });
   }
 

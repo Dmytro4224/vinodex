@@ -83,7 +83,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
               colorType={dropdownColors.selectGray}
               title={'En'}
               disabled={true}
-              onChange={(item) => {  }}
+              onChange={(item) => { }}
               childrens={[]}
             />
           </div>
@@ -149,7 +149,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
 
                 <p className="line-separator" />
 
-                <CreateTokenDropdownView onNavigated={() => {this.toggleMenu()}} />
+                <CreateTokenDropdownView onNavigated={() => { this.toggleMenu() }} />
 
                 <ButtonView
                   text={'Disconnect'}

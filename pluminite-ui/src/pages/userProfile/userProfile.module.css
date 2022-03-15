@@ -5,7 +5,7 @@
 .bgBlock {
   width: 100%;
   height: 260px;
-  background-image: url("../../assets/images/user-profile-bg.jpg");
+  background-image: url('../../assets/images/user-profile-bg.jpg');
   background-size: cover;
   border-radius: 0px 0px 50px 50px;
 }
@@ -44,7 +44,7 @@
 
 .tabsWrap {
   margin-top: 30px;
-  background-color: var(--alabasterapprox);
+  background-color: var(--white);
 }
 
 .tabsWrap ul {

@@ -17,6 +17,7 @@ import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import ArtistsView, { ArtistViewType } from '../artists';
 import { nftStorage } from '../../api/NftStorage';
+import UserPurchases from '../../components/userPurchases/UserPurchases';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -182,9 +183,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           activeKey={this.state.activeTab || `details`}
           onSelect={(key) => this.updateActiveTab(key)}
           id='controlled-tab-example'
-          className='mb-3 justify-content-center'
+          className='justify-content-center'
         >
-          <Tab eventKey='details' title='Profile details'>
+          <Tab eventKey='details' title='Profile details' style={{ background: 'var(--alabasterapprox)' }}>
             <InfoDetails
               isMyProfile={this.isMyProfile}
               userId={this.getUserId}
@@ -210,11 +211,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             />
           </Tab>
           <Tab eventKey='purchases' title='Purchases'>
-            <ProfileTokensView
-              catalog={this.catalog}
-              sort={this.sort}
-              typeViewTokens={ProfileTokensType.purchases}
-            />
+            <UserPurchases />
           </Tab>
           <Tab eventKey='birds' title='Active Bids'>
             <ProfileTokensView
@@ -235,7 +232,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
               typeViewTokens={ProfileTokensType.favourites}
             />
           </Tab>
-        </Tabs>
+        </Tabs >
       );
     }
 
@@ -260,13 +257,13 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             typeViewTokens={ProfileTokensType.createdItems}
           />
         </Tab>
-        <Tab eventKey='owned' title='Owned'>
+        {/* <Tab eventKey='owned' title='Owned'>
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
             typeViewTokens={ProfileTokensType.purchases}
           />
-        </Tab>
+        </Tab> */}
         <Tab eventKey='favourites' title='Favorites'>
           <ProfileTokensView
             catalog={this.catalog}

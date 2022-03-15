@@ -39,3 +39,9 @@
   font-size: 16px;
   color: var(--mineShaftS);
 }
+
+.errorBox p{
+  margin-top: 10px;
+  color: var(--thunderbird);
+  font-size: 16px;
+}

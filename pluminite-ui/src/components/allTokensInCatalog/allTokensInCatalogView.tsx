@@ -2,7 +2,7 @@ import { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { TokensSortType } from '../../types/TokensSortType';
-import { mediaUrl } from '../../utils/sys';
+import { convertNearToYoctoString, mediaUrl } from '../../utils/sys';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import { EmptyListView } from '../common/emptyList/emptyListView';
@@ -15,6 +15,9 @@ interface IAllTokensInCatalogView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
   sort: TokensSortType;
+  priceFrom?: number | string | null;
+  priceTo?: number | string | null;
+  type?: boolean | null;
 }
 
 class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseComponentProps> {
@@ -34,14 +37,44 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
   }
 
   public componentDidUpdate(prevProps: IAllTokensInCatalogView, prevState: any) {
-    if (prevProps.catalog !== this.props.catalog || prevProps.sort !== this.props.sort) {
+    if (
+      prevProps.catalog !== this.props.catalog ||
+      prevProps.sort !== this.props.sort ||
+      prevProps.priceFrom !== this.props.priceFrom ||
+      prevProps.priceTo !== this.props.priceTo ||
+      prevProps.type !== this.props.type
+    ) {
       this.loadData();
     }
   }
 
+  private get priceFrom() {
+    if (!this.props.priceFrom) return null;
+
+    return convertNearToYoctoString(Number(this.props.priceFrom));
+  }
+
+  private get priceTo() {
+    if (!this.props.priceTo) return null;
+
+    return convertNearToYoctoString(Number(this.props.priceTo));
+  }
+
   private async loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(this.props.catalog, 1, 1000, this.sort).then(response => {
-      console.log('loadData', response);
+    this.props.nftContractContext.nft_tokens_by_filter(
+      this.props.catalog,
+      1,
+      1000,
+      this.sort,
+      null,
+      null,
+      null,
+      null,
+      null,
+      this.priceFrom,
+      this.priceTo,
+      typeof this.props.type === 'undefined' ? null : this.props.type,
+    ).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });
   }
@@ -57,12 +90,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
     }
 
     if (!this.state.list.length) {
-      return (
-        <>
-          <LabelView text={'Popular'} />
-          <EmptyListView />
-        </>
-      );
+      return <EmptyListView />;
     }
 
     return <div>

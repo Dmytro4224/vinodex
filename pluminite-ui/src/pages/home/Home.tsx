@@ -29,7 +29,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
   public state = {
     catalogs: new Array<any>(),
     sort: 7,
-    currentCatalog: 0,
+    currentCatalog: -1,
     isLoading: true,
     filterOptions: {
       type: null,
@@ -45,7 +45,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    this.setState({ ...this.state, currentCatalog: 0, sort: 7, isLoading: false });
+    this.setState({ ...this.state, currentCatalog: -1, sort: 7, isLoading: false });
   }
 
   private setCatalog(catalog: number) {
@@ -57,7 +57,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
   }
 
   private setFilter(filterOptions: IFilterOptions) {
-    console.log("🚀 ~ file: Home.tsx ~ line 60 ~ Home ~ setFilter ~ filterOptions", filterOptions)
     this.setState({ ...this.state, filterOptions })
   }
 
@@ -89,7 +88,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           <MediaQuery minWidth={992}>
             <div className="d-flex align-items-center justify-content-between">
               <DropdownView
-                colorType={dropdownColors.select}
+                colorType={dropdownColors.selectFilter}
                 title={'Sort by'}
                 onChange={(item) => { this.setSort(item.id) }}
                 childrens={dropdownData}
@@ -103,6 +102,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
                 text={"Filter"}
                 onClick={this.onFilterClick}
                 color={buttonColors.select}
+                customClass={'btn-filter'}
               />
             </div>
           </MediaQuery>

@@ -91,6 +91,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     this.getInfo();
   }
 
+  public componentDidUpdate(prevProps: any, prevState: any) {
+    if(prevProps.params.tokenId !== this.tokenId){
+      window.scrollTo(0, 0);
+      this.getInfo();
+    }
+  }
+
   private getInfo(){
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`response d`, response);
@@ -418,14 +425,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     bio: '',
                     email: '',
                     image: '',
-                    name: this.state.order?.owner_id!,
+                    name: this.state.order?.creator_id!,
                     account_id: '',
                     likes_count: 0,
                     is_like: false,
                     is_following: false,
                     followers_count: 0
                   }}
-                  identification={this.state.order?.owner_id!}
+                  identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}
                   isCard={false}

@@ -12,22 +12,22 @@ class Social extends Component<ISocial & IBaseComponentProps> {
   render() {
     return (
       <ul className={styles.socialListWrap}>
-        <li>
+        <li className='disabled'>
           <a href="#">
             <img width="20" height="20" src={facebookIcon} alt="facebook" />
           </a>
         </li>
-        <li>
+        <li className='disabled'>
           <a href="#">
             <img width="20" height="17" src={twitterIcon} alt="twitter" />
           </a>
         </li>
-        <li>
+        <li className='disabled'>
           <a href="#">
             <img width="18" height="18" src={googleIcon} alt="google" />
           </a>
         </li>
-        <li>
+        <li className='disabled'>
           <a href="#">
             <img width="18" height="19" src={twitchIcon} alt="twitch" />
           </a>

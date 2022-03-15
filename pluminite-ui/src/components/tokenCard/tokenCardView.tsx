@@ -39,6 +39,8 @@ interface ITokenCardView extends IProps {
   price?: number;
   isView?: boolean;
   isForceVisible?: boolean;
+  catalog?: string;
+  containerName?: string;
 }
 
 type stateTypes = {
@@ -48,6 +50,8 @@ type stateTypes = {
   modalConfirmRemoveSaleShow: boolean;
   modalCeckoutIsShow: boolean;
   modalSaleShow: boolean;
+  isFetch: boolean;
+  model: ITokenResponseItem;
 };
 
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
@@ -58,6 +62,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     modalTransferIsShow: false,
     modalCeckoutIsShow: false,
     modalSaleShow: false,
+    isFetch: false,
+    model: this.props.model,
   };
 
   private readonly isSmall: boolean;
@@ -74,6 +80,16 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     this._refImage = React.createRef();
   }
 
+  private getInfo() {
+    this.props.nftContractContext.nft_token_get(this.tokenID).then(response => {
+      this.setState({
+        ...this.state,
+        isFetch: true,
+        model: response,
+      });
+    });
+  }
+
   public componentDidUpdate() {
     this.props.isForceVisible && forceVisible();
   }
@@ -83,7 +99,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get isMyToken() {
-    return this.props.model.owner_id === this.props.near.user?.accountId;
+    return this.state.model.owner_id === this.props.near.user?.accountId;
   }
 
   private get icon() {
@@ -95,7 +111,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get tokenData() {
-    return this.props.model;
+    return this.state.model;
   }
 
   private get typeView() {
@@ -112,7 +128,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   }
 
   private get model() {
-    return this.props.model;
+    return this.state.model;
   }
 
   private onClick() {
@@ -199,68 +215,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             </div>
 
             <div className={styles.cardControls}>
-              <LikeView
-                customClass={styles.likes}
-                isChanged={this.state.isLike}
-                isActive={true}
-                type={LikeViewType.like}
-                count={this.state.likesCount}
-                onClick={this.toggleLikeToken}
-              />
-              {this.isMyToken ? this.props.buttonText && (
-                <ButtonView
-                  text={this.isMyToken ? 'Sell' : this.props.buttonText}
-                  onClick={() => {
-                    if (this.isMyToken) {
-                      this.modalToggleVisibility({ modalSaleShow: true })
-                    } else {
-                      this.onClick();
-                    }
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.buttonSecondControls}
-                  disabled={this.typeView === TokensType.fixedPrice}
-                />
-              ) : (this.typeView === TokensType.fixedPrice) ? (
-                <div className="w-100 align-items-start">
-                  <ButtonView
-                    text={`Buy now ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
-                    onClick={() => {
-                      this.showCheckoutModal();
-                    }}
-                    color={buttonColors.goldFill}
-                    customClass={styles.buttonSecondControls}
-                  />
-                </div>
-              ) : (
-                <ButtonView
-                text={'Not for sale'}
-                onClick={() => {
-
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.button}
-                disabled={true} />
-              )}
-            </div>
-          </div>
-        );
-      case TokensType.timedAuction:
-      case TokensType.unlimitedAuction:
-        return (
-          <div className={`${styles.cardFooter} flex-column`}>
-            <div className={'d-flex align-items-center justify-content-between w-100'}>
-              <div className={styles.cardInfo}>
-                {this.props.linkTo ? (
-                  <NavLink to={this.props.linkTo}>
-                    <div className={styles.infoName}>{this.props.name}</div>
-                  </NavLink>
-                ) : (
-                  <div className={styles.infoName}>{this.props.name}</div>
-                )}
-                <div className={styles.authorName}>{this.props.author}</div>
-              </div>
-
               <div className={`${styles.cardControls} justify-content-start`}>
                 <LikeView
                   customClass={styles.likes}
@@ -271,46 +225,129 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   onClick={this.toggleLikeToken}
                 />
 
-                <p className={`${styles.priceText} pr-5px`}>Price {this.props.price || 0.00} NEAR</p>
+                {this.state.model?.sale && this.typeView !== TokensType.fixedPrice && (
+                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                )}
               </div>
-            </div>
 
-            {this.isMyToken ? (
-              <>
-                <p className='line-separator' />
-
-                <div className='d-flex align-items-center justify-content-between w-100'>
+              {this.isMyToken ? this.props.buttonText && (
+                <ButtonView
+                  text={this.isMyToken ? this.typeView === TokensType.fixedPrice ? 'Stop selling' : 'Sell' : this.props.buttonText}
+                  onClick={() => {
+                    if (this.isMyToken) {
+                      if (this.typeView === TokensType.fixedPrice) {
+                        this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+                      } else {
+                        this.modalToggleVisibility({ modalSaleShow: true })
+                      }
+                    } else {
+                      this.onClick();
+                    }
+                  }}
+                  color={this.isMyToken && this.typeView === TokensType.fixedPrice ? buttonColors.redButton : buttonColors.goldFill}
+                  customClass={styles.buttonSecondControls}
+                />
+              ) : (this.typeView === TokensType.fixedPrice) ? (
+                <div className="w-100 align-items-start">
                   <ButtonView
-                    text={`Edit lot`}
+                    text={`Buy now ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
                     onClick={() => {
+                      this.showCheckoutModal();
                     }}
                     color={buttonColors.goldFill}
                     customClass={styles.buttonSecondControls}
-                    disabled={true}
-                  />
-                  <ButtonView
-                    text={`Stop selling`}
-                    onClick={() => {
-                      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
-                    }}
-                    color={buttonColors.redButton}
-                    customClass={styles.buttonSecondControls}
                   />
                 </div>
-              </>
-            ) : (
-              <div className="w-100 falign-items-start">
+              ) : (
                 <ButtonView
-                  text={`Place a bid ${convertYoctoNearsToNears(this.props.model?.sale.price)} NEAR`}
+                  text={'Not for sale'}
+                  onClick={() => {
+
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.button}
+                  disabled={true} />
+              )}
+            </div>
+          </div>
+        );
+      case TokensType.timedAuction:
+      case TokensType.unlimitedAuction:
+        return (
+          <div className={styles.cardFooter}>
+            <div className={styles.cardInfo}>
+              {this.props.linkTo ? (
+                <NavLink to={this.props.linkTo}>
+                  <div className={styles.infoName}>{this.props.name}</div>
+                </NavLink>
+              ) : (
+                <div className={styles.infoName}>{this.props.name}</div>
+              )}
+              <div className={styles.authorName}>{this.props.author}</div>
+            </div>
+
+            <div className={`${styles.cardControls}`}>
+              <div className={`${styles.cardControls} justify-content-start`}>
+                <LikeView
+                  customClass={styles.likes}
+                  isChanged={this.state.isLike}
+                  isActive={true}
+                  type={LikeViewType.like}
+                  count={this.state.likesCount}
+                  onClick={this.toggleLikeToken}
+                />
+
+                {this.state.model?.sale && this.isMyToken && (
+                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                )}
+              </div>
+
+              {!this.isMyToken ? (
+                <ButtonView
+                  text={`Place a bid ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
                   color={buttonColors.goldFill}
                   customClass={styles.button}
                 />
-              </div>
-            )}
+              ) : (
+                <ButtonView
+                  text={`Stop selling`}
+                  onClick={() => {
+                    this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+                  }}
+                  color={buttonColors.redButton}
+                  customClass={styles.buttonSecondControls}
+                />
+              )}
+            </div>
           </div>
+
+          // {/* {this.isMyToken && (
+          //   <>
+          //     <p className='line-separator' />
+
+          //     <div className='d-flex align-items-center justify-content-between w-100'>
+          //       <ButtonView
+          //         text={`Edit lot`}
+          //         onClick={() => {
+          //         }}
+          //         color={buttonColors.goldFill}
+          //         customClass={styles.buttonSecondControls}
+          //         disabled={true}
+          //       />
+          //       <ButtonView
+          //         text={`Stop selling`}
+          //         onClick={() => {
+          //           this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+          //         }}
+          //         color={buttonColors.redButton}
+          //         customClass={styles.buttonSecondControls}
+          //       />
+          //     </div>
+          //   </>
+          // )} */}
         );
     }
   }
@@ -325,7 +362,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       return;
     }
 
-    // data === { modalStateKeyIsShow: true }
+    // data === {modalStateKeyIsShow: true }
 
     this.setState({
       ...this.state,
@@ -340,12 +377,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
         <div className={styles.cardImage}>
           {this.props.linkTo ? (
             <NavLink to={this.props.linkTo}>
-              <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-                model={this.props.model} />
+              <MediaView customClass={styles.imageStyle}
+                model={this.state.model} />
             </NavLink>
           ) : (
-            <MediaView customClass={styles.imageStyle} key={`media-${this.props.model.token_id}`}
-              model={this.props.model} />
+            <MediaView customClass={styles.imageStyle}
+              model={this.state.model} />
           )}
 
           <div className={styles.cardDetail}>
@@ -355,11 +392,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               </div>
             )}
 
-            {this.props.days !== '' && this.props.days !== null && (
+            {/*{this.props.days !== '' && this.props.days !== null && (
               <div className={styles.daysInfo}>
                 {this.props.days}
               </div>
-            )}
+            )}*/}
           </div>
 
           {/*{this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (*/}
@@ -454,6 +491,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               inShowModal={this.state.modalTransferIsShow}
               onHideModal={() => this.modalToggleVisibility({ modalTransferIsShow: false })}
               onSubmit={() => {
+                this.getInfo();
                 this.modalToggleVisibility({ modalTransferIsShow: false });
               }}
               tokenInfo={{}}
@@ -485,6 +523,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   result.startDate,
                   result.endDate,
                 ).then(res => {
+                  if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
+
+                  this.modalToggleVisibility({ modalSaleShow: false });
+                  this.getInfo();
+
                   console.log('sale_create', res);
                 });
               }}
@@ -502,6 +545,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
 
               this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
+
+                this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+                this.getInfo();
                 console.log('sale_remove', res);
               });
             }}
@@ -513,6 +560,8 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           inShowModal={this.state.modalCeckoutIsShow}
           onHideModal={() => this.hideCheckoutModal()}
           onSubmit={() => {
+            this.getInfo();
+            this.hideCheckoutModal()
           }}
           tokenInfo={{}} token={this.model || null} />}
       </>

@@ -2,6 +2,13 @@
   gap: 15px;
 }
 
+.separator {
+  width: 1px;
+  height: 40px;
+  background-color: var(--mercury);
+  margin: 0 5px;
+}
+
 .select {
   min-width: 200px;
 }
@@ -9,6 +16,7 @@
 .resultWrap {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 15px;
 }
 
@@ -39,5 +47,9 @@
   .select,
   .inputView {
     width: 100%;
+  }
+
+  .separator {
+    display: none;
   }
 }
