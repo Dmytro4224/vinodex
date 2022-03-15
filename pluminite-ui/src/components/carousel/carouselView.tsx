@@ -7,9 +7,9 @@ import Slider from "react-slick";
 import {IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
 interface ICarouselView extends IProps {
-  catalog: string;
   customCLass: string,
-  childrens: any[]
+  childrens: any[];
+  containerName: string;
 }
 
 interface ISampleNextArrow extends IProps{
@@ -106,13 +106,10 @@ class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
   }
 
   public render() {
-    console.log('CarouselView', this.props.catalog);
     return (
       <div className={`${styles.carouselWrap} ${this.props.customCLass || ''}`}>
-        <Slider {...this.settings} className={styles.gap}>
-          {this.props.childrens.map(item => {
-            return item;
-          })}
+        <Slider {...this.settings} className={styles.gap} key={`slider-${this.props.containerName}-${new Date().getTime()}`}>
+          {this.props.childrens}
         </Slider>
       </div>
     )

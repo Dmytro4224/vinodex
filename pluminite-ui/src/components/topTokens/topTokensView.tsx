@@ -117,9 +117,12 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
             color={buttonColors.gold}
           />
         </div>
-        <CarouselView customCLass={'carousel-owl-tokens'} catalog={this.props.catalog}
-          childrens={this.state.list.map(item => (
-            <TokenCardView key={`${this.props.catalog}-toptoken-${item.token_id}`}
+        <CarouselView
+          customCLass={'carousel-owl-tokens'}
+          containerName={`TopTokens-${this.props.catalog}`}
+          childrens={this.state.list.map(item => <TokenCardView key={`${this.props.catalog}-toptoken-${item.token_id}}`}
+              catalog={this.props.catalog}
+              containerName={'TopTokens'}
               model={item}
               countL={1}
               countR={1}
@@ -135,7 +138,7 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
               isLike={item.is_like}
               onClick={() => {
               }} />
-          ))} />
+          )} />
       </div>
     );
   }
