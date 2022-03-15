@@ -3,6 +3,7 @@ import { IShowToast } from '../types/ISysTypes';
 import defaultAvatar from '../assets/images/avatar-def.png';
 import { IMetaData } from '../types/ITokenCreateItem';
 import Big from 'big.js';
+import * as nearAPI from "near-api-js";
 
 const classList = (...args: string[]) => {
   return args.join(' ');
@@ -108,15 +109,12 @@ const formatDate = (date) => {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
+// converts yoctoNEAR (10^-24) amount into NEAR with precision
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
-  if (!yoctoNears) return 0;
-
-  let val = new Big(yoctoNears)
-    .div(10 ** 24)
-    .round(precision)
-    .toString();
-
-  return +val * 10
+  if (!yoctoNears) {
+    return 0;
+  }
+  return parseFloat(nearAPI.utils.format.formatNearAmount(yoctoNears.toString(), precision));
 };
 
 // 1 ... = x NEAR
@@ -153,8 +151,10 @@ const scientificToString = (value: number): string => {
   });
 };
 
+// converts NEAR amount into yoctoNEAR (10^-24)
 const convertNearToYoctoString = (value: number) => {
-  return scientificToString(toXFromNear['yoctoNEAR'](value));
+  return nearAPI.utils.format.parseNearAmount(value.toString());
+  //return scientificToString(toXFromNear['yoctoNEAR'](value));
 };
 
 export {

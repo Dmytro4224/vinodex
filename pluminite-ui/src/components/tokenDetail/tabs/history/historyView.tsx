@@ -4,6 +4,7 @@ import defaultAvatar from '../../../../assets/images/avatar-def.png';
 import ButtonCopy  from "../../../common/buttonCopy/ButtonCopy";
 import {IBaseComponentProps, IProps, withComponent } from "../../../../utils/withComponent";
 import Skeleton from "react-loading-skeleton";
+import { convertYoctoNearsToNears } from '../../../../utils/sys';
 
 interface IHistoryItemView extends IProps{
   avatar?: any;
@@ -58,7 +59,7 @@ class HistoryItemView extends Component<IHistoryItemView & IBaseComponentProps> 
         </div>
         <div className={styles.bidsPrice}>
             <span className={styles.price}>
-              {this.price}&nbsp;{this.currency}
+            {convertYoctoNearsToNears(this.price)}&nbsp;{this.currency}
             </span>
         </div>
       </div>
