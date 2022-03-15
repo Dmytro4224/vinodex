@@ -225,7 +225,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   onClick={this.toggleLikeToken}
                 />
 
-                {this.state.model?.sale && this.typeView !== TokensType.fixedPrice && (
+                {this.state.model?.sale && this.isMyToken && (
                   <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
                 )}
               </div>
@@ -297,7 +297,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   onClick={this.toggleLikeToken}
                 />
 
-                {this.state.model?.sale && this.isMyToken && (
+                {this.state.model?.sale && (
                   <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
                 )}
               </div>
