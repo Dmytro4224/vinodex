@@ -77,12 +77,12 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
                   <p>Created Items</p>
                 </NavLink>
               </li>
-              <li>
+              {/* <li>
                 <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
                   <img width="24" height="24" src={purchasesIcon} alt="icon" />
                   <p>Purchases</p>
                 </NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
                   <img width="24" height="24" src={activeBidsIcon} alt="icon" />

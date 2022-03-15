@@ -83,7 +83,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
               colorType={dropdownColors.selectGray}
               title={'En'}
               disabled={true}
-              onChange={(item) => {  }}
+              onChange={(item) => { }}
               childrens={[]}
             />
           </div>
@@ -121,12 +121,12 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
                       <p>Created Items</p>
                     </NavLink>
                   </li>
-                  <li>
+                  {/* <li>
                     <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
                       <img width="24" height="24" src={purchasesIcon} alt="icon" />
                       <p>Purchases</p>
                     </NavLink>
-                  </li>
+                  </li> */}
                   <li>
                     <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
                       <img width="24" height="24" src={activeBidsIcon} alt="icon" />
@@ -149,7 +149,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
 
                 <p className="line-separator" />
 
-                <CreateTokenDropdownView onNavigated={() => {this.toggleMenu()}} />
+                <CreateTokenDropdownView onNavigated={() => { this.toggleMenu() }} />
 
                 <ButtonView
                   text={'Disconnect'}
