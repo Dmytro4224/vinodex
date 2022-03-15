@@ -69,7 +69,7 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
             likesCount={item.metadata.likes_count}
             icon={mediaUrl(item.metadata)}
             isSmall={true}
-            buttonText={`Place a bid ${item.metadata.price} NEAR`}
+            buttonText={`Place a bid`}
             linkTo={`/token/${item.token_id}`}
             tokenID={item.token_id}
             isLike={item.is_like}
