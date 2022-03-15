@@ -63,7 +63,7 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
       this.props.catalog,
       1,
       4,
-      7,
+      this.sort,
       null,
       null,
       null,
