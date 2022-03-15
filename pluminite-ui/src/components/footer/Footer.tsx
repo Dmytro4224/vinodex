@@ -57,16 +57,16 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <div>
               <p className={styles.linksTitle}>Resources</p>
               <ul className={styles.linksWrap}>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Help & Support</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Live Auctions</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Wine Details</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Activity</NavLink>
                 </li>
               </ul>
@@ -74,16 +74,16 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <div>
               <p className={styles.linksTitle}>Company</p>
               <ul className={styles.linksWrap}>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>About Us</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Contact Us</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Our Blog</NavLink>
                 </li>
-                <li>
+                <li className='disabled'>
                   <NavLink to={'/'}>Discover</NavLink>
                 </li>
               </ul>
