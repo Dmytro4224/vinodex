@@ -182,7 +182,7 @@ impl Contract {
             {
                 if with_bids
                 {
-                    for i in 0..sale.bids.len()
+                    for i in (0..sale.bids.len()).rev()
                     {
                         sale_json.bids.push(SaleBidJson
                         {

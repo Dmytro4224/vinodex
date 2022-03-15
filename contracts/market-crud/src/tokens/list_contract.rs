@@ -1175,15 +1175,13 @@ impl Contract {
 
         if page_index <= 1
         {
-            let token = self.tokens_by_id.get(&token_id);
-
-            match token
+            match self.creator_per_token.get(&token_id)
             {
-                Some(token) =>
+                Some(creator) =>
                 {
                     let res = Profile::get_full_profile(
                         &self.profiles,
-                        &token.owner_id,
+                        &creator,
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
