@@ -104,7 +104,7 @@ class UserProfile extends Component<IUserPurchases & IBaseComponentProps> {
                   likesCount={token.metadata.likes_count}
                   icon={mediaUrl(token.metadata)}
                   isSmall={true}
-                  buttonText={`Place a bid ${token.metadata.price} NEAR`}
+                  buttonText={`Place a bid`}
                   linkTo={`/token/${token.token_id}`}
                   tokenID={token.token_id}
                   isLike={token.is_like}

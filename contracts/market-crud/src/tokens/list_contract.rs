@@ -513,6 +513,7 @@ impl Contract {
         account_id:Option<AccountId>,
         is_for_sale: Option<bool>,
         owner_id: Option<AccountId>,
+        creator_id: Option<AccountId>,
         is_liked: Option<bool>,
         is_followed: Option<bool>,
         is_active_bid: Option<bool>,
@@ -524,7 +525,9 @@ impl Contract {
 
         let token_ids : HashSet<String>;
         let tokens_per_owner : Option<UnorderedSet<TokenId>>;
+        let tokens_per_creator : Option<UnorderedSet<TokenId>>;
         let check_owner : Option<bool>;
+        let check_creator : Option<bool>;
 
         if owner_id.is_some()
         {
@@ -546,6 +549,28 @@ impl Contract {
         {
             tokens_per_owner = None;
             check_owner = None;
+        }
+
+        if creator_id.is_some()
+        {
+            match self.tokens_per_creator.get(&creator_id.unwrap())
+            {
+                Some(value) =>
+                {
+                    tokens_per_creator = Some(value);
+                },
+                None =>
+                {
+                    return Vec::new();
+                }
+            }
+
+            check_creator = Some(true);
+        }
+        else
+        {
+            tokens_per_creator = None;
+            check_creator = None;
         }
 
         let mut skip = 0;
@@ -655,6 +680,11 @@ impl Contract {
                                 continue;
                             }
 
+                            if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
+                            {
+                                continue;
+                            }
+
                             if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
                             {
                                 continue;
@@ -726,6 +756,11 @@ impl Contract {
                         if token_ids.contains(&_token.token_id)
                         {
                             if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
+                            {
+                                continue;
+                            }
+
+                            if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
                             {
                                 continue;
                             }
