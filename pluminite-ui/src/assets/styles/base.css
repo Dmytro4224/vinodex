@@ -152,7 +152,7 @@ button[disabled] {
 }
 .modal.transparent .modal-content .btn-close:before, .modal.transparent .modal-content .btn-close:after {
   position: absolute;
-  right: 0px;
+  right: 15px;
   top: 0;
   content: ' ';
   height: 33px;
