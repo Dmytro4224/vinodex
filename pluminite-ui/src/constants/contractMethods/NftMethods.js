@@ -26,6 +26,8 @@ const NftMethods = {
     'sale_create',
     'sale_offer',
     'sale_remove',
+    'sale_set_is_closed',
+    'sale_auction_init_transfer',
     'nft_transfer',
     'like_artist_account',
     'follow_artist_account',

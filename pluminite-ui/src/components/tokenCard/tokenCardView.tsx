@@ -47,23 +47,28 @@ type stateTypes = {
   isLike: boolean;
   likesCount: number;
   modalTransferIsShow: boolean;
-  modalConfirmRemoveSaleShow: boolean;
   modalCeckoutIsShow: boolean;
   modalSaleShow: boolean;
   isFetch: boolean;
   model: ITokenResponseItem;
+  isShowConfirmModal: boolean;
+  modalConfirmData: any;
 };
 
 class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentProps>> {
   public state: stateTypes = {
     isLike: this.props.isLike,
     likesCount: this.props.likesCount || 0,
-    modalConfirmRemoveSaleShow: false,
     modalTransferIsShow: false,
     modalCeckoutIsShow: false,
     modalSaleShow: false,
     isFetch: false,
     model: this.props.model,
+    isShowConfirmModal: false,
+    modalConfirmData: {
+      text: '',
+      confirmCallback: () => { },
+    }
   };
 
   private readonly isSmall: boolean;
@@ -100,6 +105,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private get isMyToken() {
     return this.state.model.owner_id === this.props.near.user?.accountId;
+  }
+
+  private get accountId() {
+    return this.props.near.user?.accountId;
   }
 
   private get icon() {
@@ -193,11 +202,26 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     if (e.target.checked) {
       this.modalToggleVisibility({ modalSaleShow: true });
     } else {
-      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+      this.modalToggleVisibility({
+        isShowConfirmModal: true,
+        modalConfirmData: {
+          text: 'Do you want to withdraw the token from sale?',
+          confirmCallback: () => {
+            this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+              console.log('sale_remove', res);
+
+              this.modalToggleVisibility({ isShowConfirmModal: false });
+              this.getInfo();
+            });
+          },
+        }
+      });
     }
   }
 
   private getCardControls() {
+    const price = convertYoctoNearsToNears(this.state.model?.sale?.price) || 0.00;
+
     switch (this.typeView) {
       case TokensType.created:
       case TokensType.fixedPrice:
@@ -226,7 +250,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 />
 
                 {this.state.model?.sale && this.isMyToken && (
-                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                  <p className={`${styles.priceText} pr-5px`}>{price} NEAR</p>
                 )}
               </div>
 
@@ -234,9 +258,27 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 <ButtonView
                   text={this.isMyToken ? this.typeView === TokensType.fixedPrice ? 'Stop selling' : 'Sell' : this.props.buttonText}
                   onClick={() => {
+                    if (!this.isAuth) {
+                      this.props.near.signIn();
+                      return;
+                    }
+
                     if (this.isMyToken) {
                       if (this.typeView === TokensType.fixedPrice) {
-                        this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+                        this.modalToggleVisibility({
+                          isShowConfirmModal: true,
+                          modalConfirmData: {
+                            text: 'Do you want to withdraw the token from sale?',
+                            confirmCallback: () => {
+                              this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+                                console.log('sale_remove', res);
+
+                                this.modalToggleVisibility({ isShowConfirmModal: false });
+                                this.getInfo();
+                              });
+                            },
+                          }
+                        });
                       } else {
                         this.modalToggleVisibility({ modalSaleShow: true })
                       }
@@ -250,7 +292,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               ) : (this.typeView === TokensType.fixedPrice) ? (
                 <div className="w-100 align-items-start">
                   <ButtonView
-                    text={`Buy now ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
+                    text={`Buy now ${price} NEAR`}
                     onClick={() => {
                       this.showCheckoutModal();
                     }}
@@ -262,7 +304,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 <ButtonView
                   text={'Not for sale'}
                   onClick={() => {
-
                   }}
                   color={buttonColors.goldFill}
                   customClass={styles.button}
@@ -298,13 +339,13 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 />
 
                 {this.state.model?.sale && (
-                  <p className={`${styles.priceText} pr-5px`}>{convertYoctoNearsToNears(this.state.model?.sale.price) || 0.00} NEAR</p>
+                  <p className={`${styles.priceText} pr-5px`}>{price} NEAR</p>
                 )}
               </div>
 
               {!this.isMyToken ? (
                 <ButtonView
-                  text={`Place a bid ${convertYoctoNearsToNears(this.state.model?.sale.price)} NEAR`}
+                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
                   onClick={() => {
                     this.showCheckoutModal();
                   }}
@@ -312,42 +353,84 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   customClass={styles.button}
                 />
               ) : (
-                <ButtonView
-                  text={`Stop selling`}
-                  onClick={() => {
-                    this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
-                  }}
-                  color={buttonColors.redButton}
-                  customClass={styles.buttonSecondControls}
-                />
-              )}
+                this.model.sale?.is_closed ? (
+                  this.isMyToken ? (
+                    <ButtonView
+                      text={`Start auction`}
+                      onClick={() => {
+                        this.modalToggleVisibility({
+                          isShowConfirmModal: true,
+                          modalConfirmData: {
+                            text: 'Do you want to start an auction?',
+                            confirmCallback: () => {
+                              this.props.nftContractContext.sale_set_is_closed(this.model.token_id, false).then(res => {
+                                console.log('sale_set_is_closed', res);
+                                this.getInfo();
+                              });
+                            },
+                          }
+                        });
+                      }}
+                      color={buttonColors.greenButton}
+                      customClass={styles.buttonSecondControls}
+                    />
+                  ) : (
+                    this.model.sale?.bids[0]?.account?.account_id === this.accountId ? (
+                      <ButtonView
+                        text={`Get the lot`}
+                        onClick={() => {
+                          this.modalToggleVisibility({
+                            isShowConfirmModal: true,
+                            modalConfirmData: {
+                              text: 'Do you want to get the lot?',
+                              confirmCallback: () => {
+                                const time = new Date().getTime();
+
+                                this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time).then(res => {
+                                  console.log('sale_auction_init_transfer', res);
+                                  this.getInfo();
+                                });
+                              },
+                            }
+                          });
+                        }}
+                        color={buttonColors.goldFill}
+                        customClass={styles.buttonSecondControls}
+                      />
+                    ) : (
+                      <ButtonView
+                        text={`Auction is closed`}
+                        onClick={() => {
+                        }}
+                        color={buttonColors.goldFill}
+                        customClass={styles.buttonSecondControls}
+                        disabled={true}
+                      />
+                    )
+                  )
+                ) : (
+                  <ButtonView
+                    text={`Stop auction`}
+                    onClick={() => {
+                      this.modalToggleVisibility({
+                        isShowConfirmModal: true,
+                        modalConfirmData: {
+                          text: 'Do you want to stop the auction right now?',
+                          confirmCallback: () => {
+                            this.props.nftContractContext.sale_set_is_closed(this.model.token_id, true).then(res => {
+                              console.log('sale_set_is_closed', res);
+                              this.getInfo();
+                            });
+                          },
+                        }
+                      });
+                    }}
+                    color={buttonColors.redButton}
+                    customClass={styles.buttonSecondControls}
+                  />
+                ))}
             </div>
           </div>
-
-          // {/* {this.isMyToken && (
-          //   <>
-          //     <p className='line-separator' />
-
-          //     <div className='d-flex align-items-center justify-content-between w-100'>
-          //       <ButtonView
-          //         text={`Edit lot`}
-          //         onClick={() => {
-          //         }}
-          //         color={buttonColors.goldFill}
-          //         customClass={styles.buttonSecondControls}
-          //         disabled={true}
-          //       />
-          //       <ButtonView
-          //         text={`Stop selling`}
-          //         onClick={() => {
-          //           this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
-          //         }}
-          //         color={buttonColors.redButton}
-          //         customClass={styles.buttonSecondControls}
-          //       />
-          //     </div>
-          //   </>
-          // )} */}
         );
     }
   }
@@ -361,8 +444,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       this.props.near.signIn();
       return;
     }
-
-    // data === {modalStateKeyIsShow: true }
 
     this.setState({
       ...this.state,
@@ -485,7 +566,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           </LazyLoad>
         )}
 
-        {this.typeView === TokensType.created ? (
+        {this.typeView === TokensType.created && (
           <>
             <ModalTransferNFT
               inShowModal={this.state.modalTransferIsShow}
@@ -523,8 +604,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   result.startDate,
                   result.endDate,
                 ).then(res => {
-                  if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
-
                   this.modalToggleVisibility({ modalSaleShow: false });
                   this.getInfo();
 
@@ -534,36 +613,30 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
               tokenInfo={this.model}
             />
           </>
-        ) : (
-          <ModalConfirm
-            inShowModal={this.state.modalConfirmRemoveSaleShow}
-            onHideModal={() => {
-              if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
-              this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-            }}
+        )}
+
+        {(this.typeView !== TokensType.created && !this.isMyToken) && (
+          <ModalTokenCheckoutNFT
+            inShowModal={this.state.modalCeckoutIsShow}
+            onHideModal={() => this.hideCheckoutModal()}
             onSubmit={() => {
-              this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-
-              this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
-                if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
-
-                this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-                this.getInfo();
-                console.log('sale_remove', res);
-              });
+              this.getInfo();
+              this.hideCheckoutModal()
             }}
-            confirmText={`Do you want to withdraw the token from sale?`}
+            tokenInfo={{}} token={this.model || null}
           />
         )}
 
-        {(this.typeView !== TokensType.created && !this.isMyToken) && <ModalTokenCheckoutNFT
-          inShowModal={this.state.modalCeckoutIsShow}
-          onHideModal={() => this.hideCheckoutModal()}
-          onSubmit={() => {
-            this.getInfo();
-            this.hideCheckoutModal()
+        <ModalConfirm
+          inShowModal={this.state.isShowConfirmModal}
+          onHideModal={() => {
+            this.setState({ isShowConfirmModal: false })
           }}
-          tokenInfo={{}} token={this.model || null} />}
+          onSubmit={() => {
+            this.state.modalConfirmData.confirmCallback();
+          }}
+          confirmText={this.state.modalConfirmData.text}
+        />
       </>
     );
   }
