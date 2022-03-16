@@ -19,7 +19,7 @@ export interface INftContractContext {
   sale_offer: (token_id: string, time: any, offer?: string, price?: string) => Promise<any>;
   sale_remove: (token_id: string) => Promise<any>;
   sale_set_is_closed: (token_id: string, is_closed: boolean) => Promise<any>;
-  sale_auction_init_transfer: (token_id: string, time: number) => Promise<any>;
+  sale_auction_init_transfer: (token_id: string, time: number, price?: string) => Promise<any>;
   like_artist_account: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
@@ -200,11 +200,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public sale_auction_init_transfer = async (token_id: string, time: number) => {
+  public sale_auction_init_transfer = async (token_id: string, time: number, price?: string) => {
     return this.nftContract.sale_auction_init_transfer({
       token_id,
       time,
-    });
+    }, APP.PREPAID_GAS_LIMIT, price);
   };
 
   public view_artist_account = async (accountId: string) => {

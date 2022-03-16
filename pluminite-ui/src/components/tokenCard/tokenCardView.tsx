@@ -376,8 +376,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                             text: 'Do you want to get the lot?',
                             confirmCallback: () => {
                               const time = new Date().getTime();
+                              //
+                              const price = this.model.sale && this.model.sale.bids.length !== 0 ? this.model.sale?.bids[this.model.sale.bids.length - 1].price : null;
 
-                              this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time).then(res => {
+                              this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time, price).then(res => {
                                 console.log('sale_auction_init_transfer', res);
                                 this.getInfo();
                               });
