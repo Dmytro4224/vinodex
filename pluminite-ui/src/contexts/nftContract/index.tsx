@@ -18,6 +18,8 @@ export interface INftContractContext {
   sale_create: (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => Promise<any>;
   sale_offer: (token_id: string, time: any, offer?: string, price?: string) => Promise<any>;
   sale_remove: (token_id: string) => Promise<any>;
+  sale_set_is_closed: (token_id: string, is_closed: boolean) => Promise<any>;
+  sale_auction_init_transfer: (token_id: string, time: number) => Promise<any>;
   like_artist_account: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
@@ -191,6 +193,20 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public sale_set_is_closed = async (token_id: string, is_closed: boolean) => {
+    return this.nftContract.sale_set_is_closed({
+      token_id,
+      is_closed,
+    });
+  };
+
+  public sale_auction_init_transfer = async (token_id: string, time: number) => {
+    return this.nftContract.sale_auction_init_transfer({
+      token_id,
+      time,
+    });
+  };
+
   public view_artist_account = async (accountId: string) => {
     return this.nftContract.view_artist_account({
       account_id: accountId,
@@ -222,6 +238,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       sale_create: this.sale_create,
       sale_offer: this.sale_offer,
       sale_remove: this.sale_remove,
+      sale_set_is_closed: this.sale_set_is_closed,
+      sale_auction_init_transfer: this.sale_auction_init_transfer,
       nft_mint: this.nft_mint,
       follow_artist_account: this.follow_artist_account,
       view_artist_account: this.view_artist_account,
