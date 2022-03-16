@@ -221,6 +221,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private getCardControls() {
     const price = convertYoctoNearsToNears(this.state.model?.sale?.price) || 0.00;
+    console.log("🚀 ~ file: tokenCardView.tsx ~ line 224 ~ TokenCardView ~ getCardControls ~ this.state.model", this.state.model)
 
     switch (this.typeView) {
       case TokensType.created:
@@ -343,72 +344,63 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 )}
               </div>
 
-              {!this.isMyToken ? (
-                <ButtonView
-                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
-                  onClick={() => {
-                    this.showCheckoutModal();
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.button}
-                />
-              ) : (
-                this.model.sale?.is_closed ? (
-                  this.isMyToken ? (
+              {this.model.sale?.is_closed ? (
+                this.isMyToken ? (
+                  <ButtonView
+                    text={`Start auction`}
+                    onClick={() => {
+                      this.modalToggleVisibility({
+                        isShowConfirmModal: true,
+                        modalConfirmData: {
+                          text: 'Do you want to start an auction?',
+                          confirmCallback: () => {
+                            this.props.nftContractContext.sale_set_is_closed(this.model.token_id, false).then(res => {
+                              console.log('sale_set_is_closed', res);
+                              this.getInfo();
+                            });
+                          },
+                        }
+                      });
+                    }}
+                    color={buttonColors.greenButton}
+                    customClass={styles.buttonSecondControls}
+                  />
+                ) : (
+                  this.model.sale?.bids[0]?.account?.account_id === this.accountId ? (
                     <ButtonView
-                      text={`Start auction`}
+                      text={`Get the lot`}
                       onClick={() => {
                         this.modalToggleVisibility({
                           isShowConfirmModal: true,
                           modalConfirmData: {
-                            text: 'Do you want to start an auction?',
+                            text: 'Do you want to get the lot?',
                             confirmCallback: () => {
-                              this.props.nftContractContext.sale_set_is_closed(this.model.token_id, false).then(res => {
-                                console.log('sale_set_is_closed', res);
+                              const time = new Date().getTime();
+
+                              this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time).then(res => {
+                                console.log('sale_auction_init_transfer', res);
                                 this.getInfo();
                               });
                             },
                           }
                         });
                       }}
-                      color={buttonColors.greenButton}
+                      color={buttonColors.goldFill}
                       customClass={styles.buttonSecondControls}
                     />
                   ) : (
-                    this.model.sale?.bids[0]?.account?.account_id === this.accountId ? (
-                      <ButtonView
-                        text={`Get the lot`}
-                        onClick={() => {
-                          this.modalToggleVisibility({
-                            isShowConfirmModal: true,
-                            modalConfirmData: {
-                              text: 'Do you want to get the lot?',
-                              confirmCallback: () => {
-                                const time = new Date().getTime();
-
-                                this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time).then(res => {
-                                  console.log('sale_auction_init_transfer', res);
-                                  this.getInfo();
-                                });
-                              },
-                            }
-                          });
-                        }}
-                        color={buttonColors.goldFill}
-                        customClass={styles.buttonSecondControls}
-                      />
-                    ) : (
-                      <ButtonView
-                        text={`Auction is closed`}
-                        onClick={() => {
-                        }}
-                        color={buttonColors.goldFill}
-                        customClass={styles.buttonSecondControls}
-                        disabled={true}
-                      />
-                    )
+                    <ButtonView
+                      text={`Auction is closed`}
+                      onClick={() => {
+                      }}
+                      color={buttonColors.goldFill}
+                      customClass={styles.buttonSecondControls}
+                      disabled={true}
+                    />
                   )
-                ) : (
+                )
+              ) : (
+                this.isMyToken ? (
                   <ButtonView
                     text={`Stop auction`}
                     onClick={() => {
@@ -428,7 +420,17 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                     color={buttonColors.redButton}
                     customClass={styles.buttonSecondControls}
                   />
-                ))}
+                ) : (
+                  <ButtonView
+                    text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
+                    onClick={() => {
+                      this.showCheckoutModal();
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                  />
+                )
+              )}
             </div>
           </div>
         );
