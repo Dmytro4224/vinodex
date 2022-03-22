@@ -96,13 +96,20 @@
   border: 1px solid var(--pirateCold);
 }
 
+.dark {
+  color: var(--black);
+  background: var(--white);
+  outline: none;
+  border: 1px solid var(--black);
+}
+
 .btnIcon {
   display: flex;
   align-items: center;
 }
 
 .btnIcon .btnText {
-  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .icon {
