@@ -1,0 +1,2 @@
+cargo:rustc-env=TYPENUM_BUILD_CONSTS=C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\wasm32-unknown-unknown\release\build\typenum-4974d8bcdcad99e4\out\consts.rs
+cargo:rustc-env=TYPENUM_BUILD_OP=C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\wasm32-unknown-unknown\release\build\typenum-4974d8bcdcad99e4\out\op.rs
