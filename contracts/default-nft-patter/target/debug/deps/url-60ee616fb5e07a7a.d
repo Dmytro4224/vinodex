@@ -1,0 +1,13 @@
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\debug\deps\url-60ee616fb5e07a7a.rmeta: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\host.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\origin.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\parser.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\path_segments.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\slicing.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\quirks.rs
+
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\debug\deps\liburl-60ee616fb5e07a7a.rlib: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\host.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\origin.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\parser.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\path_segments.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\slicing.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\quirks.rs
+
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\debug\deps\url-60ee616fb5e07a7a.d: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\host.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\origin.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\parser.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\path_segments.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\slicing.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\quirks.rs
+
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\lib.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\host.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\origin.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\parser.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\path_segments.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\slicing.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\url-2.2.2\src\quirks.rs:

@@ -1,0 +1,12 @@
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\wasm32-unknown-unknown\release\deps\sha2-027cba0b63cf055e.rmeta: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\consts.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256\soft.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512\soft.rs
+
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\wasm32-unknown-unknown\release\deps\libsha2-027cba0b63cf055e.rlib: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\consts.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256\soft.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512\soft.rs
+
+C:\Users\Alex\Documents\GitHub\vinodex\contracts\market-crud\target\wasm32-unknown-unknown\release\deps\sha2-027cba0b63cf055e.d: C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\lib.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\consts.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256\soft.rs C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512\soft.rs
+
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\lib.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\consts.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha256\soft.rs:
+C:\Users\Alex\.cargo\registry\src\github.com-1ecc6299db9ec823\sha2-0.9.9\src\sha512\soft.rs:
