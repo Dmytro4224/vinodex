@@ -1,17 +1,17 @@
-use std::collections::HashMap;
-use std::cmp::min;
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
 use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
-use near_sdk::json_types::{Base64VecU8, ValidAccountId, U64, U128};
+use near_sdk::json_types::{Base64VecU8, ValidAccountId, U128, U64};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
-    assert_one_yocto, env, near_bindgen, AccountId, Balance, Gas, PanicOnDefault,
-    Promise, CryptoHash, BorshStorageKey, StorageUsage,
+    assert_one_yocto, env, near_bindgen, AccountId, Balance, BorshStorageKey, CryptoHash, Gas,
+    PanicOnDefault, Promise, StorageUsage,
 };
+use std::cmp::min;
+use std::collections::HashMap;
 
 use near_sdk::env::STORAGE_PRICE_PER_BYTE;
-use std::collections::HashSet;
 use std::cmp::Ordering;
+use std::collections::HashSet;
 
 extern crate serde_derive;
 
@@ -29,12 +29,11 @@ pub use crate::mint_contract::*;
 mod list_contract;
 pub use crate::list_contract::*;
 
-
 #[path = "tokens/token.rs"]
 mod token;
-pub use crate::token::*;
-pub use crate::profile::*;
 pub use crate::nft_core::*;
+pub use crate::profile::*;
+pub use crate::token::*;
 
 mod internal;
 mod nft_core;
@@ -58,15 +57,13 @@ const NO_DEPOSIT: Balance = 0;
 //the minimum storage to have a sale on the contract.
 const STORAGE_PER_SALE: u128 = 1000 * STORAGE_PRICE_PER_BYTE;
 
-//Creating custom types to use within the contract. This makes things more readable. 
+//Creating custom types to use within the contract. This makes things more readable.
 pub type SalePriceInYoctoNear = U128;
 pub type TokenId = String;
 pub type FungibleTokenId = AccountId;
 pub type ContractAndTokenId = String;
 
 //===============================//
-
-
 
 //тип токену
 pub type TokenType = String;
@@ -82,18 +79,15 @@ pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
 //максимальна величина картинки
 pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
 
-
-    //==================
+//==================
 
 near_sdk::setup_alloc!();
 
 #[near_bindgen]
 #[derive(BorshDeserialize, BorshSerialize, PanicOnDefault)]
 pub struct Contract {
-
     //keep track of the storage that accounts have payed
     pub storage_deposits: LookupMap<AccountId, Balance>,
-
 
     //токени власника
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
@@ -114,13 +108,10 @@ pub struct Contract {
     //Перегляд токенів
     pub tokens_users_views: LookupMap<TokenId, HashSet<AccountId>>,
 
-
     //мій список токенів, яким я поставив лайки
     pub my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
     //список токенів, на які я підписався
     pub my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
-
-
 
     //Токени впорядковані за фільтром(key - тип фільтру, value - впорядкований ліст)
 
@@ -135,7 +126,6 @@ pub struct Contract {
 
     //9 - Price High to Low - пункт 5
     //10 - Oldest - пункт 2
-
     pub tokens_sorted: LookupMap<u8, Vec<SortedToken>>,
 
     // The storage size in bytes for one account.
@@ -157,7 +147,6 @@ pub struct Contract {
     //загальна статистика по користувачу
     pub profiles_global_stat: LookupMap<AccountId, ProfileStat>,
 
-
     //likes_count: 0 - кількість лайків аккаунту
     //tokens_likes_count: 1 -кількість лайків токенів аккаунту
     //pub views_count: 2 - загальна ксть переглядів аккаунту
@@ -166,7 +155,7 @@ pub struct Contract {
     //followers_count: 5 - к-сть підписників автора
     //total_likes_count: 6 - загальна ксть  лайків аккаунт+токени
     //total_views_count: 7 - загальна ксть  переглядів аккаунт+токени
-    pub profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
+    pub profiles_global_stat_sorted_vector: LookupMap<u8, Vec<ProfileStatCriterion>>,
     //==========================================================
 
     //чи брати плату за зберігання інфи з юзера
@@ -175,26 +164,24 @@ pub struct Contract {
     pub free_mints: u64,
     pub version: u16,
 
-
-  //===========лакйи, фоловери, перегляди авторів======
-  //список користувачів, яким сподобався аккаунт AccountId
-  pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  //список користувачів, які дивилися аккаунт AccountId
-  pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  //список користувачів, які відстежуються аккаунт AccountId
-  pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
-  //===========мої лакйи, фоловери, перегляди авторів======
-  //мій список користувачів, яким я поставив лайки
-  pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-  //аккаунти, які я переглянув
-  pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-  //список аккаунтів, на які я підписався
-  pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
-
+    //===========лакйи, фоловери, перегляди авторів======
+    //список користувачів, яким сподобався аккаунт AccountId
+    pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+    //список користувачів, які дивилися аккаунт AccountId
+    pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+    //список користувачів, які відстежуються аккаунт AccountId
+    pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+    //===========мої лакйи, фоловери, перегляди авторів======
+    //мій список користувачів, яким я поставив лайки
+    pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+    //аккаунти, які я переглянув
+    pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+    //список аккаунтів, на які я підписався
+    pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
 
     //================sales==========================//
 
-     //Токени, виставлені на продаж
+    //Токени, виставлені на продаж
     pub sales_active: UnorderedMap<TokenId, Sale>,
 
     //Історія продажу токенів
@@ -211,9 +198,10 @@ pub struct Contract {
 
     //================sales==========================//
 
-
-
-  }
+    //================collections--------------------//
+    pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
+    pub collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
+}
 
 // Helper structure to for keys of the persistent collections.
 #[derive(BorshSerialize)]
@@ -249,18 +237,21 @@ pub enum StorageKey {
     MyPurchases,
     MyBidsActive,
     MyBidsActiveSet { account_id_hash: CryptoHash },
-    CreatorPerToken
+    CreatorPerToken,
+    CollectionOfTokens,
+    CollectionPerToken,
 }
 
 #[near_bindgen]
 impl Contract {
     #[init]
-    pub fn new(owner_id: ValidAccountId,
-               metadata: NFTMetadata,
-               supply_cap_by_type: TypeSupplyCaps,
-               use_storage_fees: bool,
-               free_mints: u64,
-               unlocked: Option<bool>,
+    pub fn new(
+        owner_id: ValidAccountId,
+        metadata: NFTMetadata,
+        supply_cap_by_type: TypeSupplyCaps,
+        use_storage_fees: bool,
+        free_mints: u64,
+        unlocked: Option<bool>,
     ) -> Self {
         let mut this = Self {
             tokens_per_owner: LookupMap::new(StorageKey::TokensPerOwner.try_to_vec().unwrap()),
@@ -281,28 +272,42 @@ impl Contract {
             ),
             supply_cap_by_type,
             tokens_per_type: LookupMap::new(StorageKey::TokensPerType.try_to_vec().unwrap()),
-            token_types_locked: UnorderedSet::new(StorageKey::TokenTypesLocked.try_to_vec().unwrap()),
+            token_types_locked: UnorderedSet::new(
+                StorageKey::TokenTypesLocked.try_to_vec().unwrap(),
+            ),
             contract_royalty: 0,
             profiles: LookupMap::new(StorageKey::Profiles.try_to_vec().unwrap()),
             use_storage_fees,
             free_mints,
             version: 0,
-            profiles_global_stat:LookupMap::new(StorageKey::ProfilesGlobalStat.try_to_vec().unwrap()),
-            profiles_global_stat_sorted_vector:LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap()),
-            autors_likes:LookupMap::new (StorageKey::AutorsLikes.try_to_vec().unwrap()),
-            autors_views:LookupMap::new (StorageKey::AutorsViews.try_to_vec().unwrap()),
-            autors_followers:LookupMap::new (StorageKey::AutorsFollowers.try_to_vec().unwrap()),
-            my_authors_likes:LookupMap::new (StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
-            my_autors_views:LookupMap::new (StorageKey::MyAutorsViews.try_to_vec().unwrap()),
-            my_autors_followed:LookupMap::new (StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
-            my_tokens_likes:LookupMap::new (StorageKey::MyTokensLikes.try_to_vec().unwrap()),
-            my_tokens_followed:LookupMap::new (StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
-            sales_active:UnorderedMap::new (StorageKey::SalesActive.try_to_vec().unwrap()),
-            sales_history_by_token_id:LookupMap::new (StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap()),
-            storage_deposits:LookupMap::new (StorageKey::StorageDeposit.try_to_vec().unwrap()),
-            my_sales:LookupMap::new (StorageKey::MySales.try_to_vec().unwrap()),
-            my_purchases:LookupMap::new (StorageKey::MyPurchases.try_to_vec().unwrap()),
-            my_bids_active:LookupMap::new (StorageKey::MyBidsActive.try_to_vec().unwrap()),
+            profiles_global_stat: LookupMap::new(
+                StorageKey::ProfilesGlobalStat.try_to_vec().unwrap(),
+            ),
+            profiles_global_stat_sorted_vector: LookupMap::new(
+                StorageKey::ProfilesGlobalStatSortedVector
+                    .try_to_vec()
+                    .unwrap(),
+            ),
+            autors_likes: LookupMap::new(StorageKey::AutorsLikes.try_to_vec().unwrap()),
+            autors_views: LookupMap::new(StorageKey::AutorsViews.try_to_vec().unwrap()),
+            autors_followers: LookupMap::new(StorageKey::AutorsFollowers.try_to_vec().unwrap()),
+            my_authors_likes: LookupMap::new(StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
+            my_autors_views: LookupMap::new(StorageKey::MyAutorsViews.try_to_vec().unwrap()),
+            my_autors_followed: LookupMap::new(StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
+            my_tokens_likes: LookupMap::new(StorageKey::MyTokensLikes.try_to_vec().unwrap()),
+            my_tokens_followed: LookupMap::new(StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
+            sales_active: UnorderedMap::new(StorageKey::SalesActive.try_to_vec().unwrap()),
+            sales_history_by_token_id: LookupMap::new(
+                StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap(),
+            ),
+            storage_deposits: LookupMap::new(StorageKey::StorageDeposit.try_to_vec().unwrap()),
+            my_sales: LookupMap::new(StorageKey::MySales.try_to_vec().unwrap()),
+            my_purchases: LookupMap::new(StorageKey::MyPurchases.try_to_vec().unwrap()),
+            my_bids_active: LookupMap::new(StorageKey::MyBidsActive.try_to_vec().unwrap()),
+            collection_tokens: LookupMap::new(StorageKey::CollectionOfTokens.try_to_vec().unwrap()),
+            collection_per_token: LookupMap::new(
+                StorageKey::CollectionPerToken.try_to_vec().unwrap(),
+            ),
         };
 
         if unlocked.is_none() {
@@ -317,12 +322,14 @@ impl Contract {
         this
     }
 
-    
-
     #[init(ignore_state)]
     pub fn migrate_state_1() -> Self {
         let migration_version: u16 = 1;
-        assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
+        assert_eq!(
+            env::predecessor_account_id(),
+            env::current_account_id(),
+            "Private function"
+        );
 
         #[derive(BorshDeserialize)]
         struct OldContract {
@@ -342,7 +349,7 @@ impl Contract {
             contract_royalty: u32,
             profiles: LookupMap<AccountId, Profile>,
             use_storage_fees: bool,
-            profiles_global_stat_sorted_vector:  LookupMap<u8, Vec<ProfileStatCriterion>>,
+            profiles_global_stat_sorted_vector: LookupMap<u8, Vec<ProfileStatCriterion>>,
             profiles_global_stat: LookupMap<AccountId, ProfileStat>,
             autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
             autors_views: LookupMap<AccountId, HashSet<AccountId>>,
@@ -358,7 +365,9 @@ impl Contract {
             my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
             my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
-            creator_per_token: LookupMap<TokenId, AccountId>
+            creator_per_token: LookupMap<TokenId, AccountId>,
+            collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
+            collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -382,7 +391,7 @@ impl Contract {
             use_storage_fees: old_contract.use_storage_fees,
             free_mints: 3,
             version: migration_version,
-            profiles_global_stat_sorted_vector:old_contract.profiles_global_stat_sorted_vector,
+            profiles_global_stat_sorted_vector: old_contract.profiles_global_stat_sorted_vector,
             profiles_global_stat: old_contract.profiles_global_stat,
             autors_likes: old_contract.autors_likes,
             autors_views: old_contract.autors_views,
@@ -398,7 +407,9 @@ impl Contract {
             my_sales: old_contract.my_sales,
             my_purchases: old_contract.my_purchases,
             my_bids_active: old_contract.my_bids_active,
-            creator_per_token: old_contract.creator_per_token
+            creator_per_token: old_contract.creator_per_token,
+            collection_tokens: old_contract.collection_tokens,
+            collection_per_token: old_contract.collection_per_token,
         }
     }
 
@@ -410,14 +421,16 @@ impl Contract {
         123
     }
 
-    pub fn tokens_sorted_get(&self, filter: u8) -> Option<Vec<SortedToken>>
-    {
+    pub fn tokens_sorted_get(&self, filter: u8) -> Option<Vec<SortedToken>> {
         return self.tokens_sorted.get(&filter);
     }
 
-
     pub fn set_use_storage_fees(&mut self, use_storage_fees: bool) {
-        assert_eq!(env::predecessor_account_id(), env::current_account_id(), "Private function");
+        assert_eq!(
+            env::predecessor_account_id(),
+            env::current_account_id(),
+            "Private function"
+        );
         self.use_storage_fees = use_storage_fees;
     }
 
@@ -431,12 +444,8 @@ impl Contract {
 
     pub fn get_tokens_created(&self, account_id: AccountId) -> u64 {
         match self.tokens_per_creator.get(&account_id) {
-            Some(tokens_creator) => {
-                tokens_creator.len()
-            }
-            None => {
-                0
-            }
+            Some(tokens_creator) => tokens_creator.len(),
+            None => 0,
         }
     }
 
@@ -455,8 +464,8 @@ impl Contract {
             StorageKey::TokenPerOwnerInner {
                 account_id_hash: hash_account_id(&tmp_account_id),
             }
-                .try_to_vec()
-                .unwrap(),
+            .try_to_vec()
+            .unwrap(),
         );
         self.tokens_per_owner.insert(&tmp_account_id, &u);
 
@@ -473,7 +482,10 @@ impl Contract {
 
     pub fn set_contract_royalty(&mut self, contract_royalty: u32) {
         self.assert_owner();
-        assert!(contract_royalty <= CONTRACT_ROYALTY_CAP, "Contract royalties limited to 10% for owner");
+        assert!(
+            contract_royalty <= CONTRACT_ROYALTY_CAP,
+            "Contract royalties limited to 10% for owner"
+        );
         self.contract_royalty = contract_royalty;
     }
 
@@ -483,7 +495,8 @@ impl Contract {
             if unlocked.is_none() {
                 self.token_types_locked.insert(&token_type);
             }
-            self.supply_cap_by_type.insert(token_type.to_string(), *hard_cap);
+            self.supply_cap_by_type
+                .insert(token_type.to_string(), *hard_cap);
         }
     }
 
@@ -513,64 +526,64 @@ impl Contract {
     }
 
     //Отримати дані профілю для юзера AccountId
-    pub fn get_profile(&self, account_id: AccountId, asked_account_id: Option<AccountId>) -> Option<JsonProfile> {
+    pub fn get_profile(
+        &self,
+        account_id: AccountId,
+        asked_account_id: Option<AccountId>,
+    ) -> Option<JsonProfile> {
         let account_id: AccountId = account_id.into();
         //return self.profiles.get(&account_id).unwrap_or(Profile::get_default_data(account_id.clone()));
         return Profile::get_full_profile(
-            &self.profiles, 
-            &account_id, 
-            &asked_account_id, 
-            &self.autors_likes, 
-            &self.autors_followers, 
+            &self.profiles,
+            &account_id,
+            &asked_account_id,
+            &self.autors_likes,
+            &self.autors_followers,
             &self.tokens_per_owner,
-            true);
+            true,
+        );
     }
 
     //Встановити дані профілю
-    pub fn set_profile(&mut self, mut profile: Profile)
-    {
+    pub fn set_profile(&mut self, mut profile: Profile) {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
-            "Profile bio length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+            "Profile bio length is too long. Max length is {}",
+            MAX_PROFILE_NAME_LENGTH
         );
 
         assert!(
             profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile image length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+            "Profile image length is too long. Max length is {}",
+            MAX_PROFILE_NAME_LENGTH
         );
 
         assert!(
-            profile.name.len() <MAX_PROFILE_NAME_LENGTH,
-            "User name length is too long. Max length is {}",MAX_PROFILE_NAME_LENGTH
+            profile.name.len() < MAX_PROFILE_NAME_LENGTH,
+            "User name length is too long. Max length is {}",
+            MAX_PROFILE_NAME_LENGTH
         );
 
         let predecessor_account_id = env::predecessor_account_id();
 
-        profile.account_id=predecessor_account_id;
+        profile.account_id = predecessor_account_id;
 
-        Profile::set_profile(&mut self.profiles,
-            &profile,
-            &env::predecessor_account_id());
+        Profile::set_profile(&mut self.profiles, &profile, &env::predecessor_account_id());
     }
 
     //лайкнути карточку користувача
     // працює дзеркально: лайк або ставиться/або знімається
-    pub fn like_artist_account(&mut self,account_id:AccountId)
-    {
+    pub fn like_artist_account(&mut self, account_id: AccountId) {
         let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку лайків аккаунту, який лайкнули
-        Profile::set_profile_like(
-            &mut self.autors_likes,
-            &account_id,
-            &predecessor_account_id
-        );
+        Profile::set_profile_like(&mut self.autors_likes, &account_id, &predecessor_account_id);
 
         //додаємо запис до списку мого списку лайків
         Profile::add_profile_to_my_like_list(
             &mut self.my_authors_likes,
             &predecessor_account_id,
-            &account_id
+            &account_id,
         );
 
         //збільнуємо статистику лайків
@@ -579,77 +592,65 @@ impl Contract {
             &mut self.profiles_global_stat_sorted_vector,
             &account_id,
             0,
-            Profile::get_profile_like_count(
-               &mut self.autors_likes,
-                &account_id
-            )
+            Profile::get_profile_like_count(&mut self.autors_likes, &account_id),
         );
     }
-
 
     //поставити помітку про відвідання карточки користувача
-    pub fn view_artist_account(&mut self, account_id:AccountId) {
+    pub fn view_artist_account(&mut self, account_id: AccountId) {
         let predecessor_account_id = env::predecessor_account_id();
 
-        Profile::set_profile_view (
-            &mut self.autors_views,
+        Profile::set_profile_view(&mut self.autors_views, &account_id, &predecessor_account_id);
+
+        let _new_val = ProfileStatCriterion::profile_stat(&self.profiles_global_stat, &account_id)
+            .views_count
+            + 1;
+
+        //змінюємо статистику переглядів
+        ProfileStatCriterion::set_profile_stat_val(
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
             &account_id,
-            &predecessor_account_id
+            2,
+            _new_val,
         );
-
-        let _new_val=ProfileStatCriterion::profile_stat(
-            &self.profiles_global_stat,
-            &account_id).views_count+1;
-
-                //змінюємо статистику переглядів
-                ProfileStatCriterion::set_profile_stat_val(
-                    &mut self.profiles_global_stat,
-                    &mut self.profiles_global_stat_sorted_vector,
-                    &account_id,
-                    2,
-                    _new_val
-                );
     }
 
-      //додати користувача до стписку відстеження
-      // працює дзеркально: ставить або знімає
-    pub fn follow_artist_account(&mut self, account_id:AccountId){
+    //додати користувача до стписку відстеження
+    // працює дзеркально: ставить або знімає
+    pub fn follow_artist_account(&mut self, account_id: AccountId) {
         let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку підписників аккаунту, на який підписалися
         Profile::set_profile_follow(
             &mut self.autors_followers,
             &account_id,
-            &predecessor_account_id
+            &predecessor_account_id,
         );
 
         //додаємо запис до списку мого списку лайків
         Profile::add_profile_to_my_followers_list(
             &mut self.my_autors_followed,
             &predecessor_account_id,
-            &account_id
+            &account_id,
         );
 
         //збільнуємо статистику лайків
         ProfileStatCriterion::set_profile_stat_val(
-           &mut self.profiles_global_stat,
-           &mut self.profiles_global_stat_sorted_vector,
+            &mut self.profiles_global_stat,
+            &mut self.profiles_global_stat_sorted_vector,
             &account_id,
             5,
-            Profile::get_profile_followers_count(
-                &mut self.autors_followers,
-                &account_id
-            )
+            Profile::get_profile_followers_count(&mut self.autors_followers, &account_id),
         );
     }
-
 
     //Allows users to deposit storage. This is to cover the cost of storing sale objects on the contract
     //Optional account ID is to users can pay for storage for other people.
     #[payable]
     pub fn storage_deposit(&mut self, account_id: Option<AccountId>) {
         //get the account ID to pay for storage for
-        let storage_account_id = account_id 
+        let storage_account_id = account_id
             //convert the valid account ID into an account ID
             .map(|a| a.into())
             //if we didn't specify an account ID, we simply use the caller of the function
@@ -675,11 +676,11 @@ impl Contract {
 
     //Allows users to withdraw any excess storage that they're not using. Say Bob pays 0.01N for 1 sale
     //Alice then buys Bob's token. This means bob has paid 0.01N for a sale that's no longer on the marketplace
-    //Bob could then withdraw this 0.01N back into his account. 
+    //Bob could then withdraw this 0.01N back into his account.
     #[payable]
     pub fn storage_withdraw(&mut self) {
         //make sure the user attaches exactly 1 yoctoNEAR for security purposes.
-        //this will redirect them to the NEAR wallet (or requires a full access key). 
+        //this will redirect them to the NEAR wallet (or requires a full access key).
         assert_one_yocto();
 
         //Порахувати скільки за токен використовується місьця в системі
@@ -688,12 +689,11 @@ impl Contract {
         // let owner_id = env::predecessor_account_id();
         // //get the amount that the user has by removing them from the map. If they're not in the map, default to 0
         // let mut amount = self.storage_deposits.remove(&owner_id).unwrap_or(0);
-        
         // //how many sales is that user taking up currently. This returns a set
         // let sales = self.by_owner_id.get(&owner_id);
-        // //get the length of that set. 
+        // //get the length of that set.
         // let len = sales.map(|s| s.len()).unwrap_or_default();
-        // //how much NEAR is being used up for all the current sales on the account 
+        // //how much NEAR is being used up for all the current sales on the account
         // let diff = u128::from(len) * STORAGE_PER_SALE;
 
         // //the excess to withdraw is the total storage paid - storage being used up.
