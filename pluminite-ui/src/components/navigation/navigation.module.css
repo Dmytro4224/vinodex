@@ -1,10 +1,13 @@
 .navLink {
   font-weight: 500;
   font-size: 16px;
-  color: var(--doveGray);
-  text-transform: uppercase;
+  color: var(--black);
   display: inline-block;
   line-height: 1;
+}
+
+.navLink img {
+  margin-left: 5px;
 }
 
 .active {
@@ -12,5 +15,5 @@
 }
 
 .navItem:not(:last-of-type) {
-  margin-right: 20px;
+  margin-right: 30px;
 }
