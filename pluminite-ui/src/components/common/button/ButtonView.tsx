@@ -17,6 +17,8 @@ enum buttonColors {
   backButton = 'backButton',
   redButton = 'redButton',
   greenButton = 'greenButton',
+  goldBordered = 'goldBordered',
+  dark = 'dark',
 }
 
 interface IButtonView extends IProps {
@@ -86,6 +88,12 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>> 
       case 'greenButton':
         color = styles.greenButton;
         break;
+      case 'goldBordered':
+        color = styles.goldBordered;
+        break;
+      case 'dark':
+        color = styles.dark;
+        break;
     }
 
     return color;
@@ -116,8 +124,8 @@ class ButtonView extends Component<Readonly<IButtonView & IBaseComponentProps>> 
             aria-hidden='true'
           />
         </>}
-        {this.props.withoutText || this.isLoading ? `` : <span className={styles.btnText}>{this.text}</span>}
         {this.props.icon && <i style={{ backgroundImage: `url(${this.props.icon})`, backgroundRepeat: 'no-repeat', backgroundPosition: 'center' }} className={`${styles.icon}`} />}
+        {this.props.withoutText || this.isLoading ? `` : <span className={styles.btnText}>{this.text}</span>}
       </button>
     );
   }

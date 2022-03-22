@@ -206,7 +206,6 @@ pub struct Contract {
 
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
     pub collection_per_token: LookupMap<TokenId, String>,
-
     pub collections: UnorderedMap<String, Collection>
 
     //================collections--------------------//

@@ -64,40 +64,39 @@ class Header extends Component<IHeader & IBaseComponentProps> {
             </MediaQuery>
           </div>
           <MediaQuery minWidth={992}>
-            <div className={styles.inputSearchWrap}>
-              <InputView
-                onChange={(e) => {  }}
-                placeholder={'Search'}
-                icon={searchIcon}
-                disabled={true}
-                customClass={"setOpacity"}
-                inputStyleType={InputStyleType.round}
-              />
-            </div>
+            {/*<div className={styles.inputSearchWrap}>*/}
+              {/*<InputView*/}
+              {/*  onChange={(e) => {  }}*/}
+              {/*  placeholder={'Search'}*/}
+              {/*  icon={searchIcon}*/}
+              {/*  disabled={true}*/}
+              {/*  customClass={"setOpacity"}*/}
+              {/*  inputStyleType={InputStyleType.round}*/}
+              {/*/>*/}
+            {/*</div>*/}
             <div className={`d-flex align-items-center ${styles.buttonWrap}`}>
-              <DropdownView
-                colorType={dropdownColors.selectGray}
-                title={'En'}
-                disabled={true}
-                onChange={(item) => {  }}
-                childrens={[
-                  {
-                    id: 1,
-                    title: 'UK'
-                  },
-                  {
-                    id: 2,
-                    title: 'US'
-                  },
-                ]}
-              />
+              {/*<DropdownView*/}
+              {/*  colorType={dropdownColors.selectGray}*/}
+              {/*  title={'En'}*/}
+              {/*  disabled={true}*/}
+              {/*  onChange={(item) => {  }}*/}
+              {/*  childrens={[*/}
+              {/*    {*/}
+              {/*      id: 1,*/}
+              {/*      title: 'UK'*/}
+              {/*    },*/}
+              {/*    {*/}
+              {/*      id: 2,*/}
+              {/*      title: 'US'*/}
+              {/*    },*/}
+              {/*  ]}*/}
+              {/*/>*/}
 
-              <span className={styles.separator} />
+              {/*<span className={styles.separator} />*/}
 
               <LoginButton user={this.state.profile} />
 
-              <CreateTokenDropdownView />
-
+              {this.props.near.isAuth && <CreateTokenDropdownView />}
             </div>
           </MediaQuery>
 

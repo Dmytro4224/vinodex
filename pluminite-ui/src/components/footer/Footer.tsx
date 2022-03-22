@@ -1,7 +1,7 @@
 import { Component } from "react";
 import { IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
 import styles from './footer.module.css';
-import footerLogo from '../../assets/icons/footer-logo.svg';
+import footerLogo from '../../assets/icons/logo-vine.svg';
 import Social from "../social/Social";
 import { NavLink } from "react-router-dom";
 import InputSubscribe from "../inputSubscribe/InputSubscribe";
