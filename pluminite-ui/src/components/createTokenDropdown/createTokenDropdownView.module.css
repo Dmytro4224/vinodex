@@ -1,6 +1,11 @@
 .isHiddenArrow:after{
   display: none;
 }
+
+.isHiddenArrow {
+  min-width: 100px;
+}
+
 .createDropdown{
   min-width: 350px;
   padding: 24px;
