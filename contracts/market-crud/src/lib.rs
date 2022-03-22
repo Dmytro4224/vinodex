@@ -45,6 +45,10 @@ mod profile;
 mod sales;
 pub use crate::sales::*;
 
+#[path = "tokens/collection.rs"]
+mod collection;
+pub use crate::collection::*;
+
 //=========Sales=================//
 
 //GAS constants to attach to calls
@@ -199,8 +203,13 @@ pub struct Contract {
     //================sales==========================//
 
     //================collections--------------------//
+
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
-    pub collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
+    pub collection_per_token: LookupMap<TokenId, String>,
+
+    pub collections: UnorderedMap<String, Collection>
+
+    //================collections--------------------//
 }
 
 // Helper structure to for keys of the persistent collections.
@@ -240,6 +249,7 @@ pub enum StorageKey {
     CreatorPerToken,
     CollectionOfTokens,
     CollectionPerToken,
+    Collection
 }
 
 #[near_bindgen]
@@ -308,6 +318,7 @@ impl Contract {
             collection_per_token: LookupMap::new(
                 StorageKey::CollectionPerToken.try_to_vec().unwrap(),
             ),
+            collections: UnorderedMap::new(StorageKey::Collection.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -367,7 +378,8 @@ impl Contract {
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
             creator_per_token: LookupMap<TokenId, AccountId>,
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
-            collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
+            collection_per_token: LookupMap<TokenId, String>,
+            collections: UnorderedMap<String, Collection>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -410,6 +422,7 @@ impl Contract {
             creator_per_token: old_contract.creator_per_token,
             collection_tokens: old_contract.collection_tokens,
             collection_per_token: old_contract.collection_per_token,
+            collections: old_contract.collections
         }
     }
 

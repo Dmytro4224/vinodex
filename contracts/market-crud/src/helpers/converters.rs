@@ -1,6 +1,8 @@
-use std::collections::HashMap;
 use std::collections::HashSet;
 use std::iter::FromIterator;
+use near_sdk::collections::{LookupMap, UnorderedSet};
+
+pub type TokenId = String;
 
 pub struct Converter {}
 
@@ -10,118 +12,127 @@ impl Converter {
     }
 }
 
-pub struct TransliterationMap {
-    pub map: HashMap<String, String>,
-}
+pub struct Transliteration {}
 
-impl TransliterationMap {
+impl Transliteration {
     // Ініціалізація та заповнення мапи букв для транслітерації
-    pub fn fill() -> TransliterationMap {
-        let mut letters = HashMap::new();
-        // insert lowercases
-        letters.insert(String::from("а"), String::from("a"));
-        letters.insert(String::from("б"), String::from("b"));
-        letters.insert(String::from("в"), String::from("v"));
-        letters.insert(String::from("г"), String::from("g"));
-        letters.insert(String::from("ґ"), String::from("g"));
-        letters.insert(String::from("д"), String::from("d"));
-        letters.insert(String::from("е"), String::from("e"));
-        letters.insert(String::from("є"), String::from("e"));
-        letters.insert(String::from("ё"), String::from("e"));
-        letters.insert(String::from("ж"), String::from("zh"));
-        letters.insert(String::from("з"), String::from("z"));
-        letters.insert(String::from("и"), String::from("i"));
-        letters.insert(String::from("і"), String::from("i"));
-        letters.insert(String::from("ї"), String::from("ji"));
-        letters.insert(String::from("й"), String::from("j"));
-        letters.insert(String::from("к"), String::from("k"));
-        letters.insert(String::from("л"), String::from("l"));
-        letters.insert(String::from("м"), String::from("m"));
-        letters.insert(String::from("н"), String::from("n"));
-        letters.insert(String::from("о"), String::from("o"));
-        letters.insert(String::from("п"), String::from("p"));
-        letters.insert(String::from("р"), String::from("r"));
-        letters.insert(String::from("с"), String::from("s"));
-        letters.insert(String::from("т"), String::from("t"));
-        letters.insert(String::from("у"), String::from("u"));
-        letters.insert(String::from("ф"), String::from("f"));
-        letters.insert(String::from("х"), String::from("h"));
-        letters.insert(String::from("ц"), String::from("ct"));
-        letters.insert(String::from("ч"), String::from("ch"));
-        letters.insert(String::from("ш"), String::from("sh"));
-        letters.insert(String::from("щ"), String::from("sh`"));
-        letters.insert(String::from("ъ"), String::from("`"));
-        letters.insert(String::from("ы"), String::from("i"));
-        letters.insert(String::from("ь"), String::from("`"));
-        letters.insert(String::from("э"), String::from("e"));
-        letters.insert(String::from("ю"), String::from("ju"));
-        letters.insert(String::from("я"), String::from("ya"));
-        // insert uppercases
-        letters.insert(String::from("А"), String::from("A"));
-        letters.insert(String::from("Б"), String::from("B"));
-        letters.insert(String::from("В"), String::from("V"));
-        letters.insert(String::from("Г"), String::from("G"));
-        letters.insert(String::from("Ґ"), String::from("G"));
-        letters.insert(String::from("Д"), String::from("D"));
-        letters.insert(String::from("Е"), String::from("E"));
-        letters.insert(String::from("Є"), String::from("E"));
-        letters.insert(String::from("Ё"), String::from("E"));
-        letters.insert(String::from("Ж"), String::from("Zh"));
-        letters.insert(String::from("З"), String::from("Z"));
-        letters.insert(String::from("И"), String::from("I"));
-        letters.insert(String::from("І"), String::from("I"));
-        letters.insert(String::from("Ї"), String::from("Ji"));
-        letters.insert(String::from("Й"), String::from("J"));
-        letters.insert(String::from("К"), String::from("K"));
-        letters.insert(String::from("Л"), String::from("L"));
-        letters.insert(String::from("М"), String::from("M"));
-        letters.insert(String::from("Н"), String::from("N"));
-        letters.insert(String::from("О"), String::from("O"));
-        letters.insert(String::from("П"), String::from("P"));
-        letters.insert(String::from("Р"), String::from("R"));
-        letters.insert(String::from("С"), String::from("S"));
-        letters.insert(String::from("Т"), String::from("T"));
-        letters.insert(String::from("У"), String::from("U"));
-        letters.insert(String::from("Ф"), String::from("F"));
-        letters.insert(String::from("Х"), String::from("H"));
-        letters.insert(String::from("Ц"), String::from("Ct"));
-        letters.insert(String::from("Ч"), String::from("Ch"));
-        letters.insert(String::from("Ш"), String::from("Sh"));
-        letters.insert(String::from("Щ"), String::from("Sh`"));
-        letters.insert(String::from("Ъ"), String::from("`"));
-        letters.insert(String::from("Ы"), String::from("I"));
-        letters.insert(String::from("Ь"), String::from("`"));
-        letters.insert(String::from("Э"), String::from("E"));
-        letters.insert(String::from("Ю"), String::from("Ju"));
-        letters.insert(String::from("Я"), String::from("Ya"));
-
-        let tm = TransliterationMap { map: letters };
-
-        tm
+    fn transliterate_char<'life>(c: char) -> &'life str
+    {
+        return match c
+        {
+            'а' => "a",
+            'б' => "b",
+            'в' => "v",
+            'г' => "g",
+            'ґ' => "g",
+            'д' => "d",
+            'е' => "e",
+            'є' => "e",
+            'ё' => "e",
+            'ж' => "zh",
+            'з' => "z",
+            'и' => "i",
+            'і' => "i",
+            'ї' => "ji",
+            'й' => "j",
+            'к' => "k",
+            'л' => "l",
+            'м' => "m",
+            'н' => "n",
+            'о' => "o",
+            'п' => "p",
+            'р' => "r",
+            'с' => "s",
+            'т' => "t",
+            'у' => "u",
+            'ф' => "f",
+            'х' => "h",
+            'ц' => "ct",
+            'ч' => "ch",
+            'ш' => "sh",
+            'щ' => "sh`",
+            'ъ' => "`",
+            'ы' => "i",
+            'ь' => "`",
+            'э' => "e",
+            'ю' => "ju",
+            'я' => "ya",
+            'А' => "A",
+            'Б' => "B",
+            'В' => "V",
+            'Г' => "G",
+            'Ґ' => "G",
+            'Д' => "D",
+            'Е' => "E",
+            'Є' => "E",
+            'Ё' => "E",
+            'Ж' => "ZH",
+            'З' => "Z",
+            'И' => "I",
+            'І' => "I",
+            'Ї' => "JI",
+            'Й' => "J",
+            'К' => "K",
+            'Л' => "L",
+            'М' => "M",
+            'Н' => "N",
+            'О' => "O",
+            'П' => "P",
+            'Р' => "R",
+            'С' => "S",
+            'Т' => "T",
+            'У' => "U",
+            'Ф' => "F",
+            'Х' => "H",
+            'Ц' => "CT",
+            'Ч' => "CH",
+            'Ш' => "SH",
+            'Щ' => "SH",
+            'Ъ' => "`",
+            'Ы' => "I",
+            'Ь' => "`",
+            'Э' => "E",
+            'Ю' => "JU",
+            'Я' => "YA",
+            _ => "_"
+        }
     }
 
     // Транслітерація рядка
-    pub fn transliterate_string(
-        transliterationMap: TransliterationMap,
-        mut input: &String,
+    fn transliterate_string(
+        input: &String
     ) -> String {
         let mut result: String = "".to_string();
 
         for c in input.chars() {
-            let inckeck = String::from(c);
+            result.push_str(Transliteration::transliterate_char(c));
+        }
 
-            if transliterationMap.map.contains_key(&inckeck) {
-                match transliterationMap.map.get(&inckeck) {
-                    Some(val) => result.push_str(val),
-                    None => result.push('_'),
-                }
-            } else {
-                match &inckeck.parse::<f64>() {
-                    Ok(val) => result.push_str(&val.to_string()),
-                    Err(why) => result.push('_'),
-                }
+        return result;
+    }
+
+    fn collection_id_generate(name: &String, collections: &LookupMap<String, UnorderedSet<TokenId>>) -> String
+    {
+        let mut collection_id = Transliteration::transliterate_string(name);
+
+        if !collections.contains_key(&collection_id)
+        {
+            return collection_id;
+        }
+
+        collection_id.push_str("-");
+
+        for i in 1..101 as u8
+        {
+            let mut collection_id_new = collection_id.clone();
+            collection_id_new.push_str(&(i.to_string()));
+
+            if !collections.contains_key(&collection_id_new)
+            {
+                return collection_id_new;
             }
         }
-        result
+
+        panic!("collection_id depth error");
     }
 }
