@@ -164,7 +164,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   isCardType() {
     return (
       <LazyLoad
-        unmountIfInvisible={true}
+        unmountIfInvisible={false}
         height={200}
         placeholder={
           <div style={{ width: '100%' }}>

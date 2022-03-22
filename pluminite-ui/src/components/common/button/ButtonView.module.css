@@ -89,6 +89,13 @@
   color: var(--pirateCold);
 }
 
+.goldBordered {
+  color: var(--pirateCold);
+  background: var(--white);
+  outline: none;
+  border: 1px solid var(--pirateCold);
+}
+
 .btnIcon {
   display: flex;
   align-items: center;
