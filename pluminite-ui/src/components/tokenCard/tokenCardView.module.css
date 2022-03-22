@@ -1,19 +1,51 @@
 .card {
+  font-family: 'Urbanist', sans-serif;
   position: relative;
-  /*max-width: 630px;*/
   width: 100%;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
-  cursor: pointer;
   height: 100%;
   display: flex;
   flex-direction: column;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(174, 126, 3, 0.2);
+  transition: all 0.4s ease;
+  letter-spacing: 0.04rem;
 }
+
+.card:hover {
+  transform: scale(1.007);
+  box-shadow: 0 3px 24px rgba(174, 126, 3, 0.2);
+}
+
+.card:hover .buttonDetails {
+  pointer-events: unset;
+  opacity: 1;
+}
+
+.card.onlyViewed {
+  box-shadow: none;
+}
+
+.card.onlyViewed:hover {
+  pointer-events: none;
+  opacity: 0;
+  transform: none;
+  box-shadow: none;
+}
+
+.imageStyle {
+  will-change: filter;
+}
+
+.card:hover .cardImage .imageStyle {
+  filter: blur(3px);
+}
+
 .cardImage {
   position: relative;
   height: 100%;
   max-height: 390px;
 }
+
 .cardDetail {
   position: absolute;
   top: 0;
@@ -23,56 +55,79 @@
   padding: 16px;
   width: 100%;
 }
+
 .cardDetail .count,
 .cardDetail .daysInfo {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
-  color: var(--black);
-  background: var(--white);
-  border: 2px solid rgba(0, 0, 0, 0.12);
-  border-radius: 4px;
+  padding: 2px 8px;
+  font-weight: 700;
   font-size: 14px;
+  color: var(--white);
+  background: var(--bandicoot);
+  border-radius: 4px;
 }
+
 .cardDetail .daysInfo {
   margin-left: auto;
 }
+
 .cardFooter {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
-  /*border-top: 1px solid var(--pirateCold);*/
 }
-.cardFooter .cardInfo .infoName {
-  font-weight: 500;
-  font-size: 16px;
-  color: var(--black);
+
+.cardFooter .cardInfo .tokenName {
   height: unset !important;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--steelGray);
 }
 
 .cardFooter .cardInfo .authorName {
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.6);
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--steelGray);
 }
+
+.tokenType {
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--manatee);
+}
+
 .likes {
   margin-right: 16px;
 }
-.cardFooter .cardControls {
-  display: flex;
-  align-items: center;
-}
+
 .imageStyle {
   width: 100%;
   height: 100%;
   object-fit: contain !important;
+  transition: filter 0.4s ease;
 }
+
 .button {
   padding: 6px 12px;
   font-size: 14px;
   font-weight: normal;
   white-space: nowrap;
+}
+
+.buttonDetails {
+  opacity: 0;
+  pointer-events: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 13px 16px 10px 16px;
+  transform: translate(-50%, -50%);
+  font-weight: 500;
+  font-size: 15px;
+  transition: all 0.4s ease;
 }
 
 .btnTransfer {
@@ -93,29 +148,43 @@
 .card.cardSmall {
   width: 297px;
 }
+
 .card.cardSmall .imageStyle {
   min-height: 297px;
   max-height: 297px;
   object-fit: contain;
   background-position: center;
 }
+
+.cardFooter .cardControls {
+  display: flex;
+  align-items: center;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.card.cardSmall .cardFooter .cardControls {
+  border-top: 1px solid var(--eb-gray);
+}
+
 .card .cardFooter {
-  gap: 20px;
+  column-gap: 20px;
 }
 
 .card.cardSmall .cardFooter {
   flex-wrap: wrap;
 }
+
 .card.cardSmall .cardControls {
   justify-content: space-between;
-  /*margin-top: 16px;*/
   width: 100%;
-  flex-direction: row-reverse;
 }
+
 .card.cardSmall .likes {
   margin-right: 0;
 }
-.card.cardSmall .infoName {
+
+.card.cardSmall .tokenName {
   white-space: nowrap;
   text-overflow: ellipsis;
   max-width: 270px;
@@ -145,16 +214,32 @@
   padding: 0;
   min-height: auto;
 }
-.onlyViewed{
 
-}
-.onlyViewed .cardFooter{
+.onlyViewed .cardFooter {
   padding: 16px 0;
 }
-.onlyViewed .cardControls{
+
+.onlyViewed .cardControls {
   display: none;
 }
 
 .puOnMarketplaceWrap {
   padding: 0 16px 10px 16px ;
+}
+
+.priceWrap {
+  margin-right: 20px;
+}
+
+.priceWrap span {
+  font-weight: 400;
+  font-size: 13px;
+  color: var(--manatee);
+}
+
+.priceWrap p {
+  font-weight: 700;
+  font-size: 18px;
+  line-height: 1;
+  color: var(--steelGray);
 }
