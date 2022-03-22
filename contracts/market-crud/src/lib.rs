@@ -200,7 +200,7 @@ pub struct Contract {
 
     //================collections--------------------//
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
-    pub collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
+    pub collection_per_token: LookupMap<TokenId, String>,
 }
 
 // Helper structure to for keys of the persistent collections.
@@ -367,7 +367,7 @@ impl Contract {
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
             creator_per_token: LookupMap<TokenId, AccountId>,
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
-            collection_per_token: LookupMap<TokenId, UnorderedSet<String>>,
+            collection_per_token: LookupMap<TokenId, String>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
