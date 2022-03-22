@@ -30,6 +30,8 @@ export type INftContract = nearAPI.Contract & {
     sale_create: ({ token_id, sale_type, price, start_date, end_date } : { token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any }) => Promise<any>;
     sale_offer: ({ token_id, time, offer} : { token_id: string, time: any, offer?: string}, gas: string, price?: string) => Promise<any>;
     sale_remove: ({ token_id } : { token_id: string }) => Promise<any>;
+    sale_set_is_closed: ({ token_id, is_closed } : { token_id: string,is_closed: boolean }) => Promise<any>;
+    sale_auction_init_transfer: ({ token_id, time }: { token_id: string, time: number }, gas: string, price?: string) => Promise<any>;
     nft_tokens_catalogs: () => Promise<Array<any>>;
     like_artist_account: ({account_id }: {account_id:string}) => Promise<any>;
     token_set_like: ({token_id }: {token_id:string}) => Promise<any>;
@@ -44,86 +46,62 @@ export type IMarketContract = nearAPI.Contract & {
 
 // Initialize contract & set global variables
 export async function initContracts() {
-    // Initialize connection to the NEAR testnet
-    const near = await nearAPI.connect({ deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() }, ...nearConfig });
+  // Initialize connection to the NEAR testnet
+  const near = await nearAPI.connect({ deps: { keyStore: new nearAPI.keyStores.BrowserLocalStorageKeyStore() }, ...nearConfig });
 
-    // Initializing Wallet based Account. It can work with NEAR testnet wallet that
-    // is hosted at https://wallet.testnet.near.org
-    const walletConnection = new nearAPI.WalletConnection(near, null);
+  // Initializing Wallet based Account. It can work with NEAR testnet wallet that
+  // is hosted at https://wallet.testnet.near.org
+  const walletConnection = new nearAPI.WalletConnection(near, null);
 
-    // Load in account data
-    let currentUser: ICurrentUser | null = null;
-    if (walletConnection.getAccountId()) {
-        currentUser = {
-            walletAddress: null,
-            accountId: walletConnection.getAccountId(),
-            balance: (await walletConnection.account().state()).amount,
-        };
-    }
-
-    console.log('currentUser is: ', currentUser);
-
-    // Initializing our contract APIs by contract name and configuration
-        const nftContract = await new nearAPI.Contract(
-        walletConnection.account(),
-        nearConfig.contractName,
-        {
-            // View methods are read only. They don't modify the state, but usually return some value.
-            viewMethods: [...NftMethods.viewMethods],
-            // Change methods can modify the state. But you don't receive the returned value when called.
-            changeMethods: [...NftMethods.changeMethods],
-            // Sender is the account ID to initialize transactions.
-            //@ts-ignore
-            sender: walletConnection.getAccountId(),
-        }
-    ) as INftContract;
-
-    console.log('nftContract ', nftContract);
-
-
-   // Initializing our contract APIs by contract name and configuration
-    const marketContract = await new nearAPI.Contract(
-        walletConnection.account(),
-        getMarketContractName,
-        {
-            // View methods are read only. They don't modify the state, but usually return some value.
-            viewMethods: [...MarketMethods.viewMethods],
-            // Change methods can modify the state. But you don't receive the returned value when called.
-            changeMethods: [...MarketMethods.changeMethods],
-            // Sender is the account ID to initialize transactions.
-
-            //@ts-ignore
-            sender: walletConnection.getAccountId(),
-        }
-    ) as IMarketContract;
-
-
-    console.log('marketContract is', marketContract);
-
-
-    return {
-        nftContract,
-        marketContract,
-        currentUser,
-        nearConfig,
-        walletConnection,
-        near,
+  // Load in account data
+  let currentUser: ICurrentUser | null = null;
+  if (walletConnection.getAccountId()) {
+    currentUser = {
+      walletAddress: null,
+      accountId: walletConnection.getAccountId(),
+      balance: (await walletConnection.account().state()).amount,
     };
-}
+  }
 
-export function logout() {
-//@ts-ignore
-  window.walletConnection.signOut();
-  // reload page
-  window.location.replace(window.location.origin + window.location.pathname);
-}
+  console.log('currentUser is: ', currentUser);
 
-export function login() {
-  // Allow the current app to make calls to the specified contract on the
-  // user's behalf.
-  // This works by creating a new access key for the user's account and storing
-  // the private key in localStorage.
+  // Initializing our contract APIs by contract name and configuration
+  const nftContract = await new nearAPI.Contract(
+    walletConnection.account(),
+    nearConfig.contractName,
+    {
+      // View methods are read only. They don't modify the state, but usually return some value.
+      viewMethods: [...NftMethods.viewMethods],
+      // Change methods can modify the state. But you don't receive the returned value when called.
+      changeMethods: [...NftMethods.changeMethods],
+      // Sender is the account ID to initialize transactions.
+      //@ts-ignore
+      sender: walletConnection.getAccountId(),
+    }
+  ) as INftContract;
 
-  //@ts-ignore
-  window.walletConnection.requestSignIn(nearConfig.contractName, APP.NAME);
+  // Initializing our contract APIs by contract name and configuration
+  const marketContract = await new nearAPI.Contract(
+    walletConnection.account(),
+    getMarketContractName,
+    {
+      // View methods are read only. They don't modify the state, but usually return some value.
+      viewMethods: [...MarketMethods.viewMethods],
+      // Change methods can modify the state. But you don't receive the returned value when called.
+      changeMethods: [...MarketMethods.changeMethods],
+      // Sender is the account ID to initialize transactions.
+
+      //@ts-ignore
+      sender: walletConnection.getAccountId(),
+    }
+  ) as IMarketContract;
+
+  return {
+    nftContract,
+    marketContract,
+    currentUser,
+    nearConfig,
+    walletConnection,
+    near,
+  };
 }

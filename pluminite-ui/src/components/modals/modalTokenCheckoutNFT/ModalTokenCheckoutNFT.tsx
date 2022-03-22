@@ -32,6 +32,8 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
   private _initialState: IModalTokenCheckoutNFTState | undefined;
   private _refNumberOfCopies: any;
   private _refOffer: any;
+  private _lastBid: any;
+  private _timeout: any;
 
   public state: IModalTokenCheckoutNFTState = {
     isLoading: false,
@@ -48,6 +50,12 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
 
   public componentWillMount() {
     this._initialState = this.state;
+
+    if(this.typeView === TokensType.timedAuction || this.typeView === TokensType.unlimitedAuction){
+      if(this.props.token?.sale.bids.length > 0){
+        this._lastBid = this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1];
+      }
+    }
   }
 
   private resetState() {
@@ -99,7 +107,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
       }
 
       if(this.props.token?.sale.bids.length > 0){
-        let lastBid = this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1];
+        let lastBid = this.props.token?.sale.bids[0];
 
         if(lastBid && (convertYoctoNearsToNears(lastBid.price) >= Number(this._refOffer.value))){
           validInfo.bid = false
@@ -145,7 +153,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
 
     const price = this.props.token.sale.price ? this.props.token.sale.price : null;
     console.log(price);
-    
+
 
     this.props.nftContractContext.sale_offer(
       this.props.token?.token_id,
@@ -253,6 +261,14 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     }
   }
 
+  private offerValid = (target) => {
+    clearTimeout(this._timeout);
+
+    if(this._lastBid && (convertYoctoNearsToNears(this._lastBid.price) >= Number(target.value))){
+      this._timeout = setTimeout(() => { target.value = ''; }, 700)
+    }
+  }
+
   render() {
     return (
       <ModalSample
@@ -326,6 +342,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           errorMessage={`Enter offer*`}
           onChange={(e) => {
             validateDotNum(e.target);
+            this.offerValid(e.target);
           }}
         /> : ''}
 
@@ -334,8 +351,8 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
           <p className={style.totalTitle}>Total amount</p>
           {this.props.token?.sale && <p className={style.total}>{convertYoctoNearsToNears(this.props.token?.sale.price)}NEAR</p>}
         </div>
-        {!this.state.validate.isBidValid && <div className={style.errorBox}>
-          <p>The offer must be greater than {convertYoctoNearsToNears(this.props.token?.sale.bids[this.props.token?.sale.bids.length - 1].price)} NEAR</p>
+        {(!this.state.validate.isBidValid || this._lastBid) && <div className={style.errorBox}>
+          <p>The offer must be greater than {convertYoctoNearsToNears(this._lastBid.price)} NEAR</p>
         </div>}
       </ModalSample>
     );
