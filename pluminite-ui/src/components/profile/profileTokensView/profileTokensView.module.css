@@ -8,5 +8,12 @@
 }
 
 .scrollWrap {
-  overflow-x: auto;
+  flex-wrap: wrap;
+}
+
+@media(max-width: 600px) {
+  .scrollWrap {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
 }
