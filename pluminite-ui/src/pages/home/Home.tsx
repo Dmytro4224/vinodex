@@ -18,9 +18,7 @@ import { dropdownData } from '../../components/common/dropdown/data';
 import CatalogFilterView from '../../components/catalogFilterView/CatalogFilterView';
 import { IFilterOptions } from "../../types/IFilterOptions";
 
-interface IHome extends IProps {
-
-}
+interface IHome extends IProps {}
 
 class Home extends Component<IHome & IBaseComponentProps> {
 
@@ -178,13 +176,6 @@ class Home extends Component<IHome & IBaseComponentProps> {
             catalog={this.catalog}
           />
 
-          {/*<div className="d-flex align-items-center justify-content-center mt-5 w-100">
-            <ButtonView
-              text={'Load more'}
-              onClick={() => { }}
-              color={buttonColors.select}
-            />
-          </div>*/}
         </div>
       </div>
     );

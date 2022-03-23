@@ -4,7 +4,7 @@ import cardPreview from '../../assets/icons/card-preview.jpg';
 import { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import LikeView, { LikeViewType } from '../like/likeView';
-import ArtistCard from '../artistCard/ArtistCard';
+import ArtistCard, { ArtistType } from '../artistCard/ArtistCard';
 import { Badge, Form, FormCheck, Tab, Tabs } from 'react-bootstrap';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView from '../description/descrtiptionView';
@@ -14,7 +14,7 @@ import HistoryView from './tabs/history/historyView';
 import OwnersView from './tabs/owners/ownersView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
-import SimilarTokensView from "../../components/similarTokens/similarTokensView";
+import SimilarTokensView from '../../components/similarTokens/similarTokensView';
 import React from 'react';
 import { convertNearToYoctoString, convertYoctoNearsToNears, isVideoFile, showToast } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
@@ -29,10 +29,10 @@ interface ITokenViewDetail extends IProps {
 }
 
 interface ICategory extends IProps {
-  text: string
+  text: string;
 }
 
-class Category extends Component<ICategory & IBaseComponentProps, {}, any>{
+class Category extends Component<ICategory & IBaseComponentProps, {}, any> {
   constructor(props: ICategory & IBaseComponentProps) {
     super(props);
   }
@@ -44,7 +44,7 @@ class Category extends Component<ICategory & IBaseComponentProps, {}, any>{
   render() {
     return (
       <div className={styles.category}>{this.text}</div>
-    )
+    );
   }
 }
 
@@ -72,7 +72,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     modalSaleShow: false,
     modalConfirmRemoveSaleShow: false,
     modalMediaShow: false,
-    creator: null
+    creator: null,
   };
 
   private readonly _refImage: React.RefObject<HTMLImageElement>;
@@ -92,13 +92,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
-    if(prevProps.params.tokenId !== this.tokenId){
+    if (prevProps.params.tokenId !== this.tokenId) {
       window.scrollTo(0, 0);
       this.getInfo();
     }
   }
 
-  private getInfo(){
+  private getInfo() {
     this.props.nftContractContext.nft_token_get(this.tokenId).then(response => {
       console.log(`response d`, response);
       this.setState({
@@ -106,7 +106,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
         order: response,
         isLoading: false,
         isLike: response.is_like,
-        likesCount: response.metadata.likes_count
+        likesCount: response.metadata.likes_count,
       });
     });
   }
@@ -123,7 +123,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     let extra = JSON.parse(this.state.order?.metadata.extra);
 
     if (extra) {
-      return isVideoFile(extra.media_type)
+      return isVideoFile(extra.media_type);
     }
 
     return false;
@@ -133,7 +133,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     if (this._refImage.current) {
       this._refImage.current.src = cardPreview;
     }
-  }
+  };
 
   public changeLikeCount() {
     this.setState({
@@ -210,7 +210,9 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   private getCreatorData() {
-    if (!this.getUserId) { return }
+    if (!this.getUserId) {
+      return;
+    }
 
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       if (profile) {
@@ -271,30 +273,22 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 color={buttonColors.goldFill}
                 customClass={styles.button}
               />
-            ) : (<div className="w-100 align-items-center justify-content-center d-flex">
+            ) : (
               <ButtonView
                 text={'Not for sale'}
                 onClick={() => {
-
                 }}
                 color={buttonColors.goldFill}
                 customClass={styles.button}
                 disabled={true}
-              /></div>)}
+              />
+            )}
           </>
         );
       case TokensType.fixedPrice:
         return (
           <>
-            {this.isMyToken ? <div className='d-flex align-items-center justify-content-between w-100'>
-              <ButtonView
-                text={`Edit lot`}
-                onClick={() => {
-
-                }}
-                color={buttonColors.goldFill}
-                disabled={true}
-              />
+            {this.isMyToken ? (
               <ButtonView
                 text={`Stop selling`}
                 onClick={() => {
@@ -306,36 +300,30 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   this.onToggleSale(false);
                 }}
                 color={buttonColors.redButton}
+                customClass={styles.button}
               />
-            </div> : <ButtonView
-              text={`Buy now ${convertYoctoNearsToNears(this.state.order?.sale.price)} NEAR`}
-              onClick={() => {
-                if (!this.isAuth) {
-                  this.props.near.signIn();
-                  return;
-                }
+            ) : (
+              <ButtonView
+                text={`Buy now ${convertYoctoNearsToNears(this.state.order?.sale.price)} NEAR`}
+                onClick={() => {
+                  if (!this.isAuth) {
+                    this.props.near.signIn();
+                    return;
+                  }
 
-                this.buyAction();
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.button}
-            />}
-
+                  this.buyAction();
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+              />
+            )}
           </>
-
         );
       case TokensType.timedAuction:
       case TokensType.unlimitedAuction:
         return (
           <>
-            {this.isMyToken ? <div className='d-flex align-items-center justify-content-between w-100'>
-              <ButtonView
-                text={`Edit lot`}
-                onClick={() => {
-                }}
-                color={buttonColors.goldFill}
-                disabled={true}
-              />
+            {this.isMyToken ? (
               <ButtonView
                 text={`Stop selling`}
                 onClick={() => {
@@ -347,31 +335,38 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   this.onToggleSale(false);
                 }}
                 color={buttonColors.redButton}
+                customClass={styles.button}
               />
-            </div> : <ButtonView
-              text={`Place a bid`}
-              onClick={() => {
-                if (!this.isAuth) {
-                  this.props.near.signIn();
-                  return;
-                }
+            ) : (
+              <ButtonView
+                text={`Place a bid`}
+                onClick={() => {
+                  if (!this.isAuth) {
+                    this.props.near.signIn();
+                    return;
+                  }
 
-                this.buyAction();
-              }}
-              color={buttonColors.goldFill}
-              customClass={styles.button}
-            />}
+                  this.buyAction();
+                }}
+                color={buttonColors.goldFill}
+                customClass={styles.button}
+              />
+            )}
           </>
         );
     }
   }
 
+  private get price() {
+    return convertYoctoNearsToNears(this.state.order?.sale?.price) || 0.00;
+  }
+
   render() {
     if (this.state.isLoading) {
       return <div className={`d-flex align-items-center flex-gap-36 p-5 ${styles.scrollWrap}`}>
-        <div className="w-100"><Skeleton count={1} height={300} /></div>
-        <div className="w-100 flex-column"><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-      </div>
+        <div className='w-100'><Skeleton count={1} height={300} /></div>
+        <div className='w-100 flex-column'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+      </div>;
     }
 
     return (
@@ -381,13 +376,24 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             <div className={styles.cardImage}>
               <div className={styles.cardImageWrap}>
                 {this.isVideo ?
-                  <iframe className={styles.iFrameStyle} width="1000" height="600" src={this.state.order?.metadata.media || cardPreview}
-                    title="" frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  <iframe
+                    className={styles.iFrameStyle} width='1000' height='600'
+                    src={this.state.order?.metadata.media || cardPreview}
+                    title='' frameBorder='0'
+                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                     allowFullScreen />
                   :
-                  <img onClick={() => { this.showMediaModal() }} ref={this._refImage} onError={this.setDefaultImage} className={styles.imageStyle}
-                    src={this.state.order?.metadata.media || cardPreview} alt={'preview image'} />}
+                  <img
+                    onClick={() => {
+                      this.showMediaModal();
+                    }}
+                    ref={this._refImage}
+                    onError={this.setDefaultImage}
+                    className={styles.imageStyle}
+                    src={this.state.order?.metadata.media || cardPreview}
+                    alt={'preview image'}
+                  />
+                }
                 <div className={styles.cardDetail}>
                   {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
                     <div className={styles.daysInfo}>
@@ -397,93 +403,166 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               </div>
             </div>
             <div className={styles.tokenInfo}>
-              <div className={styles.titleWrap}>
-                <div className={styles.titleInfo}>
-                  <h3>{this.state.order?.metadata.title}</h3>
-                  {/*<div className={styles.avalialbeItems}>
-                    <p className={styles.title}>Available items:</p>
-                    <span className={styles.counts}>{1}/{2}</span>
-                  </div>*/}
-                </div>
-                <div className={styles.likesInfo}>
-                  <LikeView
-                    customClass={styles.likes}
-                    isActive={true}
-                    type={LikeViewType.like}
-                    isChanged={this.state.isLike}
-                    onClick={this.toggleLikeToken}
-                    count={this.state.likesCount} />
+              <h3 className={styles.tokenTitle}>{this.state.order?.metadata.title}</h3>
+              <p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>
+
+              <div className={`d-flex align-items-center justify-content-between w-100`}>
+                <p className={`fz-18`}>Available items: <strong>1/1</strong></p>
+
+                <div className={`d-flex align-items-center gap-15px`}>
+                  <div className={styles.counterWrapStyle}>
+                    <LikeView
+                      customClass={styles.likes}
+                      isActive={true}
+                      type={LikeViewType.eye}
+                      count={0}
+                      isChanged={false}
+                    />
+                  </div>
+                  <div className={styles.counterWrapStyle}>
+                    <LikeView
+                      customClass={styles.likes}
+                      isActive={true}
+                      type={LikeViewType.like}
+                      isChanged={this.state.isLike}
+                      onClick={this.toggleLikeToken}
+                      count={this.state.likesCount}
+                    />
+                  </div>
                 </div>
               </div>
-              <div className={styles.categoriesList}>
-                {this.state.order?.token_type && <CategoryView text={this.state.order?.token_type} />}
-              </div>
-              <div className={styles.creator}>
-                <p className={styles.title}>Creator</p>
+
+              <div className={`${styles.artistsWrap} d-flex align-items-center flex-gap-36 mt-3`}>
                 <ArtistCard
                   info={{
                     bio: '',
                     email: '',
                     image: '',
-                    name: this.state.order?.creator_id!,
+                    name: `Creator name`,
                     account_id: '',
                     likes_count: 0,
                     is_like: false,
                     is_following: false,
-                    followers_count: 0
+                    followers_count: 0,
                   }}
                   identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}
-                  isCard={false}
+                  title={'Creator'}
+                  type={ArtistType.info}
                   isFollow={false}
+                  isLike={false}
                   withoutControls={true}
-                  isLike={false} />
+                />
+                <ArtistCard
+                  info={{
+                    bio: '',
+                    email: '',
+                    image: '',
+                    name: `Artist name`,
+                    account_id: '',
+                    likes_count: 0,
+                    is_like: false,
+                    is_following: false,
+                    followers_count: 0,
+                  }}
+                  identification={this.state.order?.creator_id!}
+                  usersCount={0}
+                  likesCount={0}
+                  title={'Artist'}
+                  type={ArtistType.info}
+                  isFollow={false}
+                  isLike={false}
+                  withoutControls={true}
+                />
               </div>
-              <div className={styles.tabsWrap}>
-                <Tabs
-                  id="controlled-tab-example"
-                  className="mb-3"
-                >
-                  <Tab eventKey="home" title="DESCRIPTION">
-                    <div className={styles.tabContainer}>
-                      <DescrtiptionView text={this.state.order?.metadata.description!} />
-                    </div>
-                  </Tab>
-                  <Tab eventKey="profile" title="DETAILS">
-                    <div className={styles.tabContainer}>
-                      <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!} />
-                    </div>
-                  </Tab>
-                  {this.state.order?.sale !== null && (this.state.order?.sale.sale_type === 2 || this.state.order?.sale.sale_type === 3 ? <Tab eventKey="bids" title="BIDS">
-                    <div className={styles.tabContainer}>
-                      <BidsView tokenId={this.state.order?.token_id!} />
-                    </div>
-                  </Tab> : '')}
-                  <Tab eventKey="contact" title="HISTORY">
-                    <div className={styles.tabContainer}>
-                      <HistoryView tokenId={this.state.order?.token_id!} />
-                    </div>
-                  </Tab>
-                  <Tab eventKey="owners" title="OWNERS">
-                    <div className={styles.tabContainer}>
-                      <OwnersView tokenId={this.state.order?.token_id!} />
-                    </div>
-                  </Tab>
-                </Tabs>
+
+              <div className={`my-4`}>
+                <DescrtiptionView text={this.state.order?.metadata.description!} />
               </div>
+
+              <div className={`my-4 ${styles.priceWrap}`}>
+                <p>Price</p>
+                <p><strong>{this.price && this.price > 0 ? `${this.price} NEAR` : '— NEAR'}</strong></p>
+              </div>
+
               <div className={styles.buttonWrap}>
                 {this.getCardControls()}
               </div>
             </div>
           </div>
-          <div className="w-100 container my-5">
-            <p className={styles.line}></p>
+          <div className='w-100 container my-5'>
+            <div className={styles.tokenInformationWrap}>
+              <div className='w-100'>
+                <p className={styles.infoTitle}>Specifications</p>
+                <ul className={styles.specList}>
+                  <li>
+                    <p>Brand</p>
+                    <p className={styles.infoLine} />
+                    <p>DEUTZ</p>
+                  </li>
+                  <li>
+                    <p>Country</p>
+                    <p className={styles.infoLine} />
+                    <p>France</p>
+                  </li>
+                  <li>
+                    <p>Volume (cl)	</p>
+                    <p className={styles.infoLine} />
+                    <p>150cl</p>
+                  </li>
+                  <li>
+                    <p>ABV (% vol)	</p>
+                    <p className={styles.infoLine} />
+                    <p>13</p>
+                  </li>
+                  <li>
+                    <p>Dietary	</p>
+                    <p className={styles.infoLine} />
+                    <p>Vegan, Vegetarian</p>
+                  </li>
+                  <li>
+                    <p>Style</p>
+                    <p className={styles.infoLine} />
+                    <p>Brut</p>
+                  </li>
+                  <li>
+                    <p>Champagne Expression	</p>
+                    <p className={styles.infoLine} />
+                    <p>Brioche, Complex, Light & Fresh</p>
+                  </li>
+                  <li>
+                    <p>Closure</p>
+                    <p className={styles.infoLine} />
+                    <p>Cork and Cage</p>
+                  </li>
+                </ul>
+              </div>
+              <div className='w-100'>
+                <p className={styles.infoTitle}>Information</p>
+
+                <ul className={styles.infoList}>
+                  <li>
+                    <p>Grape</p>
+                    <span>Chardonnay, Pinot Meunier, Pinot Noir</span>
+                  </li>
+                  <li>
+                    <p>Notes</p>
+                    <span>The aromas on the nose of citrus fruits, red fruits and dried fruits are echoes in the mouth with the addition of toasted bread and dark fruit such as cherry, fig and blackberry.</span>
+                  </li>
+                  <li>
+                    <p>Food Suggestions</p>
+                    <span>Excellent as an aperitif. The perfect pair with cheeses such as Brie, Camembert and aged salers. Also delightful with poultry and shellfish.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div className="container mb-3">
+          <div className='container mb-3'>
             <SimilarTokensView />
           </div>
         </div>
+
         <ModalTokenCheckoutNFT
           inShowModal={this.state.modalTransferIsShow}
           onHideModal={() => this.hideModal()}
@@ -503,7 +582,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             this.modalToggleVisibility({ modalSaleShow: false });
             if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
           }}
-          onSubmit={({ saleType, price, start_date, end_date, }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
+          onSubmit={({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
             const convertedPrice = price ? convertNearToYoctoString(price) : null;
 
             const result = {
@@ -549,8 +628,43 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           confirmText={`Do you want to withdraw the token from sale?`}
         />
       </>
-    )
+    );
   }
 }
 
-export default withComponent(TokenViewDetail)
+export default withComponent(TokenViewDetail);
+
+// <div className={styles.tabsWrap}>
+//   <Tabs
+//     id='controlled-tab-example'
+//     className='mb-3'
+//   >
+//     <Tab eventKey='home' title='DESCRIPTION'>
+//       <div className={styles.tabContainer}>
+//         <DescrtiptionView text={this.state.order?.metadata.description!} />
+//       </div>
+//     </Tab>
+//     <Tab eventKey='profile' title='DETAILS'>
+//       <div className={styles.tabContainer}>
+//         <TokenDetailView address={'Contract Address'} id={this.state.order?.token_id!} />
+//       </div>
+//     </Tab>
+//     {this.state.order?.sale !== null && (this.state.order?.sale.sale_type === 2 || this.state.order?.sale.sale_type === 3 ?
+//       <Tab eventKey='bids' title='BIDS'>
+//         <div className={styles.tabContainer}>
+//           <BidsView tokenId={this.state.order?.token_id!} />
+//         </div>
+//       </Tab> : '')}
+//     <Tab eventKey='contact' title='HISTORY'>
+//       <div className={styles.tabContainer}>
+//         <HistoryView tokenId={this.state.order?.token_id!} />
+//       </div>
+//     </Tab>
+//     <Tab eventKey='owners' title='OWNERS'>
+//       <div className={styles.tabContainer}>
+//         <OwnersView tokenId={this.state.order?.token_id!} />
+//       </div>
+//     </Tab>
+//   </Tabs>
+// </div>
+

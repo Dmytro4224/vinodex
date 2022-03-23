@@ -47,16 +47,17 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
 
     return <div>
       <div className='d-flex align-items-center justify-content-between mt-3 flex-wrap'>
-        <LabelView text={'SIMILAR ITEMS'} />
+        <LabelView text={'Similar products by this Brand'} />
         <ButtonView
-          text={'Show all'}
+          text={'Explore more'}
           onClick={() => {
             this.props.navigate('/tokens/3');
           }}
           color={buttonColors.gold}
+          customClass={'btn-explore-more'}
         />
       </div>
-      <div className={`d-flex  flex-gap-36 mt-2 ${styles.scrollWrap}`}>
+      <div className={`d-flex  flex-gap-36 mt-4 ${styles.scrollWrap}`}>
         {this.state.list.map(item => {
           return <TokenCardView
             key={`similartoken-${item.token_id}`}

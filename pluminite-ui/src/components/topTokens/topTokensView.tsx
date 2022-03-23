@@ -110,7 +110,8 @@ class TopTokensView extends Component<ITopTokensView & IBaseComponentProps, {}, 
         <div className='d-flex align-items-center justify-content-between mt-3 flex-wrap'>
           <LabelView text={'Top 10'} />
           <ButtonView
-            text={'Show all'}
+            text={'Explore more'}
+            customClass={'btn-explore-more'}
             onClick={() => {
               this.props.navigate('/tokens/1');
             }}

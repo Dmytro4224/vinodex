@@ -1,11 +1,15 @@
-.likeImage{
-    cursor: pointer;
+.likeImage {
+  cursor: pointer;
 }
-.iconStyle{
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+.iconStyle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.count{
-    margin-left: 8px;
+
+.count {
+  margin-left: 8px;
+  color: var(--steelGray);
+  font-weight: 700;
 }

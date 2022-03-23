@@ -52,14 +52,6 @@ class Marketplace extends Component {
           <p>Modal children</p>
         </ModalSample>
 
-        {/*<ArtistCard*/}
-        {/*  name={'Artist Name'}*/}
-        {/*  identification={'0x0b9D2weq28asdqwe132'}*/}
-        {/*  usersCount={22}*/}
-        {/*  likesCount={12}*/}
-        {/*  isFollow={false}*/}
-        {/*/>*/}
-
         <div style={{ maxWidth: '300px' }}>
           <InputView
             onChange={(e) => { console.log(e) }}

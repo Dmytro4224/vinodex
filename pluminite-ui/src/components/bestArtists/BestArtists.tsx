@@ -100,7 +100,8 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
         <div className="d-flex align-items-center justify-content-between mt-3">
           <LabelView text={'Best Artists'} />
           <ButtonView
-            text={'Show all'}
+            text={'Explore more'}
+            customClass={'btn-explore-more'}
             onClick={() => { this.props.navigate('/artists') }}
             color={buttonColors.gold}
           />

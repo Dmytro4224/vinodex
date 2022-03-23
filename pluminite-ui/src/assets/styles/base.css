@@ -2,10 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Urbanist', 'Gilroy', 'Roboto', sans-serif;
   font-size: 14px;
   font-weight: 400;
   overflow-x: hidden;
+  letter-spacing: 0.04rem;
 }
 
 main {
@@ -68,6 +69,7 @@ a {
 .flex-gap-36 {
   gap: 36px;
 }
+
 .nav.nav-tabs {
   border-bottom: 1px solid rgba(174, 126, 3, 0.6);
 }
@@ -78,11 +80,13 @@ a {
   border-bottom: 1px solid rgba(174, 126, 3, 0.6);
   color: var(--pirateCold);
 }
+
 .nav-tabs .nav-link:focus,
 .nav-tabs .nav-link:hover {
   border-color: transparent;
   border-bottom: 1px solid rgba(174, 126, 3, 0.6);
 }
+
 .nav-tabs .nav-item.show .nav-link,
 .nav-tabs .nav-link {
   color: var(--mineShaftS);
@@ -134,17 +138,21 @@ button[disabled] {
 .ta-c {
   text-align: center;
 }
+
 .ml-12 {
   margin-left: 12px;
 }
+
 .h-100 {
   height: 100%;
 }
+
 .modal.transparent .modal-content {
   background-color: transparent;
   border: none;
   /*height: 100%;*/
 }
+
 .modal.transparent .modal-content .btn-close {
   /*border: 2px solid rgba(3, 3, 3, 0.3);*/
   background: none !important;
@@ -153,6 +161,7 @@ button[disabled] {
 .modal.transparent .modal-content .btn-close:hover {
   opacity: 1;
 }
+
 .modal.transparent .modal-content .btn-close:before, .modal.transparent .modal-content .btn-close:after {
   position: absolute;
   right: 15px;
@@ -163,17 +172,19 @@ button[disabled] {
   background-color: #fff;
 }
 
-.modal.transparent .modal-content .btn-close:focus{
+.modal.transparent .modal-content .btn-close:focus {
   box-shadow: none;
 }
+
 .modal.transparent .modal-content .btn-close:before {
   transform: rotate(45deg);
 }
+
 .modal.transparent .modal-content .btn-close:after {
   transform: rotate(-45deg);
 }
 
-.modal.transparent .modal-dialog{
+.modal.transparent .modal-dialog {
   width: auto;
   max-width: fit-content;
   height: auto;
@@ -182,9 +193,11 @@ button[disabled] {
   top: 50%;
   transform: translateY(-50%);
 }
-.modal-backdrop.show{
+
+.modal-backdrop.show {
   opacity: .8 !important;
 }
+
 /*.modal.transparent .btn-close{
   position: fixed;
   right: 20px;
@@ -200,6 +213,11 @@ button[disabled] {
 .gap-5px {
   gap: 5px;
 }
+
+.gap-15px {
+  gap: 15px;
+}
+
 .setOpacity {
   opacity: 0.7;
 }
@@ -218,4 +236,46 @@ button[disabled] {
 .btn-filter:hover,
 .btn-filter:focus {
   background-color: rgba(174, 126, 3, 0.2);
+}
+
+.fz-15 {
+  font-size: 15px;
+}
+
+.fz-18 {
+  font-size: 18px;
+}
+
+.color-steel-gray {
+  color: var(--steelGray);
+}
+
+.ff-urbanist {
+  font-family: 'Urbanist', sans-serif;
+}
+
+.tt-u {
+  text-transform: uppercase;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.btn-border-b {
+  border-bottom: 1px solid;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.btn-explore-more {
+  padding-left: 0;
+  padding-right: 0;
+  font-family: 'Urbanist', sans-serif;
+  color: var(--steelGray);
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid;
+  border-radius: 0;
 }

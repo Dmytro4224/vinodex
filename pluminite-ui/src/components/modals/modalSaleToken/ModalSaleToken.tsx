@@ -7,17 +7,13 @@ import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withC
 import { onlyNumber } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { SelectView } from '../../common/select/selectView';
-import { Form } from 'react-bootstrap';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 interface IModalSaleToken extends IProps {
   onHideModal: () => void;
-  onSubmit: ({
-               saleType,
-               price,
-               start_date,
-               end_date,
-             }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => void;
+  onSubmit: ({saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => void;
   inShowModal: boolean;
   tokenInfo: ITokenResponseItem | null | undefined;
 }
@@ -26,6 +22,9 @@ interface ModalSaleTokenState {
   isLoading: boolean;
   selectType: string;
   errorMessage: string;
+  startDate: Date,
+  expDate: Date,
+  minExpDate: Date,
   validate: {
     isPriceValid: boolean,
   };
@@ -35,13 +34,15 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
   private _initialState: ModalSaleTokenState | undefined;
   private _refInputPrice: any;
   private _refCatalogSelect: any;
-  private _refStartDate: any;
-  private _refExpDate: any;
+  private _addTime: number = 900_000;
 
   public state: ModalSaleTokenState = {
     isLoading: false,
     selectType: '1',
     errorMessage: '',
+    startDate: new Date(),
+    expDate: new Date(new Date().getTime() + this._addTime),
+    minExpDate: new Date(),
     validate: {
       isPriceValid: true,
     },
@@ -95,7 +96,7 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
 
         break;
       case '2':
-        if (this._refStartDate.value === '' || this._refExpDate.value === '') {
+        if (!this.state.startDate || !this.state.expDate) {
           validInfo.errorMessage = 'Enter start and end date';
         }
 
@@ -134,10 +135,24 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
     this.props.onSubmit && this.props.onSubmit({
       saleType: +this.state.selectType,
       price: +this._refInputPrice.value,
-      start_date: this._refStartDate?.value || '',
-      end_date: this._refExpDate?.value || '',
+      start_date: this.state.startDate || '',
+      end_date: this.state.expDate || '',
     });
   };
+
+  private filterPassedTime = (time) => {
+    const currentDate = new Date();
+    const selectedDate = new Date(time);
+
+    return currentDate.getTime() < selectedDate.getTime();
+  }
+
+  private filterPassedTimeExpDate = (time) => {
+    const currentDate = new Date(this.state.startDate);
+    const selectedDate = new Date(time);
+
+    return currentDate.getTime() < selectedDate.getTime();
+  }
 
   render() {
     return (
@@ -223,29 +238,44 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
                 onlyNumber(e.target);
               }}
             />
-            {/*<p className={styles.inputSubText}>Service fee: <b>2.5%</b>, You will receive: <b>0.00 NEAR</b></p> */}
           </>
         ) : this.state.selectType === '2' ? (
           <div className={'mt-4'}>
             <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
-            <div className={'d-flex align-items-center justify-content-between flex-gap-36 mt-3'}>
-              <Form.Control
-                type='date'
-                id='date-start'
-                placeholder={'Starting Date*'}
-                ref={(ref) => {
-                  this._refStartDate = ref;
+            <div className={'d-flex align-items-center flex-gap-36 mt-3'}>
+              <DatePicker
+                selected={this.state.startDate}
+                onChange={(date) => {
+                  this.setState({
+                    ...this.state,
+                    startDate: date,
+                    expDate: new Date(new Date(date).getTime() + this._addTime),
+                    minExpDate: date
+                  })
                 }}
-                value={this._refStartDate && this._refStartDate.value}
+                showTimeSelect
+                timeFormat="p"
+                timeIntervals={15}
+                dateFormat="Pp"
+                minDate={new Date()}
+                filterTime={this.filterPassedTime}
+                withPortal
+                placeholderText="Click to select a start date"
+                className={'form-control'}
               />
-              <Form.Control
-                type='date'
-                id='date-exp'
-                placeholder={'Expiration Date*'}
-                ref={(ref) => {
-                  this._refExpDate = ref;
-                }}
-                value={this._refExpDate && this._refExpDate.value}
+
+              <DatePicker
+                selected={this.state.expDate}
+                onChange={(date) => this.setState({ ...this.state, expDate: date })}
+                showTimeSelect
+                timeFormat="p"
+                timeIntervals={15}
+                dateFormat="Pp"
+                minDate={this.state.minExpDate}
+                filterTime={this.filterPassedTimeExpDate}
+                withPortal
+                placeholderText="Click to select end date"
+                className={'form-control'}
               />
             </div>
           </div>
