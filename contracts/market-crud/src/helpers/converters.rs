@@ -1,6 +1,6 @@
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use near_sdk::collections::{LookupMap, UnorderedSet};
+use near_sdk::collections::{UnorderedMap};
 
 pub type TokenId = String;
 
@@ -16,7 +16,7 @@ pub struct Transliteration {}
 
 impl Transliteration {
     // Ініціалізація та заповнення мапи букв для транслітерації
-    fn transliterate_char<'life>(c: char) -> &'life str
+    pub fn transliterate_char<'life>(c: char) -> &'life str
     {
         return match c
         {
@@ -99,7 +99,7 @@ impl Transliteration {
     }
 
     // Транслітерація рядка
-    fn transliterate_string(
+    pub fn transliterate_string(
         input: &String
     ) -> String {
         let mut result: String = "".to_string();
@@ -109,30 +109,5 @@ impl Transliteration {
         }
 
         return result;
-    }
-
-    fn collection_id_generate(name: &String, collections: &LookupMap<String, UnorderedSet<TokenId>>) -> String
-    {
-        let mut collection_id = Transliteration::transliterate_string(name);
-
-        if !collections.contains_key(&collection_id)
-        {
-            return collection_id;
-        }
-
-        collection_id.push_str("-");
-
-        for i in 1..101 as u8
-        {
-            let mut collection_id_new = collection_id.clone();
-            collection_id_new.push_str(&(i.to_string()));
-
-            if !collections.contains_key(&collection_id_new)
-            {
-                return collection_id_new;
-            }
-        }
-
-        panic!("collection_id depth error");
     }
 }

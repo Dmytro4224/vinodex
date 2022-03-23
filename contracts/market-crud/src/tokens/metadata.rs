@@ -31,15 +31,19 @@ pub struct TokenMetadata {
     pub reference_hash: Option<Base64VecU8>, // Base64-encoded sha256 hash of JSON from reference field. Required if `reference` is included.
     pub views_count: u64, //кількість переглядів
     pub likes_count: u64, //кількість вподобань
-    pub price: u128 // ціна токена
-}
+    pub price: u128, // ціна токена
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-#[serde(crate = "near_sdk::serde")]
-pub struct TestMeta
-{
-    pub title: String,
-    pub description: Option<String>
+    pub style: String, // стиль вина
+    pub year: String, // рік виробництва
+    pub botle_size: String, // об'єм плаяшки
+    pub characteristics: String, //текст-табличка з характеристиками, буде штмл
+    pub specification: String, // текст-табличка з характеристиками, буде штмл
+    pub artist: AccountId, // це буде автор, тип: account_id 
+
+    //далі вказуємо відсотки, шо кому і скільки будемо ділити при продажу, 0-100
+    pub percentage_for_creator : u8,
+    pub percentage_for_artist : u8,
+    pub percentage_for_vinodex : u8
 }
 
 pub trait NonFungibleTokenMetadata {
@@ -121,8 +125,6 @@ impl Contract {
 
         self.tokens_resort(token_id, 8, Some(likes_count as u128));
     }
-
-
 
     pub fn token_set_view(&mut self, token_id: TokenId)
     {

@@ -248,7 +248,8 @@ pub enum StorageKey {
     CreatorPerToken,
     CollectionOfTokens,
     CollectionPerToken,
-    Collection
+    Collection,
+    CollectionOfTokensSet { collection_id_hash: CryptoHash },
 }
 
 #[near_bindgen]

@@ -30,7 +30,9 @@ pub struct JsonToken {
     ///чи поставив лайк той, хто переглядає
     pub is_like:bool,
 
-    pub sale: Option<SaleJson>
+    pub sale: Option<SaleJson>,
+
+    pub collection: Option<Collection>
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
