@@ -97,10 +97,11 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
     }
 
     return <div>
-      <div className='d-flex align-items-center justify-content-between mt-3 flex-wrap'>
+      <div className='d-flex align-items-center justify-content-between my-3 flex-wrap'>
         <LabelView text={'Popular'} />
         <ButtonView
-          text={'Show all'}
+          text={'Explore more'}
+          customClass={'btn-explore-more'}
           onClick={() => {
             this.props.navigate('/tokens/2');
           }}
