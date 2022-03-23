@@ -2,10 +2,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
 
 body {
-  font-family: 'Gilroy', sans-serif;
+  font-family: 'Urbanist', 'Gilroy', 'Roboto', sans-serif;
   font-size: 14px;
   font-weight: 400;
   overflow-x: hidden;
+  letter-spacing: 0.04rem;
 }
 
 main {
@@ -243,4 +244,38 @@ button[disabled] {
 
 .fz-18 {
   font-size: 18px;
+}
+
+.color-steel-gray {
+  color: var(--steelGray);
+}
+
+.ff-urbanist {
+  font-family: 'Urbanist', sans-serif;
+}
+
+.tt-u {
+  text-transform: uppercase;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+.btn-border-b {
+  border-bottom: 1px solid;
+  border-radius: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.btn-explore-more {
+  padding-left: 0;
+  padding-right: 0;
+  font-family: 'Urbanist', sans-serif;
+  color: var(--steelGray);
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 1px solid;
+  border-radius: 0;
 }
