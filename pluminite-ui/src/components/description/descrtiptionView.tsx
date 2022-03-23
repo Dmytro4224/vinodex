@@ -1,23 +1,31 @@
-import { Component } from "react";
-import {IBaseComponentProps, IProps, withComponent } from "../../utils/withComponent";
+import { Component } from 'react';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 
-interface IDescriptionView extends IProps{
-  text: string
+interface IDescriptionView extends IProps {
+  text: string;
 }
 
-class DescrtiptionView extends Component<IDescriptionView & IBaseComponentProps>{
+class DescrtiptionView extends Component<IDescriptionView & IBaseComponentProps> {
   constructor(props: IDescriptionView & IBaseComponentProps) {
     super(props);
   }
 
-  private get text(){
+  private get text() {
     return this.props.text;
   }
 
-  render(){
+  render() {
     return (
-      <div>{this.text}</div>
-    )
+      <p style={{
+        fontWeight: '400',
+        fontSize: '14px',
+        lineHeight: '22px',
+        color: 'var(--topaz)',
+      }}
+      >
+        {this.text}
+      </p>
+    );
   }
 }
 
