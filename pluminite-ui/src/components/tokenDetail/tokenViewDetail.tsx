@@ -432,7 +432,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 </div>
               </div>
 
-              <div className={`d-flex align-items-center flex-gap-36 mt-3`}>
+              <div className={`${styles.artistsWrap} d-flex align-items-center flex-gap-36 mt-3`}>
                 <ArtistCard
                   info={{
                     bio: '',
@@ -492,7 +492,71 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             </div>
           </div>
           <div className='w-100 container my-5'>
-            <p className={styles.line} />
+            <div className={styles.tokenInformationWrap}>
+              <div className='w-100'>
+                <p className={styles.infoTitle}>Specifications</p>
+                <ul className={styles.specList}>
+                  <li>
+                    <p>Brand</p>
+                    <p className={styles.infoLine} />
+                    <p>DEUTZ</p>
+                  </li>
+                  <li>
+                    <p>Country</p>
+                    <p className={styles.infoLine} />
+                    <p>France</p>
+                  </li>
+                  <li>
+                    <p>Volume (cl)	</p>
+                    <p className={styles.infoLine} />
+                    <p>150cl</p>
+                  </li>
+                  <li>
+                    <p>ABV (% vol)	</p>
+                    <p className={styles.infoLine} />
+                    <p>13</p>
+                  </li>
+                  <li>
+                    <p>Dietary	</p>
+                    <p className={styles.infoLine} />
+                    <p>Vegan, Vegetarian</p>
+                  </li>
+                  <li>
+                    <p>Style</p>
+                    <p className={styles.infoLine} />
+                    <p>Brut</p>
+                  </li>
+                  <li>
+                    <p>Champagne Expression	</p>
+                    <p className={styles.infoLine} />
+                    <p>Brioche, Complex, Light & Fresh</p>
+                  </li>
+                  <li>
+                    <p>Closure</p>
+                    <p className={styles.infoLine} />
+                    <p>Cork and Cage</p>
+                  </li>
+                </ul>
+              </div>
+              <div className='w-100'>
+                <p className={styles.infoTitle}>Information</p>
+
+                <ul className={styles.infoList}>
+                  <li>
+                    <p>Grape</p>
+                    <span>Chardonnay, Pinot Meunier, Pinot Noir</span>
+                  </li>
+                  <li>
+                    <p>Notes</p>
+                    <span>The aromas on the nose of citrus fruits, red fruits and dried fruits are echoes in the mouth with the addition of toasted bread and dark fruit such as cherry, fig and blackberry.</span>
+                  </li>
+                  <li>
+                    <p>Food Suggestions</p>
+                    <span>Excellent as an aperitif. The perfect pair with cheeses such as Brie, Camembert and aged salers. Also delightful with poultry and shellfish.</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
           <div className='container mb-3'>
             <SimilarTokensView />
@@ -518,12 +582,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             this.modalToggleVisibility({ modalSaleShow: false });
             if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
           }}
-          onSubmit={({
-                       saleType,
-                       price,
-                       start_date,
-                       end_date,
-                     }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
+          onSubmit={({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
             const convertedPrice = price ? convertNearToYoctoString(price) : null;
 
             const result = {

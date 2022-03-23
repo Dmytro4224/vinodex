@@ -144,6 +144,75 @@
   color: var(--steelGray);
 }
 
+.tokenInformationWrap {
+  display: flex;
+  gap: 50px;
+  padding: 24px;
+  width: 100%;
+  border-radius: 8px;
+  background-color: var(--alabasterapprox);
+}
+
+.tokenInformationWrap .infoTitle {
+  margin-bottom: 20px;
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--black);
+}
+
+.tokenInformationWrap ul li:not(:last-of-type) {
+  margin-bottom: 15px;
+}
+
+.tokenInformationWrap ul.specList li p {
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.tokenInformationWrap ul.specList li p:first-of-type {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--black);
+}
+
+.tokenInformationWrap ul.specList li {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.tokenInformationWrap ul.specList li p:last-of-type {
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--tundora);
+}
+
+.tokenInformationWrap ul.infoList li p {
+  margin-bottom: 5px;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--black);
+}
+
+.tokenInformationWrap ul.infoList li span {
+  font-weight: 400;
+  font-size: 15px;
+  color: var(--tundora);
+}
+
+.infoLine {
+  height: 1px;
+  width: 100%;
+  background-color: var(--alto);
+}
+
+@media(max-width: 1200px) {
+  .tokenInformationWrap {
+    flex-direction: column;
+  }
+}
+
 @media (max-width: 991px) {
   .mainWrap {
     flex-direction: column;
@@ -151,5 +220,31 @@
 
   .cardImage {
     max-width: 100%;
+  }
+
+  .tokenInformationWrap ul.specList li p {
+    white-space: unset;
+  }
+
+  .infoLine {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .tokenInformationWrap ul.specList li {
+    flex-direction: column;
+    justify-content: unset;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .artistsWrap {
+    flex-direction: column;
+    gap: 20px !important;
+  }
+
+  .tokenTitle {
+    font-size: 20px;
   }
 }
