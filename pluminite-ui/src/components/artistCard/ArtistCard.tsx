@@ -19,13 +19,20 @@ interface IArtistCard extends IProps {
   usersCount: number;
   likesCount: number;
   isFollow: boolean;
-  isCard?: boolean;
+  type?: ArtistType;
+  title?: string;
   isLike: boolean;
   customClass?: string;
   followBtnText?: string;
   isDisabledFollowBtn?: boolean;
   isForceVisible?: boolean;
   withoutControls?: boolean;
+}
+
+export enum ArtistType {
+  card = 'card',
+  oneline = 'oneline',
+  info = 'info',
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -48,6 +55,14 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   public componentDidUpdate() {
     this.props.isForceVisible && forceVisible();
+  }
+
+  private get type() {
+    return this.props.type || ArtistType.card;
+  }
+
+  private get title() {
+    return this.props.title || '';
   }
 
   private get avatar() {
@@ -76,10 +91,6 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
   private get followBtnText() {
     return this.props.followBtnText;
-  }
-
-  private get isCard() {
-    return typeof this.props.isCard === 'undefined' ? true : this.props.isCard;
   }
 
   private get isDisabledFollowBtn() {
@@ -161,7 +172,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     }
   };
 
-  isCardType() {
+  private isCardType() {
     return (
       <LazyLoad
         unmountIfInvisible={false}
@@ -227,12 +238,14 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             changeAvatarRefSrc(this._refAvatar);
           }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           <div>
-            <NavLink to={`/userProfile/${this.identification}`}><p className={styles.artistName}>{this.name}</p>
+            <NavLink to={`/userProfile/${this.identification}`}>
+              <p className={styles.artistName}>{this.name}</p>
             </NavLink>
             <IdentificationCopy id={this.identification} />
           </div>
         </div>
-        <div className={`d-flex align-items-center ${this.isMyUser ? styles.pointerNone : ''} ${this.props.withoutControls ? 'd-none' : ''}`}>
+        <div
+          className={`d-flex align-items-center ${this.isMyUser ? styles.pointerNone : ''} ${this.props.withoutControls ? 'd-none' : ''}`}>
           <LikeView
             onClick={this.toggleLikeAccount}
             customClass={`${styles.likes} ${styles.likesCustom}`}
@@ -254,8 +267,41 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     );
   }
 
-  render() {
-    return <> {this.isCard ? this.isCardType() : this.oneLineType()} </>;
+  private isInfoType() {
+    return (
+      <div className='d-flex align-items-center justify-content-between w-100'>
+        <div className={`${styles.artistWrap} ${styles.infoStyle}`}>
+          <img
+            ref={this._refAvatar}
+            onError={() => { changeAvatarRefSrc(this._refAvatar); }}
+            className={styles.artistAvatar}
+            src={this.avatar || defaultAvatar}
+            alt='avatar'
+          />
+          <div>
+            <p className={styles.infoTitle}>{this.title || 'Creator'}</p>
+            <NavLink to={`/userProfile/${this.identification}`}>
+              <p className={styles.artistName}>{this.name}</p>
+            </NavLink>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  private getRenderByType() {
+    switch (this.type) {
+      case ArtistType.card:
+        return this.isCardType();
+      case ArtistType.oneline:
+        return this.oneLineType();
+      case ArtistType.info:
+        return this.isInfoType();
+    }
+  }
+
+  public render() {
+    return this.getRenderByType();
   }
 }
 
