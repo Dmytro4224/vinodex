@@ -15,12 +15,17 @@ impl Contract {
         sale: Option<Sale>
     ) {
 
+        let mut owner_id = env::predecessor_account_id();
+        if !self.minting_account_ids.contains(&owner_id)
+        {
+            panic!("You do not have permission for minting");
+        }
+
         let mut final_token_id = format!("{}", self.token_metadata_by_id.len() + 1);
         if let Some(token_id) = token_id {
             final_token_id = token_id
         }
 
-        let mut owner_id = env::predecessor_account_id();
         if let Some(receiver_id) = receiver_id {
             owner_id = receiver_id.into();
         }
@@ -160,6 +165,18 @@ impl Contract {
             &mut self.profiles_global_stat_sorted_vector,
             &owner_id,4,1,true);
         //=======================================================
+    }
+
+    ///Дозволити акаунту випускати токени
+    pub fn minting_accounts_add(&mut self, account_id: AccountId)
+    {
+        self.minting_account_ids.insert(&account_id);
+    }
+
+    ///Забрати в акаунта дозвіл на випуск токенів
+    pub fn minting_accounts_remove(&mut self, account_id: AccountId)
+    {
+        self.minting_account_ids.remove(&account_id);
     }
 
     // pub fn tokens_fix(&mut self)

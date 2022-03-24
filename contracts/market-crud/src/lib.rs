@@ -206,9 +206,11 @@ pub struct Contract {
 
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
     pub collection_per_token: LookupMap<TokenId, String>,
-    pub collections: UnorderedMap<String, Collection>
+    pub collections: UnorderedMap<String, Collection>,
 
     //================collections--------------------//
+
+    pub minting_account_ids: UnorderedSet<AccountId>
 }
 
 // Helper structure to for keys of the persistent collections.
@@ -250,6 +252,7 @@ pub enum StorageKey {
     CollectionPerToken,
     Collection,
     CollectionOfTokensSet { collection_id_hash: CryptoHash },
+    MintingAccountIds { account_id_hash: CryptoHash },
 }
 
 #[near_bindgen]
@@ -274,7 +277,7 @@ impl Contract {
             token_metadata_by_id: UnorderedMap::new(
                 StorageKey::TokenMetadataById.try_to_vec().unwrap(),
             ),
-            owner_id: owner_id.into(),
+            owner_id: owner_id.clone().into(),
             extra_storage_in_bytes_per_token: 0,
             metadata: LazyOption::new(
                 StorageKey::NftMetadata.try_to_vec().unwrap(),
@@ -319,6 +322,13 @@ impl Contract {
                 StorageKey::CollectionPerToken.try_to_vec().unwrap(),
             ),
             collections: UnorderedMap::new(StorageKey::Collection.try_to_vec().unwrap()),
+            minting_account_ids: UnorderedSet::new(
+                StorageKey::MintingAccountIds {
+                    account_id_hash: hash_account_id(&owner_id.into()),
+                }
+                    .try_to_vec()
+                    .unwrap(),
+            )
         };
 
         if unlocked.is_none() {
@@ -379,7 +389,8 @@ impl Contract {
             creator_per_token: LookupMap<TokenId, AccountId>,
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
             collection_per_token: LookupMap<TokenId, String>,
-            collections: UnorderedMap<String, Collection>
+            collections: UnorderedMap<String, Collection>,
+            minting_account_ids: UnorderedSet<AccountId>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -422,7 +433,8 @@ impl Contract {
             creator_per_token: old_contract.creator_per_token,
             collection_tokens: old_contract.collection_tokens,
             collection_per_token: old_contract.collection_per_token,
-            collections: old_contract.collections
+            collections: old_contract.collections,
+            minting_account_ids: old_contract.minting_account_ids
         }
     }
 

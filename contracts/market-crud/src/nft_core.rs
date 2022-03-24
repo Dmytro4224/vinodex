@@ -155,35 +155,17 @@ impl NonFungibleTokenCore for Contract {
             );
         }
 
-        // compute payouts based on balance option
-        // adds in contract_royalty and computes previous owner royalty from remainder
-        let owner_id = previous_token.owner_id;
-        let mut total_perpetual = 0;
         let payout = if let Some(balance) = balance {
             let balance_u128 = u128::from(balance);
             let mut payout: Payout = HashMap::new();
-            let royalty = self.tokens_by_id.get(&token_id).expect("No token").royalty;
-
-            if let Some(max_len_payout) = max_len_payout {
-                assert!(royalty.len() as u32 <= max_len_payout, "Market cannot payout to that many receivers");
-            }
-
-            for (k, v) in royalty.iter() {
-                let key = k.clone();
-                if key != owner_id {
-                    payout.insert(key, royalty_to_payout(*v, balance_u128));
-                    total_perpetual += *v;
-                }
-            }
-
-            // payout to contract owner - may be previous token owner, they get remainder of balance
-            if self.contract_royalty > 0 && self.owner_id != owner_id {
-                payout.insert(self.owner_id.clone(), royalty_to_payout(self.contract_royalty, balance_u128));
-                total_perpetual += self.contract_royalty;
-            }
-            assert!(total_perpetual <= MINTER_ROYALTY_CAP + CONTRACT_ROYALTY_CAP, "Royalties should not be more than caps");
-            // payout to previous owner
-            payout.insert(owner_id, royalty_to_payout(10000 - total_perpetual, balance_u128));
+            
+            let token_meta_data = self.token_metadata_by_id.get(&token_id).expect("No token metadata");
+            let for_creator: u128 = balance_u128 / 100 * token_meta_data.percentage_for_creator as u128;
+            let for_artist: u128 = balance_u128 / 100 * token_meta_data.percentage_for_artist as u128;
+            
+            
+            payout.insert(self.creator_per_token.get(&token_id).unwrap(), U128(for_creator));
+            payout.insert(token_meta_data.artist, U128(for_artist));
 
             Some(payout)
         } else {
