@@ -242,3 +242,16 @@
 .datePickWrap input{
   background-color: var(--wildSand);
 }
+
+.dateInput {
+  padding: 0 12px;
+  width: 100%;
+  min-height: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  outline: none;
+  border: none;
+  background-color: var(--wildSand);
+}

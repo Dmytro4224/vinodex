@@ -279,3 +279,10 @@ button[disabled] {
   border-bottom: 1px solid;
   border-radius: 0;
 }
+
+.errorMessage {
+  margin: 6px 0 0 14px;
+  font-weight: 500;
+  font-size: 12px;
+  color: var(--thunderbird);
+}

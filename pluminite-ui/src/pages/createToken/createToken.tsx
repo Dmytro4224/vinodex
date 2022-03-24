@@ -20,6 +20,8 @@ import TokenCardView from '../../components/tokenCard/tokenCardView';
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return new Big(yoctoNears)
@@ -28,14 +30,14 @@ const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
     .toString();
 };
 
-interface ICreateToken extends IProps {
-
-}
+interface ICreateToken extends IProps {}
 
 class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _ref: React.RefObject<DropzoneRef>;
   private _refCoverFile: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
+  private _refInputStyle: any;
+  private _refInputBottleSize: any;
   private _refInputDescription: any;
   private _refInputPrice: any;
   private _refPriceSelect: any;
@@ -70,6 +72,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     bid: 0,
     startDate: '',
     expDate: '',
+    year: '',
     validate: {
       isFileValid: true,
       isTitleValid: true,
@@ -78,6 +81,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       isRoyaltiesValid: true,
       isDescrValid: true,
       isDatesValid: true,
+      isWineStyleValid: true,
+      isYearValid: true,
+      isBottleSizeValid: true,
     },
   };
 
@@ -239,18 +245,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       title: this._refInputTitle.value,
     });
   };
+
   private royaltyValid = (inp) => {
     if (inp.value > 100) {
       inp.value = 100;
     }
-  }
+  };
 
   public render() {
     return (<div className={styles.container}>
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
           <TokenCardView
-            model={{ token_id: this.tokenId, metadata: { media: this.previewImage } } as ITokenResponseItem}
+            model={{ token_id: this.tokenId, metadata: { media: this.previewImage, title: this.previewTitle } } as ITokenResponseItem}
             key={`createtoken-${this.tokenId}`}
             countL={1}
             countR={1}
@@ -282,11 +289,12 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                       <div className={styles.dropzoneControls}>
                         {acceptedFiles.length > 0 ?
                           <>{acceptedFiles[0].type.startsWith('video/') ?
-                            <iframe ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
+                            <iframe
+                              ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
                               src={''}
                               title='' frameBorder='0'
                               allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                              allowFullScreen></iframe>
+                              allowFullScreen />
                             : <img ref={this._imageRef} src={''} />}</> :
                           <><p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                             <ButtonView
@@ -356,6 +364,52 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             isError={!this.state.validate.isTitleValid}
             errorMessage={`Enter title in the correct format.`}
           />
+
+          <label className={styles.inputLabel}>Specify the style of wine</label>
+          <InputView
+            placeholder={'Style of wine*'}
+            absPlaceholder={'Style of wine*'}
+            customClass={`mb-4 ${styles.titleInpWrap}`}
+            viewType={ViewType.input}
+            setRef={(ref) => { this._refInputStyle = ref; }}
+            value={this._refInputStyle && this._refInputStyle.value}
+            isError={!this.state.validate.isWineStyleValid}
+            errorMessage={`Enter the wine style.`}
+          />
+
+          <label className={styles.inputLabel}>Select the year of manufacture and the botle size</label>
+          <div className={`d-flex align-items-center justify-content-between w-100 flex-gap-36 mt-2 mb-4`}>
+            <div className={`w-100`}>
+              <DatePicker
+                selected={this.state.year || null}
+                maxDate={new Date()}
+                showYearPicker
+                dateFormat="yyyy"
+                // withPortal
+                placeholderText="Click to select a year*"
+                className={styles.dateInput}
+                onChange={(date) => this.setState({ ...this.state, year: date })}
+              />
+              {!this.state.validate.isYearValid && (
+                <p className={`errorMessage`}>Enter the year</p>
+              )}
+            </div>
+
+            <InputView
+              placeholder={'Bottle size*'}
+              absPlaceholder={'Bottle size*'}
+              customClass={`w-100`}
+              viewType={ViewType.input}
+              setRef={(ref) => { this._refInputBottleSize = ref; }}
+              value={this._refInputBottleSize && this._refInputBottleSize.value}
+              isError={!this.state.validate.isBottleSizeValid}
+              errorMessage={`Enter the bottle size.`}
+              onChange={(e) => { validateDotNum(e.target) }}
+            />
+          </div>
+
+          {/* range x3 */}
+
           {this.isMultiple ?
             <div className={`${styles.copies} mb-3`}>
               <InputView
@@ -374,7 +428,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               <p className={styles.inputSubText}>At least 1, cannot be negative, only integer value.</p>
             </div>
             : ''}
-          <p></p>
+
           <Form>
             <FormCheck.Label className={`w-100 ${styles.priceTypeLabel}`} htmlFor='switch-nft-approve'>
               <div
@@ -481,12 +535,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               />
               <div className={'mt-4'}>
                 <label className={styles.inputLabel}>Set a period of time for which buyers can place bids</label>
-                <div className={`${styles.datePickWrap} d-flex align-items-centerjustify-content-between flex-gap-36 mt-3`}>
+                <div
+                  className={`${styles.datePickWrap} d-flex align-items-centerjustify-content-between flex-gap-36 mt-3`}>
                   <Form.Control
                     type='date'
                     id='date-start'
                     placeholder={'Starting Date*'}
-                    onChange={() => { }}
+                    onChange={() => {
+                    }}
                     ref={(ref) => {
                       this._refStartDate = ref;
                     }}
@@ -495,7 +551,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                     type='date'
                     id='date-exp'
                     placeholder={'Expiration Date*'}
-                    onChange={() => { }}
+                    onChange={() => {
+                    }}
                     ref={(ref) => {
                       this._refExpDate = ref;
                     }}
@@ -534,14 +591,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 label: catalog,
               };
             })}
-              customCLass={styles.selectStyle}
-              placeholder={'Category'}
-              onChange={(opt) => {
-                console.log(opt);
-              }}
-              setRef={(ref) => {
-                this._refCatalogSelect = ref;
-              }}
+            customCLass={styles.selectStyle}
+            placeholder={'Category'}
+            onChange={(opt) => {
+              console.log(opt);
+            }}
+            setRef={(ref) => {
+              this._refCatalogSelect = ref;
+            }}
             />
           </div>
           <div>
@@ -590,6 +647,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       bids: true,
       copies: true,
       dates: true,
+      wineStyle: true,
+      year: true,
+      bottleSize: true,
     };
 
     if (this._fileResponse === undefined) {
@@ -598,6 +658,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
     if (this._refInputTitle.value.trim() === '') {
       validInfo.title = false;
+    }
+
+    if (this._refInputStyle.value.trim() === '') {
+      validInfo.wineStyle = false;
+    }
+
+    if (this._refInputBottleSize.value.trim() === '') {
+      validInfo.bottleSize = false;
+    }
+
+    if (!this.state.year) {
+      validInfo.year = false;
     }
 
     if (this._renderType === 2 && this._refInputBids.value === '') {
@@ -622,7 +694,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.descr = false;
     }
 
-    if (!validInfo.file || !validInfo.title || !validInfo.price || !validInfo.descr || !validInfo.bids || !validInfo.royal || !validInfo.dates) {
+    if (
+      !validInfo.file ||
+      !validInfo.title ||
+      !validInfo.price ||
+      !validInfo.descr ||
+      !validInfo.bids ||
+      !validInfo.royal ||
+      !validInfo.dates ||
+      !validInfo.wineStyle ||
+      !validInfo.year ||
+      !validInfo.bottleSize
+    ) {
       this.setState({
         ...this.state,
         validate: {
@@ -633,6 +716,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           isRoyaltiesValid: validInfo.royal,
           isDescrValid: validInfo.descr,
           isDatesValid: validInfo.dates,
+          isWineStyleValid: validInfo.wineStyle,
+          isYearValid: validInfo.year,
+          isBottleSizeValid: validInfo.bottleSize,
         },
       });
 
@@ -649,7 +735,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
     const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
-    const price = 0;//this._renderType === 1 ? 0/*parseFloat(this._refInputPrice.value)*/ : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
+    const price = 0; //this._renderType === 1 ? 0/*parseFloat(this._refInputPrice.value)*/ : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
 
     if (this._fileResponse === undefined) {
       return;
@@ -686,6 +772,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       title: title,
       updated_at: null,
       views_count: 0,
+      style: this._refInputStyle.value,
+      year: this.state.year,
+      botle_size: this._refInputBottleSize.value,
+      characteristics: '',
+      specification: '',
+      artist: this.props.near.user?.accountId,
+      percentage_for_creator: 0,
+      percentage_for_artist : 100,
+      percentage_for_vinodex : 0
     };
 
     if (this.isMultiple) {
@@ -704,7 +799,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       }
     }
 
-    const tokenId = `${this._fileResponse.IpfsHash}-${new Date().getTime()}`;
+    const tokenId = `${this._fileResponse?.IpfsHash}-${new Date().getTime()}`;
 
     const model = {
       metadata,
@@ -712,7 +807,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       perpetual_royalties: null,
       token_id: tokenId,
       token_type: catalog?.value,
-      sale: null
+      sale: null,
     };
 
     if (this._refPutOnMarket.checked) {
@@ -723,8 +818,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
         start_date: this._renderType === 2 ? this._refStartDate.value === '' ? new Date().getTime() : new Date(this._refStartDate.value).getTime() : null,
         end_date: this._renderType === 2 ? this._refExpDate.value === '' ? new Date().getTime() : new Date(this._refExpDate.value).getTime() : null,
         is_closed: false,
-        bids: []
-      }
+        bids: [],
+      };
 
       if (this._renderType === 1) {
         //@ts-ignore

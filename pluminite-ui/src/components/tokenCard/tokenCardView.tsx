@@ -283,7 +283,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 text={'Not for sale'}
                 onClick={() => {}}
                 color={buttonColors.goldFill}
-                customClass={styles.button}
+                customClass={styles.buttonSecondControls}
                 disabled={true} />
             )}
           </div>
@@ -402,7 +402,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
                   onClick={() => { this.showCheckoutModal(); }}
                   color={buttonColors.goldFill}
-                  customClass={styles.button}
+                  customClass={styles.buttonSecondControls}
                 />
               )
             )}

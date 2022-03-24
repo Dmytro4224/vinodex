@@ -85,6 +85,10 @@
   font-weight: 700;
   font-size: 18px;
   color: var(--steelGray);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 350px;
+  overflow: hidden;
 }
 
 .cardFooter .cardInfo .authorName {
@@ -191,12 +195,6 @@
   overflow: hidden;
 }
 
-@media (max-width: 991px) {
-  .card.cardSmall {
-    min-width: 292px;
-  }
-}
-
 .priceText {
   font-family: 'Gilroy', sans-serif;
   font-weight: 600;
@@ -242,4 +240,25 @@
   font-size: 18px;
   line-height: 1;
   color: var(--steelGray);
+}
+
+@media (max-width: 991px) {
+  .card.cardSmall {
+    min-width: 292px;
+  }
+
+  .cardFooter .cardInfo .tokenName {
+    max-width: 250px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cardFooter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .cardFooter .cardInfo .tokenName {
+    max-width: 200px;
+  }
 }
