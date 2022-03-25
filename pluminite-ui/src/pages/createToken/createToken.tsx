@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { Component } from 'react';
 import { Form, FormCheck, Spinner } from 'react-bootstrap';
 import Dropzone, { DropzoneRef } from 'react-dropzone';
@@ -85,6 +85,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       isYearValid: true,
       isBottleSizeValid: true,
     },
+    range: {
+      artist: 50,
+      creator: 25,
+      vinodex: 25
+    }
   };
 
   constructor(props: ICreateToken & IBaseComponentProps) {
@@ -252,6 +257,45 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     }
   };
 
+  private rangeChangeHandler(e) {
+    const input = e.target;
+    const value = Number(input.value);
+    const remainder = (100 - Number(input.value)) / 2;
+
+    switch (input.dataset.type) {
+      case 'creator':
+        this.setState({
+          ...this.state,
+          range: {
+            creator: value,
+            artist: remainder,
+            vinodex: remainder
+          }
+        })
+        break;
+      case 'artist':
+        this.setState({
+          ...this.state,
+          range: {
+            creator: remainder,
+            artist: value,
+            vinodex: remainder
+          }
+        })
+        break;
+      case 'vinodex':
+        this.setState({
+          ...this.state,
+          range: {
+            creator: remainder,
+            artist: remainder,
+            vinodex: value,
+          }
+        })
+        break;
+    }
+  }
+
   public render() {
     return (<div className={styles.container}>
       <MediaQuery minWidth={992}>
@@ -408,7 +452,53 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             />
           </div>
 
-          {/* range x3 */}
+          <div className={`my-4`}>
+            <label className={styles.inputLabel}>Here we indicate the percentage that will be divided after the sale</label>
+            <div className={`${styles.rangeWrap} mt-2`}>
+              <div>
+                <p><label className={styles.inputLabel}>Creator: <span>{this.state.range.creator}%</span></label></p>
+                <input
+                  className={`w-100`}
+                  type="range"
+                  min="0" max="100"
+                  data-type="creator"
+                  value={this.state.range.creator}
+                  onChange={(e: ChangeEvent) => {
+                    this.rangeChangeHandler(e);
+                  }}
+                  step="1"
+                />
+              </div>
+              <div>
+                <p><label className={styles.inputLabel}>Artist: <span>{this.state.range.artist}%</span></label></p>
+                <input
+                  className={`w-100`}
+                  type="range"
+                  min="0" max="100"
+                  data-type="artist"
+                  value={this.state.range.artist}
+                  onChange={(e: ChangeEvent) => {
+                    this.rangeChangeHandler(e);
+                  }}
+                  step="1"
+                />
+              </div>
+              <div>
+                <p><label className={styles.inputLabel}>Vinodex: <span>{this.state.range.vinodex}%</span></label></p>
+                <input
+                  className={`w-100`}
+                  type="range"
+                  min="0" max="100"
+                  data-type="vinodex"
+                  value={this.state.range.vinodex}
+                  onChange={(e: ChangeEvent) => {
+                    this.rangeChangeHandler(e);
+                  }}
+                  step="1"
+                />
+              </div>
+            </div>
+          </div>
 
           {this.isMultiple ?
             <div className={`${styles.copies} mb-3`}>
@@ -778,9 +868,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       characteristics: '',
       specification: '',
       artist: this.props.near.user?.accountId,
-      percentage_for_creator: 0,
-      percentage_for_artist : 100,
-      percentage_for_vinodex : 0
+      percentage_for_creator: this.state.range.creator,
+      percentage_for_artist : this.state.range.artist,
+      percentage_for_vinodex : this.state.range.vinodex
     };
 
     if (this.isMultiple) {
