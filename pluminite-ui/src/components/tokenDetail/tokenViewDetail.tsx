@@ -438,7 +438,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     bio: '',
                     email: '',
                     image: '',
-                    name: `Creator name`,
+                    name: this.state.order?.creator_id || 'Creator name',
                     account_id: '',
                     likes_count: 0,
                     is_like: false,
@@ -459,7 +459,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     bio: '',
                     email: '',
                     image: '',
-                    name: `Artist name`,
+                    name: this.state.order?.metadata?.artist || 'Artist name',
                     account_id: '',
                     likes_count: 0,
                     is_like: false,
@@ -478,6 +478,29 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               </div>
 
               <div className={`my-4`}>
+                <div className={`${styles.tokenInformationWrap} my-3`}>
+                  <div className='w-100'>
+                    <ul className={styles.specList}>
+                      <li>
+                        <p>Year</p>
+                        <p className={styles.infoLine} />
+                        <p>{new Date(this.state.order?.metadata.year || '').getFullYear()}</p>
+                      </li>
+
+                      <li>
+                        <p>Volume (cl)</p>
+                        <p className={styles.infoLine} />
+                        <p>{this.state.order?.metadata.botle_size || 0}cl</p>
+                      </li>
+                      <li>
+                        <p>Style</p>
+                        <p className={styles.infoLine} />
+                        <p>{this.state.order?.metadata.style}</p>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
                 <DescrtiptionView text={this.state.order?.metadata.description!} />
               </div>
 

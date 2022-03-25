@@ -406,7 +406,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             errorMessage={`Enter the wine style.`}
           />
 
-          <label className={styles.inputLabel}>Select the year of manufacture and the botle size</label>
+          <label className={styles.inputLabel}>Select the year of manufacture and the bottle size (cl)</label>
           <div className={`d-flex align-items-center justify-content-between w-100 flex-gap-36 mt-2 mb-4`}>
             <div className={`w-100`}>
               <DatePicker
@@ -425,8 +425,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             </div>
 
             <InputView
-              placeholder={'Bottle size*'}
-              absPlaceholder={'Bottle size*'}
+              placeholder={'Bottle size (cl)*'}
+              absPlaceholder={'Bottle size (cl)*'}
               customClass={`w-100`}
               viewType={ViewType.input}
               setRef={(ref) => { this._refInputBottleSize = ref; }}

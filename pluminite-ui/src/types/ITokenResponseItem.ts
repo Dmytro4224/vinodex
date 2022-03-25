@@ -16,6 +16,15 @@ export interface IMetaData{
   title: string;
   updated_at: string;
   views_count: number;
+  artist: string;
+  year: string;
+  style: string;
+  specification: string;
+  characteristics: string;
+  botle_size: string;
+  percentage_for_artist: number;
+  percentage_for_creator: number;
+  percentage_for_vinodex: number;
 }
 
 export interface IRoyalty{
