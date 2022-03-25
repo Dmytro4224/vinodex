@@ -265,3 +265,11 @@
     width: 100%;
   }
 }
+
+@media(max-width: 400px) {
+  .rangeWrap {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 10px;
+  }
+}
