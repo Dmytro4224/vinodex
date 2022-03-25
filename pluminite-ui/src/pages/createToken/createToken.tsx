@@ -276,6 +276,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     return (this.state.range.creator + this.state.range.artist + this.state.range.vinodex);
   }
 
+  private get isTotalRangeValid() {
+    return this.totalRange === 100;
+  }
+
   public render() {
     return (
       <div className={styles.container}>
@@ -435,7 +439,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
           <div className={`my-4`}>
             <label className={styles.inputLabel}>Here we indicate the percentage that will be divided after the sale</label>
-            <div className={`${styles.rangeWrap} mt-2 ${this.totalRange > 100 ? styles.rangeInvalid : ''}`}>
+            <div className={`${styles.rangeWrap} mt-2 ${!this.isTotalRangeValid ? styles.rangeInvalid : ''}`}>
               <div>
                 <p><label className={styles.inputLabel}>Creator: <span>{this.state.range.creator}%</span></label></p>
                 <input
@@ -479,7 +483,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 />
               </div>
             </div>
-            {this.totalRange > 100 && <p className={`errorMessage`}>The total percentage - {this.totalRange}%, can not exceed 100%</p>}
+            {!this.isTotalRangeValid && (
+              <p className={`errorMessage`}>
+                The total percentage of {this.totalRange}% must be equal to 100%
+              </p>
+            )}
           </div>
 
           {this.isMultiple ?
@@ -729,7 +737,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.file = false;
     }
 
-    if (this.totalRange > 100) {
+    if (!this.isTotalRangeValid) {
       validInfo.totalRange = false;
     }
 
