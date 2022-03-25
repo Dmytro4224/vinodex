@@ -58,8 +58,12 @@ interface ITokenViewState {
   modalTransferIsShow: boolean;
   modalMediaShow: boolean;
   modalSaleShow: boolean;
-  modalConfirmRemoveSaleShow: boolean;
   creator: any;
+  isShowConfirmModal: boolean,
+  modalConfirmData: {
+    text: string,
+    confirmCallback: () => void,
+  }
 }
 
 class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, ITokenViewState, any> {
@@ -70,9 +74,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     likesCount: 0,
     modalTransferIsShow: false,
     modalSaleShow: false,
-    modalConfirmRemoveSaleShow: false,
     modalMediaShow: false,
     creator: null,
+    isShowConfirmModal: false,
+    modalConfirmData: {
+      text: '',
+      confirmCallback: () => {
+      },
+    }
   };
 
   private readonly _refImage: React.RefObject<HTMLImageElement>;
@@ -250,11 +259,26 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     if (isSaleAction) {
       this.modalToggleVisibility({ modalSaleShow: true });
     } else {
-      this.modalToggleVisibility({ modalConfirmRemoveSaleShow: true });
+      this.modalToggleVisibility({
+        isShowConfirmModal: true,
+        modalConfirmData: {
+          text: 'Do you want to withdraw the token from sale?',
+          confirmCallback: () => {
+            if (this.state.order?.token_id) {
+              this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
+                this.getInfo();
+                console.log('sale_remove', res);
+              });
+            }
+          },
+        },
+      });
     }
   }
 
   private getCardControls() {
+    const price = convertYoctoNearsToNears(this.state.order?.sale?.price) || 0.00;
+
     switch (this.typeView) {
       case TokensType.created:
         return (
@@ -323,34 +347,136 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       case TokensType.unlimitedAuction:
         return (
           <>
-            {this.isMyToken ? (
-              <ButtonView
-                text={`Stop selling`}
-                onClick={() => {
-                  if (!this.isAuth) {
-                    this.props.near.signIn();
-                    return;
-                  }
+            {this.state.order?.sale?.is_closed ? (
+              this.isMyToken ? (
+                <ButtonView
+                  text={`Start auction`}
+                  onClick={() => {
+                    if (!this.isAuth) {
+                      this.props.near.signIn();
+                      return;
+                    }
 
-                  this.onToggleSale(false);
-                }}
-                color={buttonColors.redButton}
-                customClass={styles.button}
-              />
+                    this.modalToggleVisibility({
+                      isShowConfirmModal: true,
+                      modalConfirmData: {
+                        text: 'Do you want to start an auction?',
+                        confirmCallback: () => {
+                          this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, false)
+                            .then(res => {
+                              console.log('sale_set_is_closed', res);
+                              this.getInfo();
+                            })
+                            .catch(error => {
+                              console.error('sale_set_is_closed', error);
+                              showToast({
+                                message: error,
+                                type: EShowTost.error
+                              })
+                            })
+                        },
+                      },
+                    });
+                  }}
+                  color={buttonColors.greenButton}
+                  customClass={styles.button}
+                />
+              ) : (
+                this.state.order?.sale?.bids[0]?.account?.account_id === this.props.near.user?.accountId ? (
+                  <ButtonView
+                    text={`Get the lot`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
+
+                      this.modalToggleVisibility({
+                        isShowConfirmModal: true,
+                        modalConfirmData: {
+                          text: 'Do you want to get the lot?',
+                          confirmCallback: () => {
+                            const time = new Date().getTime();
+                            const price = this.state.order?.sale && this.state.order?.sale.bids.length !== 0 ? this.state.order?.sale?.bids[this.state.order?.sale.bids.length - 1].price : null;
+
+                            this.props.nftContractContext.sale_auction_init_transfer(this.state.order?.token_id!, time, price)
+                              .then(res => {
+                                console.log('sale_auction_init_transfer', res);
+                                this.getInfo();
+                              })
+                              .catch(error => {
+                                console.error('sale_auction_init_transfer', error);
+                                showToast({
+                                  message: error,
+                                  type: EShowTost.error
+                                })
+                              })
+                          },
+                        },
+                      });
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                  />
+                ) : (
+                  <ButtonView
+                    text={`Auction is closed`}
+                    onClick={() => {}}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                    disabled={true}
+                  />
+                )
+              )
             ) : (
-              <ButtonView
-                text={`Place a bid`}
-                onClick={() => {
-                  if (!this.isAuth) {
-                    this.props.near.signIn();
-                    return;
-                  }
+              this.isMyToken ? (
+                <ButtonView
+                  text={`Stop auction`}
+                  onClick={() => {
+                    if (!this.isAuth) {
+                      this.props.near.signIn();
+                      return;
+                    }
 
-                  this.buyAction();
-                }}
-                color={buttonColors.goldFill}
-                customClass={styles.button}
-              />
+                    this.modalToggleVisibility({
+                      isShowConfirmModal: true,
+                      modalConfirmData: {
+                        text: 'Do you want to stop the auction right now?',
+                        confirmCallback: () => {
+                          this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, true)
+                            .then(res => {
+                              console.log('sale_set_is_closed', res);
+                              this.getInfo();
+                            })
+                            .catch(error => {
+                              console.error('sale_set_is_closed', error);
+                              showToast({
+                                message: 'Can not close sale without bids',
+                                type: EShowTost.error
+                              })
+                            })
+                        },
+                      },
+                    });
+                  }}
+                  color={buttonColors.redButton}
+                  customClass={styles.button}
+                />
+              ) : (
+                <ButtonView
+                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
+                  onClick={() => {
+                    if (!this.isAuth) {
+                      this.props.near.signIn();
+                      return;
+                    }
+
+                    this.buyAction();
+                  }}
+                  color={buttonColors.goldFill}
+                  customClass={styles.button}
+                />
+              )
             )}
           </>
         );
@@ -633,22 +759,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
         />
 
         <ModalConfirm
-          inShowModal={this.state.modalConfirmRemoveSaleShow}
+          inShowModal={this.state.isShowConfirmModal}
           onHideModal={() => {
-            if (this._eTargetSwitch) this._eTargetSwitch.checked = true;
-            this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
+            this.setState({ isShowConfirmModal: false });
           }}
           onSubmit={() => {
-            this.modalToggleVisibility({ modalConfirmRemoveSaleShow: false });
-
-            if (this.state.order?.token_id) {
-              this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
-                this.getInfo();
-                console.log('sale_remove', res);
-              });
-            }
+            this.state.modalConfirmData.confirmCallback();
           }}
-          confirmText={`Do you want to withdraw the token from sale?`}
+          confirmText={this.state.modalConfirmData.text}
         />
       </>
     );
