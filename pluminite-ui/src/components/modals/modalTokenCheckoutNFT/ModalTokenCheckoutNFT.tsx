@@ -152,8 +152,6 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     if (!this.props.token?.token_id) { return }
 
     const price = this.props.token.sale.price ? this.props.token.sale.price : null;
-    console.log(price);
-
 
     this.props.nftContractContext.sale_offer(
       this.props.token?.token_id,

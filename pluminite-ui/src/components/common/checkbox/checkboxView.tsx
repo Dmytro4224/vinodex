@@ -27,7 +27,6 @@ class CheckboxView extends Component<ICheckboxView & IBaseComponentProps, ICheck
   }
 
   private onChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log('onChange', e.target.checked);
     //this.state.checked = e.target.checked;
     this.props.onChange && this.props.onChange(this.state);
   }

@@ -57,6 +57,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _refCoverImg: React.RefObject<any>;
   private _renderType: number;
   private _isVideo: boolean;
+  private _totalPercent: number = 0;
 
   public state = {
     file: null,
@@ -84,6 +85,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       isWineStyleValid: true,
       isYearValid: true,
       isBottleSizeValid: true,
+      isTotalRangeValid: true,
     },
     range: {
       artist: 50,
@@ -260,44 +262,23 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private rangeChangeHandler(e) {
     const input = e.target;
     const value = Number(input.value);
-    const remainder = (100 - Number(input.value)) / 2;
 
-    switch (input.dataset.type) {
-      case 'creator':
-        this.setState({
-          ...this.state,
-          range: {
-            creator: value,
-            artist: remainder,
-            vinodex: remainder
-          }
-        })
-        break;
-      case 'artist':
-        this.setState({
-          ...this.state,
-          range: {
-            creator: remainder,
-            artist: value,
-            vinodex: remainder
-          }
-        })
-        break;
-      case 'vinodex':
-        this.setState({
-          ...this.state,
-          range: {
-            creator: remainder,
-            artist: remainder,
-            vinodex: value,
-          }
-        })
-        break;
-    }
+    this.setState({
+      ...this.state,
+      range: {
+        ...this.state.range,
+        [input.dataset.type]: value,
+      }
+    })
+  }
+
+  private get totalRange() {
+    return (this.state.range.creator + this.state.range.artist + this.state.range.vinodex);
   }
 
   public render() {
-    return (<div className={styles.container}>
+    return (
+      <div className={styles.container}>
       <MediaQuery minWidth={992}>
         <div className={styles.previewWrap}>
           <TokenCardView
@@ -454,7 +435,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
           <div className={`my-4`}>
             <label className={styles.inputLabel}>Here we indicate the percentage that will be divided after the sale</label>
-            <div className={`${styles.rangeWrap} mt-2`}>
+            <div className={`${styles.rangeWrap} mt-2 ${this.totalRange > 100 ? styles.rangeInvalid : ''}`}>
               <div>
                 <p><label className={styles.inputLabel}>Creator: <span>{this.state.range.creator}%</span></label></p>
                 <input
@@ -498,6 +479,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 />
               </div>
             </div>
+            {this.totalRange > 100 && <p className={`errorMessage`}>The total percentage - {this.totalRange}%, can not exceed 100%</p>}
           </div>
 
           {this.isMultiple ?
@@ -740,10 +722,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       wineStyle: true,
       year: true,
       bottleSize: true,
+      totalRange: true,
     };
 
     if (this._fileResponse === undefined) {
       validInfo.file = false;
+    }
+
+    if (this.totalRange > 100) {
+      validInfo.totalRange = false;
     }
 
     if (this._refInputTitle.value.trim() === '') {
@@ -794,7 +781,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       !validInfo.dates ||
       !validInfo.wineStyle ||
       !validInfo.year ||
-      !validInfo.bottleSize
+      !validInfo.bottleSize ||
+      !validInfo.totalRange
     ) {
       this.setState({
         ...this.state,
@@ -809,6 +797,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           isWineStyleValid: validInfo.wineStyle,
           isYearValid: validInfo.year,
           isBottleSizeValid: validInfo.bottleSize,
+          isTotalRangeValid: validInfo.totalRange
         },
       });
 

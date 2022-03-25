@@ -251,6 +251,10 @@
   gap: 20px;
 }
 
+.rangeInvalid * {
+  color: var(--thunderbird) !important;
+}
+
 @media (max-width: 991px) {
   .formChecked {
     flex-direction: column;

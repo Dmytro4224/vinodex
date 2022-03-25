@@ -252,7 +252,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private getCardControls() {
     const price = convertYoctoNearsToNears(this.state.model?.sale?.price) || 0.00;
-    console.log('🚀 ~ file: tokenCardView.tsx ~ line 224 ~ TokenCardView ~ getCardControls ~ this.state.model', this.state.model);
 
     switch (this.typeView) {
       case TokensType.created:
