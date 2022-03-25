@@ -445,6 +445,15 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                         return;
                       }
 
+                      if (!this.state.order?.sale?.bids?.length) {
+                        showToast({
+                          message: 'Can not close auction without bids',
+                          type: EShowTost.warning
+                        })
+
+                        return;
+                      }
+
                       this.modalToggleVisibility({
                         isShowConfirmModal: true,
                         modalConfirmData: {

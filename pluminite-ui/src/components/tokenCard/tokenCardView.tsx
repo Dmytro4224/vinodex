@@ -294,7 +294,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={`${styles.cardControls}`}>
             <div className={styles.priceWrap}>
               <span>Price</span>
-              <p>{price}&nbsp;NEAR</p>
+              {price && price > 0 ? <p>{price}&nbsp;NEAR</p> : <p>—</p>}
             </div>
 
             {this.model.sale?.is_closed ? (
@@ -373,6 +373,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 <ButtonView
                   text={`Stop auction`}
                   onClick={() => {
+                    if (!this.state.model?.sale?.bids?.length) {
+                      showToast({
+                        message: 'Can not close auction without bids',
+                        type: EShowTost.warning
+                      })
+
+                      return;
+                    }
+
                     this.modalToggleVisibility({
                       isShowConfirmModal: true,
                       modalConfirmData: {
