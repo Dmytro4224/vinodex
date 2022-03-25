@@ -16,7 +16,12 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from '../../components/similarTokens/similarTokensView';
 import React from 'react';
-import { convertNearToYoctoString, convertYoctoNearsToNears, isVideoFile, showToast } from '../../utils/sys';
+import {
+  convertNearToYoctoString,
+  convertYoctoNearsToNears,
+  isVideoFile,
+  showToast,
+} from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
 import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
@@ -640,74 +645,32 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               </div>
             </div>
           </div>
-          <div className='w-100 container my-5'>
-            <div className={styles.tokenInformationWrap}>
-              <div className='w-100'>
-                <p className={styles.infoTitle}>Specifications</p>
-                <ul className={styles.specList}>
-                  <li>
-                    <p>Brand</p>
-                    <p className={styles.infoLine} />
-                    <p>DEUTZ</p>
-                  </li>
-                  <li>
-                    <p>Country</p>
-                    <p className={styles.infoLine} />
-                    <p>France</p>
-                  </li>
-                  <li>
-                    <p>Volume (cl)	</p>
-                    <p className={styles.infoLine} />
-                    <p>150cl</p>
-                  </li>
-                  <li>
-                    <p>ABV (% vol)	</p>
-                    <p className={styles.infoLine} />
-                    <p>13</p>
-                  </li>
-                  <li>
-                    <p>Dietary	</p>
-                    <p className={styles.infoLine} />
-                    <p>Vegan, Vegetarian</p>
-                  </li>
-                  <li>
-                    <p>Style</p>
-                    <p className={styles.infoLine} />
-                    <p>Brut</p>
-                  </li>
-                  <li>
-                    <p>Champagne Expression	</p>
-                    <p className={styles.infoLine} />
-                    <p>Brioche, Complex, Light & Fresh</p>
-                  </li>
-                  <li>
-                    <p>Closure</p>
-                    <p className={styles.infoLine} />
-                    <p>Cork and Cage</p>
-                  </li>
-                </ul>
-              </div>
-              <div className='w-100'>
-                <p className={styles.infoTitle}>Information</p>
 
-                <ul className={styles.infoList}>
-                  <li>
-                    <p>Grape</p>
-                    <span>Chardonnay, Pinot Meunier, Pinot Noir</span>
-                  </li>
-                  <li>
-                    <p>Notes</p>
-                    <span>The aromas on the nose of citrus fruits, red fruits and dried fruits are echoes in the mouth with the addition of toasted bread and dark fruit such as cherry, fig and blackberry.</span>
-                  </li>
-                  <li>
-                    <p>Food Suggestions</p>
-                    <span>Excellent as an aperitif. The perfect pair with cheeses such as Brie, Camembert and aged salers. Also delightful with poultry and shellfish.</span>
-                  </li>
-                </ul>
+          {(this.state.order?.metadata.specification || this.state.order?.metadata.characteristics) ? (
+            <div className='w-100 container mt-5'>
+              <div className={styles.tokenInformationWrap}>
+                {this.state.order?.metadata.specification && (
+                  <div className={`${styles.specList} w-100`}>
+                    <p className={styles.infoTitle}>Specifications</p>
+
+                    {/* replaceAll for test */}
+                    <div dangerouslySetInnerHTML={{ __html: this.state.order?.metadata.specification.replaceAll('<span />', '<span></span>') || '' }} />
+                  </div>
+                )}
+                {this.state.order?.metadata.characteristics && (
+                  <div className={`${styles.infoList} w-100`}>
+                    <p className={styles.infoTitle}>Information</p>
+
+                    <div dangerouslySetInnerHTML={{ __html: this.state.order?.metadata.characteristics || '' }} />
+                  </div>
+                )}
               </div>
             </div>
-          </div>
-          <div className='container mb-3'>
+          ) : (
+            <p className='separator-horizontal mt-5' />
+          )}
+
+          <div className='container my-5'>
             <SimilarTokensView />
           </div>
         </div>
@@ -808,4 +771,3 @@ export default withComponent(TokenViewDetail);
 //     </Tab>
 //   </Tabs>
 // </div>
-

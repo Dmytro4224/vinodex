@@ -164,30 +164,36 @@
   margin-bottom: 15px;
 }
 
-.tokenInformationWrap ul.specList li p {
+.tokenInformationWrap .specList li p {
   line-height: 1;
   white-space: nowrap;
 }
 
-.tokenInformationWrap ul.specList li p:first-of-type {
+.tokenInformationWrap .specList li p:first-of-type {
   font-weight: 600;
   font-size: 15px;
   color: var(--black);
 }
 
-.tokenInformationWrap ul.specList li {
+.tokenInformationWrap .specList li {
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
 }
 
-.tokenInformationWrap ul.specList li p:last-of-type {
+.tokenInformationWrap .specList li p:last-of-type {
   font-weight: 400;
   font-size: 15px;
   color: var(--tundora);
 }
 
-.tokenInformationWrap ul.infoList li p {
+.specList span {
+  height: 1px;
+  width: 100%;
+  background-color: var(--alto);
+}
+
+.tokenInformationWrap .infoList li p {
   margin-bottom: 5px;
   font-weight: 600;
   font-size: 15px;
@@ -195,7 +201,7 @@
   color: var(--black);
 }
 
-.tokenInformationWrap ul.infoList li span {
+.tokenInformationWrap .infoList li span {
   font-weight: 400;
   font-size: 15px;
   color: var(--tundora);
@@ -222,7 +228,7 @@
     max-width: 100%;
   }
 
-  .tokenInformationWrap ul.specList li p {
+  .tokenInformationWrap .specList li p {
     white-space: unset;
   }
 
@@ -232,7 +238,7 @@
 }
 
 @media (max-width: 700px) {
-  .tokenInformationWrap ul.specList li {
+  .tokenInformationWrap .specList li {
     flex-direction: column;
     justify-content: unset;
     align-items: flex-start;

@@ -42,6 +42,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _refInputPrice: any;
   private _refPriceSelect: any;
   private _refRoyalitiesInput: any;
+  private _refInputSpecification: any;
+  private _refInputCharacteristics: any;
   private _refInputBids: any;
   private _refInputCopies: any;
   private _refCatalogSelect: any;
@@ -414,7 +416,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                 maxDate={new Date()}
                 showYearPicker
                 dateFormat="yyyy"
-                // withPortal
                 placeholderText="Click to select a year*"
                 className={styles.dateInput}
                 onChange={(date) => this.setState({ ...this.state, year: date })}
@@ -683,18 +684,38 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           </div>
           <div>
             <InputView
-              onChange={(e) => {
-                console.log(e);
-              }}
+              onChange={(e) => {}}
               placeholder={'Description*'}
               absPlaceholder={'Description*'}
               customClass={`${styles.titleInpWrap}`}
               value={this._refInputDescription && this._refInputDescription.value}
-              viewType={ViewType.input}
+              viewType={ViewType.textarea}
               isError={!this.state.validate.isDescrValid}
               errorMessage={`Enter description in the correct format.`}
               setRef={(ref) => {
                 this._refInputDescription = ref;
+              }}
+            />
+            <InputView
+              onChange={(e) => {}}
+              placeholder={'Specification'}
+              absPlaceholder={'Specification'}
+              customClass={`${styles.titleInpWrap}`}
+              value={this._refInputSpecification && this._refInputSpecification.value}
+              viewType={ViewType.textarea}
+              setRef={(ref) => {
+                this._refInputSpecification = ref;
+              }}
+            />
+            <InputView
+              onChange={(e) => {}}
+              placeholder={'Characteristics'}
+              absPlaceholder={'Characteristics'}
+              customClass={`${styles.titleInpWrap}`}
+              value={this._refInputCharacteristics && this._refInputCharacteristics.value}
+              viewType={ViewType.textarea}
+              setRef={(ref) => {
+                this._refInputCharacteristics = ref;
               }}
             />
           </div>
@@ -862,8 +883,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       style: this._refInputStyle.value,
       year: this.state.year,
       botle_size: this._refInputBottleSize.value,
-      characteristics: '',
-      specification: '',
+      characteristics: this._refInputCharacteristics.value,
+      specification: this._refInputSpecification.value,
       artist: this.props.near.user?.accountId,
       percentage_for_creator: this.state.range.creator,
       percentage_for_artist : this.state.range.artist,

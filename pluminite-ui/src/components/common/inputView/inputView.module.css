@@ -69,11 +69,13 @@
   position: absolute;
   top: 50%;
   left: 10px;
+  width: 95%;
   transform: translateY(-50%);
   font-size: 16px;
   transition: all 0.4s ease;
   will-change: font-size;
   color: var(--doveGray);
+  background: var(--wildSand);
   pointer-events: none;
 }
 
