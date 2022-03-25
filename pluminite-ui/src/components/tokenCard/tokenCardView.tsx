@@ -18,6 +18,7 @@ import Skeleton from 'react-loading-skeleton';
 import { TokensType } from '../../types/TokenTypes';
 import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
+import { Timer, TimerType } from '../common/timer/Timer';
 
 interface ITokenCardView extends IProps {
   model: ITokenResponseItem;
@@ -452,6 +453,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             color={buttonColors.goldBordered}
             customClass={`${styles.button} ${styles.buttonDetails}`}
           />
+
+          {this.state.model?.sale?.end_date && (
+            <div className={styles.timerWrap}>
+              <Timer
+                type={TimerType.small}
+                endDateTimestamp={this.state.model.sale.end_date}
+              />
+            </div>
+          )}
         </div>
 
         <div className={styles.cardFooter}>

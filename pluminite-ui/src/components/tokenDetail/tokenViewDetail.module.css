@@ -213,6 +213,12 @@
   background-color: var(--alto);
 }
 
+.timerTitle {
+  font-weight: 600;
+  font-size: 15px;
+  color: #7A798A;
+}
+
 @media(max-width: 1200px) {
   .tokenInformationWrap {
     flex-direction: column;

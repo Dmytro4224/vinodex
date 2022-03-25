@@ -28,6 +28,7 @@ import ModalViewMedia from '../modals/modalViewMedia/ModalViewMedia';
 import { TokensType } from '../../types/TokenTypes';
 import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
+import { Timer, TimerType } from '../common/timer/Timer';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -435,38 +436,54 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               )
             ) : (
               this.isMyToken ? (
-                <ButtonView
-                  text={`Stop auction`}
-                  onClick={() => {
-                    if (!this.isAuth) {
-                      this.props.near.signIn();
-                      return;
-                    }
+                <div className='w-100 d-flex align-items-center gap-15px'>
+                  <ButtonView
+                    text={`Stop auction`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
 
-                    this.modalToggleVisibility({
-                      isShowConfirmModal: true,
-                      modalConfirmData: {
-                        text: 'Do you want to stop the auction right now?',
-                        confirmCallback: () => {
-                          this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, true)
-                            .then(res => {
-                              console.log('sale_set_is_closed', res);
-                              this.getInfo();
-                            })
-                            .catch(error => {
-                              console.error('sale_set_is_closed', error);
-                              showToast({
-                                message: 'Can not close sale without bids',
-                                type: EShowTost.error
+                      this.modalToggleVisibility({
+                        isShowConfirmModal: true,
+                        modalConfirmData: {
+                          text: 'Do you want to stop the auction right now?',
+                          confirmCallback: () => {
+                            this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, true)
+                              .then(res => {
+                                console.log('sale_set_is_closed', res);
+                                this.getInfo();
                               })
-                            })
+                              .catch(error => {
+                                console.error('sale_set_is_closed', error);
+                                showToast({
+                                  message: 'Can not close sale without bids',
+                                  type: EShowTost.error
+                                })
+                              })
+                          },
                         },
-                      },
-                    });
-                  }}
-                  color={buttonColors.redButton}
-                  customClass={styles.button}
-                />
+                      });
+                    }}
+                    color={buttonColors.redButton}
+                    customClass={styles.button}
+                  />
+
+                  <ButtonView
+                    text={`Stop selling`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
+
+                      this.onToggleSale(false);
+                    }}
+                    color={buttonColors.redButton}
+                    customClass={styles.button}
+                  />
+                </div>
               ) : (
                 <ButtonView
                   text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
@@ -634,6 +651,16 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
                 <DescrtiptionView text={this.state.order?.metadata.description!} />
               </div>
+
+              {this.state.order?.sale?.end_date && (
+                <>
+                  <p className={`${styles.timerTitle} mb-1`}>Auction ending in</p>
+                  <Timer
+                    type={TimerType.big}
+                    endDateTimestamp={this.state.order?.sale?.end_date}
+                  />
+                </>
+              )}
 
               <div className={`my-4 ${styles.priceWrap}`}>
                 <p>Price</p>
