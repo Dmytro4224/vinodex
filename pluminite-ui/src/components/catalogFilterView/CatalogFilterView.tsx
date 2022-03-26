@@ -153,7 +153,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
             // selectedOpt={{ label: 'All', value: 'all' }}
             placeholder={'Type'}
             options={[{ label: 'All', value: 'all' }, { label: 'Single', value: 'single' }, { label: 'Multiple', value: 'multiple' }]}
-            customCLass={style.select}
+            customCLass={`${style.select} d-none`}
           />
           <InputView
             placeholder={'Price*'}

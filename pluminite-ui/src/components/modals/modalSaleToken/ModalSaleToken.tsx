@@ -197,10 +197,11 @@ class ModalSaleToken extends Component<IModalSaleToken & IBaseComponentProps> {
               {
                 value: '2',
                 label: 'Timed auction',
-              }, {
-                value: '3',
-                label: 'Unlimited auction',
               },
+              // {
+              //   value: '3',
+              //   label: 'Unlimited auction',
+              // },
             ]}
             selectedOpt={{ value: '1', label: 'Fixed price' }}
             customCLass={styles.selectStyle}

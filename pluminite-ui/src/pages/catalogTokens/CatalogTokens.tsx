@@ -115,9 +115,9 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                 childrens={dropdownData}
               />
 
-              <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                this.setCatalog(index)
-              }} />
+              {/*<TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {*/}
+              {/*  this.setCatalog(index)*/}
+              {/*}} />*/}
 
               <ButtonView
                 text={"Filter"}
@@ -152,11 +152,11 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                   color={buttonColors.select}
                 />
               </div>
-              <div className="d-flex align-items-center mt-4">
-                <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                  this.setCatalog(index)
-                }} />
-              </div>
+              {/*<div className="d-flex align-items-center mt-4">*/}
+              {/*  <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {*/}
+              {/*    this.setCatalog(index)*/}
+              {/*  }} />*/}
+              {/*</div>*/}
             </div>
           </MediaQuery>
 

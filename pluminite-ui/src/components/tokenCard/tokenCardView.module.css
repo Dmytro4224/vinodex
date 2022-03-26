@@ -11,33 +11,12 @@
   letter-spacing: 0.04rem;
 }
 
-.card:hover {
-  transform: scale(1.007);
-  box-shadow: 0 3px 24px rgba(174, 126, 3, 0.2);
-}
-
-.card:hover .buttonDetails {
-  pointer-events: unset;
-  opacity: 1;
-}
-
 .card.onlyViewed {
-  box-shadow: none;
-}
-
-.card.onlyViewed:hover {
-  pointer-events: none;
-  opacity: 0;
-  transform: none;
   box-shadow: none;
 }
 
 .imageStyle {
   will-change: filter;
-}
-
-.card:hover .cardImage .imageStyle {
-  filter: blur(3px);
 }
 
 .cardImage {
@@ -78,6 +57,10 @@
   align-items: center;
   justify-content: space-between;
   padding: 16px;
+}
+
+.cardFooter .cardInfo {
+  max-width: 100%;
 }
 
 .cardFooter .cardInfo .tokenName {
@@ -170,12 +153,12 @@
 .cardFooter .cardControls {
   display: flex;
   align-items: center;
-  margin-top: 10px;
   padding-top: 10px;
 }
 
 .card.cardSmall .cardFooter .cardControls {
   border-top: 1px solid var(--eb-gray);
+  margin-top: 10px;
 }
 
 .card .cardFooter {
@@ -206,7 +189,7 @@
   font-family: 'Gilroy', sans-serif;
   font-weight: 600;
   font-size: 12px;
-  color: var(--pirateCold)
+  color: var(--pirateCold);
 }
 
 .toggleTitle {
@@ -229,7 +212,7 @@
 }
 
 .puOnMarketplaceWrap {
-  padding: 0 16px 10px 16px ;
+  padding: 0 16px 10px 16px;
 }
 
 .priceWrap {
@@ -247,6 +230,22 @@
   font-size: 18px;
   line-height: 1;
   color: var(--steelGray);
+}
+
+@media (min-width: 900px) {
+  .card.isHover:hover {
+    transform: scale(1.007);
+    box-shadow: 0 3px 24px rgba(174, 126, 3, 0.2);
+  }
+
+  .card.isHover:hover .buttonDetails {
+    pointer-events: unset;
+    opacity: 1;
+  }
+
+  .card.isHover:hover .cardImage .imageStyle {
+    filter: blur(3px);
+  }
 }
 
 @media (max-width: 991px) {

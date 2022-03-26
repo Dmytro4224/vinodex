@@ -92,9 +92,9 @@ class Home extends Component<IHome & IBaseComponentProps> {
                 childrens={dropdownData}
               />
 
-              <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                this.setCatalog(index);
-              }} />
+              {/*<TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {*/}
+              {/*  this.setCatalog(index);*/}
+              {/*}} />*/}
 
               <ButtonView
                 text={"Filter"}
@@ -129,11 +129,11 @@ class Home extends Component<IHome & IBaseComponentProps> {
                   color={buttonColors.select}
                 />
               </div>
-              <div className="d-flex align-items-center mt-4">
-                <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {
-                  this.setCatalog(index)
-                }} />
-              </div>
+              {/*<div className="d-flex align-items-center mt-4">*/}
+              {/*  <TabsFilterView currentTabIndex={this.state.currentCatalog} onClick={(index) => {*/}
+              {/*    this.setCatalog(index)*/}
+              {/*  }} />*/}
+              {/*</div>*/}
             </div>
           </MediaQuery>
 

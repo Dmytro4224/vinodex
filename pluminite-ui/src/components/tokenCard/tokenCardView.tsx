@@ -281,7 +281,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             ) : (
               <ButtonView
                 text={'Not for sale'}
-                onClick={() => {}}
+                onClick={() => { }}
                 color={buttonColors.goldFill}
                 customClass={styles.buttonSecondControls}
                 disabled={true} />
@@ -361,7 +361,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 ) : (
                   <ButtonView
                     text={`Auction is closed`}
-                    onClick={() => {}}
+                    onClick={() => { }}
                     color={buttonColors.goldFill}
                     customClass={styles.buttonSecondControls}
                     disabled={true}
@@ -439,11 +439,19 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
   private getContent() {
     return (
       <div
-        className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : ''}`}>
+        className={`${styles.card} ${this.isSmall ? styles.cardSmall : ''} ${this.props.customClass ? this.props.customClass : ''} ${this.props.isView ? styles.onlyViewed : styles.isHover}`}>
         <div className={styles.cardImage}>
-          <MediaView
-            customClass={styles.imageStyle}
-            model={this.state.model} />
+          {this.props.linkTo ? (
+            <NavLink to={this.props.linkTo}>
+              <MediaView
+                customClass={styles.imageStyle}
+                model={this.state.model} />
+            </NavLink>
+          ) : (
+            <MediaView
+              customClass={styles.imageStyle}
+              model={this.state.model} />
+          )}
 
           <div className={styles.cardDetail}>
             {(this.props.countL > 0 || this.props.countR > 0) && (
@@ -477,10 +485,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={styles.cardInfo}>
             <div className={styles.tokenName}>{this.model.metadata.title}</div>
             <div className={styles.authorName}>{this.model.owner_id}</div>
-            <div className={styles.tokenType}>{this.model.token_type}</div>
+            {/*<div className={styles.tokenType}>{this.model.token_type}</div>*/}
           </div>
 
-          { this.getCardControls() }
+          {this.getCardControls()}
         </div>
       </div>
     );
@@ -543,7 +551,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 this.modalToggleVisibility({ modalSaleShow: false });
                 if (this._eTargetSwitch) this._eTargetSwitch.checked = false;
               }}
-              onSubmit={({saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
+              onSubmit={({ saleType, price, start_date, end_date }: { saleType: number, price?: number, start_date?: any, end_date?: any }) => {
                 const convertedPrice = price ? convertNearToYoctoString(price) : null;
 
                 const result = {
@@ -604,261 +612,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 export default withComponent(TokenCardView);
 export type { ITokenCardView };
 
-// private getCardControls() {
-//   const price = convertYoctoNearsToNears(this.state.model?.sale?.price) || 0.00;
-//   console.log("🚀 ~ file: tokenCardView.tsx ~ line 224 ~ TokenCardView ~ getCardControls ~ this.state.model", this.state.model)
-//
-//   switch (this.typeView) {
-//     case TokensType.created:
-//     case TokensType.fixedPrice:
-//       return (
-//         <div className={styles.cardFooter}>
-//           <div className={styles.cardInfo}>
-//             {this.props.linkTo ? (
-//               <NavLink to={this.props.linkTo}>
-//                 <div className={styles.infoName}>{this.props.name}</div>
-//               </NavLink>
-//             ) : (
-//               <div className={styles.infoName}>{this.props.name}</div>
-//             )}
-//             <div className={styles.authorName}>{this.props.author}</div>
-//           </div>
-//
-//           <div className={styles.cardControls}>
-//             <div className={`${styles.cardControls} justify-content-start`}>
-//               <LikeView
-//                 customClass={styles.likes}
-//                 isChanged={this.state.isLike}
-//                 isActive={true}
-//                 type={LikeViewType.like}
-//                 count={this.state.likesCount}
-//                 onClick={this.toggleLikeToken}
-//               />
-//
-//               {this.state.model?.sale && this.isMyToken && (
-//                 <p className={`${styles.priceText} pr-5px`}>{price} NEAR</p>
-//               )}
-//             </div>
-//
-//             {this.isMyToken ? this.props.buttonText && (
-//               <ButtonView
-//                 text={this.isMyToken ? this.typeView === TokensType.fixedPrice ? 'Stop selling' : 'Sell' : this.props.buttonText}
-//                 onClick={() => {
-//                   if (!this.isAuth) {
-//                     this.props.near.signIn();
-//                     return;
-//                   }
-//
-//                   if (this.isMyToken) {
-//                     if (this.typeView === TokensType.fixedPrice) {
-//                       this.modalToggleVisibility({
-//                         isShowConfirmModal: true,
-//                         modalConfirmData: {
-//                           text: 'Do you want to withdraw the token from sale?',
-//                           confirmCallback: () => {
-//                             this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
-//                               console.log('sale_remove', res);
-//
-//                               this.modalToggleVisibility({ isShowConfirmModal: false });
-//                               this.getInfo();
-//                             });
-//                           },
-//                         }
-//                       });
-//                     } else {
-//                       this.modalToggleVisibility({ modalSaleShow: true })
-//                     }
-//                   } else {
-//                     this.onClick();
-//                   }
-//                 }}
-//                 color={this.isMyToken && this.typeView === TokensType.fixedPrice ? buttonColors.redButton : buttonColors.goldFill}
-//                 customClass={styles.buttonSecondControls}
-//               />
-//             ) : (this.typeView === TokensType.fixedPrice) ? (
-//               <div className="w-100 align-items-start">
-//                 <ButtonView
-//                   text={`Buy now ${price} NEAR`}
-//                   onClick={() => {
-//                     this.showCheckoutModal();
-//                   }}
-//                   color={buttonColors.goldFill}
-//                   customClass={styles.buttonSecondControls}
-//                 />
-//               </div>
-//             ) : (
-//               <ButtonView
-//                 text={'Not for sale'}
-//                 onClick={() => {
-//                 }}
-//                 color={buttonColors.goldFill}
-//                 customClass={styles.button}
-//                 disabled={true} />
-//             )}
-//           </div>
-//         </div>
-//       );
-//     case TokensType.timedAuction:
-//     case TokensType.unlimitedAuction:
-//       return (
-//         <div className={styles.cardFooter}>
-//           <div className={styles.cardInfo}>
-//             {this.props.linkTo ? (
-//               <NavLink to={this.props.linkTo}>
-//                 <div className={styles.infoName}>{this.props.name}</div>
-//               </NavLink>
-//             ) : (
-//               <div className={styles.infoName}>{this.props.name}</div>
-//             )}
-//             <div className={styles.authorName}>{this.props.author}</div>
-//           </div>
-//
-//           <div className={`${styles.cardControls}`}>
-//             <div className={`${styles.cardControls} justify-content-start`}>
-//               <LikeView
-//                 customClass={styles.likes}
-//                 isChanged={this.state.isLike}
-//                 isActive={true}
-//                 type={LikeViewType.like}
-//                 count={this.state.likesCount}
-//                 onClick={this.toggleLikeToken}
-//               />
-//
-//               {this.state.model?.sale && (
-//                 <p className={`${styles.priceText} pr-5px`}>{price} NEAR</p>
-//               )}
-//             </div>
-//
-//             {this.model.sale?.is_closed ? (
-//               this.isMyToken ? (
-//                 <ButtonView
-//                   text={`Start auction`}
-//                   onClick={() => {
-//                     this.modalToggleVisibility({
-//                       isShowConfirmModal: true,
-//                       modalConfirmData: {
-//                         text: 'Do you want to start an auction?',
-//                         confirmCallback: () => {
-//                           this.props.nftContractContext.sale_set_is_closed(this.model.token_id, false).then(res => {
-//                             console.log('sale_set_is_closed', res);
-//                             this.getInfo();
-//                           });
-//                         },
-//                       }
-//                     });
-//                   }}
-//                   color={buttonColors.greenButton}
-//                   customClass={styles.buttonSecondControls}
-//                 />
-//               ) : (
-//                 this.model.sale?.bids[0]?.account?.account_id === this.accountId ? (
-//                   <ButtonView
-//                     text={`Get the lot`}
-//                     onClick={() => {
-//                       this.modalToggleVisibility({
-//                         isShowConfirmModal: true,
-//                         modalConfirmData: {
-//                           text: 'Do you want to get the lot?',
-//                           confirmCallback: () => {
-//                             const time = new Date().getTime();
-//                             //
-//                             const price = this.model.sale && this.model.sale.bids.length !== 0 ? this.model.sale?.bids[this.model.sale.bids.length - 1].price : null;
-//
-//                             this.props.nftContractContext.sale_auction_init_transfer(this.model.token_id, time, price).then(res => {
-//                               console.log('sale_auction_init_transfer', res);
-//                               this.getInfo();
-//                             });
-//                           },
-//                         }
-//                       });
-//                     }}
-//                     color={buttonColors.goldFill}
-//                     customClass={styles.buttonSecondControls}
-//                   />
-//                 ) : (
-//                   <ButtonView
-//                     text={`Auction is closed`}
-//                     onClick={() => {
-//                     }}
-//                     color={buttonColors.goldFill}
-//                     customClass={styles.buttonSecondControls}
-//                     disabled={true}
-//                   />
-//                 )
-//               )
-//             ) : (
-//               this.isMyToken ? (
-//                 <ButtonView
-//                   text={`Stop auction`}
-//                   onClick={() => {
-//                     this.modalToggleVisibility({
-//                       isShowConfirmModal: true,
-//                       modalConfirmData: {
-//                         text: 'Do you want to stop the auction right now?',
-//                         confirmCallback: () => {
-//                           this.props.nftContractContext.sale_set_is_closed(this.model.token_id, true).then(res => {
-//                             console.log('sale_set_is_closed', res);
-//                             this.getInfo();
-//                           });
-//                         },
-//                       }
-//                     });
-//                   }}
-//                   color={buttonColors.redButton}
-//                   customClass={styles.buttonSecondControls}
-//                 />
-//               ) : (
-//                 <ButtonView
-//                   text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
-//                   onClick={() => {
-//                     this.showCheckoutModal();
-//                   }}
-//                   color={buttonColors.goldFill}
-//                   customClass={styles.button}
-//                 />
-//               )
-//             )}
-//           </div>
-//         </div>
-//       );
-//   }
-// }
-
-// {(this.isMyToken && !this.props.isView) && (
-//     <div className={styles.puOnMarketplaceWrap}>
-//       <p className='line-separator' />
-//       <div className={`d-flex align-items-center justify-content-between w-100 mt-2`}>
-//         <Form className='w-100'>
-//           <FormCheck.Label className='w-100'>
-//             <div
-//               className={`d-flex align-items-center w-100 cursor-pointer justify-content-between ${styles.putOnMarketplaceWrap}`}>
-//               <div>
-//                 <p className={styles.toggleTitle}>Put on marketplace</p>
-//               </div>
-//
-//               <Form.Check
-//                 checked={this.typeView !== TokensType.created}
-//                 type='switch'
-//                 className={styles.customFormCheck}
-//                 label=''
-//                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
-//                   this.onToggleSale(e);
-//                 }}
-//               />
-//             </div>
-//           </FormCheck.Label>
-//         </Form>
-//       </div>
-//     </div>
-//   )}
-
-// {this.props.days !== '' && this.props.days !== null && (
-//   <div className={styles.daysInfo}>
-//     {this.props.days}
-//   </div>
-// )}
-//
-// {this.typeView === TokensType.created && this.isMyToken && !this.props.isView && (
 //   <ButtonView
 //     text={''}
 //     icon={transferIcon}
@@ -871,13 +624,6 @@ export type { ITokenCardView };
 //   />
 // )}
 //
-// {this.props.linkTo ? (
-//   <NavLink to={this.props.linkTo}>
-//     <div className={styles.infoName}>{this.props.name}</div>
-//   </NavLink>
-// ) : (
-//   <div className={styles.infoName}>{this.props.name}</div>
-// )}
 
 // <div className={`${styles.cardControls} justify-content-start`}>
 //   <LikeView

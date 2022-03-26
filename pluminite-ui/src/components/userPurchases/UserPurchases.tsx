@@ -56,34 +56,34 @@ class UserProfile extends Component<IUserPurchases & IBaseComponentProps> {
   render() {
     return (
       <div className={`container`}>
-        <MediaQuery minWidth={992}>
-          <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
-            <div />
+        {/*<MediaQuery minWidth={992}>*/}
+        {/*  <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>*/}
+        {/*    <div />*/}
 
-            <TabsFilterView
-              currentTabIndex={this.state.currentCatalog}
-              onClick={(index) => {
-                this.setCatalog(index);
-              }}
-            />
+        {/*    <TabsFilterView*/}
+        {/*      currentTabIndex={this.state.currentCatalog}*/}
+        {/*      onClick={(index) => {*/}
+        {/*        this.setCatalog(index);*/}
+        {/*      }}*/}
+        {/*    />*/}
 
-            <div />
-          </div>
-        </MediaQuery>
-        <MediaQuery maxWidth={991}>
-          <div className='d-flex flex-column w-100'>
-            <div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>
-              <TabsFilterView
-                currentTabIndex={this.state.currentCatalog}
-                onClick={(index) => {
-                  this.setCatalog(index);
-                }}
-              />
-            </div>
-          </div>
-        </MediaQuery>
+        {/*    <div />*/}
+        {/*  </div>*/}
+        {/*</MediaQuery>*/}
+        {/*<MediaQuery maxWidth={991}>*/}
+        {/*  <div className='d-flex flex-column w-100'>*/}
+        {/*    <div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>*/}
+        {/*      <TabsFilterView*/}
+        {/*        currentTabIndex={this.state.currentCatalog}*/}
+        {/*        onClick={(index) => {*/}
+        {/*          this.setCatalog(index);*/}
+        {/*        }}*/}
+        {/*      />*/}
+        {/*    </div>*/}
+        {/*  </div>*/}
+        {/*</MediaQuery>*/}
 
-        <p className='line-separator my-4' />
+        {/*<p className='line-separator my-4' />*/}
 
         {!this.state.list.length ? (
           <EmptyListView />

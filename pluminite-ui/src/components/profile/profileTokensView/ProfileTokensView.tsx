@@ -142,7 +142,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       case ProfileTokensType.owned:
       case ProfileTokensType.createdItems:
         return (
-          <>
+          <div className={'mt-2'}>
             <MediaQuery minWidth={992}>
               <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
                 <DropdownView
@@ -154,12 +154,12 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   childrens={dropdownData}
                 />
 
-                <TabsFilterView
-                  currentTabIndex={this.state.currentCatalog}
-                  onClick={(index) => {
-                    this.setCatalog(index);
-                  }}
-                />
+                {/*<TabsFilterView*/}
+                {/*  currentTabIndex={this.state.currentCatalog}*/}
+                {/*  onClick={(index) => {*/}
+                {/*    this.setCatalog(index);*/}
+                {/*  }}*/}
+                {/*/>*/}
 
                 <ButtonView
                   text={'Filter'}
@@ -191,14 +191,14 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                     color={buttonColors.select}
                   />
                 </div>
-                <div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>
-                  <TabsFilterView
-                    currentTabIndex={this.state.currentCatalog}
-                    onClick={(index) => {
-                      this.setCatalog(index);
-                    }}
-                  />
-                </div>
+                {/*<div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>*/}
+                {/*  <TabsFilterView*/}
+                {/*    currentTabIndex={this.state.currentCatalog}*/}
+                {/*    onClick={(index) => {*/}
+                {/*      this.setCatalog(index);*/}
+                {/*    }}*/}
+                {/*  />*/}
+                {/*</div>*/}
               </div>
             </MediaQuery>
 
@@ -208,25 +208,8 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
             />
 
             <p className='line-separator my-4' />
-          </>
+          </div>
         );
-      // case ProfileTokensType.createdItems:
-      //   return (
-      //     <>
-      //       <div className={`d-flex align-items-center justify-content-center my-4 ${styles.filterWrap}`}>
-      //         <InputView
-      //           customClass={styles.inputSearch}
-      //           onChange={(e) => {
-      //             console.log(e);
-      //           }}
-      //           placeholder={'Search'}
-      //           icon={searchIcon}
-      //           inputStyleType={InputStyleType.round}
-      //         />
-      //       </div>
-      //       <p className='line-separator my-4' />
-      //     </>
-      //   );
     }
   }
 

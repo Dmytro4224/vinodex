@@ -561,9 +561,9 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             </div>
             <div className={styles.tokenInfo}>
               <h3 className={styles.tokenTitle}>{this.state.order?.metadata.title}</h3>
-              <p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>
+              {/*<p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>*/}
 
-              <div className={`d-flex align-items-center justify-content-between w-100`}>
+              <div className={`d-flex align-items-center justify-content-between w-100 mt-4`}>
                 <p className={`fz-18`}>Available items: <strong>1/1</strong></p>
 
                 <div className={`d-flex align-items-center gap-15px`}>

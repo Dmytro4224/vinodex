@@ -46,7 +46,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _refInputCharacteristics: any;
   private _refInputBids: any;
   private _refInputCopies: any;
-  private _refCatalogSelect: any;
+  // private _refCatalogSelect: any;
   private _refStartDate: any;
   private _refExpDate: any;
   private _refPutOnMarket: any;
@@ -86,7 +86,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       isDatesValid: true,
       isWineStyleValid: true,
       isYearValid: true,
-      isBottleSizeValid: true,
       isTotalRangeValid: true,
     },
     range: {
@@ -182,7 +181,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
     let state = {
       description: this._refInputDescription.value,
-      category: this._refCatalogSelect.value,
+      category: 'wine', //this._refCatalogSelect.value,
       royaltes: /*this._refRoyalitiesInput.value*/ '',
       title: this._refInputTitle.value,
       file: this._fileResponse !== undefined ? this._fileResponse.url : null,
@@ -408,8 +407,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             errorMessage={`Enter the wine style.`}
           />
 
-          <label className={styles.inputLabel}>Select the year of manufacture and the bottle size (cl)</label>
-          <div className={`d-flex align-items-center justify-content-between w-100 flex-gap-36 mt-2 mb-4`}>
+          <label className={styles.inputLabel}>Select the year of manufacture and the bottle size</label>
+          <div className={`d-flex align-items-center justify-content-between w-100 flex-gap-36 mt-2 mb-4 ${styles.mobileColumn}`}>
             <div className={`w-100`}>
               <DatePicker
                 selected={this.state.year || null}
@@ -425,16 +424,17 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               )}
             </div>
 
-            <InputView
-              placeholder={'Bottle size (cl)*'}
-              absPlaceholder={'Bottle size (cl)*'}
-              customClass={`w-100`}
-              viewType={ViewType.input}
+            <SelectView
+              options={[
+                {value: `0.75`, label: `0.75`},
+                {value: `1.5`, label: `1.5`},
+                {value: `3.0`, label: `3.0`}
+              ]}
+              selectedOpt={{value: `0.75`, label: `0.75`}}
+              customCLass={`${styles.selectStyle} w-100`}
+              placeholder={'Bottle size'}
+              onChange={(opt) => {}}
               setRef={(ref) => { this._refInputBottleSize = ref; }}
-              value={this._refInputBottleSize && this._refInputBottleSize.value}
-              isError={!this.state.validate.isBottleSizeValid}
-              errorMessage={`Enter the bottle size.`}
-              onChange={(e) => { validateDotNum(e.target) }}
             />
           </div>
 
@@ -665,23 +665,23 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             />
             <p className={styles.inputSubText}>Minimum 0%, maximum 100%</p>
           </div>*/}
-          <div className={styles.categories}>
-            <SelectView options={this.props.near.catalogs.filter(catalog => catalog !== 'All').map(catalog => {
-              return {
-                value: catalog,
-                label: catalog,
-              };
-            })}
-            customCLass={styles.selectStyle}
-            placeholder={'Category'}
-            onChange={(opt) => {
-              console.log(opt);
-            }}
-            setRef={(ref) => {
-              this._refCatalogSelect = ref;
-            }}
-            />
-          </div>
+          {/*<div className={`${styles.categories}`}>*/}
+          {/*  <SelectView options={this.props.near.catalogs.filter(catalog => catalog !== 'All').map(catalog => {*/}
+          {/*    return {*/}
+          {/*      value: catalog,*/}
+          {/*      label: catalog,*/}
+          {/*    };*/}
+          {/*  })}*/}
+          {/*  customCLass={styles.selectStyle}*/}
+          {/*  placeholder={'Category'}*/}
+          {/*  onChange={(opt) => {*/}
+          {/*    console.log(opt);*/}
+          {/*  }}*/}
+          {/*  setRef={(ref) => {*/}
+          {/*    this._refCatalogSelect = ref;*/}
+          {/*  }}*/}
+          {/*  />*/}
+          {/*</div>*/}
           <div>
             <InputView
               onChange={(e) => {}}
@@ -770,10 +770,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.wineStyle = false;
     }
 
-    if (this._refInputBottleSize.value.trim() === '') {
-      validInfo.bottleSize = false;
-    }
-
     if (!this.state.year) {
       validInfo.year = false;
     }
@@ -810,7 +806,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       !validInfo.dates ||
       !validInfo.wineStyle ||
       !validInfo.year ||
-      !validInfo.bottleSize ||
       !validInfo.totalRange
     ) {
       this.setState({
@@ -825,7 +820,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           isDatesValid: validInfo.dates,
           isWineStyleValid: validInfo.wineStyle,
           isYearValid: validInfo.year,
-          isBottleSizeValid: validInfo.bottleSize,
           isTotalRangeValid: validInfo.totalRange
         },
       });
@@ -842,7 +836,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
-    const catalog: ISelectViewItem | null = this._refCatalogSelect.selectedOption;
+    const catalog = 'Art'; // : ISelectViewItem | null
     const price = 0; //this._renderType === 1 ? 0/*parseFloat(this._refInputPrice.value)*/ : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
 
     if (this._fileResponse === undefined) {
@@ -882,7 +876,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       views_count: 0,
       style: this._refInputStyle.value,
       year: this.state.year,
-      botle_size: this._refInputBottleSize.value,
+      botle_size: this._refInputBottleSize.selectedOption?.value,
       characteristics: this._refInputCharacteristics.value,
       specification: this._refInputSpecification.value,
       artist: this.props.near.user?.accountId,
@@ -914,7 +908,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       receiver_id: null,
       perpetual_royalties: null,
       token_id: tokenId,
-      token_type: catalog?.value,
+      token_type: catalog,
       sale: null,
     };
 
@@ -935,8 +929,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       }
     }
 
-    //console.log('save model', JSON.stringify(model));
     console.log('save model', JSON.stringify(model));
+    console.log('create model', model);
 
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
