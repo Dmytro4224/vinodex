@@ -485,7 +485,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={styles.cardInfo}>
             <div className={styles.tokenName}>{this.model.metadata.title}</div>
             <div className={styles.authorName}>{this.model.owner_id}</div>
-            {/*<div className={styles.tokenType}>{this.model.token_type}</div>*/}
+            <div className={styles.tokenType}>{this.model.token_type}</div>
           </div>
 
           {this.getCardControls()}

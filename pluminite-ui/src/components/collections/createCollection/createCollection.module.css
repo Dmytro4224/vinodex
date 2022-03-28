@@ -1,0 +1,19 @@
+.container {
+  padding: 40px 72px;
+  display: flex;
+  align-items: start;
+  gap: 60px;
+  min-height: 1000px;
+  justify-content: center;
+}
+
+.containerWrap {
+  width: 100%;
+  max-width: 560px;
+}
+
+@media (max-width: 991px) {
+  .container {
+    padding: 10px;
+  }
+}
