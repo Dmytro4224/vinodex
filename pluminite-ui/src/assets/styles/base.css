@@ -466,6 +466,10 @@ input[type="range"]:disabled::-moz-range-thumb {
   min-width: 100px;
 }
 
+.min-w-150px {
+  min-width: 150px;
+}
+
 .ellipsis {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -475,4 +479,8 @@ input[type="range"]:disabled::-moz-range-thumb {
 
 .cursor-default {
   cursor: default !important;
+}
+
+.text-doveGrayS {
+  color: var(--doveGrayS)
 }

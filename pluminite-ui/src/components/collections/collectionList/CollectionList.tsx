@@ -14,6 +14,10 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
     super(props);
   }
 
+  private changeRenderType(type: RenderType) {
+    this.props.changeRenderType && this.props.changeRenderType(type);
+  }
+
   public render() {
     return (
       // if list empty
@@ -23,7 +27,7 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
       //
       //     <ButtonView
       //       text={'CREATE COLLECTION'}
-      //       onClick={() => {  }}
+      //       onClick={() => { this.changeRenderType(RenderType.createCollection) }}
       //       color={buttonColors.goldFill}
       //       customClass={`ml-10px min-w-100px`}
       //     />
@@ -36,13 +40,15 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
 
           <ButtonView
             text={'CREATE COLLECTION'}
-            onClick={() => {  }}
+            onClick={() => { this.changeRenderType(RenderType.createCollection) }}
             color={buttonColors.goldFill}
             customClass={`ml-10px min-w-100px`}
           />
         </div>
 
-        <CollectionCard />
+        <CollectionCard
+          changeRenderType={(type: RenderType) => this.changeRenderType(type)}
+        />
       </div>
     )
   }

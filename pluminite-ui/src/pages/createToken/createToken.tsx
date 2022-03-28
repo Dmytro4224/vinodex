@@ -311,7 +311,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           <div className={styles.dropzone}>
             <Dropzone accept='image/*,video/*' onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
               {({ getRootProps, getInputProps, acceptedFiles }) => {
-
                 return (
                   <div>
                     <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>

@@ -35,13 +35,17 @@ class Collections extends Component<IBaseComponentProps> {
           />
         )
       case RenderType.createCollection:
-        return <CreateCollection
-          changeRenderType={(type: RenderType) => this.changeRenderType(type)}
-        />
+        return (
+          <CreateCollection
+            changeRenderType={(type: RenderType) => this.changeRenderType(type)}
+          />
+        )
       case RenderType.collectionDetail:
-        return <CollectionDetail
-          changeRenderType={(type: RenderType) => this.changeRenderType(type)}
-        />
+        return (
+          <CollectionDetail
+            changeRenderType={(type: RenderType) => this.changeRenderType(type)}
+          />
+        )
     }
   }
 
