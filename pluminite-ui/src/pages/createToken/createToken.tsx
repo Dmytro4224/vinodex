@@ -836,7 +836,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
-    const catalog = 'Art'; // : ISelectViewItem | null
+    const catalog = 'Wine'; // : ISelectViewItem | null
     const price = 0; //this._renderType === 1 ? 0/*parseFloat(this._refInputPrice.value)*/ : this._renderType === 2 ? parseFloat(this._refInputBids.value) : 0;
 
     if (this._fileResponse === undefined) {
