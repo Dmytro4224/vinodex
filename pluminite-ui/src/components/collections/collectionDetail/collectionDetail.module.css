@@ -1,0 +1,9 @@
+.collectionTabWrap ul {
+  margin-top: 10px;
+  border: none !important;
+}
+
+.tabsWrap ul li button {
+  text-transform: uppercase;
+  letter-spacing: 0.04rem;
+}
