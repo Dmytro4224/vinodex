@@ -465,3 +465,14 @@ input[type="range"]:disabled::-moz-range-thumb {
 .min-w-100px {
   min-width: 100px;
 }
+
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 99%;
+  white-space: nowrap;
+}
+
+.cursor-default {
+  cursor: default !important;
+}
