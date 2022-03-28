@@ -112,6 +112,32 @@ impl Contract
         }
     }
 
+    pub fn nft_collections(
+        &self,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        account_id: Option<AccountId>,
+        with_tokens: bool) -> Vec<Option<CollectionJson>> 
+    {
+        // let start_index = (page_index - 1) * page_size;
+        // let end_index = page_index * page_size;
+
+        let skip;
+
+        if page_index == 1
+        {
+            skip = 0;
+        }
+        else
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        return self.collections.keys().skip(skip as usize).take(page_size as usize).map(|x| self.collection_get(&x, &account_id, with_tokens)).collect();
+    }
+
     pub fn collection_get_by_token(
         &self,
         token_id: &TokenId) -> Option<Collection>

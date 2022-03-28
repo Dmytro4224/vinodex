@@ -65,7 +65,7 @@ impl Contract {
     {
         let user_id = env::predecessor_account_id();
         let likes_count: usize;
-
+        
         match self.tokens_users_likes.get(&token_id) {
             Some(mut likes) => {
 

@@ -21,6 +21,10 @@ use crate::internal::*;
 mod metadata;
 pub use crate::metadata::*;
 
+#[path = "profiles/email_subscriptions.rs"]
+mod subscriptions;
+pub use crate::subscriptions::*;
+
 #[path = "tokens/mint_contract.rs"]
 mod mint_contract;
 pub use crate::mint_contract::*;
@@ -202,6 +206,8 @@ pub struct Contract {
 
     //================sales==========================//
 
+
+
     //================collections--------------------//
 
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
@@ -209,6 +215,9 @@ pub struct Contract {
     pub collections: UnorderedMap<String, Collection>,
 
     //================collections--------------------//
+
+    //email підписки
+    pub email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
 
     pub minting_account_ids: UnorderedSet<AccountId>
 }
@@ -253,6 +262,7 @@ pub enum StorageKey {
     Collection,
     CollectionOfTokensSet { collection_id_hash: CryptoHash },
     MintingAccountIds { account_id_hash: CryptoHash },
+    EmailSubscriptions
 }
 
 #[near_bindgen]
@@ -328,7 +338,8 @@ impl Contract {
                 }
                     .try_to_vec()
                     .unwrap(),
-            )
+            ),
+            email_subscriptions: UnorderedMap::new(StorageKey::EmailSubscriptions.try_to_vec().unwrap()),
         };
 
         if unlocked.is_none() {
@@ -390,7 +401,8 @@ impl Contract {
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
             collection_per_token: LookupMap<TokenId, String>,
             collections: UnorderedMap<String, Collection>,
-            minting_account_ids: UnorderedSet<AccountId>
+            minting_account_ids: UnorderedSet<AccountId>,
+            email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -434,7 +446,8 @@ impl Contract {
             collection_tokens: old_contract.collection_tokens,
             collection_per_token: old_contract.collection_per_token,
             collections: old_contract.collections,
-            minting_account_ids: old_contract.minting_account_ids
+            minting_account_ids: old_contract.minting_account_ids,
+            email_subscriptions: old_contract.email_subscriptions
         }
     }
 
