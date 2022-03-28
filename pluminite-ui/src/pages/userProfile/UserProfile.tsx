@@ -18,6 +18,7 @@ import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import ArtistsView, { ArtistViewType } from '../artists';
 import { nftStorage } from '../../api/NftStorage';
 import UserPurchases from '../../components/userPurchases/UserPurchases';
+import Collections from '../../components/collections/Collections';
 
 interface IUserProfile extends IProps {
   callUpdateUserInfo: () => void;
@@ -203,6 +204,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
               typeViewTokens={ProfileTokensType.onSale}
             />
           </Tab>
+          {/*<Tab eventKey='collections' title='My collections'>*/}
+          {/*  <Collections />*/}
+          {/*</Tab>*/}
           <Tab eventKey='items' title='Created Items'>
             <ProfileTokensView
               catalog={this.catalog}
