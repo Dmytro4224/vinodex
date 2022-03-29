@@ -5,9 +5,11 @@ import { Tab, Tabs } from 'react-bootstrap';
 import CreateCollection from '../createCollection/CreateCollection';
 import { RenderType } from '../Collections';
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
+import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
 
 interface ICollectionDetail extends IProps {
   changeRenderType?: (type: RenderType) => void;
+  collectionData: ICollectionResponseItem | null;
 }
 
 class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps> {
@@ -30,7 +32,7 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
             <Tab eventKey='collectionDetails' title='COLLECTIONS DETAILS'>
               <CreateCollection
                 changeRenderType={(type: RenderType) => this.changeRenderType(type)}
-                isUpdate={true}
+                collectionData={this.props.collectionData}
               />
             </Tab>
             <Tab eventKey='tokensCollection' title='TOKENS IN THE COLLECTION'>
