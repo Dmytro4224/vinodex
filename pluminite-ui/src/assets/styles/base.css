@@ -198,11 +198,46 @@ button[disabled] {
   opacity: .8 !important;
 }
 
-/*.modal.transparent .btn-close{
-  position: fixed;
-  right: 20px;
-  top: 20px;
-}*/
+.modalPreviewCollection .btn-close {
+  position: absolute;
+  top: -30px;
+  right: -30px;
+  background: none !important;
+}
+
+.modalPreviewCollection .btn-close:hover {
+  opacity: 1;
+}
+
+.modalPreviewCollection .btn-close:before, .modalPreviewCollection .btn-close:after {
+  position: absolute;
+  right: 15px;
+  top: 0;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: #fff;
+}
+
+.modalPreviewCollection .btn-close:before {
+  transform: rotate(45deg);
+}
+
+.modalPreviewCollection .btn-close:after {
+  transform: rotate(-45deg);
+}
+
+.modalPreviewCollection .modal-header,
+.modalPreviewCollection .modal-body,
+.modalPreviewCollection .modal-footer {
+  padding: 0;
+}
+
+  /*.modal.transparent .btn-close{
+    position: fixed;
+    right: 20px;
+    top: 20px;
+  }*/
 /*.modal.transparent .modal-dialog{
   width: 100%;
   margin: 0;
@@ -483,4 +518,10 @@ input[type="range"]:disabled::-moz-range-thumb {
 
 .text-doveGrayS {
   color: var(--doveGrayS)
+}
+
+@media (max-width: 500px) {
+  .flex-wrap-500px {
+    flex-wrap: wrap;
+  }
 }
