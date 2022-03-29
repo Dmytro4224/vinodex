@@ -20,7 +20,7 @@ import TokenCardView from '../../components/tokenCard/tokenCardView';
 import cardPreview from '../../assets/images/Corners.jpg';
 import MediaQuery from 'react-responsive';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {

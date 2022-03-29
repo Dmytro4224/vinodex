@@ -12,6 +12,7 @@ import { EShowTost } from '../../types/ISysTypes';
 import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import LazyLoad, { forceVisible } from 'react-lazyload';
+import { nftStorage } from '../../api/NftStorage';
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
@@ -66,7 +67,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get avatar() {
-    return this.props.info?.image;
+    return nftStorage.replaceOldUrl(this.props.info?.image);
   }
 
   private get name() {
