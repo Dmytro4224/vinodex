@@ -4,6 +4,7 @@ import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComp
 import styles from './MediaView.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
 import { isVideoFile } from '../../utils/sys';
+import { nftStorage } from '../../api/NftStorage';
 
 interface IMediaView extends IProps {
   model: ITokenResponseItem;
@@ -49,7 +50,7 @@ class MediaView extends Component<IMediaView & IBaseComponentProps, IMetadataExt
   }
 
   private get url() {
-    return this._url;
+    return nftStorage.replaceOldUrl(this._url);
   }
 
   public get isVideo() {

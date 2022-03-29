@@ -29,6 +29,7 @@ import { TokensType } from '../../types/TokenTypes';
 import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { Timer, TimerType } from '../common/timer/Timer';
+import { nftStorage } from '../../api/NftStorage';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -535,7 +536,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 {this.isVideo ?
                   <iframe
                     className={styles.iFrameStyle} width='1000' height='600'
-                    src={this.state.order?.metadata.media || cardPreview}
+                    src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
                     title='' frameBorder='0'
                     allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                     allowFullScreen />
@@ -547,7 +548,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     ref={this._refImage}
                     onError={this.setDefaultImage}
                     className={styles.imageStyle}
-                    src={this.state.order?.metadata.media || cardPreview}
+                    src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
                     alt={'preview image'}
                   />
                 }

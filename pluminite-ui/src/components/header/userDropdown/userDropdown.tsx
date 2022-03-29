@@ -13,6 +13,7 @@ import purchasesIcon from '../../../assets/icons/purchases-icon.svg';
 import activeBidsIcon from '../../../assets/icons/active-bids-icon.svg';
 import favoritesIcon from '../../../assets/icons/heart-icon.svg';
 import followingsIcon from '../../../assets/icons/followings-icon.svg';
+import collectionIcon from '../../../assets/icons/collect-icon.svg';
 import { IdentificationCopy } from "../../common/identificationCopy/IdentificationCopy";
 import { NavLink } from "react-router-dom";
 
@@ -75,6 +76,12 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
                 <NavLink to={`/userProfile/${this.accountId}?tab=items`}>
                   <img width="24" height="24" src={createdIcon} alt="icon" />
                   <p>Created Items</p>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to={`/userProfile/${this.accountId}?tab=collections`}>
+                  <img width="24" height="24" src={collectionIcon} alt="icon" />
+                  <p>My Collections</p>
                 </NavLink>
               </li>
               <li>

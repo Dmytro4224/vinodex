@@ -8,7 +8,7 @@ import { onlyNumber } from '../../../utils/sys';
 import styles from '../../../pages/createToken/createToken.module.css';
 import { SelectView } from '../../common/select/selectView';
 import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
-import DatePicker from "react-datepicker";
+import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 
 interface IModalSaleToken extends IProps {

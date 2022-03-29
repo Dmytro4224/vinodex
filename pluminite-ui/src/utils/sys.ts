@@ -120,7 +120,13 @@ const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
 // converts NEAR amount into yoctoNEAR (10^-24)
 const convertNearToYoctoString = (value: number) => {
   return nearAPI.utils.format.parseNearAmount(value.toString());
-};
+}
+
+const uid = () => {
+  return String.fromCharCode(Math.floor(Math.random() * 26) + 97)
+    + Math.random().toString(16).slice(2)
+    + Date.now().toString(16).slice(4);
+};;
 
 export {
   classList,
@@ -136,5 +142,6 @@ export {
   formatDate,
   convertNearToYoctoString,
   convertYoctoNearsToNears,
+  uid
 };
 

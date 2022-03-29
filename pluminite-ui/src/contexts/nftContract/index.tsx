@@ -34,6 +34,8 @@ export interface INftContractContext {
   authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
   followed_authors_for_account: (account_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_mint: (data: any) => Promise<any>;
+  collection_add: (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => Promise<any>;
+  nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -160,6 +162,25 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public collection_add = async (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => {
+    return this.nftContract.collection_add({
+      name,
+      description,
+      profile_photo,
+      cover_photo,
+      time
+    });
+  };
+
+  public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => {
+    return this.nftContract.nft_collections({
+      page_index,
+      page_size,
+      account_id,
+      with_tokens,
+    });
+  };
+
   public like_artist_account = async (accountId: string) => {
     return this.nftContract.like_artist_account({
       account_id: accountId,
@@ -233,6 +254,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       followed_authors_for_account: this.followed_authors_for_account,
       getProfile: this.getProfile,
       set_profile: this.set_profile,
+      collection_add: this.collection_add,
+      nft_collections: this.nft_collections,
       like_artist_account: this.like_artist_account,
       token_set_like: this.token_set_like,
       sale_create: this.sale_create,

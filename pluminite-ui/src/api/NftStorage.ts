@@ -15,6 +15,12 @@ class NftStorage {
 
   }
 
+  public replaceOldUrl(oldUrl: string) {
+    return oldUrl !== void 0 && oldUrl !== null ?
+      oldUrl.replace('https://nftstorage.link/ipfs/', 'https://ipfs.io/ipfs/') :
+      oldUrl;
+  }
+
   public async uploadFile(file: File, name: string, description: string) {
     const storage = new NFTStorage({ token: this.API_KEY });
     let result: IUploadFileResponse;
@@ -27,7 +33,7 @@ class NftStorage {
       console.log('metadata.json metadata', metadata);
       result = {
         status: true,
-        url: metadata.embed().image.href,
+        url: this.replaceOldUrl(metadata.embed().image.href),
         IpfsHash: metadata.ipnft,
         PinSize: file.size
       };
@@ -78,7 +84,8 @@ class NftStorage {
   }
   */
   public createUrl(cid: string) {
-    return `https://nftstorage.link/ipfs/${cid}`;
+    //return `https://nftstorage.link/ipfs/${cid}`;
+    return `https://ipfs.io/ipfs/${cid}`;
   }
 
 }

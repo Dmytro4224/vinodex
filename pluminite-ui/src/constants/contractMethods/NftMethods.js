@@ -18,6 +18,7 @@ const NftMethods = {
     'get_profile',
     'nft_supply_for_creator',
     'is_free_mint_available',
+    'nft_collections',
   ],
   changeMethods: [
     'nft_approve',
@@ -33,6 +34,7 @@ const NftMethods = {
     'follow_artist_account',
     'view_artist_account',
     'token_set_like',
+    'collection_add',
   ],
 };
 
