@@ -674,7 +674,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
               <div className={`my-4 ${styles.priceWrap}`}>
                 <p>Price</p>
-                <p><strong>{this.price && this.price > 0 ? `${this.price} NEAR` : '— NEAR'}</strong></p>
+                <p><strong>{this.price && this.price > 0 ? `${this.price} Ⓝ` : '— Ⓝ'}</strong></p>
               </div>
 
               <div className={styles.buttonWrap}>

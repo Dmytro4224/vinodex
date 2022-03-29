@@ -261,7 +261,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={styles.cardControls}>
             <div className={styles.priceWrap}>
               <span>Price</span>
-              {price && price > 0 ? <p>{price}&nbsp;NEAR</p> : <p>—</p>}
+              {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
             </div>
 
             {this.isMyToken ? this.props.buttonText && (
@@ -294,7 +294,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
           <div className={`${styles.cardControls}`}>
             <div className={styles.priceWrap}>
               <span>Price</span>
-              {price && price > 0 ? <p>{price}&nbsp;NEAR</p> : <p>—</p>}
+              {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
             </div>
 
             {this.model.sale?.is_closed ? (
@@ -408,7 +408,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                 />
               ) : (
                 <ButtonView
-                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
+                  text={`Place a bid ${price > 0 ? `${price} Ⓝ` : ``}`}
                   onClick={() => { this.showCheckoutModal(); }}
                   color={buttonColors.goldFill}
                   customClass={styles.buttonSecondControls}
