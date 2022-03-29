@@ -254,6 +254,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             typeViewTokens={ProfileTokensType.onSale}
           />
         </Tab>
+        <Tab eventKey='collections' title='My collections'>
+          <Collections />
+        </Tab>
         <Tab eventKey='items' title='Created Items'>
           <ProfileTokensView
             catalog={this.catalog}

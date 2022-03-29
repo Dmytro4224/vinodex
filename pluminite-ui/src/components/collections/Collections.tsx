@@ -30,8 +30,6 @@ class Collections extends Component<IBaseComponentProps> {
   }
 
   private renderByType() {
-    console.log('---', this.state);
-
     switch (this.state.renderType) {
       case RenderType.collectionList:
         return (

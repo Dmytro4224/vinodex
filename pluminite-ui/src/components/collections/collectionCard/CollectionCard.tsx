@@ -70,6 +70,10 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
     }
   }
 
+  private get isMyCollection() {
+    return this.props.data?.owner?.account_id === this.props.near.user?.accountId;
+  }
+
   public render() {
     return (
       <div key={this.key} className={`${styles.cardWrap} ${this.isPreview ? styles.preview : ''}`}>
@@ -86,11 +90,14 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
         <div className={styles.actionsWrap}>
           <button className={`cursor-default ${styles.btnAction}`}>{this.props.data?.tokens?.length || 0}</button>
 
-          <button
-            onClick={() => { this.changeRenderType(RenderType.collectionDetail, this.props.data) }}
-            className={styles.btnAction}>
-            <img width='17' height='17' src={pencil} alt='pencil' />
-          </button>
+          {this.isMyCollection && (
+            <button
+              onClick={() => { this.changeRenderType(RenderType.collectionDetail, this.props.data) }}
+              className={styles.btnAction}
+            >
+              <img width='17' height='17' src={pencil} alt='pencil' />
+            </button>
+          )}
         </div>
 
         <div className={styles.content}>

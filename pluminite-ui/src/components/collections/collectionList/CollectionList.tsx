@@ -7,6 +7,7 @@ import { RenderType } from '../Collections';
 import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import { uid } from '../../../utils/sys';
+import { EmptyListView } from '../../common/emptyList/emptyListView';
 
 interface ICollectionList extends IProps {
   changeRenderType?: (type: RenderType, data?: ICollectionResponseItem | null) => void;
@@ -32,10 +33,12 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
       isLoading: true,
     })
 
+    const user = this.props.params.userId || this.props.near.user?.accountId || null;
+
     this.props.nftContractContext.nft_collections(
       1,
       100,
-      this.props.near.user?.accountId || null,
+      user,
       true
     ).then(res => {
       this.setState({
@@ -47,7 +50,34 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
   }
 
   private changeRenderType(type: RenderType, data?: ICollectionResponseItem | null) {
+    if (!this.props.near.isAuth) {
+      this.props.near.signIn();
+    }
+
     this.props.changeRenderType && this.props.changeRenderType(type, data);
+  }
+
+  private get createAction() {
+    if (this.props.params.userId !== this.props.near.user?.accountId) {
+      return (
+        <>
+          <EmptyListView />
+        </>
+      )
+    }
+
+    return (
+      <>
+        <p className={styles.titleCreate}>Create a new collection of tokens</p>
+
+        <ButtonView
+          text={'CREATE COLLECTION'}
+          onClick={() => { this.changeRenderType(RenderType.createCollection) }}
+          color={buttonColors.goldFill}
+          customClass={`ml-10px min-w-100px`}
+        />
+      </>
+    )
   }
 
   public render() {
@@ -65,30 +95,18 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
     if (!this.state.collections.length) {
       return (
         <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
-          <p className={styles.titleCreate}>Create a new collection of tokens</p>
-
-          <ButtonView
-            text={'CREATE COLLECTION'}
-            onClick={() => { this.changeRenderType(RenderType.createCollection) }}
-            color={buttonColors.goldFill}
-            customClass={`ml-10px min-w-100px`}
-          />
+          {this.createAction}
         </div>
       )
     }
 
     return (
       <div className={styles.listWrap}>
-        <div className={styles.createCollectionCard}>
-          <p className={styles.titleCreate}>Create a new collection of tokens</p>
-
-          <ButtonView
-            text={'CREATE COLLECTION'}
-            onClick={() => { this.changeRenderType(RenderType.createCollection) }}
-            color={buttonColors.goldFill}
-            customClass={`ml-10px min-w-100px`}
-          />
-        </div>
+        {this.props.params.userId === this.props.near.user?.accountId && (
+          <div className={styles.createCollectionCard}>
+            {this.createAction}
+          </div>
+        )}
 
         {this.state.collections.map(data => (
           <CollectionCard
