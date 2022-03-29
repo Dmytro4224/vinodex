@@ -25,7 +25,8 @@ pub struct CollectionJson {
     pub cover_photo: String,
     pub is_active: bool,
     pub owner: Option<JsonProfile>,
-    pub tokens: Vec<JsonToken>
+    pub tokens: Vec<JsonToken>,
+    pub collection_id: String
 }
 
 #[near_bindgen]
@@ -88,6 +89,7 @@ impl Contract
 
                 return Some(CollectionJson
                 {
+                    collection_id: collection_id.clone(),
                     name: collection.name,
                     description: collection.description,
                     profile_photo: collection.profile_photo,

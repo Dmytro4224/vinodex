@@ -17,6 +17,8 @@ pub struct JsonProfile {
     pub name:String,
     ///фотка
     pub image: String,
+    //Друга фотка (як в колекції)
+    pub cover_image: String,
     ///електропошта
     #[validate(email)]
     pub email:String,
@@ -40,6 +42,8 @@ pub struct Profile {
     pub name:String,
     ///фотка
     pub image: String,
+    //Друга фотка (як в колекції)
+    pub cover_image: String,
     ///електропошта
     #[validate(email)]
     pub email:String,
@@ -73,6 +77,7 @@ impl Profile {
                bio:_profile.bio,
                name:_profile.name,
                image:_profile.image,
+               cover_image:_profile.cover_image,
                email:_profile.email,
                is_following:false,
                is_like:false,
@@ -113,6 +118,7 @@ impl Profile {
                     bio: String::from(""),
                     name: String::from(""),
                     image: String::from(""),
+                    cover_image: String::from(""),
                     email: String::from(""),
                     is_following:false,
                     is_like:false,
@@ -133,6 +139,7 @@ impl Profile {
             bio:String::from(""),
             email:String::from(""),
             image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
+            cover_image:String::from(""),
             name:String::from("")
         }
     }

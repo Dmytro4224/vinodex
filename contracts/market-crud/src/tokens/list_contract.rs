@@ -481,7 +481,18 @@ impl Contract {
         is_active_bid: Option<bool>,
         price_from: Option<U128>,
         price_to: Option<U128>,
-        is_single: Option<bool>
+        is_single: Option<bool>,
+        brand: Option<String>,
+        style: Option<String>,
+        year: Option<String>,
+        bottle_size: Option<String>,
+        collection_id: Option<String>,
+
+        //0 - не продається
+        //1 - фікс
+        //2 - аукціон
+        //3 - продається, не важливо як
+        sale_filter: Option<u8>
     ) ->Vec<JsonToken> 
     {
 
@@ -619,153 +630,120 @@ impl Contract {
             }
         }
 
+        let mut index : usize;
+
         if is_reverse
         {
-            let mut start_index = token_ids.len() as i64 - skip as i64 - 1;
-
-            //while start_index > end_index && !stop
-            while result.len() < limit && !stop
-            {
-                let _index = start_index as usize;
-                let _token = sorted.get(_index);
-
-                start_index = start_index - 1;
-
-                match _token
-                {
-                    Some(_token) =>
-                    {
-                        if token_ids.contains(&_token.token_id)
-                        {
-                            if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_filter_in_map(&self.sales_active, &_token.token_id, is_for_sale)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_filter_in_set(&my_likes, &_token.token_id, is_liked)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_filter_in_set(&my_follows, &_token.token_id, is_followed)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_price(&_token.token_id, price_from, price_to)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_copies(&_token.token_id, is_single)
-                            {
-                                continue;
-                            }
-
-                            match self.nft_token_for_account
-                            (
-                                &_token.token_id,
-                                account_id.clone()
-                            )
-                            {
-                                Some(res) =>
-                                {
-                                    result.push(res);
-                                },
-                                None =>
-                                {
-                                    continue;
-                                }
-                            }
-                        }
-                    },
-                    None =>
-                    {
-                        stop = true;
-                    }
-                }
-            }
+            index = token_ids.len() - skip as usize - 1;
         }
         else
         {
-            //while skip < skip + available_amount as u64 && !stop
-            while result.len() < limit && !stop
+            index = skip as usize;
+        }
+
+        while result.len() < limit && !stop
+        {
+            let _token = sorted.get(index);
+
+            if is_reverse
             {
-                let _index = skip as usize;
-                let _token = sorted.get(_index);
+                index = index - 1;
+            }
+            else
+            {
+                index = index + 1;
+            }
 
-                skip = skip + 1;
-
-                match _token
+            match _token
+            {
+                Some(_token) =>
                 {
-                    Some(_token) =>
+                    if token_ids.contains(&_token.token_id)
                     {
-                        if token_ids.contains(&_token.token_id)
+                        if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
                         {
-                            if !self.check_unordered_set(&tokens_per_owner, &_token.token_id, check_owner)
+                            continue;
+                        }
+
+                        if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_filter_in_map(&self.sales_active, &_token.token_id, is_for_sale)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_filter_in_set(&my_likes, &_token.token_id, is_liked)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_filter_in_set(&my_follows, &_token.token_id, is_followed)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_price(&_token.token_id, price_from, price_to)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_copies(&_token.token_id, is_single)
+                        {
+                            continue;
+                        }
+
+                        let token_meta = self.token_metadata_by_id.get(&_token.token_id).unwrap();
+
+                        if let Some(brand) = brand.clone()
+                        {
+                            if token_meta.brand != brand
                             {
                                 continue;
                             }
+                        }
 
-                            if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
+                        if let Some(style) = style.clone()
+                        {
+                            if token_meta.style != style
                             {
                                 continue;
                             }
+                        }
 
-                            if !self.check_unordered_set(&my_bids, &_token.token_id, is_active_bid)
+                        if let Some(year) = year.clone()
+                        {
+                            if token_meta.year != year
                             {
                                 continue;
                             }
+                        }
 
-                            if !self.check_filter_in_map(&self.sales_active, &_token.token_id, is_for_sale)
+                        if let Some(bottle_size) = bottle_size.clone()
+                        {
+                            if token_meta.bottle_size != bottle_size
                             {
                                 continue;
                             }
+                        }
 
-                            if !self.check_filter_in_set(&my_likes, &_token.token_id, is_liked)
+                        if let Some(collection_id) = collection_id.clone()
+                        {
+                            match self.collection_per_token.get(&_token.token_id)
                             {
-                                continue;
-                            }
-
-                            if !self.check_filter_in_set(&my_follows, &_token.token_id, is_followed)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_price(&_token.token_id, price_from, price_to)
-                            {
-                                continue;
-                            }
-
-                            if !self.check_copies(&_token.token_id, is_single)
-                            {
-                                continue;
-                            }
-
-                            match self.nft_token_for_account
-                            (
-                                &_token.token_id,
-                                account_id.clone()
-                            )
-                            {
-                                Some(res) =>
+                                Some(collection) =>
                                 {
-                                    result.push(res);
+                                    if collection != collection_id
+                                    {
+                                        continue;
+                                    }
                                 },
                                 None =>
                                 {
@@ -773,11 +751,85 @@ impl Contract {
                                 }
                             }
                         }
-                    },
-                    None =>
-                    {
-                        stop = true;
+
+                        if let Some(sale_filter) = sale_filter.clone()
+                        {
+                            let sale = self.sales_active.get(&_token.token_id);
+
+                            match sale_filter
+                            {
+                                0 =>
+                                {
+                                    if sale.is_some()
+                                    {
+                                        continue;
+                                    }
+                                },
+                                1 =>
+                                {
+                                    match sale
+                                    {
+                                        Some(sale) =>
+                                        {
+                                            if sale.sale_type != 1
+                                            {
+                                                continue;
+                                            }
+                                        },
+                                        None =>
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                },
+                                2 =>
+                                {
+                                    match sale
+                                    {
+                                        Some(sale) =>
+                                        {
+                                            if sale.sale_type != 2 && sale.sale_type != 3
+                                            {
+                                                continue;
+                                            }
+                                        },
+                                        None =>
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                },
+                                3 =>
+                                {
+                                    if sale.is_none()
+                                    {
+                                        continue;
+                                    }
+                                },
+                                _ => {}
+                            }
+                        }
+
+                        match self.nft_token_for_account
+                        (
+                            &_token.token_id,
+                            account_id.clone()
+                        )
+                        {
+                            Some(res) =>
+                            {
+                                result.push(res);
+                            },
+                            None =>
+                            {
+                                continue;
+                            }
+                        }
                     }
+                },
+                None =>
+                {
+                    stop = true;
                 }
             }
         }
