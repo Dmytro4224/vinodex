@@ -85,7 +85,7 @@ pub const MAX_PROFILE_NAME_LENGTH: usize = 256;
 //максимальна довжина опису профілю
 pub const MAX_PROFILE_BIO_LENGTH: usize = 256;
 //максимальна величина картинки
-pub const MAX_PROFILE_IMAGE_LENGTH: usize = 256;
+pub const MAX_PROFILE_IMAGE_LENGTH: usize = 2048;
 
 //==================
 
@@ -587,13 +587,19 @@ impl Contract {
         assert!(
             profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
             "Profile bio length is too long. Max length is {}",
-            MAX_PROFILE_NAME_LENGTH
+            MAX_PROFILE_BIO_LENGTH
         );
 
         assert!(
             profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
             "Profile image length is too long. Max length is {}",
-            MAX_PROFILE_NAME_LENGTH
+            MAX_PROFILE_IMAGE_LENGTH
+        );
+
+        assert!(
+            profile.cover_image.len() < MAX_PROFILE_IMAGE_LENGTH,
+            "Profile cover image length is too long. Max length is {}",
+            MAX_PROFILE_IMAGE_LENGTH
         );
 
         assert!(

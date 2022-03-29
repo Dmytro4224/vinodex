@@ -34,8 +34,9 @@ pub struct TokenMetadata {
     pub price: u128, // ціна токена
 
     pub style: String, // стиль вина
+    pub brand: String, // бренд
     pub year: String, // рік виробництва
-    pub botle_size: String, // об'єм плаяшки
+    pub bottle_size: String, // об'єм плаяшки
     pub characteristics: String, //текст-табличка з характеристиками, буде штмл
     pub specification: String, // текст-табличка з характеристиками, буде штмл
     pub artist: AccountId, // це буде автор, тип: account_id 
