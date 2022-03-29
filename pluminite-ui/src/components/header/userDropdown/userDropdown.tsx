@@ -22,15 +22,33 @@ interface IUserDropdown extends IProps {
 }
 
 class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
+  public state = {
+    isShow: false
+  }
+
   private _refAvatar: any;
   private _refAvatarSm: any;
+  private _menuRef: any;
 
   constructor(props: IUserDropdown & IBaseComponentProps) {
     super(props);
 
     this._refAvatar = React.createRef();
     this._refAvatarSm = React.createRef();
+    this._menuRef = React.createRef();
   }
+
+  // public componentDidMount() {
+  //   try {
+  //     document.body.addEventListener('click', (e: MouseEvent) => {
+  //       if (!this._menuRef?.current?.contains(e.target) && this.state.isShow) {
+  //         this.onToggle();
+  //       }
+  //     })
+  //   } catch (e) {
+  //     console.warn(e)
+  //   }
+  // }
 
   get accountId() {
     return this.props.user.accountId;
@@ -44,19 +62,31 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
     return this.props.user.name;
   }
 
+  private onToggle() {
+    this.setState({
+      ...this.state,
+      isShow: !this.state.isShow
+    });
+  }
+
   render() {
     return <>
-      <Dropdown className={`${styles.customDropdown} ${styles.userDropdown}`}>
-        <Dropdown.Toggle variant="" id="dropdown-basic" className={`${styles.dropdownButton} ${styles.dropdownSelect} ${styles.userDropdownButton}`}>
+      <Dropdown
+        show={this.state.isShow}
+        className={`${styles.customDropdown} ${styles.userDropdown}`}
+      >
+        <Dropdown.Toggle
+          onClick={() => { this.onToggle() }}
+          variant=""
+          id="dropdown-basic"
+          className={`${styles.dropdownButton} ${styles.dropdownSelect} ${styles.userDropdownButton}`}
+        >
           <img ref={this._refAvatarSm} onError={() => { changeAvatarRefSrc(this._refAvatarSm) }} className={styles.userAvatar} src={this.avatar} alt="" />
           {transformArtistId(this.accountId)}
         </Dropdown.Toggle>
 
         <Dropdown.Menu>
-          {/* <Dropdown.Item>
-
-        </Dropdown.Item>*/}
-          <div className="w-100 d-flex align-items-center justify-content-center flex-column p-2">
+          <div ref={this._menuRef} className="w-100 d-flex align-items-center justify-content-center flex-column p-2">
             <div className="d-flex align-items-center justify-content-center flex-column">
               <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.avatar} width="72" height="72" src={this.avatar} alt="avatar" />
               <p className={styles.profileName}>{this.name}</p>
@@ -66,43 +96,43 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
             <p className={styles.line} />
 
             <ul className={styles.navList}>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=details`}>
                   <img width="24" height="24" src={userIcon} alt="icon" />
                   <p>Profile Details</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=items`}>
                   <img width="24" height="24" src={createdIcon} alt="icon" />
                   <p>Created Items</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=collections`}>
                   <img width="24" height="24" src={collectionIcon} alt="icon" />
                   <p>My Collections</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=purchases`}>
                   <img width="24" height="24" src={purchasesIcon} alt="icon" />
                   <p>Purchases</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>
                   <img width="24" height="24" src={activeBidsIcon} alt="icon" />
                   <p>Active Bids</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=following`}>
                   <img width="24" height="24" src={followingsIcon} alt="icon" />
                   <p>Followings</p>
                 </NavLink>
               </li>
-              <li>
+              <li onClick={() => this.onToggle()}>
                 <NavLink to={`/userProfile/${this.accountId}?tab=favorites`}>
                   <img width="24" height="24" src={favoritesIcon} alt="icon" />
                   <p>Favorites</p>
