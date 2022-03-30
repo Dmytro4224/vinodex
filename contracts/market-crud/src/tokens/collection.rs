@@ -27,8 +27,9 @@ pub struct CollectionJson {
     pub owner: Option<JsonProfile>,
     pub tokens: Vec<JsonToken>,
     pub collection_id: String,
-    pub likes_count: u32,
-    pub views_count: u32,
+    pub likes_count: u64,
+    pub views_count: u64,
+    pub tokens_count: u64
 }
 
 #[near_bindgen]
@@ -86,21 +87,45 @@ impl Contract {
                     }
                 }
 
-                let mut collection_likes_count: u32 = 0;
-                let mut collection_views_count: u32 = 0;
+                let likes_count: u64;
+                let  views_count: u64;
 
-                match self.collection_likes.get(&collection_id) {
-                    Some(likes) => {
-                        collection_likes_count = likes.len() as u32;
+                match self.collection_likes.get(&collection_id) 
+                {
+                    Some(likes) => 
+                    {
+                        likes_count = likes.len();
                     }
-                    None => {}
+                    None => 
+                    {
+                        likes_count = 0;
+                    }
                 }
 
-                match self.collection_views.get(&collection_id) {
-                    Some(views) => {
-                        collection_views_count = views.len() as u32;
+                match self.collection_views.get(&collection_id) 
+                {
+                    Some(views) => 
+                    {
+                        views_count = views.len();
                     }
-                    None => {}
+                    None => 
+                    {
+                        views_count = 0;
+                    }
+                }
+
+                let tokens_count : u64;
+
+                match self.collection_tokens.get(&collection_id)
+                {
+                    Some(list) =>
+                    {
+                        tokens_count = list.len();
+                    },
+                    None =>
+                    {
+                        tokens_count = 0;
+                    }
                 }
 
                 return Some(CollectionJson {
@@ -120,8 +145,9 @@ impl Contract {
                         true,
                     ),
                     tokens: tokens,
-                    likes_count: collection_likes_count,
-                    views_count: collection_views_count,
+                    likes_count: likes_count,
+                    views_count: views_count,
+                    tokens_count: tokens_count
                 });
             }
             None => {
