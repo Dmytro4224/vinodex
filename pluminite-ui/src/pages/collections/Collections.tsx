@@ -25,6 +25,7 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
   }
 
   public componentDidMount() {
+    window.scroll(0,0);
     this.getList()
   }
 

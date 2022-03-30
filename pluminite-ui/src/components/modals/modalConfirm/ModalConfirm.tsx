@@ -12,10 +12,13 @@ interface IModalConfirm extends IProps {
 }
 
 interface IModalConfirmState {
+  isLoading: boolean;
 }
 
 class ModalConfirm extends Component<IModalConfirm & IBaseComponentProps> {
-  public state: IModalConfirmState = {};
+  public state: IModalConfirmState = {
+    isLoading: false
+  };
 
   constructor(props: IModalConfirm & IBaseComponentProps) {
     super(props);
@@ -57,9 +60,10 @@ class ModalConfirm extends Component<IModalConfirm & IBaseComponentProps> {
             <ButtonView
               text={'Confirm'}
               onClick={() => {
+                this.setState({...this.state, isLoading: true})
                 this.onSubmit();
               }}
-              isLoading={false}
+              isLoading={this.state.isLoading}
               color={buttonColors.goldFill}
               customClass={styles.modalBtn}
             />

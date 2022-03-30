@@ -9,6 +9,7 @@
   background-size: cover;
   background-position: center center;
   background-repeat: no-repeat;
+  border-radius: 0px 0px 50px 50px;
 }
 
 .headerInfo {

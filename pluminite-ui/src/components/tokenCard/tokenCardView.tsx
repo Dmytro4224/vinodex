@@ -311,6 +311,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                             .then(res => {
                               console.log('sale_set_is_closed', res);
                               this.getInfo();
+
+                              this.setState({
+                                ...this.state,
+                                isShowConfirmModal: false
+                              })
                             })
                             .catch(error => {
                               console.error('sale_set_is_closed', error);
@@ -391,6 +396,11 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                             .then(res => {
                               console.log('sale_set_is_closed', res);
                               this.getInfo();
+
+                              this.setState({
+                                ...this.state,
+                                isShowConfirmModal: false
+                              })
                             })
                             .catch(error => {
                               console.error('sale_set_is_closed', error);
@@ -436,6 +446,30 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     });
   }
 
+  private stopTime() {
+    if (this.model.sale?.bids?.length) {
+      this.props.nftContractContext.sale_set_is_closed(this.model.token_id, true)
+        .then(res => {
+          console.log('sale_set_is_closed', res);
+          this.getInfo();
+        })
+        .catch(error => {
+          console.error('sale_set_is_closed', error);
+          showToast({
+            message: 'Can not close sale without bids',
+            type: EShowTost.error
+          })
+        })
+    } else {
+      this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
+        console.log('sale_remove', res);
+
+        this.modalToggleVisibility({ isShowConfirmModal: false });
+        this.getInfo();
+      });
+    }
+  }
+
   private getContent() {
     return (
       <div
@@ -464,11 +498,12 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             )}
           </div>
 
-          {this.state.model?.sale?.end_date && (
+          {this.state.model?.sale?.end_date && !this.state.model?.sale.is_closed && (
             <div className={styles.timerWrap}>
               <Timer
                 type={TimerType.small}
                 endDateTimestamp={this.state.model.sale.end_date}
+                onEndTimer={() => { this.stopTime() }}
               />
             </div>
           )}

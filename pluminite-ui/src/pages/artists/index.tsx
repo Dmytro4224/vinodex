@@ -1,12 +1,12 @@
 ﻿import React, { Component } from 'react';
-import ArtistCard from '../../components/artistCard/ArtistCard';
+import ArtistCard, { ArtistType } from '../../components/artistCard/ArtistCard';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import Loader from '../../components/common/loader/loader';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 import styles from '../../components/bestArtists/bestArtists.module.css';
 import Skeleton from 'react-loading-skeleton';
+import { NavLink } from 'react-router-dom';
 
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
@@ -94,59 +94,48 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   }
 
   public render() {
-    if (this.state.isLoading) {
-      return (
-        <div className='my-5 container'>
-          <div className={'d-flex align-items-center justify-content-between flex-wrap'}>
-            <div className={styles.loaderWrap}>
-              <Skeleton count={1} height={60} />
-              <Skeleton count={2} height={20} />
-            </div>
-            <div className={styles.loaderWrap}>
-              <Skeleton count={1} height={60} />
-              <Skeleton count={2} height={20} />
-            </div>
-            <div className={styles.loaderWrap}>
-              <Skeleton count={1} height={60} />
-              <Skeleton count={2} height={20} />
-            </div>
-            <div className={styles.loaderWrap}>
-              <Skeleton count={1} height={60} />
-              <Skeleton count={2} height={20} />
+    return (
+      <div>
+        <div className={styles.header}>
+          <div className={`container ${styles.headerInfo}`}>
+            <h4 className={styles.title}>Artists</h4>
+            <div className='breadcrumb'>
+              <NavLink to={'/'}>Home</NavLink>
+              <span className='breadcrumb__separator'>/</span>
+              <p>Artists</p>
             </div>
           </div>
         </div>
-      );
-    }
-
-    if (this.state.list.length === 0) {
-      return (
-        <div className='my-5 container'>
-          <EmptyListView />
-        </div>
-      );
-    }
-
-    return (
-      <div className='my-5 container'>
-        <div className='d-flex flex-wrap flex-gap-36 mt-3'>
-          {this.state.list.map((item, index) => (
-            <ArtistCard
-              key={`artist-${item.account_id}`}
-              info={item}
-              identification={item.account_id}
-              usersCount={item.followers_count}
-              likesCount={item.likes_count}
-              isLike={item.is_like}
-              isFollow={item.is_following}
-              followBtnText={this.followBtnText}
-              isDisabledFollowBtn={this.isProfilePageView}
-              isForceVisible={this.isProfilePageView}
-            />),
-          )}
-        </div>
+        {this.state.isLoading ? (
+          <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px container'>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+          </div>
+        ) : !this.state.list.length ? (
+          <div className='my-5 container'>
+            <EmptyListView />
+          </div>
+        ) : (
+          <div className='d-flex flex-wrap flex-gap-36 mt-3 mb-5 container'>
+            {this.state.list.map((item, index) => (
+              <ArtistCard
+                key={`artist-${item.account_id}`}
+                info={item}
+                identification={item.account_id}
+                usersCount={item.followers_count}
+                likesCount={item.likes_count}
+                isLike={item.is_like}
+                isFollow={item.is_following}
+                followBtnText={this.followBtnText}
+                isDisabledFollowBtn={this.isProfilePageView}
+                isForceVisible={this.isProfilePageView}
+                type={ArtistType.big}
+              />),
+            )}
+          </div>
+        )}
       </div>
-    );
+    )
   }
 }
 

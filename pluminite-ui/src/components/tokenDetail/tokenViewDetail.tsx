@@ -356,38 +356,59 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <>
             {this.state.order?.sale?.is_closed ? (
               this.isMyToken ? (
-                <ButtonView
-                  text={`Start auction`}
-                  onClick={() => {
-                    if (!this.isAuth) {
-                      this.props.near.signIn();
-                      return;
-                    }
+                <div className='w-100 d-flex align-items-center gap-15px'>
+                  <ButtonView
+                    text={`Start auction`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
 
-                    this.modalToggleVisibility({
-                      isShowConfirmModal: true,
-                      modalConfirmData: {
-                        text: 'Do you want to start an auction?',
-                        confirmCallback: () => {
-                          this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, false)
-                            .then(res => {
-                              console.log('sale_set_is_closed', res);
-                              this.getInfo();
-                            })
-                            .catch(error => {
-                              console.error('sale_set_is_closed', error);
-                              showToast({
-                                message: error,
-                                type: EShowTost.error
+                      this.modalToggleVisibility({
+                        isShowConfirmModal: true,
+                        modalConfirmData: {
+                          text: 'Do you want to start an auction?',
+                          confirmCallback: () => {
+                            this.props.nftContractContext.sale_set_is_closed(this.state.order?.token_id!, false)
+                              .then(res => {
+                                console.log('sale_set_is_closed', res);
+                                this.getInfo();
+
+                                this.setState({
+                                  ...this.state,
+                                  isShowConfirmModal: false
+                                })
                               })
-                            })
+                              .catch(error => {
+                                console.error('sale_set_is_closed', error);
+                                showToast({
+                                  message: error,
+                                  type: EShowTost.error
+                                })
+                              })
+                          },
                         },
-                      },
-                    });
-                  }}
-                  color={buttonColors.greenButton}
-                  customClass={styles.button}
-                />
+                      });
+                    }}
+                    color={buttonColors.greenButton}
+                    customClass={styles.button}
+                  />
+
+                  <ButtonView
+                    text={`Stop selling`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
+
+                      this.onToggleSale(false);
+                    }}
+                    color={buttonColors.redButton}
+                    customClass={styles.button}
+                  />
+                  </div>
               ) : (
                 this.state.order?.sale?.bids[0]?.account?.account_id === this.props.near.user?.accountId ? (
                   <ButtonView
@@ -464,6 +485,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                               .then(res => {
                                 console.log('sale_set_is_closed', res);
                                 this.getInfo();
+
+                                this.setState({
+                                  ...this.state,
+                                  isShowConfirmModal: false
+                                })
                               })
                               .catch(error => {
                                 console.error('sale_set_is_closed', error);
@@ -517,6 +543,32 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   private get price() {
     return convertYoctoNearsToNears(this.state.order?.sale?.price) || 0.00;
+  }
+
+  private stopTime() {
+    if (this.state.order?.sale?.bids?.length) {
+      this.props.nftContractContext.sale_set_is_closed(this.state.order.token_id, true)
+        .then(res => {
+          console.log('sale_set_is_closed', res);
+          this.getInfo();
+        })
+        .catch(error => {
+          console.error('sale_set_is_closed', error);
+          showToast({
+            message: 'Can not close sale without bids',
+            type: EShowTost.error
+          })
+        })
+    } else {
+      if (this.state.order) {
+        this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
+          console.log('sale_remove', res);
+
+          this.modalToggleVisibility({ isShowConfirmModal: false });
+          this.getInfo();
+        });
+      }
+    }
   }
 
   render() {
@@ -662,12 +714,13 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 <DescrtiptionView text={this.state.order?.metadata.description!} />
               </div>
 
-              {this.state.order?.sale?.end_date && (
+              {this.state.order?.sale?.end_date && !this.state.order?.sale?.is_closed && (
                 <>
                   <p className={`${styles.timerTitle} mb-1`}>Auction ending in</p>
                   <Timer
                     type={TimerType.big}
                     endDateTimestamp={this.state.order?.sale?.end_date}
+                    onEndTimer={() => this.stopTime()}
                   />
                 </>
               )}
