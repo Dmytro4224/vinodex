@@ -929,6 +929,44 @@ impl Contract {
         return result;
     }
 
+    ///список токенів по колекції, окрім token_id
+    pub fn token_similar_items(
+        &self,
+        token_id: TokenId,
+        asked_account_id: Option<AccountId>
+    ) ->Vec<JsonToken> {
+
+        let mut result : Vec<JsonToken> = Vec::new();
+        
+        let collection_id = self.collection_per_token.get(&token_id);
+
+        if collection_id.is_none()
+        {
+            return result;
+        }
+
+        match self.collection_tokens.get(&collection_id.unwrap())
+        {
+            Some(tokens) =>
+            {
+                result = tokens
+                .iter()
+                .map(|x| 
+                {
+                    self.nft_token_for_account(&x, asked_account_id.clone()).unwrap()
+                })
+                .collect::<Vec<JsonToken>>();
+
+                if let Some(index) = result.iter().position(|x| x.token_id.eq(&token_id))
+                {
+                    result.remove(index);
+                }
+            }, 
+            None => {}
+        }
+
+        return result;
+    }
 
     ///список авторів, які відслідковуються
     pub fn followed_authors_for_account(
