@@ -594,3 +594,103 @@ input[type="range"]:disabled::-moz-range-thumb {
     flex-wrap: wrap;
   }
 }
+
+.cardWrapBig {
+  position: relative;
+  width: 100%;
+  max-width: 690px;
+  background: var(--white);
+  border-radius: 4px;
+  border-bottom: 1px solid #EBEBEB;
+  transition: all 0.4s ease;
+}
+
+.cardWrapBig:hover {
+  box-shadow: 0 20px 15px rgba(174, 126, 3, 0.05);
+}
+
+.cardWrapBig__coverImage {
+  min-height: 186px;
+  max-height: 186px;
+  border-radius: 4px 4px 30px 30px;
+}
+
+.cardWrapBig__imageWrap {
+  margin: -65px auto 0 auto;
+  width: 130px;
+  height: 130px;
+}
+
+.cardWrapBig__image {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+}
+
+.cardWrapBig__collectionName {
+  margin-bottom: 20px;
+  font-family: 'Bebas Neue', 'Urbanist', sans-serif;
+  font-size: 48px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cardWrapBig__actionsWrap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  width: 100%;
+}
+
+.cardWrapBig__creatorName {
+  margin-bottom: 20px;
+  font-family: 'Bebas Neue', 'Urbanist', sans-serif;
+  font-size: 48px;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--black)
+}
+
+.cardWrapBig__description {
+  margin-bottom: 20px;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  text-align: center;
+  color: #1F1F2C;
+}
+
+.cardWrapBig__controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.cardWrapBig__userInfo {
+  margin-right: 20px;
+}
+
+.cardWrapBig__content {
+  margin-top: 10px;
+  padding: 16px;
+}
+
+@media (max-width: 500px) {
+  .cardWrapBig__collectionName {
+    font-size: 28px;
+  }
+
+  .cardWrapBig__description {
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  .cardWrapBig__controls {
+    flex-direction: column;
+    gap: 20px;
+  }
+}
