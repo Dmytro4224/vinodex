@@ -5,10 +5,9 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  border-radius: 4px;
-  box-shadow: 0 0 5px rgba(174, 126, 3, 0.2);
   transition: all 0.4s ease;
   letter-spacing: 0.04rem;
+  border-radius: 16px;
 }
 
 .card.onlyViewed {
@@ -234,17 +233,7 @@
 
 @media (min-width: 900px) {
   .card.isHover:hover {
-    transform: scale(1.007);
-    box-shadow: 0 3px 24px rgba(174, 126, 3, 0.2);
-  }
-
-  .card.isHover:hover .buttonDetails {
-    pointer-events: unset;
-    opacity: 1;
-  }
-
-  .card.isHover:hover .cardImage .imageStyle {
-    filter: blur(3px);
+    box-shadow: 0 3px 24px rgba(13, 71, 161, 0.2);
   }
 }
 

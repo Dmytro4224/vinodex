@@ -464,13 +464,6 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             )}
           </div>
 
-          <ButtonView
-            text={`View Details`}
-            onClick={() => { this.props.linkTo && this.props.navigate(this.props.linkTo) }}
-            color={buttonColors.goldBordered}
-            customClass={`${styles.button} ${styles.buttonDetails}`}
-          />
-
           {this.state.model?.sale?.end_date && (
             <div className={styles.timerWrap}>
               <Timer
