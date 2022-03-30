@@ -1,0 +1,107 @@
+.cover {
+  width: 100%;
+  height: 100%;
+  min-height: 320px;
+  max-height: 320px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0 0 50px 50px;
+  background-color: #14141F;
+  background-position: center center;
+}
+
+.logoWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: -106px auto 25px auto;
+  width: 212px;
+  height: 212px;
+  background-color: #C4C4C4;
+  border-radius: 100%;
+  border: 6px solid var(--white);
+  z-index: 1;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 100%;
+}
+
+.name {
+  font-family: 'Bebas Neue', "Urbanist", sans-serif;
+  font-weight: 400;
+  font-size: 48px;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--black);
+}
+
+.description {
+  margin-bottom: 40px;
+  padding: 0 46px;
+  font-weight: 400;
+  font-size: 18px;
+  text-align: center;
+  color: var(--steelGray);
+}
+
+.informer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  padding: 40px 90px;
+  width: 100%;
+  background: #FAFAFA;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+}
+
+.informerTitle {
+  font-weight: 700;
+  font-size: 32px;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--steelGray);
+}
+
+.informerDesc {
+  font-weight: 400;
+  font-size: 18px;
+  text-align: center;
+  color: var(--topaz);
+}
+
+@media (max-width: 992px) {
+  .informer {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 500px) {
+  .informer {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .name {
+    font-size: 28px;
+  }
+
+  .description {
+    margin-bottom: 20px;
+    padding: 0 20px;
+    font-size: 14px;
+  }
+
+  .breadcrumb {
+    font-size: 14px !important;
+    margin-bottom: 20px !important;
+  }
+}
+
