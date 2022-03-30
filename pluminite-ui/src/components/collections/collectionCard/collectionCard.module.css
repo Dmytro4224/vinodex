@@ -15,6 +15,7 @@
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;
+  border-radius: 4px 4px 30px 30px;
 }
 
 .image {
@@ -43,10 +44,9 @@
 }
 
 .collectionName {
-  font-weight: 100;
+  font-weight: 500;
   font-size: 16px;
   color: var(--mineShaftS);
-  font-style: italic;
 }
 
 .creatorName {
@@ -134,8 +134,70 @@
   color: var(--steelGray);
 }
 
+.cardWrapBig {
+  position: relative;
+  width: 100%;
+  background: var(--white);
+  border-radius: 4px;
+  border-bottom: 1px solid #EBEBEB;
+  transition: all 0.4s ease;
+}
+
+.cardWrapBig:hover {
+  box-shadow: 0 20px 15px rgba(174, 126, 3, 0.05);
+}
+
+.cardWrapBig .coverImage {
+  min-height: 186px;
+  max-height: 186px;
+  border-radius: 4px 4px 30px 30px;
+}
+
+.cardWrapBig .imageWrap {
+  margin: -65px auto 0 auto;
+  width: 130px;
+  height: 130px;
+}
+
+.cardWrapBig .collectionName {
+  margin-bottom: 20px;
+  font-family: 'Bebas Neue', 'Urbanist', sans-serif;
+  font-size: 48px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.cardWrapBig .description {
+  margin-bottom: 70px;
+  font-family: 'Urbanist', sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  text-align: center;
+  color: #1F1F2C;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 @media (max-width: 500px) {
   .cardWrap {
     min-width: 310px;
+  }
+
+  .cardWrapBig .collectionName {
+    font-size: 28px;
+  }
+
+  .cardWrapBig .description {
+    margin-bottom: 30px;
+    font-size: 14px;
+  }
+
+  .controls {
+    flex-direction: column;
+    gap: 20px;
   }
 }

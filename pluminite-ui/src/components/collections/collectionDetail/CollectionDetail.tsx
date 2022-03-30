@@ -6,6 +6,7 @@ import CreateCollection from '../createCollection/CreateCollection';
 import { RenderType } from '../Collections';
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
+import ModalCollectionToken from '../../modals/modalCollectionToken/ModalCollectionToken';
 
 interface ICollectionDetail extends IProps {
   changeRenderType?: (type: RenderType) => void;
@@ -13,6 +14,10 @@ interface ICollectionDetail extends IProps {
 }
 
 class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps> {
+  public state = {
+    isShowModalTokens: false
+  }
+
   constructor(props: ICollectionDetail & IBaseComponentProps) {
     super(props);
   }
@@ -42,13 +47,18 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
                 <ButtonView
                   text={'SELECT TOKEN'}
                   customClass={'min-w-150px'}
-                  onClick={() => { }}
+                  onClick={() => { this.setState({ ...this.state, isShowModalTokens: true }) }}
                   color={buttonColors.goldFill}
                 />
               </div>
             </Tab>
           </Tabs>
         </div>
+
+        <ModalCollectionToken
+          onHideModal={() => { this.setState({ ...this.state, isShowModalTokens: false }) }}
+          inShowModal={this.state.isShowModalTokens}
+        />
       </div>
     );
   }

@@ -1,11 +1,12 @@
 import React from 'react';
 import { Component } from 'react';
 import styles from './likeView.module.css';
-import userIcon from '../../assets/icons/user-icon.svg';
-import likeIcon from '../../assets/icons/favorite-icon.svg';
-import likeIconFill from '../../assets/icons/favorite-icon-fill.svg';
+import userIcon from '../../assets/icons/user-icon-gold.svg';
+import likeIcon from '../../assets/icons/favorite-icon-gold.svg';
+import likeIconFill from '../../assets/icons/favorite-icon-fill-gold.svg';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import eyeIcon from '../../assets/icons/eye.svg';
+import eyeIcon from '../../assets/icons/eye-gold.svg';
+import wineIcon from '../../assets/icons/wine-icon.svg';
 
 interface ILikeView extends IProps {
   isChanged: boolean;
@@ -14,12 +15,14 @@ interface ILikeView extends IProps {
   type: LikeViewType;
   count: number;
   onClick?: () => void;
+  icon?: any;
 }
 
 enum LikeViewType {
   like = 'like',
   user = 'user',
-  eye = 'eye'
+  eye = 'eye',
+  wine = 'wine'
 }
 
 class LikeView extends Component<ILikeView & IBaseComponentProps> {
@@ -80,8 +83,8 @@ class LikeView extends Component<ILikeView & IBaseComponentProps> {
           className={styles.likeImage}
           src={this.isChanged ? likeIconFill : likeIcon}
           alt={''}
-          width="18"
-          height="18"
+          width="20"
+          height="20"
         />
         <span ref={this._refCount} className={styles.count}>{this.props.count}</span>
       </>
@@ -91,7 +94,7 @@ class LikeView extends Component<ILikeView & IBaseComponentProps> {
   private renderUserType() {
     return (
       <>
-        <img ref={this._refImg} src={userIcon} alt={''} />
+        <img width='20' height='20' ref={this._refImg} src={userIcon} alt={''} />
         <span ref={this._refCount} className={styles.count}>{this.props.count}</span>
       </>
     );
@@ -106,6 +109,15 @@ class LikeView extends Component<ILikeView & IBaseComponentProps> {
     );
   }
 
+  private renderWineType() {
+    return (
+      <>
+        <img width='20' height='20' ref={this._refImg} src={wineIcon} alt={''} />
+        <span ref={this._refCount} className={styles.count}>{this.props.count}</span>
+      </>
+    );
+  }
+
   private renderType() {
     switch (this.props.type) {
       case LikeViewType.like:
@@ -114,6 +126,8 @@ class LikeView extends Component<ILikeView & IBaseComponentProps> {
         return this.renderUserType();
       case LikeViewType.eye:
         return this.renderEyeType();
+      case LikeViewType.wine:
+        return this.renderWineType();
     }
   }
 
