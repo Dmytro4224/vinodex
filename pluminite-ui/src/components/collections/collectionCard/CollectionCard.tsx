@@ -173,7 +173,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
               <div className={`cardWrapBig__controls`}>
                 <ButtonView
                   text={'explore the collection'}
-                  onClick={() => {}}
+                  onClick={() => { this.props.navigate('/collections/123') }}
                   color={buttonColors.goldFill}
                   customClass={``}
                 />
