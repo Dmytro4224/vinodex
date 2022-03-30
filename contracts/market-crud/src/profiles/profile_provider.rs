@@ -409,10 +409,42 @@ pub tokens_likes_count: u32,
 pub views_count: u32,
 //3 - загальна ксть переглядів токенів аккаунту
 pub tokens_views_count: u32,
-///4 - загальна ксть токенів
+///4 - загальна ксть токенів, де користувач - creator
 pub tokens_count: u32,
 //5 - к-сть підписників автора
 pub followers_count: u32,
+//6 - к-сть токенів, де користувач - artist
+pub tokens_count_as_artist: u32,
+
+//поля попорядку 
+//on_sale 7 - 10
+//sold 11 - 14
+pub prices_as_creator: ProfilePriceStatMain,
+
+//on_sale 15 - 18
+//sold 19 - 22
+pub prices_as_artist: ProfilePriceStatMain,
+
+}
+
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+pub struct ProfilePriceStatMain
+{
+    pub on_sale: ProfilePriceStat,
+    pub sold: ProfilePriceStat
+}
+
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+pub struct ProfilePriceStat
+{
+    // найнижча ціна проданого токена
+    pub lowest_price: u128,
+    // найвища ціна проданого токена
+    pub highest_price: u128,
+    // ціна найновішого токену на продажі
+    pub newest_price: u128,
+    // сума всіх проданих
+    pub total_price: u128,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -442,6 +474,41 @@ impl ProfileStatCriterion{
 
     }
 
+    pub fn profile_price_stat_get_default() -> ProfilePriceStat
+    {
+        return ProfilePriceStat
+        {
+            lowest_price: 0,
+            highest_price: 0,
+            newest_price: 0,
+            total_price: 0
+        };
+    }
+
+    pub fn profile_stat_get_default() -> ProfileStat
+    {
+        return ProfileStat
+        {
+            likes_count:0,
+            tokens_likes_count: 0,
+            views_count: 0,
+            tokens_views_count: 0,
+            tokens_count: 0,
+            followers_count: 0,
+            tokens_count_as_artist: 0,
+            prices_as_artist: ProfilePriceStatMain
+            {
+                on_sale: ProfileStatCriterion::profile_price_stat_get_default(),
+                sold: ProfileStatCriterion::profile_price_stat_get_default()
+            },
+            prices_as_creator: ProfilePriceStatMain
+            {
+                on_sale: ProfileStatCriterion::profile_price_stat_get_default(),
+                sold: ProfileStatCriterion::profile_price_stat_get_default()
+            }
+        };
+    }
+
     //встановити значення параметру статистики
     pub fn set_profile_stat_val
     (
@@ -462,52 +529,40 @@ impl ProfileStatCriterion{
             }
             None => 
             {
-                stat = ProfileStat
-                {
-                    likes_count:0,
-                    tokens_likes_count: 0,
-                    views_count: 0,
-                    tokens_views_count: 0,
-                    tokens_count: 0,
-                    followers_count: 0
-                };
+                stat = ProfileStatCriterion::profile_stat_get_default();
             }
         }
             
-        let mut _criterion:u32=0;
-
         match parameter
         {
             //0 - кількість лайків аккаунту
             0=>{
                 
                 stat.likes_count=value;
-                _criterion=stat.likes_count;
             },
             //1 -кількість лайків токенів аккаунту
             1=>{
                 stat.tokens_likes_count = value;
-                _criterion=stat.tokens_likes_count;
             },
             //2 - загальна ксть переглядів аккаунту
             2=>{
                 stat.views_count=value;
-                _criterion=stat.views_count;
             },
             //3 - загальна ксть переглядів токенів аккаунту
             3=>{
                 stat.tokens_views_count=value;
-                _criterion=stat.tokens_views_count;
             },
             //4 - загальна ксть токенів
             4=>{
                 stat.tokens_count=value;
-                _criterion=stat.tokens_count;
             },
             // 5 - к-сть підписників автора
             5=>{
                 stat.followers_count=value;
-                _criterion=stat.followers_count;
+            },
+            // 6 -  к-сть токенів, де користувач - artist
+            6=>{
+                stat.tokens_count_as_artist=value;
             },
             _=>{}
         }
@@ -516,7 +571,7 @@ impl ProfileStatCriterion{
 
         let _sort_element=ProfileStatCriterion {
             account_id: user_id.to_string(),
-            criterion:Some(_criterion)
+            criterion:Some(value)
         };
 
         //якшо ще немає сортування для цього параметру
@@ -576,15 +631,7 @@ impl ProfileStatCriterion{
                 },
                 None => 
                 {
-                    stat = ProfileStat
-                    {
-                        likes_count:0,
-                        tokens_likes_count: 0,
-                        views_count: 0,
-                        tokens_views_count: 0,
-                        tokens_count: 0,
-                        followers_count: 0
-                    };
+                    stat = ProfileStatCriterion::profile_stat_get_default();
                 }
             }        
             
@@ -619,6 +666,10 @@ impl ProfileStatCriterion{
                 5=>{
                     _value=ProfileStatCriterion::__increment(stat.followers_count,increment,need_add);
                 },
+                // 6 - к-сть токенів, де користувач - artist
+                6=>{
+                    _value=ProfileStatCriterion::__increment(stat.tokens_count_as_artist,increment,need_add);
+                },
                 _=>{}
             }
 
@@ -643,14 +694,7 @@ impl ProfileStatCriterion{
         match profiles_global_stat.get(&user_id.clone()) {
             Some(mut _profile_stat) => {stat=_profile_stat}
             None => {
-                stat=ProfileStat{
-                    likes_count:0,
-                    tokens_likes_count: 0,
-                    views_count: 0,
-                    tokens_views_count: 0,
-                    tokens_count: 0,
-                    followers_count: 0
-                };
+                stat = ProfileStatCriterion::profile_stat_get_default();
             }
         }
 
@@ -660,21 +704,14 @@ impl ProfileStatCriterion{
     ///перевірити чи встановленні дефолтні значення статистистики для юзера
     pub fn profile_stat_check_for_default_stat(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
-        profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId)
+        profiles_global_stat_sorted_vector:  &mut LookupMap<u8, Vec<ProfileStatCriterion>>,
+        user_id: &AccountId)
         {
     
             //якшо по юзеру немає фільтрів
             if profiles_global_stat.get(&user_id.clone()).is_none() 
             {
-                let stat=ProfileStat{
-                    likes_count:0,
-                    tokens_likes_count: 0,
-                    views_count: 0,
-                    tokens_views_count: 0,
-                    tokens_count: 0,
-                    followers_count: 0
-                };
+                let stat = ProfileStatCriterion::profile_stat_get_default();
                 profiles_global_stat.insert(&user_id, &stat);
             }
 
@@ -684,6 +721,7 @@ impl ProfileStatCriterion{
             ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
             ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
             ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(6,user_id,profiles_global_stat_sorted_vector);
         }
 
 
@@ -692,11 +730,7 @@ impl ProfileStatCriterion{
             user_id:&AccountId,
             profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>)
         {
-        
-            let mut _vector
-            = profiles_global_stat_sorted_vector.get(&parameter);
-
-            match _vector
+            match profiles_global_stat_sorted_vector.get(&parameter)
             {
                 Some(mut _new_vector) =>
                 {

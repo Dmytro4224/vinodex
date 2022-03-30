@@ -21,6 +21,12 @@ impl Contract {
             panic!("You do not have permission for minting");
         }
 
+        if metadata.percentage_for_artist + metadata.percentage_for_creator + metadata.percentage_for_vinodex
+         != 100
+        {
+            panic!("Total price percentage must be equal to 100");
+        }
+
         let mut final_token_id = format!("{}", self.token_metadata_by_id.len() + 1);
         if let Some(token_id) = token_id {
             final_token_id = token_id
