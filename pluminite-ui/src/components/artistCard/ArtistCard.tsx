@@ -13,6 +13,8 @@ import React from 'react';
 import Skeleton from 'react-loading-skeleton';
 import LazyLoad, { forceVisible } from 'react-lazyload';
 import { nftStorage } from '../../api/NftStorage';
+import cover from '../../assets/images/user-profile-bg.jpg';
+import defaultImage from '../../assets/images/vine-def.png';
 
 interface IArtistCard extends IProps {
   info: IAuthorResponseItem;
@@ -34,6 +36,7 @@ export enum ArtistType {
   card = 'card',
   oneline = 'oneline',
   info = 'info',
+  big = 'big',
 }
 
 class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> {
@@ -290,6 +293,88 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     );
   }
 
+  private get coverImage() {
+    return cover;
+  }
+
+  private get image() {
+    return this.avatar || defaultAvatar;
+  }
+
+  private onErrorImage(type: string, target: any) {
+    switch (type) {
+      case 'cover':
+        target.src = cover;
+        break;
+      case 'logo':
+        target.src = defaultImage;
+        break;
+    }
+  }
+
+  private isBigType() {
+    return (
+      <div key={this.identification} className={`cardWrapBig`}>
+        <div
+          style={{ backgroundImage: `url(${this.coverImage})` }}
+          className={`cardWrapBig__coverImage`}
+        />
+
+        <div className={`cardWrapBig__imageWrap`}>
+          <img
+            onError={(e) => { this.onErrorImage('logo', e.target) }}
+            className={`cardWrapBig__image`} src={this.image} alt='img' />
+        </div>
+
+        <div className={`cardWrapBig__content`}>
+          <h4 className={`cardWrapBig__creatorName`}>{this.name}</h4>
+
+          <div className='my-3 d-flex align-items-center justify-content-center'>
+            <IdentificationCopy id={this.identification} />
+          </div>
+
+          <p className={`cardWrapBig__description`}>{(this.props.info?.bio?.length || 0) > 180 ? `${this.props.info?.bio?.slice(0, 180)}...` : this.props.info?.bio}</p>
+
+          <div className={`cardWrapBig__controls`}>
+            {!this.isMyUser ? (
+              <ButtonView
+                text={this.state.isFollow ? 'Unfollow' : 'Follow'}
+                onClick={this.btnFollowHandler}
+                color={buttonColors.goldFill}
+                customClass={`${styles.buttonFollow} min-w-100px`}
+              />
+            ) : <span />}
+
+            <div className={`d-flex align-items-center gap-15px ${this.isMyUser ? styles.pointerNone : ''}`}>
+              <LikeView
+                customClass={`cardWrapBig__userInfo`}
+                isChanged={false}
+                isActive={true}
+                type={LikeViewType.wine}
+                count={0}
+              />
+              <LikeView
+                customClass={`cardWrapBig__userInfo`}
+                isChanged={false}
+                isActive={true}
+                type={LikeViewType.user}
+                count={this.usersCount}
+              />
+              <LikeView
+                onClick={this.toggleLikeAccount}
+                customClass={`${styles.likes} ${styles.likesCustom}`}
+                isChanged={false}
+                isActive={true}
+                type={LikeViewType.like}
+                count={this.likesCount}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   private getRenderByType() {
     switch (this.type) {
       case ArtistType.card:
@@ -298,6 +383,8 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         return this.oneLineType();
       case ArtistType.info:
         return this.isInfoType();
+      case ArtistType.big:
+        return this.isBigType();
     }
   }
 
