@@ -44,7 +44,10 @@ pub struct TokenMetadata {
     //далі вказуємо відсотки, шо кому і скільки будемо ділити при продажу, 0-100
     pub percentage_for_creator : u8,
     pub percentage_for_artist : u8,
-    pub percentage_for_vinodex : u8
+    pub percentage_for_vinodex : u8,
+
+    //Додаткові фото токену, media - головна фотка
+    pub additional_photos: Vec<String>
 }
 
 pub trait NonFungibleTokenMetadata {
