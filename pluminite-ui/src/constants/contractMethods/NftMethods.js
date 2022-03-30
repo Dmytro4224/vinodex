@@ -11,7 +11,7 @@ const NftMethods = {
     'nft_tokens_catalogs',
     'nft_token_get',
     'sale_get',
-    'sale_history',
+    'sale_history_by_token',
     'token_owners_history',
     'authors_by_filter',
     'followed_authors_for_account',

@@ -26,7 +26,7 @@ export interface INftContractContext {
   view_artist_account: (account_id: string) => Promise<any>;
   nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => Promise<Array<any>>;
   my_purchases: (catalog: string | null, page_index: number, page_size: number, account_id: string) => Promise<any>;
-  sale_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
+  sale_history_by_token: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
@@ -70,8 +70,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public sale_history = (token_id: string, page_index: number, page_size: number) => {
-    return this.props.nftContract.sale_history({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
+  public sale_history_by_token = (token_id: string, page_index: number, page_size: number) => {
+    return this.props.nftContract.sale_history_by_token({ token_id, page_index, page_size, asked_account_id: this.myAccountId });
   };
 
   public token_owners_history = (token_id: string, page_index: number, page_size: number) => {
@@ -248,7 +248,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_tokens_catalogs: this.nft_tokens_catalogs,
       nft_token_get: this.nft_token_get,
       sale_get: this.sale_get,
-      sale_history: this.sale_history,
+      sale_history_by_token: this.sale_history_by_token,
       token_owners_history: this.token_owners_history,
       authors_by_filter: this.authors_by_filter,
       followed_authors_for_account: this.followed_authors_for_account,

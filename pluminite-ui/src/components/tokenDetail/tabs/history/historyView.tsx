@@ -90,8 +90,7 @@ class HistoryView extends Component<IHistoryView & IBaseComponentProps>{
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.sale_history(this.tokenId, 1, 100).then(response => {
-
+    this.props.nftContractContext.sale_history_by_token(this.tokenId, 1, 100).then(response => {
       this.setState({...this.state, items: response, isLoading: false });
     });
   }
