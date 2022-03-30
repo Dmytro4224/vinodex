@@ -1,5 +1,10 @@
 use crate::*;
 
+#[path = "../helpers/converters.rs"]
+mod converters;
+
+use converters::Converter;
+
 //Структура зберігання історію продажу токенів
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -8,8 +13,12 @@ pub struct SaleHistory {
     pub account_from: AccountId,
     //reciever of token
     pub account_to: AccountId,
+    //token identifier
+    pub token_id: TokenId,
     //sale price in yoctoNEAR that the token is listed for
     pub price: U128,
+    // fixed/auction
+    pub sale_type: u8,
     /// utc timestamp
     pub date: u128
 }
@@ -21,8 +30,12 @@ pub struct SaleHistoryJson {
     pub account_from: Option<JsonProfile>,
     //reciever of token
     pub account_to: Option<JsonProfile>,
+    //token object
+    pub token: Option<JsonToken>,
     //sale price in yoctoNEAR that the token is listed for
     pub price: U128,
+    // fixed/auction
+    pub sale_type: u8,
     /// utc timestamp
     pub date: u128
 }
@@ -595,33 +608,31 @@ impl Contract {
             payout
         );
 
+        self.sales_history.push(&SaleHistory
+        {
+            account_from: owner_id.clone(),
+            account_to: buyer_id.clone(),
+            token_id: token_id.clone(),
+            sale_type: sale.sale_type,
+            date: time,
+            price: U128(price)
+        });
+
+        let index = self.sales_history.len();
+
         match self.sales_history_by_token_id.get(&token_id)
         {
             Some(mut history) =>
             {
-                history.push(SaleHistory
-                {
-                    account_from: owner_id.clone(),
-                    account_to: buyer_id.clone(),
-                    date: time,
-                    price: U128(price),
-
-                });
+                history.push(index);
 
                 self.sales_history_by_token_id.insert(&token_id, &history);
             },
             None =>
             {
-                let mut history : Vec<SaleHistory> = Vec::new();
+                let mut history : Vec<u64> = Vec::new();
 
-                history.push(SaleHistory
-                {
-                    account_from: owner_id.clone(),
-                    account_to: buyer_id.clone(),
-                    date: time,
-                    price: U128(price),
-
-                });
+                history.push(index);
     
                 self.sales_history_by_token_id.insert(&token_id, &history);
             }
@@ -631,27 +642,15 @@ impl Contract {
         {
             Some(mut sales) =>
             {
-                sales.push(MySaleHistory
-                {
-                    account: buyer_id.clone(),
-                    token_id: token_id.clone(),
-                    date: time,
-                    price: U128(price),
-                });
+                sales.push(index);
 
                 self.my_sales.insert(&owner_id, &sales);
             },
             None =>
             {
-                let mut sales : Vec<MySaleHistory> = Vec::new();
+                let mut sales : Vec<u64> = Vec::new();
 
-                sales.push(MySaleHistory
-                {
-                    account: buyer_id.clone(),
-                    token_id: token_id.clone(),
-                    date: time,
-                    price: U128(price),
-                });
+                sales.push(index);
     
                 self.my_sales.insert(&owner_id, &sales);
             }
@@ -661,27 +660,15 @@ impl Contract {
         {
             Some(mut purchases) =>
             {
-                purchases.push(MySaleHistory
-                {
-                    account: owner_id.clone(),
-                    token_id: token_id.clone(),
-                    date: time,
-                    price: U128(price),
-                });
+                purchases.push(index);
 
                 self.my_purchases.insert(&buyer_id, &purchases);
             },
             None =>
             {
-                let mut purchases : Vec<MySaleHistory> = Vec::new();
+                let mut purchases : Vec<u64> = Vec::new();
 
-                purchases.push(MySaleHistory
-                {
-                    account: owner_id.clone(),
-                    token_id: token_id.clone(),
-                    date: time,
-                    price: U128(price),
-                });
+                purchases.push(index);
     
                 self.my_purchases.insert(&buyer_id, &purchases);
             }
@@ -739,5 +726,467 @@ impl Contract {
         //return the price payout out
         price
     }
-}
 
+    ///історія покупок токенів користувачем
+    pub fn my_purchases(
+        &self,
+        // каталог або null|none
+        catalog: Option<String>,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        account_id:AccountId
+    ) ->Vec<MySaleHistoryJson> 
+    {
+        let token_ids : HashSet<String>;
+
+        let mut skip = 0;
+        if page_index > 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        if catalog.is_some()
+        {
+            let tokens = self.tokens_per_type.get(&catalog.unwrap());
+            if tokens.is_none()
+            {
+                return Vec::new();
+            }
+            
+            token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
+        }
+        else
+        {
+            token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+        }
+
+        let mut available_amount = token_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        let mut result : Vec<MySaleHistoryJson> = Vec::new();
+
+        let limit = available_amount as usize;
+        let mut stop = false;
+
+        match self.my_purchases.get(&account_id)
+        {
+            Some(my_purchases) =>
+            {
+                while result.len() < limit && !stop
+                {
+                    let _index = skip as usize;
+                    let item_index = my_purchases.get(_index);
+
+                    match item_index
+                    {
+                        Some(item_index) =>
+                        {
+                            let item = self.sales_history.get(*item_index).unwrap();
+
+                            if token_ids.contains(&item.token_id)
+                            {
+                                result.push(MySaleHistoryJson
+                                {
+                                    price: item.price,
+                                    date: item.date,
+                                    account: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account_from,
+                                        &Some(account_id.clone()),
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        &self.tokens_per_owner,
+                                        true
+                                    ),
+                                    token: self.nft_token_for_account
+                                    (
+                                        &item.token_id,
+                                        Some(account_id.clone())
+                                    )
+                                });
+                            }
+                        },
+                        None =>
+                        {
+                            stop = true;
+                        }
+                    }
+
+                    skip = skip + 1;
+                }
+            },
+            None => {}
+        }
+
+        return result;
+    }
+
+    ///історія продажу токенів користувачем
+    pub fn my_sales(
+        &self,
+        // каталог або null|none
+        catalog: Option<String>,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        account_id:AccountId
+    ) ->Vec<MySaleHistoryJson> 
+    {
+        let token_ids : HashSet<String>;
+
+        let mut skip = 0;
+        if page_index > 1
+        {
+            skip = (page_index - 1) * page_size;
+        }
+
+        if catalog.is_some()
+        {
+            let tokens = self.tokens_per_type.get(&catalog.unwrap());
+            if tokens.is_none()
+            {
+                return Vec::new();
+            }
+
+            token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
+        }
+        else
+        {
+            token_ids = Converter::vec_string_to_hash_set(&self.nft_tokens_keys(Some(U128::from(0)), Some(self.token_metadata_by_id.len())));
+        }
+
+        let mut available_amount = token_ids.len() as i64 - skip as i64;
+
+        if available_amount <= 0
+        {
+            return Vec::new();
+        }
+
+        if available_amount > page_size as i64
+        {
+            available_amount = page_size as i64;
+        }
+       
+        let mut result : Vec<MySaleHistoryJson> = Vec::new();
+
+        let limit = available_amount as usize;
+        let mut stop = false;
+
+        match self.my_sales.get(&account_id)
+        {
+            Some(my_sales) =>
+            {
+                while result.len() < limit && !stop
+                {
+                    let _index = skip as usize;
+                    let item_index = my_sales.get(_index);
+
+                    match item_index
+                    {
+                        Some(item_index) =>
+                        {
+                            let item = self.sales_history.get(*item_index).unwrap();
+
+                            if token_ids.contains(&item.token_id)
+                            {
+                                result.push(MySaleHistoryJson
+                                {
+                                    price: item.price,
+                                    date: item.date,
+                                    account: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account_to,
+                                        &Some(account_id.clone()),
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        &self.tokens_per_owner,
+                                        true
+                                    ),
+                                    token: self.nft_token_for_account
+                                    (
+                                        &item.token_id,
+                                        Some(account_id.clone())
+                                    )
+                                });
+                            }
+                        },
+                        None =>
+                        {
+                            stop = true;
+                        }
+                    }
+
+                    skip = skip + 1;
+                }
+            },
+            None => {}
+        }
+
+        return result;
+    }
+
+    //Історія продажів по конкретному токену
+    pub fn sale_history_by_token(&self, 
+        token_id: TokenId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id:Option<AccountId>) -> Vec<SaleHistoryJson>
+    {
+        match self.sales_history_by_token_id.get(&token_id)
+        {
+            Some(history) =>
+            {
+                if history.len() == 0
+                {
+                    return Vec::new();
+                }
+
+                let mut start_index : i64 = 0;
+
+                if page_index > 1
+                {
+                    start_index = (page_index as i64 - 1) * page_size as i64;
+                }
+
+                let history_len = history.len() as i64;
+                if start_index >= history_len
+                {
+                    return Vec::new();
+                }
+
+                let mut end_index = start_index + page_size as i64;
+                if end_index > history_len
+                {
+                    end_index = history_len;
+                }
+
+                let mut result : Vec<SaleHistoryJson> = Vec::new();
+
+                for i in start_index..end_index
+                {
+                    let _index = i as usize;
+
+                    match history.get(_index)
+                    {
+                        Some(item_index) =>
+                        {
+                            let item = self.sales_history.get(*item_index).unwrap();
+
+                            result.push(SaleHistoryJson
+                                {
+                                    account_from: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account_from,
+                                        &asked_account_id,
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        &self.tokens_per_owner,
+                                        true
+                                    ),
+                                    account_to: Profile::get_full_profile(
+                                        &self.profiles,
+                                        &item.account_to,
+                                        &asked_account_id,
+                                        &self.autors_likes,
+                                        &self.autors_followers,
+                                        &self.tokens_per_owner,
+                                        true
+                                    ),
+                                    price: item.price,
+                                    sale_type: item.sale_type,
+                                    token: self.nft_token_for_account(&item.token_id, asked_account_id.clone()),
+                                    date: item.date
+                                });
+                        },
+                        None =>
+                        {
+                            break;
+                        }
+                    }
+                }
+
+                return result;
+            },
+            None =>
+            {
+                return Vec::new();
+            }
+        }
+    }
+
+
+    //Історія продажів
+    pub fn sale_history(&self, 
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id: Option<AccountId>) -> Vec<SaleHistoryJson>
+    {
+        let mut result : Vec<SaleHistoryJson> = Vec::new();
+
+        let mut start_index = self.sales_history.len() as i64 - ((page_index - 1) * page_size) as i64 - 1;
+
+        if start_index < 0
+        {
+            return result;
+        }
+
+        while result.len() < page_size as usize
+        {
+            match self.sales_history.get(start_index as u64)
+            {
+                Some(item) =>
+                {
+                    result.push(SaleHistoryJson
+                    {
+                        account_from: Profile::get_full_profile(
+                            &self.profiles,
+                            &item.account_from,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers,
+                            &self.tokens_per_owner,
+                            true
+                        ),
+                        account_to: Profile::get_full_profile(
+                            &self.profiles,
+                            &item.account_to,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers,
+                            &self.tokens_per_owner,
+                            true
+                        ),
+                        price: item.price,
+                        sale_type: item.sale_type,
+                        token: self.nft_token_for_account(&item.token_id, asked_account_id.clone()),
+                        date: item.date
+                    });
+
+                    start_index -= 1;
+                },
+                None =>
+                {
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    pub fn token_owners_history(&self, 
+        token_id: TokenId,
+        //пагінація
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id:Option<AccountId>) -> Vec<JsonProfile>
+    {
+        let mut result : Vec<JsonProfile> = Vec::new();
+
+        if page_index <= 1
+        {
+            match self.creator_per_token.get(&token_id)
+            {
+                Some(creator) =>
+                {
+                    let res = Profile::get_full_profile(
+                        &self.profiles,
+                        &creator,
+                        &asked_account_id,
+                        &self.autors_likes,
+                        &self.autors_followers,
+                        &self.tokens_per_owner,
+                        true
+                    );
+
+                    if res.is_some()
+                    {
+                        result.push(res.unwrap());
+                    }
+                },
+                None => {}
+            }
+        }
+
+        match self.sales_history_by_token_id.get(&token_id)
+        {
+            Some(history) =>
+            {
+                if history.len() == 0
+                {
+                    return result;
+                }
+
+                let mut start_index : i64 = 0;
+
+                if page_index > 1
+                {
+                    start_index = (page_index as i64 - 1) * page_size as i64;
+                    if start_index > 0
+                    {
+                        start_index = start_index - 1;
+                    }
+                }
+
+                let history_len = history.len() as u64;
+                if start_index >= history_len as i64
+                {
+                    return result;
+                }
+
+                let mut i = start_index as u64;
+
+                while result.len() < page_size as usize
+                    && i < history_len
+                {
+                    let _index = i as usize;
+
+                    match history.get(_index)
+                    {
+                        Some(item_index) =>
+                        {
+                            let item = self.sales_history.get(*item_index).unwrap();
+
+                            result.push(Profile::get_full_profile(
+                                &self.profiles,
+                                &item.account_to,
+                                &asked_account_id,
+                                &self.autors_likes,
+                                &self.autors_followers,
+                                &self.tokens_per_owner,
+                                true
+                            ).unwrap());
+                        },
+                        None =>
+                        {
+                            break;
+                        }
+                    }
+
+                    i = i + 1;
+                }
+
+                return result;
+            },
+            None => {}
+        }
+            
+        return result;
+    }
+}

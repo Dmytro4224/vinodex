@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
+use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet, Vector};
 use near_sdk::json_types::{Base64VecU8, ValidAccountId, U128, U64};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
@@ -192,34 +192,37 @@ pub struct Contract {
     //Токени, виставлені на продаж
     pub sales_active: UnorderedMap<TokenId, Sale>,
 
-    //Історія продажу токенів
-    pub sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
-
     //Токени які продаються на аукціоні, і по ним користувач зробив ставку
     pub my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
 
+    //Історія продажу токенів
+    pub sales_history_by_token_id: LookupMap<TokenId, Vec<u64>>,
+
     //Історія продажів користувача
-    pub my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
+    pub my_sales: LookupMap<AccountId, Vec<u64>>,
 
     //Історія покупок користувача
-    pub my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+    pub my_purchases: LookupMap<AccountId, Vec<u64>>,
+
+    //Зберігається історія продажів,
+    //решта словників історії продажів зберігає індекси цього масиву
+    pub sales_history: Vector<SaleHistory>,
 
     //================sales==========================//
 
-
-
     //================collections--------------------//
-
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
     pub collection_per_token: LookupMap<TokenId, String>,
     pub collections: UnorderedMap<String, Collection>,
+    pub collection_likes: LookupMap<String, UnorderedSet<AccountId>>,
+    pub collection_views: LookupMap<String, UnorderedSet<AccountId>>,
 
     //================collections--------------------//
 
     //email підписки
     pub email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
 
-    pub minting_account_ids: UnorderedSet<AccountId>
+    pub minting_account_ids: UnorderedSet<AccountId>,
 }
 
 // Helper structure to for keys of the persistent collections.
@@ -261,8 +264,11 @@ pub enum StorageKey {
     CollectionPerToken,
     Collection,
     CollectionOfTokensSet { collection_id_hash: CryptoHash },
+    CollectionLikes,
+    CollectionViews,
     MintingAccountIds { account_id_hash: CryptoHash },
-    EmailSubscriptions
+    EmailSubscriptions,
+    SalesHistory,
 }
 
 #[near_bindgen]
@@ -320,10 +326,11 @@ impl Contract {
             my_tokens_likes: LookupMap::new(StorageKey::MyTokensLikes.try_to_vec().unwrap()),
             my_tokens_followed: LookupMap::new(StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
             sales_active: UnorderedMap::new(StorageKey::SalesActive.try_to_vec().unwrap()),
+            storage_deposits: LookupMap::new(StorageKey::StorageDeposit.try_to_vec().unwrap()),
             sales_history_by_token_id: LookupMap::new(
                 StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap(),
             ),
-            storage_deposits: LookupMap::new(StorageKey::StorageDeposit.try_to_vec().unwrap()),
+            sales_history: Vector::new(StorageKey::SalesHistory.try_to_vec().unwrap()),
             my_sales: LookupMap::new(StorageKey::MySales.try_to_vec().unwrap()),
             my_purchases: LookupMap::new(StorageKey::MyPurchases.try_to_vec().unwrap()),
             my_bids_active: LookupMap::new(StorageKey::MyBidsActive.try_to_vec().unwrap()),
@@ -332,14 +339,18 @@ impl Contract {
                 StorageKey::CollectionPerToken.try_to_vec().unwrap(),
             ),
             collections: UnorderedMap::new(StorageKey::Collection.try_to_vec().unwrap()),
+            collection_likes: LookupMap::new(StorageKey::CollectionLikes.try_to_vec().unwrap()),
+            collection_views: LookupMap::new(StorageKey::CollectionViews.try_to_vec().unwrap()),
             minting_account_ids: UnorderedSet::new(
                 StorageKey::MintingAccountIds {
                     account_id_hash: hash_account_id(&owner_id.into()),
                 }
-                    .try_to_vec()
-                    .unwrap(),
+                .try_to_vec()
+                .unwrap(),
             ),
-            email_subscriptions: UnorderedMap::new(StorageKey::EmailSubscriptions.try_to_vec().unwrap()),
+            email_subscriptions: UnorderedMap::new(
+                StorageKey::EmailSubscriptions.try_to_vec().unwrap(),
+            ),
         };
 
         if unlocked.is_none() {
@@ -391,18 +402,21 @@ impl Contract {
             my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
             my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
             my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
-            sales_active: UnorderedMap<TokenId, Sale>,
-            sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
             storage_deposits: LookupMap<AccountId, Balance>,
-            my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
-            my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+            sales_history: Vector<SaleHistory>,
+            sales_active: UnorderedMap<TokenId, Sale>,
+            sales_history_by_token_id: LookupMap<TokenId, Vec<u64>>,
+            my_sales: LookupMap<AccountId, Vec<u64>>,
+            my_purchases: LookupMap<AccountId, Vec<u64>>,
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
             creator_per_token: LookupMap<TokenId, AccountId>,
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
             collection_per_token: LookupMap<TokenId, String>,
             collections: UnorderedMap<String, Collection>,
+            collection_likes: LookupMap<String, UnorderedSet<AccountId>>,
+            collection_views: LookupMap<String, UnorderedSet<AccountId>>,
             minting_account_ids: UnorderedSet<AccountId>,
-            email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>
+            email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -437,8 +451,9 @@ impl Contract {
             my_tokens_likes: old_contract.my_tokens_likes,
             my_tokens_followed: old_contract.my_tokens_followed,
             sales_active: old_contract.sales_active,
-            sales_history_by_token_id: old_contract.sales_history_by_token_id,
             storage_deposits: old_contract.storage_deposits,
+            sales_history: old_contract.sales_history,
+            sales_history_by_token_id: old_contract.sales_history_by_token_id,
             my_sales: old_contract.my_sales,
             my_purchases: old_contract.my_purchases,
             my_bids_active: old_contract.my_bids_active,
@@ -446,8 +461,10 @@ impl Contract {
             collection_tokens: old_contract.collection_tokens,
             collection_per_token: old_contract.collection_per_token,
             collections: old_contract.collections,
+            collection_likes: old_contract.collection_likes,
+            collection_views: old_contract.collection_views,
             minting_account_ids: old_contract.minting_account_ids,
-            email_subscriptions: old_contract.email_subscriptions
+            email_subscriptions: old_contract.email_subscriptions,
         }
     }
 
