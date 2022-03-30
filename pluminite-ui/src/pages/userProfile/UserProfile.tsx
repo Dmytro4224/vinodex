@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
+import coverDff from '../../assets/images/user-profile-bg.jpg';
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
 import { IdentificationCopy } from '../../components/common/identificationCopy/IdentificationCopy';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
@@ -29,6 +30,7 @@ interface IUpdateStateUserInfo {
   email: string;
   bio: string;
   image?: string;
+  cover_image?: string;
 }
 
 interface IUpdateUser {
@@ -37,6 +39,7 @@ interface IUpdateUser {
   bio: string;
   accountId: string;
   image: string;
+  cover_image: string;
 }
 
 class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
@@ -48,6 +51,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   public state = {
     isLoadAvatar: false,
     image: avatarDefault,
+    cover_image: coverDff,
     activeTab: this.activeTabFromUrl,
     catalog: 'Art',
     sort: 7,
@@ -124,6 +128,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
         email: this.state.profile.email,
         bio: this.state.profile.bio,
         image: src,
+        cover_image: '',
         accountId: this.getUserId,
       });
     } else {
@@ -134,9 +139,11 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     }
   };
 
-  private callUpdateUser({ name, email, bio, accountId, image }: IUpdateUser) {
+  private callUpdateUser({ name, email, bio, accountId, image, cover_image }: IUpdateUser) {
+    const imgDef = (this.state.image?.length || 0) > 255 ? '' : this.state.image;
+
     return this.props.nftContractContext.set_profile({
-      profile: { name, email, bio, accountId, image: image || this.state.image },
+      profile: { name, email, bio, accountId, image: image || imgDef, cover_image: cover_image },
     });
   }
 

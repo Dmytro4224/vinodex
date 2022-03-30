@@ -14,13 +14,15 @@ export const NftContractContext = React.createContext<INftContractContext>(initi
 export interface INftContractContext {
   nftContract: INftContract | null;
   getProfile: (account_id: string) => Promise<IProfile>;
-  set_profile: ({ profile: { bio, name, image, email, accountId } }) => Promise<IProfile>;
+  set_profile: ({ profile: { bio, name, image, email, accountId, cover_image } }) => Promise<IProfile>;
   sale_create: (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => Promise<any>;
   sale_offer: (token_id: string, time: any, offer?: string, price?: string) => Promise<any>;
   sale_remove: (token_id: string) => Promise<any>;
   sale_set_is_closed: (token_id: string, is_closed: boolean) => Promise<any>;
   sale_auction_init_transfer: (token_id: string, time: number, price?: string) => Promise<any>;
   like_artist_account: (account_id: string) => Promise<any>;
+  minting_accounts_add: (account_id: string) => Promise<any>;
+  minting_accounts_remove: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
@@ -150,12 +152,13 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public set_profile = async ({ profile: { name, bio, image, email, accountId } }) => {
+  public set_profile = async ({ profile: { name, bio, image, email, accountId, cover_image } }) => {
     return this.nftContract.set_profile({
       profile: {
         bio: bio,
         name: name,
         image: image,
+        cover_image: cover_image,
         email: email,
         account_id: accountId,
       },
@@ -183,6 +186,18 @@ export class NftContractContextProvider extends Component<INftContractContextPro
 
   public like_artist_account = async (accountId: string) => {
     return this.nftContract.like_artist_account({
+      account_id: accountId,
+    });
+  };
+
+  public minting_accounts_add = async (accountId: string) => {
+    return this.nftContract.minting_accounts_add({
+      account_id: accountId,
+    });
+  };
+
+  public minting_accounts_remove = async (accountId: string) => {
+    return this.nftContract.minting_accounts_remove({
       account_id: accountId,
     });
   };
@@ -257,6 +272,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       collection_add: this.collection_add,
       nft_collections: this.nft_collections,
       like_artist_account: this.like_artist_account,
+      minting_accounts_add: this.minting_accounts_add,
+      minting_accounts_remove: this.minting_accounts_remove,
       token_set_like: this.token_set_like,
       sale_create: this.sale_create,
       sale_offer: this.sale_offer,

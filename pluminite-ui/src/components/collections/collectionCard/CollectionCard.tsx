@@ -168,7 +168,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
 
             <div className={`cardWrapBig__content`}>
               <h4 className={`cardWrapBig__collectionName`}>{this.collectionName}</h4>
-              <p className={`cardWrapBig__description`}>{this.props.data?.description?.length || 0 > 180 ? `${this.props.data?.description?.slice(0, 180)}...` : this.props.data?.description}</p>
+              <p className={`cardWrapBig__description`}>{(this.props.data?.description?.length || 0) > 180 ? `${this.props.data?.description?.slice(0, 180)}...` : this.props.data?.description}</p>
 
               <div className={`cardWrapBig__controls`}>
                 <ButtonView

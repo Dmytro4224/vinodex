@@ -731,6 +731,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             text={'SUBMIT'}
             onClick={this.submit}
             color={buttonColors.goldFill}
+            customClass={'min-w-100px'}
           />
         </div>
       </div>
@@ -875,13 +876,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       views_count: 0,
       style: this._refInputStyle.value,
       year: this.state.year,
-      botle_size: this._refInputBottleSize.selectedOption?.value,
+      bottle_size: this._refInputBottleSize.selectedOption?.value,
       characteristics: this._refInputCharacteristics.value,
       specification: this._refInputSpecification.value,
       artist: this.props.near.user?.accountId,
       percentage_for_creator: this.state.range.creator,
       percentage_for_artist : this.state.range.artist,
-      percentage_for_vinodex : this.state.range.vinodex
+      percentage_for_vinodex : this.state.range.vinodex,
+      brand: '',
+      additional_photos: []
     };
 
     if (this.isMultiple) {

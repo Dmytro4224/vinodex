@@ -85,7 +85,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
     return this.props.profile;
   }
 
-  private updateUserInfo(profile: { name: string, email: string, bio: string, image: string, accountId: string }) {
+  private updateUserInfo(profile: { name: string, email: string, bio: string, image: string, accountId: string, cover_image: string }) {
     return this.props.updateUserInfo && this.props.updateUserInfo(profile);
   }
 
@@ -164,7 +164,8 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
       email: result.profile.email,
       bio: result.profile.bio,
       accountId: result.profile.accountId,
-      image: ''
+      image: '',
+      cover_image: '',
     }).then(res => {
       showToast({
         message: `Data saved successfully.`,
@@ -183,6 +184,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
         email: result.profile.email,
         bio: result.profile.bio,
         image: '',
+        cover_image: '',
       });
     }).catch(error => {
       this.setState({

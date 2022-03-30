@@ -24,6 +24,8 @@ const NftMethods = {
     'nft_approve',
     'nft_mint',
     'set_profile',
+    'minting_accounts_add',
+    'minting_accounts_remove',
     'sale_create',
     'sale_offer',
     'sale_remove',

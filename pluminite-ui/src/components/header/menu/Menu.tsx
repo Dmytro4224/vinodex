@@ -101,7 +101,7 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
                   <div className="d-flex align-items-center mt-2">
                     <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.avatar} width="40" height="40" src={this.avatar} alt="avatar" />
                     <div>
-                      <p className={styles.name}>{this.name}</p>
+                      <p className={`ellipsis ${styles.name}`}>{this.name}</p>
                       <p className={styles.accountId}>{this.accountId || ''}</p>
                     </div>
                   </div>

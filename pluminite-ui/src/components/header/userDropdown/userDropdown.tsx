@@ -89,7 +89,7 @@ class UserDropdown extends Component<IUserDropdown & IBaseComponentProps>{
           <div ref={this._menuRef} className="w-100 d-flex align-items-center justify-content-center flex-column p-2">
             <div className="d-flex align-items-center justify-content-center flex-column">
               <img ref={this._refAvatar} onError={() => { changeAvatarRefSrc(this._refAvatar) }} className={styles.avatar} width="72" height="72" src={this.avatar} alt="avatar" />
-              <p className={styles.profileName}>{this.name}</p>
+              <p className={`ellipsis ${styles.profileName}`}>{this.name}</p>
               <IdentificationCopy idCustomClass={styles.idTextStyle} id={this.accountId} />
             </div>
 

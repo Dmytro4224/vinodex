@@ -63,6 +63,7 @@
 .avatar {
   margin-bottom: 10px;
   border-radius: 100%;
+  object-fit: cover;
 }
 
 .idTextStyle {
@@ -99,4 +100,5 @@
 
 .userAvatar {
   border-radius: 100%;
+  object-fit: cover;
 }
