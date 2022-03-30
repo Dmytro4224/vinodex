@@ -154,23 +154,23 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
         )
       case CollectionType.big:
         return (
-          <div key={this.key} className={`${styles.cardWrapBig}`}>
+          <div key={this.key} className={`cardWrapBig`}>
             <div
               style={{ backgroundImage: `url(${this.coverImage})` }}
-              className={styles.coverImage}
+              className={`cardWrapBig__coverImage`}
             />
 
-            <div className={styles.imageWrap}>
+            <div className={`cardWrapBig__imageWrap`}>
               <img
                 onError={(e) => { this.onErrorImage('logo', e.target) }}
-                className={styles.image} src={this.image} alt='img' />
+                className={`cardWrapBig__image`} src={this.image} alt='img' />
             </div>
 
-            <div className={styles.content}>
-              <h4 className={styles.collectionName}>{this.collectionName}</h4>
-              <p className={styles.description}>{this.props.data?.description?.slice(0, 180) || ''}...</p>
+            <div className={`cardWrapBig__content`}>
+              <h4 className={`cardWrapBig__collectionName`}>{this.collectionName}</h4>
+              <p className={`cardWrapBig__description`}>{this.props.data?.description?.length || 0 > 180 ? `${this.props.data?.description?.slice(0, 180)}...` : this.props.data?.description}</p>
 
-              <div className={styles.controls}>
+              <div className={`cardWrapBig__controls`}>
                 <ButtonView
                   text={'explore the collection'}
                   onClick={() => {}}
