@@ -1,5 +1,5 @@
 use near_sdk::borsh::{self, BorshDeserialize, BorshSerialize};
-use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet};
+use near_sdk::collections::{LazyOption, LookupMap, UnorderedMap, UnorderedSet, Vector};
 use near_sdk::json_types::{Base64VecU8, ValidAccountId, U128, U64};
 use near_sdk::serde::{Deserialize, Serialize};
 use near_sdk::{
@@ -192,17 +192,23 @@ pub struct Contract {
     //Токени, виставлені на продаж
     pub sales_active: UnorderedMap<TokenId, Sale>,
 
-    //Історія продажу токенів
-    pub sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
-
     //Токени які продаються на аукціоні, і по ним користувач зробив ставку
     pub my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
 
+
+    //Історія продажу токенів
+    pub sales_history_by_token_id: LookupMap<TokenId, Vec<u64>>,
+
     //Історія продажів користувача
-    pub my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
+    pub my_sales: LookupMap<AccountId, Vec<u64>>,
 
     //Історія покупок користувача
-    pub my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+    pub my_purchases: LookupMap<AccountId, Vec<u64>>,
+
+
+    //Зберігається історія продажів, 
+    //решта словників історії продажів зберігає індекси цього масиву
+    pub sales_history: Vector<SaleHistory>,
 
     //================sales==========================//
 
@@ -262,7 +268,8 @@ pub enum StorageKey {
     Collection,
     CollectionOfTokensSet { collection_id_hash: CryptoHash },
     MintingAccountIds { account_id_hash: CryptoHash },
-    EmailSubscriptions
+    EmailSubscriptions,
+    SalesHistory
 }
 
 #[near_bindgen]
@@ -320,10 +327,11 @@ impl Contract {
             my_tokens_likes: LookupMap::new(StorageKey::MyTokensLikes.try_to_vec().unwrap()),
             my_tokens_followed: LookupMap::new(StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
             sales_active: UnorderedMap::new(StorageKey::SalesActive.try_to_vec().unwrap()),
+            storage_deposits: LookupMap::new(StorageKey::StorageDeposit.try_to_vec().unwrap()),
             sales_history_by_token_id: LookupMap::new(
                 StorageKey::SalesHistoryByTokenId.try_to_vec().unwrap(),
             ),
-            storage_deposits: LookupMap::new(StorageKey::StorageDeposit.try_to_vec().unwrap()),
+            sales_history: Vector::new(StorageKey::SalesHistory.try_to_vec().unwrap()),
             my_sales: LookupMap::new(StorageKey::MySales.try_to_vec().unwrap()),
             my_purchases: LookupMap::new(StorageKey::MyPurchases.try_to_vec().unwrap()),
             my_bids_active: LookupMap::new(StorageKey::MyBidsActive.try_to_vec().unwrap()),
@@ -391,11 +399,12 @@ impl Contract {
             my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
             my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
             my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
-            sales_active: UnorderedMap<TokenId, Sale>,
-            sales_history_by_token_id: LookupMap<TokenId, Vec<SaleHistory>>,
             storage_deposits: LookupMap<AccountId, Balance>,
-            my_sales: LookupMap<AccountId, Vec<MySaleHistory>>,
-            my_purchases: LookupMap<AccountId, Vec<MySaleHistory>>,
+            sales_history: Vector<SaleHistory>,
+            sales_active: UnorderedMap<TokenId, Sale>,
+            sales_history_by_token_id: LookupMap<TokenId, Vec<u64>>,
+            my_sales: LookupMap<AccountId, Vec<u64>>,
+            my_purchases: LookupMap<AccountId, Vec<u64>>,
             my_bids_active: LookupMap<AccountId, UnorderedSet<TokenId>>,
             creator_per_token: LookupMap<TokenId, AccountId>,
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
@@ -437,8 +446,9 @@ impl Contract {
             my_tokens_likes: old_contract.my_tokens_likes,
             my_tokens_followed: old_contract.my_tokens_followed,
             sales_active: old_contract.sales_active,
-            sales_history_by_token_id: old_contract.sales_history_by_token_id,
             storage_deposits: old_contract.storage_deposits,
+            sales_history: old_contract.sales_history,
+            sales_history_by_token_id: old_contract.sales_history_by_token_id,
             my_sales: old_contract.my_sales,
             my_purchases: old_contract.my_purchases,
             my_bids_active: old_contract.my_bids_active,
