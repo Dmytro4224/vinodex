@@ -30,8 +30,12 @@ pub struct SaleHistoryJson {
     pub account_from: Option<JsonProfile>,
     //reciever of token
     pub account_to: Option<JsonProfile>,
+    //token object
+    pub token: Option<JsonToken>,
     //sale price in yoctoNEAR that the token is listed for
     pub price: U128,
+    // fixed/auction
+    pub sale_type: u8,
     /// utc timestamp
     pub date: u128
 }
@@ -723,9 +727,6 @@ impl Contract {
         price
     }
 
-
-
-
     ///історія покупок токенів користувачем
     pub fn my_purchases(
         &self,
@@ -753,7 +754,7 @@ impl Contract {
             {
                 return Vec::new();
             }
-
+            
             token_ids = Converter::vec_string_to_hash_set(&tokens.unwrap().to_vec());
         }
         else
@@ -936,7 +937,8 @@ impl Contract {
         return result;
     }
 
-    pub fn sale_history(&self, 
+    //Історія продажів по конкретному токену
+    pub fn sale_history_by_token(&self, 
         token_id: TokenId,
         //пагінація
         page_index: u64,
@@ -1005,6 +1007,8 @@ impl Contract {
                                         true
                                     ),
                                     price: item.price,
+                                    sale_type: item.sale_type,
+                                    token: self.nft_token_for_account(&item.token_id, asked_account_id.clone()),
                                     date: item.date
                                 });
                         },
@@ -1022,6 +1026,67 @@ impl Contract {
                 return Vec::new();
             }
         }
+    }
+
+
+    //Історія продажів
+    pub fn sale_history(&self, 
+        page_index: u64,
+        //ксть елементів на сторінкі
+        page_size: u64,
+        asked_account_id: Option<AccountId>) -> Vec<SaleHistoryJson>
+    {
+        let mut result : Vec<SaleHistoryJson> = Vec::new();
+
+        let mut start_index = self.sales_history.len() as i64 - ((page_index - 1) * page_size) as i64 - 1;
+
+        if start_index < 0
+        {
+            return result;
+        }
+
+        while result.len() < page_size as usize
+        {
+            match self.sales_history.get(start_index as u64)
+            {
+                Some(item) =>
+                {
+                    result.push(SaleHistoryJson
+                    {
+                        account_from: Profile::get_full_profile(
+                            &self.profiles,
+                            &item.account_from,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers,
+                            &self.tokens_per_owner,
+                            true
+                        ),
+                        account_to: Profile::get_full_profile(
+                            &self.profiles,
+                            &item.account_to,
+                            &asked_account_id,
+                            &self.autors_likes,
+                            &self.autors_followers,
+                            &self.tokens_per_owner,
+                            true
+                        ),
+                        price: item.price,
+                        sale_type: item.sale_type,
+                        token: self.nft_token_for_account(&item.token_id, asked_account_id.clone()),
+                        date: item.date
+                    });
+
+                    start_index -= 1;
+                },
+                None =>
+                {
+                    break;
+                }
+            }
+        }
+
+        return result;
     }
 
     pub fn token_owners_history(&self, 
