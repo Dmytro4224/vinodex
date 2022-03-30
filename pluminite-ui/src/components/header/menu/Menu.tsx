@@ -147,9 +147,9 @@ class Menu extends Component<IMenu & IBaseComponentProps> {
                   </li>
                 </ul>
 
-                <p className="line-separator" />
+                <p className="line-separator mb-2" />
 
-                <CreateTokenDropdownView onNavigated={() => { this.toggleMenu() }} />
+                <CreateTokenDropdownView customBtnClass={'mt-2 w-100'} onNavigated={() => { this.toggleMenu() }} />
 
                 <ButtonView
                   text={'Disconnect'}

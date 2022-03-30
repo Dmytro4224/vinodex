@@ -8,6 +8,7 @@ import {IBaseComponentProps, IProps, withComponent } from '../../utils/withCompo
 
 interface ICreateTokenDropdownView extends IProps {
   onNavigated?: () => void;
+  customBtnClass?: string;
 }
 
 class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBaseComponentProps>{
@@ -35,7 +36,7 @@ class CreateTokenDropdownView extends Component<ICreateTokenDropdownView & IBase
         text={'CREATE'}
         onClick={() => { this.createAction(false); }}
         color={buttonColors.goldFill}
-        customClass={`ml-10px min-w-100px`}
+        customClass={`min-w-100px ${this.props.customBtnClass || ''}`}
       />
 
       // <Dropdown className={styles.dropWrap}>

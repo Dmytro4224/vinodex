@@ -96,7 +96,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
 
               <LoginButton user={this.state.profile} />
 
-              {this.props.near.isAuth && <CreateTokenDropdownView />}
+              {this.props.near.isAuth && <CreateTokenDropdownView customBtnClass={'ml-10px'} />}
             </div>
           </MediaQuery>
 
