@@ -17,6 +17,7 @@ import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import Footer from '../footer/Footer';
 import CatalogTokens from '../../pages/catalogTokens/CatalogTokens';
 import CollectionsPage from '../../pages/collections/Collections';
+import CollectionDetailPage from '../../pages/collectionDetail/CollectionDetailPage';
 
 interface IApp extends IProps {
 
@@ -53,6 +54,7 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="/" element={<Home />} />
             <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
             <Route path="/collections/" element={<CollectionsPage />} />
+            <Route path="/collections/:id" element={<CollectionDetailPage />} />
             <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />
             <Route path="/token/:tokenId" element={<OrderDetail />} />
             <Route path="/tokens/:type" element={<CatalogTokens />} />
