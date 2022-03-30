@@ -6,7 +6,7 @@ import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 import Skeleton from 'react-loading-skeleton';
 import { NavLink } from 'react-router-dom';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
-import collectionCover from '../../assets/images/collection-cover.jpg';
+import collectionCover from '../../assets/images/collection-head-bg.jpg';
 import defaultImage from '../../assets/images/vine-def.png';
 import { Tab, Tabs } from 'react-bootstrap';
 
