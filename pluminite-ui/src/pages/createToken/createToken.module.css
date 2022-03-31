@@ -306,3 +306,12 @@
     flex-direction: column;
   }
 }
+
+.errorWrap{
+
+}
+.errorWrap p{
+  margin: 6px 0 0 14px;
+  font-weight: 500;
+  font-size: 12px;
+}
