@@ -26,6 +26,7 @@ export interface IAuthorResponseItem {
   bio: string;
   email: string;
   image: string;
+  cover_image?: string;
   name: string;
   account_id: string
   likes_count: number

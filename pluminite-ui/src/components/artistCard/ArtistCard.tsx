@@ -294,7 +294,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get coverImage() {
-    return cover;
+    return this.props.info?.cover_image || cover;
   }
 
   private get image() {
