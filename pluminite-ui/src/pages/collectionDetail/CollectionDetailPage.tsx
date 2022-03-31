@@ -9,6 +9,8 @@ import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import collectionCover from '../../assets/images/collection-head-bg.jpg';
 import defaultImage from '../../assets/images/vine-def.png';
 import { Tab, Tabs } from 'react-bootstrap';
+import TokenCardView from '../../components/tokenCard/tokenCardView';
+import { mediaUrl } from '../../utils/sys';
 
 interface ICollectionDetailPage extends IProps { }
 interface ICollectionDetailPageState {
@@ -48,7 +50,8 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
       this.setState({
         ...this.state,
         isLoading: false,
-        collectionData: res
+        collectionData: res,
+        tokens: res.tokens
       })
     })
   }
@@ -80,7 +83,55 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     }
   }
 
+  private getTabData(type?: string) {
+    let tokens = this.state.tokens;
+
+    if (type === 'sale') {
+      tokens = tokens.filter(token => token.sale !== null)
+    }
+
+    return (
+      this.state.isLoading ? (
+          <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px'>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+          </div>
+        ) : !tokens.length ? (
+          <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
+            <EmptyListView />
+          </div>
+        ) : (
+          <div className={`${styles.listWrap}`}>
+            {tokens.map(item => (
+              <TokenCardView
+                key={`catalog-token-${item.token_id}`}
+                model={item}
+                countL={1}
+                countR={1}
+                days={item.metadata.expires_at}
+                name={item.metadata.title}
+                author={item.owner_id}
+                likesCount={item.metadata.likes_count}
+                icon={mediaUrl(item.metadata)}
+                isSmall={true}
+                buttonText={`Place a bid`}
+                linkTo={`/token/${item.token_id}`}
+                tokenID={item.token_id}
+                isLike={item.is_like}
+                onClick={() => {}}
+                isForceVisible={true}
+              />
+            ))}
+          </div>
+        )
+    )
+  }
+
   public render() {
+    const saleTokens = [];
+
     return (
       <div>
         <div className={styles.header}>
@@ -132,40 +183,10 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
             className='mb-3 justify-content-center tab-custom'
           >
             <Tab eventKey='items' title='Items'>
-              {this.state.isLoading ? (
-                <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px'>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                </div>
-              ) : !this.state.tokens.length ? (
-                <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
-                  <EmptyListView />
-                </div>
-              ) : (
-                <div className={`${styles.listWrap}`}>
-
-                </div>
-              )}
+              {this.getTabData()}
             </Tab>
             <Tab eventKey='sale' title='On sale'>
-              {this.state.isLoading ? (
-                <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px'>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                  <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-                </div>
-              ) : !this.state.tokens.length ? (
-                <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
-                  <EmptyListView />
-                </div>
-              ) : (
-                <div className={`${styles.listWrap}`}>
-
-                </div>
-              )}
+              {this.getTabData('sale')}
             </Tab>
           </Tabs>
         </div>
