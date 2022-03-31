@@ -1,0 +1,15 @@
+
+.wrapper {
+  display: block;
+  width: 320px;
+  height: 4px;
+  margin: 0 auto;
+  background: rgba(174, 126, 3, 0.2);
+  border-radius: 2px;
+}
+.current {
+  width: 0px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--pirateCold);
+}

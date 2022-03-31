@@ -3,20 +3,22 @@ import {Modal} from "react-bootstrap";
 import {IBaseComponentProps, IProps, withComponent } from "../../../utils/withComponent";
 import styles from './modalSample.module.css';
 
-interface IModalSample extends IProps{
+interface IModalSample extends IProps {
   modalTitle: string
   children: any;
   isShow: boolean;
   onHide: () => void;
-  size: ModalSampleSizeType;
+  size?: ModalSampleSizeType;
   buttons?: any;
   customClass?: string;
+  hasCloseButton?: boolean;
+  alignButtons?: 'right' | 'center' | 'left';
 }
 
 enum ModalSampleSizeType {
-  xl = "xl",
-  lg = "lg",
-  sm = "sm",
+    xl = "xl",
+    lg = "lg",
+    sm = "sm"
 }
 
 class ModalSample extends Component<IModalSample & IBaseComponentProps> {
@@ -48,7 +50,21 @@ class ModalSample extends Component<IModalSample & IBaseComponentProps> {
     return this.props.size;
   }
 
-  render() {
+  private get hasCloseButton() {
+    return this.props.hasCloseButton !== void 0 ? this.props.hasCloseButton : true;
+  }
+
+  private get alignButtonsClassName() {
+    if (this.props.alignButtons === 'center') {
+      return 'justify-content-center';
+    }
+    if (this.props.alignButtons === 'left') {
+      return 'justify-content-start';
+    }
+    return 'justify-content-end';
+  }
+
+  public render() {
     return (
       <Modal
         show={this.isShow}
@@ -58,7 +74,7 @@ class ModalSample extends Component<IModalSample & IBaseComponentProps> {
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
-        <Modal.Header closeButton className={styles.borderNone}>
+        <Modal.Header closeButton={this.hasCloseButton} className={styles.borderNone}>
           <Modal.Title className={styles.modalTitle}>
             { this.modalTitle }
           </Modal.Title>
@@ -66,7 +82,7 @@ class ModalSample extends Component<IModalSample & IBaseComponentProps> {
         <Modal.Body>
           { this.children }
         </Modal.Body>
-        <Modal.Footer className={styles.borderNone}>
+        <Modal.Footer className={`${styles.borderNone} ${this.alignButtonsClassName}`}>
           { this.buttons }
         </Modal.Footer>
       </Modal>

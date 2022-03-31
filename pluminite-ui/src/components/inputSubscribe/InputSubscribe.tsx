@@ -5,14 +5,28 @@ import styles from './inputSubscribe.module.css';
 import sendIcon from '../../assets/icons/send-icon.svg';
 import { isValidEmail } from "../../utils/sys";
 import { Spinner } from "react-bootstrap";
+import ModalProcessing, { IModalProcessing } from '../modals/modalProcessing/ModalProcessing';
+import ModalComplete from '../modals/modalComplete/ModalComplete';
 
 interface ISubscribe extends IProps { }
 
-class InputSubscribe extends Component<ISubscribe & IBaseComponentProps> {
+interface IInputSubscibeState {
+  isLoading: boolean;
+  isProcessing: boolean;
+  isComplete: boolean;
+  isEmailValid: boolean;
+  value: string;
+}
+
+class InputSubscribe extends Component<ISubscribe & IBaseComponentProps, IInputSubscibeState> {
   private _refInputEmail: any;
+
+  private _modalProcessing?: IModalProcessing;
 
   state = {
     isLoading: false,
+    isProcessing: false,
+    isComplete: false,
     isEmailValid: true,
     value: ''
   }
@@ -38,21 +52,40 @@ class InputSubscribe extends Component<ISubscribe & IBaseComponentProps> {
       ...this.state,
       value: this._refInputEmail.value.trim(),
       isLoading: true,
+      isProcessing: true,
       isEmailValid: true,
-    })
+    });
 
-    const sendingT = setTimeout(() => {
-      this.setState({
-        ...this.state,
-        value: '',
-        isLoading: false,
-      })
-    }, 3000);
+    setTimeout(_ => {
+      if (this._modalProcessing !== void 0) {
+        this._modalProcessing.progressBar?.run();
+      }
+    }, 10);
   }
 
-  render() {
+  public stopModalProgress = async () => {
+    this.setState({
+      ...this.state,
+      value: '',
+      isLoading: true,
+      isProcessing: false,
+      isComplete: true
+    });
+  }
+
+  private stopModalComplete = async () => {
+    this.setState({
+      ...this.state,
+      value: '',
+      isLoading: false,
+      isComplete: false,
+      isProcessing: false
+    });
+  }
+
+  public render() {
     return (
-      <div className={`disabled d-flex align-center w-100 ${styles.subscrWrap}`}>
+      <div className={`d-flex align-center w-100 ${styles.subscrWrap}`}>
         <InputView
           onChange={(e) => { }}
           placeholder={'Info@yourgmail.com'}
@@ -76,9 +109,22 @@ class InputSubscribe extends Component<ISubscribe & IBaseComponentProps> {
               aria-hidden="true"
             />
           ) : (
-            <img src={sendIcon} alt="send" />
-          )}
+              <img src={sendIcon} alt="send" />
+            )}
         </button>
+        {this.state.isProcessing &&
+          <ModalProcessing
+            setRef={impl => this._modalProcessing = impl}
+            inShowModal={true}
+            onComplete={this.stopModalProgress}
+          />
+        }
+        {this.state.isComplete &&
+          <ModalComplete
+            inShowModal={true}
+            onHideModal={this.stopModalComplete}
+          />
+        }
       </div>
     )
   }
