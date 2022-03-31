@@ -4,9 +4,3 @@
   gap: 30px;
   padding: 70px;
 }
-
-.tokenWrap .lazyload-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
