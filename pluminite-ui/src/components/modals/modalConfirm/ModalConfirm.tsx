@@ -15,8 +15,8 @@ interface IModalConfirmState {
   isLoading: boolean;
 }
 
-class ModalConfirm extends Component<IModalConfirm & IBaseComponentProps> {
-  public state: IModalConfirmState = {
+class ModalConfirm extends Component<IModalConfirm & IBaseComponentProps, IModalConfirmState> {
+  public state = {
     isLoading: false
   };
 
