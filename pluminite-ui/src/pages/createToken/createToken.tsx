@@ -288,7 +288,16 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   }
 
   private setAuthor = (e) => {
+    let tr = e.target.value.replace('.testnet', '');
+    tr = tr.replace(/^ +| +$|( ) +/g,"$1");
 
+    if(tr !== ''){
+      e.target.value = `${tr}.testnet`;
+      let l = e.target.value.length - 8;
+      e.target.setSelectionRange(l, l);
+    }else{
+      e.target.value = ``;
+    }
   }
 
   public render() {
