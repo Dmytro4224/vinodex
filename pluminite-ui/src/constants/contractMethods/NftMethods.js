@@ -19,6 +19,7 @@ const NftMethods = {
     'nft_supply_for_creator',
     'is_free_mint_available',
     'nft_collections',
+    'collection_get',
   ],
   changeMethods: [
     'nft_approve',

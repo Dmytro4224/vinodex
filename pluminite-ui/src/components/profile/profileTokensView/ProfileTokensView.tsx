@@ -232,7 +232,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         {!this.state.list.length ? (
           <EmptyListView />
         ) : (
-          <div className={`d-flex flex-gap-36 pb-4 ${styles.scrollWrap}`}>
+          <div className={`d-flex justify-content-between gap-20 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
               let typeView = TokensType.created;
 
