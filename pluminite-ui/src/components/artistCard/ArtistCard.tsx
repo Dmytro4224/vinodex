@@ -191,13 +191,13 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         className={`${styles.artistCard} ${this.props.customClass || ''}`}
       >
         <div className={styles.artistWrap}>
-          <NavLink to={`/userProfile/${this.identification}`}>
+          <NavLink to={`/artists/${this.identification}`}>
             <img ref={this._refAvatar} onError={() => {
               changeAvatarRefSrc(this._refAvatar);
             }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           </NavLink>
           <div>
-            <NavLink to={`/userProfile/${this.identification}`}>
+            <NavLink to={`/artists/${this.identification}`}>
               <p className={styles.artistName}>{this.name}</p>
             </NavLink>
             <IdentificationCopy id={this.identification} />
@@ -242,7 +242,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             changeAvatarRefSrc(this._refAvatar);
           }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           <div>
-            <NavLink to={`/userProfile/${this.identification}`}>
+            <NavLink to={`/artists/${this.identification}`}>
               <p className={styles.artistName}>{this.name}</p>
             </NavLink>
             <IdentificationCopy id={this.identification} />
@@ -284,7 +284,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
           />
           <div>
             <p className={styles.infoTitle}>{this.title || 'Creator'}</p>
-            <NavLink to={`/userProfile/${this.identification}`}>
+            <NavLink to={`/artists/${this.identification}`}>
               <p className={styles.artistName}>{this.name}</p>
             </NavLink>
           </div>
@@ -315,25 +315,31 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private isBigType() {
     return (
       <div key={this.identification} className={`cardWrapBig`}>
-        <div
-          style={{ backgroundImage: `url(${this.coverImage})` }}
-          className={`cardWrapBig__coverImage`}
-        />
+        <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+          <div
+            style={{ backgroundImage: `url(${this.coverImage})` }}
+            className={`cardWrapBig__coverImage`}
+          />
 
-        <div className={`cardWrapBig__imageWrap`}>
-          <img
-            onError={(e) => { this.onErrorImage('logo', e.target) }}
-            className={`cardWrapBig__image`} src={this.image} alt='img' />
-        </div>
+          <div className={`cardWrapBig__imageWrap`}>
+            <img
+              onError={(e) => { this.onErrorImage('logo', e.target) }}
+              className={`cardWrapBig__image`} src={this.image} alt='img' />
+          </div>
+        </NavLink>
 
         <div className={`cardWrapBig__content`}>
-          <h4 className={`cardWrapBig__creatorName`}>{this.name}</h4>
+          <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+            <h4 className={`cardWrapBig__creatorName`}>{this.name}</h4>
+          </NavLink>
 
           <div className='my-3 d-flex align-items-center justify-content-center'>
             <IdentificationCopy id={this.identification} />
           </div>
 
-          <p className={`cardWrapBig__description`}>{(this.props.info?.bio?.length || 0) > 180 ? `${this.props.info?.bio?.slice(0, 180)}...` : this.props.info?.bio}</p>
+          <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+            <p className={`cardWrapBig__description`}>{(this.props.info?.bio?.length || 0) > 180 ? `${this.props.info?.bio?.slice(0, 180)}...` : this.props.info?.bio}</p>
+          </NavLink>
 
           <div className={`cardWrapBig__controls`}>
             {!this.isMyUser ? (
