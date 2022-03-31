@@ -748,21 +748,11 @@ impl Contract {
         }
     }
 
-    //словник авторів
-    pub fn authors_by_storage_para(&self,parameter: u8)->Vec<ProfileStatCriterion>{
-        return self.profiles_global_stat_sorted_vector.get(&parameter).unwrap();
-    }
-
-    pub fn authors_clear(&mut self)
-    {
-        self.profiles_global_stat_sorted_vector = LookupMap::new (StorageKey::ProfilesGlobalStatSortedVector.try_to_vec().unwrap());
-    }
-
     //списки авторів
     pub fn authors_by_filter(
         &self,
         //по чому сортувати
-        parameter: u8, 
+        parameter: ProfileStatCriterionEnum, 
        // true = asc
        is_reverse: bool, 
         //пагінація

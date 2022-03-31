@@ -13,8 +13,8 @@ impl Contract {
         receiver_id: Option<ValidAccountId>,
         token_type: Option<TokenType>,
         sale: Option<Sale>
-    ) {
-
+    ) 
+    {
         let mut owner_id = env::predecessor_account_id();
         if !self.minting_account_ids.contains(&owner_id)
         {
@@ -159,17 +159,20 @@ impl Contract {
         }
 
         //=
-        ProfileStatCriterion::profile_stat_check_for_default_stat(
-             &mut self.profiles_global_stat,
-            &mut self.profiles_global_stat_sorted_vector,
-            &owner_id);
+        // ProfileStatCriterion::profile_stat_check_for_default_stat(
+        //      &mut self.profiles_global_stat,
+        //     &mut self.profiles_global_stat_sorted_vector,
+        //     &owner_id);
         //=======================================================
 
         //додати запис до profiles_by_tokens_count для статистики
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &owner_id,4,1,true);
+            &owner_id,
+            ProfileStatCriterionEnum::TokensCount,
+            1,
+            true);
         //=======================================================
     }
 
@@ -184,60 +187,4 @@ impl Contract {
     {
         self.minting_account_ids.remove(&account_id);
     }
-
-    // pub fn tokens_fix(&mut self)
-    // {
-    //     //Оновлення словників фільтрів
-    //     for i in 1..9
-    //     {
-    //         let final_token_id = String::from("3");
-    //         let metadata = self.token_metadata_by_id.get(&final_token_id).unwrap();
-
-    //         let criterion :Option<u128>;
-
-    //         match i
-    //         {
-    //             1 => criterion = metadata.starts_at,
-    //             2 => criterion =  metadata.issued_at,
-    //             3 => criterion = metadata.sold_at,
-    //             4 => criterion = metadata.expires_at,
-    //             5 => criterion = Some(metadata.price),
-    //             7 => criterion = Some(0),
-    //             8 => criterion = Some(0),
-    //             _ => criterion = None
-    //         }
-
-    //         let key = SortedToken{token_id: final_token_id.clone(), criterion: criterion};
-
-    //         match self.tokens_sorted.get(&i) {
-    //             Some(mut tokens) => {
-
-    //                 if criterion.is_none()
-    //                 {
-    //                     tokens.push(key);
-    //                     self.tokens_sorted.insert(&i, &tokens);
-    //                     continue;
-    //                 }
-
-    //                 let index = SortedToken::binary_search(&key, &tokens);
-    //                 if index.is_none()
-    //                 {
-    //                     tokens.push(key);
-    //                     self.tokens_sorted.insert(&i, &tokens);
-    //                     continue;
-    //                 }
-
-    //                 tokens.insert(index.unwrap(), key);
-    //                 self.tokens_sorted.insert(&i, &tokens);
-    //             }
-    //             None => {
-    //                 let mut vector :Vec<SortedToken> = Vec::new();
-    //                 vector.push(key);
-
-    //                 self.tokens_sorted.insert(&i, &vector);
-    //                 continue;
-    //             }
-    //         }
-    //     }
-    // }
 }
