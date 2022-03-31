@@ -14,8 +14,8 @@ interface ICollectionCard extends IProps {
   data?: ICollectionResponseItem;
   changeRenderType?: (type: RenderType, data?: ICollectionResponseItem | null) => void;
   isPreview?: boolean;
-  key?: string;
   type?: CollectionType;
+  key?: string | number;
 }
 
 export enum CollectionType {
@@ -67,7 +67,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
   }
 
   private get key() {
-    return this.props.key || new Date().getTime();
+    return this.props?.key || this.props.data?.collection_id || new Date().getTime();
   }
 
   private onErrorImage(type: string, target: any) {
@@ -173,7 +173,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
               <div className={`cardWrapBig__controls`}>
                 <ButtonView
                   text={'explore the collection'}
-                  onClick={() => { this.props.navigate('/collections/123') }}
+                  onClick={() => { this.props.navigate(`/collections/${this.props.data?.collection_id}`) }}
                   color={buttonColors.goldFill}
                   customClass={``}
                 />
@@ -184,14 +184,14 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
                     isChanged={false}
                     isActive={true}
                     type={LikeViewType.wine}
-                    count={0}
+                    count={this.props.data?.tokens_count || 0}
                   />
                   <LikeView
                     customClass={styles.userInfo}
                     isChanged={false}
                     isActive={true}
                     type={LikeViewType.user}
-                    count={0}
+                    count={this.props.data?.views_count || 0}
                   />
                   <LikeView
                     onClick={() => {}}
@@ -199,7 +199,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
                     customClass={styles.likes}
                     isActive={true}
                     type={LikeViewType.like}
-                    count={0}
+                    count={this.props.data?.likes_count || 0}
                   />
                 </div>
               </div>

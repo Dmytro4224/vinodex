@@ -110,7 +110,6 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
 
         {this.state.collections.map(data => (
           <CollectionCard
-            key={uid()}
             data={data}
             changeRenderType={(type: RenderType, data?: ICollectionResponseItem | null) => this.changeRenderType(type, data)}
           />
