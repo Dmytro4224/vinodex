@@ -355,25 +355,30 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           <div ref={this._refCoverFileWrap} className={'mt-5'} hidden>
             <label className={styles.label}>Upload cover</label>
             <div className={styles.dropzone}>
-              <Dropzone accept='image/*' onDrop={this.setSelectCoverFile} ref={this._refCoverFile} noClick noKeyboard>
+              <Dropzone accept='image/*' onDrop={this.setSelectCoverFile} ref={this._refCoverFile}  noKeyboard>
                 {({ getRootProps, getInputProps, acceptedFiles }) => {
                   return (
                     <div>
                       <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
-                          {acceptedFiles.length > 0 ?
+                          {acceptedFiles.length > 0 || this._fileCoverResponse != undefined ?
                             <img ref={this._refCoverImg} src={''} /> :
                             <><p className={styles.dropzoneTitle}>PNG, GIF. Max 100mb</p>
                               <ButtonView
                                 text={'Upload file'}
                                 onClick={() => {
-                                  this.openCoverDialog();
+                                  /*this.openCoverDialog();*/
                                 }}
                                 color={buttonColors.goldFill}
                                 customClass={styles.button} /></>
                           }
-
+                          <div className={`${styles.dropzoneHover} ${acceptedFiles.length > 0 || this._fileCoverResponse != undefined ? styles.dropzoneHoverShow : ''}`}>
+                            <div className="d-flex flex-column align-items-center justify-content-center">
+                              <img src={editImageIcon} alt=""/>
+                              <p className={styles.hoverText}>Change picture</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
