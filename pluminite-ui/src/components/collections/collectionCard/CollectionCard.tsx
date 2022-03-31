@@ -9,6 +9,8 @@ import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
 import ModalSample, { ModalSampleSizeType } from '../../common/modalSample/ModalSample';
 import LikeView, { LikeViewType } from '../../like/likeView';
+import { showToast } from '../../../utils/sys';
+import { EShowTost } from '../../../types/ISysTypes';
 
 interface ICollectionCard extends IProps {
   data?: ICollectionResponseItem;
@@ -24,12 +26,18 @@ export enum CollectionType {
 }
 
 class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
+  private _isProcessLike: boolean;
+
   public state = {
-    isShowModalPreview: false
+    isShowModalPreview: false,
+    isLike: this.props.data?.is_liked,
+    likesCount: 0
   }
 
   constructor(props: ICollectionCard & IBaseComponentProps) {
     super(props);
+
+    this._isProcessLike = false;
   }
 
   private changeRenderType(type: RenderType, data?: ICollectionResponseItem) {
@@ -83,6 +91,44 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
 
   private get isMyCollection() {
     return this.props.data?.owner?.account_id === this.props.near.user?.accountId;
+  }
+
+  public changeLikeCount() {
+    this.setState({
+      ...this.state,
+      isLike: !this.state.isLike,
+      likesCount: !this.state.isLike ? this.state.likesCount + 1 : this.state.likesCount - 1,
+    });
+  }
+
+  private toggleLikeCollection = async () => {
+    if (!this.props.near.isAuth) {
+      this.props.near.signIn();
+      return;
+    }
+
+    try {
+      if (this._isProcessLike) {
+        return;
+      }
+
+      this._isProcessLike = true;
+
+      this.changeLikeCount();
+
+      await this.props.nftContractContext.collection_set_like(this.props.data?.collection_id!);
+
+      this._isProcessLike = false;
+    } catch (ex) {
+      this._isProcessLike = false;
+
+      this.changeLikeCount();
+
+      showToast({
+        message: `Error! Please try again later`,
+        type: EShowTost.error,
+      });
+    }
   }
 
   private getCardByType() {
@@ -194,8 +240,8 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
                     count={this.props.data?.views_count || 0}
                   />
                   <LikeView
-                    onClick={() => {}}
-                    isChanged={false}
+                    onClick={this.toggleLikeCollection}
+                    isChanged={this.state.isLike || false}
                     customClass={styles.likes}
                     isActive={true}
                     type={LikeViewType.like}
