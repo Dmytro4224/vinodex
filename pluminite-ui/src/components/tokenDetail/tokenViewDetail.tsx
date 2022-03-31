@@ -108,7 +108,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
-    if (this.state.order !== null && !this.state.order?.is_viewed) {
+    if (this.state.order !== null && !this.state.order?.is_viewed && this.props.near.isAuth) {
       this.props.nftContractContext.token_set_view(this.state.order?.token_id!);
     }
 
@@ -620,7 +620,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <h3 className={styles.tokenTitle}>{this.state.order?.metadata.title}</h3>
               {/*<p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>*/}
 
-              <div className={`d-flex align-items-center justify-content-between w-100`}>
+              <div className={`d-flex align-items-center justify-content-between w-100 mt-3`}>
                 <p className={`fz-18`}>Available items: <strong>1/1</strong></p>
 
                 <div className={`d-flex align-items-center gap-15px`}>
