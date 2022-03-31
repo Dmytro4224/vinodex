@@ -39,6 +39,8 @@ const NftMethods = {
     'token_set_like',
     'collection_add',
     'collection_update',
+    'collection_token_add',
+    'collection_token_remove',
   ],
 };
 
