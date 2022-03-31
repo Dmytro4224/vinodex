@@ -207,6 +207,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.autors_views,
                                 &self.tokens_per_owner,
                                 true
                             )
@@ -231,6 +232,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.autors_views,
                                 &self.tokens_per_owner,
                                 true
                             )
@@ -579,6 +581,18 @@ impl Contract {
                         self.my_bids_active.insert(&buyer_id, &bids);
                     }
                 }
+
+                let creator = self.creator_per_token.get(&token_id).unwrap();
+                let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
+
+                ProfileStatCriterion::profile_stat_price_check_and_change(
+                    &mut self.profiles_global_stat, 
+                    &mut self.profiles_global_stat_sorted_vector,
+                    &creator,
+                    &artist,
+                    price,
+                    false
+                )
             },
             _ =>
             {
@@ -834,6 +848,7 @@ impl Contract {
                                         &Some(account_id.clone()),
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.autors_views,
                                         &self.tokens_per_owner,
                                         true
                                     ),
@@ -939,6 +954,7 @@ impl Contract {
                                         &Some(account_id.clone()),
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.autors_views,
                                         &self.tokens_per_owner,
                                         true
                                     ),
@@ -1022,6 +1038,7 @@ impl Contract {
                                         &asked_account_id,
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.autors_views,
                                         &self.tokens_per_owner,
                                         true
                                     ),
@@ -1031,6 +1048,7 @@ impl Contract {
                                         &asked_account_id,
                                         &self.autors_likes,
                                         &self.autors_followers,
+                                        &self.autors_views,
                                         &self.tokens_per_owner,
                                         true
                                     ),
@@ -1087,6 +1105,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.autors_views,
                             &self.tokens_per_owner,
                             true
                         ),
@@ -1096,6 +1115,7 @@ impl Contract {
                             &asked_account_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.autors_views,
                             &self.tokens_per_owner,
                             true
                         ),
@@ -1139,6 +1159,7 @@ impl Contract {
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.autors_views,
                         &self.tokens_per_owner,
                         true
                     );
@@ -1197,6 +1218,7 @@ impl Contract {
                                 &asked_account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.autors_views,
                                 &self.tokens_per_owner,
                                 true
                             ).unwrap());
