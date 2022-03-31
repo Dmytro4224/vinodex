@@ -28,9 +28,10 @@ export interface IAuthorResponseItem {
   image: string;
   cover_image?: string;
   name: string;
-  account_id: string
-  likes_count: number
-  is_like: boolean
-  is_following: boolean
-  followers_count: number
+  account_id: string;
+  likes_count: number;
+  is_like: boolean;
+  is_following: boolean;
+  followers_count: number;
+  items_count?: number;
 }
