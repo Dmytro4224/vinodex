@@ -614,7 +614,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             </div>
             <div className={styles.tokenInfo}>
               <h3 className={styles.tokenTitle}>{this.state.order?.metadata.title}</h3>
-              <p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>
+              {/*<p className={'mt-2 mb-1 fz-15'}>Collection: <strong>{this.state.order?.token_type}</strong></p>*/}
 
               <div className={`d-flex align-items-center justify-content-between w-100`}>
                 <p className={`fz-18`}>Available items: <strong>1/1</strong></p>
@@ -625,7 +625,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                       customClass={styles.likes}
                       isActive={true}
                       type={LikeViewType.eye}
-                      count={0}
+                      count={this.state.order?.metadata?.views_count || 0}
                       isChanged={false}
                     />
                   </div>
@@ -700,7 +700,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                       <li>
                         <p>Volume (cl)</p>
                         <p className={styles.infoLine} />
-                        <p>{this.state.order?.metadata.botle_size || 0}cl</p>
+                        <p>{this.state.order?.metadata.bottle_size || 0}cl</p>
                       </li>
                       <li>
                         <p>Style</p>

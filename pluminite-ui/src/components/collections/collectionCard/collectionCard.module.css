@@ -186,10 +186,6 @@
 }
 
 @media (max-width: 500px) {
-  .cardWrap {
-    min-width: 310px;
-  }
-
   .cardWrapBig .collectionName {
     font-size: 28px;
   }

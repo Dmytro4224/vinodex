@@ -375,8 +375,8 @@ impl NonFungibleTokenCore for Contract {
                 approved_account_ids: token.approved_account_ids,
                 token_type: token.token_type,
                 is_like:_is_like,
-                sale : self.sale_get(&token_id, account_id, false),
-                collection: self.collection_get_by_token(&token_id)
+                sale : self.sale_get(&token_id, account_id.clone(), false),
+                collection: self.collection_get_by_token(&token_id, &account_id)
             })
         } else {
             None

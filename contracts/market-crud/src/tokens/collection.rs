@@ -32,6 +32,21 @@ pub struct CollectionJson {
     pub tokens_count: u64
 }
 
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct CollectionJsonWithoutTokens {
+    pub name: String,
+    pub description: String,
+    pub profile_photo: String,
+    pub cover_photo: String,
+    pub is_active: bool,
+    pub owner: Option<JsonProfile>,
+    pub collection_id: String,
+    pub likes_count: u64,
+    pub views_count: u64,
+    pub tokens_count: u64
+}
+
 #[near_bindgen]
 impl Contract {
     //Створити нову колекцію
@@ -185,15 +200,34 @@ impl Contract {
             .collect();
     }
 
-    pub fn collection_get_by_token(&self, token_id: &TokenId) -> Option<Collection> {
+    pub fn collection_get_by_token(&self, token_id: &TokenId, account_id: &Option<AccountId>) -> Option<CollectionJsonWithoutTokens> 
+    {
         match self.collection_per_token.get(&token_id) {
             Some(collection_id) => {
-                return self.collections.get(&collection_id);
+                match self.collection_get(&collection_id, account_id, false)
+                {
+                    Some(collection) =>
+                    {
+                        return Some(CollectionJsonWithoutTokens {
+                            collection_id: collection_id.clone(),
+                            name: collection.name,
+                            description: collection.description,
+                            profile_photo: collection.profile_photo,
+                            cover_photo: collection.cover_photo,
+                            is_active: collection.is_active,
+                            owner: collection.owner,
+                            likes_count: collection.likes_count,
+                            views_count: collection.views_count,
+                            tokens_count: collection.tokens_count
+                        });
+                    },
+                    None => {}
+                }
             }
-            None => {
-                return None;
-            }
+            None => {}
         }
+
+        return None;
     }
 
     #[payable]

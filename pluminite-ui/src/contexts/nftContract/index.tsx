@@ -38,8 +38,11 @@ export interface INftContractContext {
   nft_mint: (data: any) => Promise<any>;
   collection_add: (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => Promise<any>;
   collection_update: (collection_id: string, name?: string, description?: string, profile_photo?: string, cover_photo?: string) => Promise<any>;
+  collection_token_add: (collection_id: string, token_id: string) => Promise<any>;
+  collection_token_remove: (token_id: string) => Promise<any>;
   nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => Promise<any>;
   collection_get: (collection_id: string, account_id: string | null, with_tokens: boolean) => Promise<any>;
+  profile_get_stat: (account_id: string) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -187,12 +190,31 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public collection_token_add = async (collection_id: string, token_id: string) => {
+    return this.nftContract.collection_token_add({
+      collection_id,
+      token_id,
+    });
+  };
+
+  public collection_token_remove = async (token_id: string) => {
+    return this.nftContract.collection_token_remove({
+      token_id,
+    });
+  };
+
   public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => {
     return this.nftContract.nft_collections({
       page_index,
       page_size,
       account_id,
       with_tokens,
+    });
+  };
+
+  public profile_get_stat = async (account_id: string) => {
+    return this.nftContract.profile_get_stat({
+      account_id
     });
   };
 
@@ -291,8 +313,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       set_profile: this.set_profile,
       collection_add: this.collection_add,
       collection_update: this.collection_update,
+      collection_token_add: this.collection_token_add,
+      collection_token_remove: this.collection_token_remove,
       nft_collections: this.nft_collections,
       collection_get: this.collection_get,
+      profile_get_stat: this.profile_get_stat,
       like_artist_account: this.like_artist_account,
       minting_accounts_add: this.minting_accounts_add,
       minting_accounts_remove: this.minting_accounts_remove,
