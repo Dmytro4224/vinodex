@@ -27,9 +27,10 @@ pub struct JsonProfile {
     pub is_following:bool,
     pub followers_count:u32,
 
-    pub is_like:bool,
-    pub likes_count:u32,
+    pub is_liked : bool,
+    pub is_viewed : bool,
 
+    pub likes_count:u32,
     pub items_count:u32
 }
 
@@ -65,6 +66,7 @@ impl Profile {
         asked_account_id: &Option<AccountId>,
         autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>,
+        autors_views: &LookupMap<AccountId, HashSet<AccountId>>,
         autors_tokens: &LookupMap<AccountId, UnorderedSet<String>>,
         default_if_none: bool
        ) -> Option<JsonProfile> {
@@ -79,8 +81,9 @@ impl Profile {
                image:_profile.image,
                cover_image:_profile.cover_image,
                email:_profile.email,
-               is_following:false,
-               is_like:false,
+               is_following :false,
+               is_liked :false,
+               is_viewed :false,
                followers_count:Profile::get_profile_followers_count(&autors_followers,&account_id),
                likes_count:Profile::get_profile_like_count(&autors_likes,&account_id),
                items_count: 0
@@ -93,14 +96,19 @@ impl Profile {
 
            if let Some(_asked_account_id)=asked_account_id
            {
-                result.is_following=Profile::is_profile_followind(
+                result.is_following=Profile::is_profile_checked(
                     &autors_followers,
                     &account_id,
                     &_asked_account_id
                 );
 
-                result.is_like=Profile::is_profile_liked(
+                result.is_liked = Profile::is_profile_checked(
                     &autors_likes,
+                    &account_id,
+                    &_asked_account_id);
+
+                result.is_viewed = Profile::is_profile_checked(
+                    &autors_views,
                     &account_id,
                     &_asked_account_id);
            }
@@ -121,7 +129,8 @@ impl Profile {
                     cover_image: String::from(""),
                     email: String::from(""),
                     is_following:false,
-                    is_like:false,
+                    is_liked:false,
+                    is_viewed:false,
                     followers_count: 0,
                     likes_count: 0,
                     items_count: 0
@@ -241,29 +250,6 @@ impl Profile {
         }
     }
 
-    pub fn is_profile_liked(
-        autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
-        sourse_account_id: &AccountId,
-        asked_account_id: &AccountId)->bool
-    {
-        match autors_likes.get(&sourse_account_id)
-        {
-            Some(tmp) =>
-            {
-                if tmp.contains(asked_account_id)
-                {
-                    return true;
-                }
-
-                return false;
-            },
-            None =>
-            {
-                return false;
-            }
-        }
-    }
-
     ///кількість людей, які підписалися на автора
     pub fn get_profile_followers_count(
         autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
@@ -282,12 +268,12 @@ impl Profile {
         }
     }
 
-    pub fn is_profile_followind(
-        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
+    pub fn is_profile_checked(
+        source: &LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
         asked_account_id: &AccountId)->bool
     {
-        match autors_followers.get(&sourse_account_id)
+        match source.get(&sourse_account_id)
         {
             Some(tmp) =>
             {
@@ -1266,5 +1252,3 @@ impl ProfileStatCriterion
         }
 
     }
-
-

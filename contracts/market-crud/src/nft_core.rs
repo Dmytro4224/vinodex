@@ -355,16 +355,25 @@ impl NonFungibleTokenCore for Contract {
             metadata.likes_count = self.get_token_likes_count(token_id) as u64;
             metadata.views_count = self.get_token_views_count(token_id) as u64;
 
-            let mut _is_like=false;
+            let mut _is_liked = false;
+            let mut _is_viewed = false;
 
-             if let Some(_users_like_list)
-             =self.tokens_users_likes.get(token_id){
+            match account_id.clone()
+            {
+                Some(account_id) =>
+                {
+                    if let Some(_users_like_list) = self.tokens_users_likes.get(token_id)
+                    {
+                        _is_liked = _users_like_list.contains(&account_id);
+                    }
 
-                if account_id.is_some(){
-                    _is_like= _users_like_list.contains(&account_id.clone().unwrap());
-                }
-             }
-
+                    if let Some(_users_views_list) = self.tokens_users_views.get(token_id)
+                    {
+                        _is_viewed = _users_views_list.contains(&account_id);
+                    }
+                },
+                None => {}
+            }
 
             Some(JsonToken {
                 token_id: token_id.clone(),
@@ -374,7 +383,8 @@ impl NonFungibleTokenCore for Contract {
                 royalty: token.royalty,
                 approved_account_ids: token.approved_account_ids,
                 token_type: token.token_type,
-                is_like:_is_like,
+                is_liked: _is_liked,
+                is_viewed: _is_viewed,
                 sale : self.sale_get(&token_id, account_id.clone(), false),
                 collection: self.collection_get_by_token(&token_id, &account_id)
             })

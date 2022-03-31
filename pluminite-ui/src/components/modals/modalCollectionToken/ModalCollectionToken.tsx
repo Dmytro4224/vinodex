@@ -9,6 +9,7 @@ import { mediaUrl } from '../../../utils/sys';
 import ButtonView, { buttonColors } from '../../common/button/ButtonView';
 import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
 import ModalConfirm from '../modalConfirm/ModalConfirm';
+import { EmptyListView } from '../../common/emptyList/emptyListView';
 
 interface IModal extends IProps {
   onHideModal: () => void;
@@ -139,7 +140,7 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
             <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
             <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
           </div>
-        ) : (
+        ) : this.state.list.length ? (
           <div className={styles.tokenWrap}>
             {this.state.list.map(item => {
               return (
@@ -178,7 +179,10 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
               );
             })}
           </div>
-          )}
+          ) : (
+            <EmptyListView />
+          )
+        }
         </>
       </ModalSample>
     );

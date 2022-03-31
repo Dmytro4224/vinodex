@@ -156,6 +156,7 @@ impl Contract
                                 &account_id,
                                 &self.autors_likes,
                                 &self.autors_followers,
+                                &self.autors_views,
                                 &self.tokens_per_owner,
                                 true
                             ).unwrap()

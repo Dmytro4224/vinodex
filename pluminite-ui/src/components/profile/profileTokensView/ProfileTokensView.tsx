@@ -232,7 +232,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         {!this.state.list.length ? (
           <EmptyListView />
         ) : (
-          <div className={`d-flex justify-content-between gap-20 pb-4 ${styles.scrollWrap}`}>
+          <div className={`d-flex gap-20 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
               let typeView = TokensType.created;
 
@@ -251,7 +251,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   buttonText={`Place a bid`}
                   linkTo={`/token/${item.token_id}`}
                   tokenID={item.token_id}
-                  isLike={item.is_like}
+                  isLike={item.is_liked}
                   price={item.metadata.price}
                   isForceVisible={true}
                   onClick={() => {

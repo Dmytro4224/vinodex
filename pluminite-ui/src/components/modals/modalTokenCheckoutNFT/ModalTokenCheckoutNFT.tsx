@@ -303,7 +303,7 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
             isSmall={false}
             isView={true}
             tokenID={this.props.token.token_id}
-            isLike={this.props.token.is_like}
+            isLike={this.props.token.is_liked}
             customClass={style.viewCard}
             isForceVisible={true}
             onClick={() => {

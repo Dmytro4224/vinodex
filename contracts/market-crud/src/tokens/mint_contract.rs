@@ -94,10 +94,14 @@ impl Contract {
         self.token_metadata_by_id.insert(&final_token_id, &metadata);
         self.internal_add_token_to_owner(&token.owner_id, &final_token_id);
 
+        let is_new_creator :bool ;
+
         match self.tokens_per_creator.get(&owner_id) {
             Some(mut tokens) => {
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
+
+                is_new_creator = false;
             }
             None => {
                 let mut tokens = UnorderedSet::new(
@@ -109,8 +113,12 @@ impl Contract {
                 );
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
+
+                is_new_creator = true;
             }
         }
+
+        let mut is_new_artist = false;
 
         if !metadata.artist.is_empty()
         {
@@ -129,6 +137,8 @@ impl Contract {
                     );
                     tokens.insert(&final_token_id);
                     self.tokens_per_artist.insert(&owner_id, &tokens);
+
+                    is_new_artist = true;
                 }
             }
         }
@@ -179,12 +189,21 @@ impl Contract {
             );
         }
 
-        //=
-        // ProfileStatCriterion::profile_stat_check_for_default_stat(
-        //      &mut self.profiles_global_stat,
-        //     &mut self.profiles_global_stat_sorted_vector,
-        //     &owner_id);
-        //=======================================================
+        if is_new_creator
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &owner_id);
+        }
+
+        if is_new_artist
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &metadata.artist);
+        }
 
         //Кількість токенів creator
         ProfileStatCriterion::profile_stat_inc(

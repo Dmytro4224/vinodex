@@ -29,7 +29,10 @@ pub struct CollectionJson {
     pub collection_id: String,
     pub likes_count: u64,
     pub views_count: u64,
-    pub tokens_count: u64
+    pub tokens_count: u64,
+
+    pub is_liked: bool,
+    pub is_viewed: bool
 }
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
@@ -44,7 +47,10 @@ pub struct CollectionJsonWithoutTokens {
     pub collection_id: String,
     pub likes_count: u64,
     pub views_count: u64,
-    pub tokens_count: u64
+    pub tokens_count: u64,
+
+    pub is_liked: bool,
+    pub is_viewed: bool
 }
 
 #[near_bindgen]
@@ -143,6 +149,26 @@ impl Contract {
                     }
                 }
 
+                let mut _is_liked = false;
+                let mut _is_viewed = false;
+
+                match account_id
+                {
+                    Some(account_id) =>
+                    {
+                        if let Some(likes) = self.collection_likes.get(collection_id)
+                        {
+                            _is_liked = likes.contains(&account_id);
+                        }
+
+                        if let Some(views) = self.collection_views.get(collection_id)
+                        {
+                            _is_viewed = views.contains(&account_id);
+                        }
+                    },
+                    None => {}
+                }
+
                 return Some(CollectionJson {
                     collection_id: collection_id.clone(),
                     name: collection.name,
@@ -156,13 +182,17 @@ impl Contract {
                         account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.autors_views,
                         &self.tokens_per_owner,
                         true,
                     ),
                     tokens: tokens,
                     likes_count: likes_count,
                     views_count: views_count,
-                    tokens_count: tokens_count
+                    tokens_count: tokens_count,
+
+                    is_liked: _is_liked,
+                    is_viewed: _is_viewed
                 });
             }
             None => {
@@ -218,7 +248,10 @@ impl Contract {
                             owner: collection.owner,
                             likes_count: collection.likes_count,
                             views_count: collection.views_count,
-                            tokens_count: collection.tokens_count
+                            tokens_count: collection.tokens_count,
+
+                            is_liked: collection.is_liked,
+                            is_viewed: collection.is_viewed
                         });
                     },
                     None => {}

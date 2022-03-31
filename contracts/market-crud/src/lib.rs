@@ -602,6 +602,7 @@ impl Contract {
             &asked_account_id,
             &self.autors_likes,
             &self.autors_followers,
+            &self.autors_views,
             &self.tokens_per_owner,
             true,
         );
@@ -635,9 +636,49 @@ impl Contract {
 
         let predecessor_account_id = env::predecessor_account_id();
 
-        profile.account_id = predecessor_account_id;
+        profile.account_id = predecessor_account_id.clone();
 
-        Profile::set_profile(&mut self.profiles, &profile, &env::predecessor_account_id());
+        Profile::set_profile(&mut self.profiles, &profile, &predecessor_account_id);
+
+        if self.is_new_creator(&predecessor_account_id) || self.is_new_artist(&predecessor_account_id)
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &predecessor_account_id);
+        }
+    }
+
+    #[private]
+    pub fn is_new_creator(&self, account_id: &AccountId) -> bool
+    {
+        match self.tokens_per_creator.get(&account_id) 
+        {
+            Some(mut tokens) => 
+            {
+                return false;
+            }
+            None => 
+            {
+                return true;
+            }
+        }
+    }
+
+    #[private]
+    pub fn is_new_artist(&self, account_id: &AccountId) -> bool
+    {
+        match self.tokens_per_artist.get(&account_id) 
+        {
+            Some(mut tokens) => 
+            {
+                return false;
+            }
+            None => 
+            {
+                return true;
+            }
+        }
     }
 
     //лайкнути карточку користувача
