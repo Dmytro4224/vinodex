@@ -37,6 +37,14 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   public componentDidMount() {
     window.scroll(0, 0);
 
+    // this.props.nftContractContext.profile_get_stat(this.getUserId).then(stat => {
+    //   console.log('stat', stat);
+    //   this.setState({
+    //     ...this.state,
+    //     statistic: stat
+    //   })
+    // });
+
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       if (profile) {
         this.setState({
