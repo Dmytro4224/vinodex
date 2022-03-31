@@ -3,6 +3,7 @@ import styles from './userProfile.module.css';
 import avatarDefault from '../../assets/images/default-avatar-big.png';
 import coverDff from '../../assets/images/user-profile-bg.jpg';
 import avatarUpload from '../../assets/icons/upload_avatar.svg';
+import edit from '../../assets/icons/edit-icon.svg';
 import { IdentificationCopy } from '../../components/common/identificationCopy/IdentificationCopy';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import { Spinner, Tab, Tabs } from 'react-bootstrap';
@@ -47,9 +48,11 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   private _selectFile?: File;
   private _fileResponse: IUploadFileResponse | undefined;
   private _inputFile: React.RefObject<HTMLInputElement>;
+  private _inputFileCover: React.RefObject<HTMLInputElement>;
 
   public state = {
     isLoadAvatar: false,
+    isLoadCover: false,
     image: avatarDefault,
     cover_image: coverDff,
     activeTab: this.activeTabFromUrl,
@@ -66,22 +69,12 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     super(props);
 
     this._inputFile = React.createRef<HTMLInputElement>();
+    this._inputFileCover = React.createRef<HTMLInputElement>();
     this._refAvatar = React.createRef();
   }
 
   public componentDidMount() {
     window.scrollTo(0, 0);
-
-    // if (!this.isMyProfile) {
-    //   this.props.nftContractContext.view_artist_account(this.getUserId)
-    //     .then(res => {
-    //
-    //     })
-    //     .catch(error => {
-    //       console.warn('🚀 ~ file: view_artist_account ~ error', error);
-    //     });
-    // }
-
     this.getData();
   }
 
@@ -106,17 +99,27 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     });
   }
 
-  public setSelectFile = async (e) => {
+  public setSelectFile = async (e, type: string) => {
     this._selectFile = e.currentTarget.files[0];
 
     if (!this._selectFile) {
       return console.warn('selectFile is not defined');
     }
 
-    this.setState({
-      ...this.state,
-      isLoadAvatar: true,
-    });
+    switch (type) {
+      case 'ava':
+        this.setState({
+          ...this.state,
+          isLoadAvatar: true,
+        });
+        break;
+      case 'cover':
+        this.setState({
+          ...this.state,
+          isLoadCover: true,
+        });
+        break;
+    }
 
     this._fileResponse = await nftStorage.uploadFile(this._selectFile as File, 'name', 'descr');
 
@@ -124,18 +127,30 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
       const src = this._fileResponse.url;// pinataAPI.createUrl(this._fileResponse.IpfsHash!);
 
       this.updateUser({
+        accountId: this.getUserId,
         name: this.state.profile.name,
         email: this.state.profile.email,
         bio: this.state.profile.bio,
-        image: src,
-        cover_image: '',
-        accountId: this.getUserId,
+        image: this.state.image,
+        cover_image: this.state.cover_image,
+        ...(type === 'ava' && { image: src }),
+        ...(type === 'cover' && { cover_image: src })
       });
     } else {
-      this.setState({
-        ...this.state,
-        isLoadAvatar: false,
-      });
+      switch (type) {
+        case 'ava':
+          this.setState({
+            ...this.state,
+            isLoadAvatar: false,
+          });
+          break;
+        case 'cover':
+          this.setState({
+            ...this.state,
+            isLoadCover: false,
+          });
+          break;
+      }
     }
   };
 
@@ -293,6 +308,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     this.setState({
       ...this.state,
       image: profile.image || avatarDefault,
+      cover_image: profile.cover_image || coverDff,
       profile: {
         bio: profile.bio,
         email: profile.email,
@@ -343,8 +359,28 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
       <>
         <div className={`position-relative ${styles.profileWrap}`}>
           <div className='container'>
-            <div className={styles.bgWrap}>
-              <div className={styles.bgBlock} />
+            <div className={`${this.state.isLoadCover && styles.loadingCover} ${styles.bgWrap}`}>
+              <div
+                style={{ backgroundImage: `url(${this.state.cover_image})` }}
+                className={`${styles.bgBlock}`} />
+              {this.isMyProfile && (
+                <div className={styles.uploadCoverWrap}>
+                  <label>
+                    <input
+                      ref={this._inputFileCover}
+                       onChange={(e: any) => this.setSelectFile(e, 'cover')}
+                       hidden type='file' />
+                  </label>
+
+                  <span className={styles.spChange}>
+                    <img alt='icon' src={edit} />
+                    Change picture
+                  </span>
+                </div>
+              )}
+              {this.state.isLoadCover && (
+                <div className={styles.avatarSpinnerWrap}><Spinner animation='grow' variant='light' /></div>
+              )}
             </div>
 
             <div className={styles.profileInfoWrap}>
@@ -355,13 +391,17 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
                 {this.isMyProfile && (
                   <div className={styles.uploadAvatarWrap}>
                     <label>
-                      <input ref={this._inputFile} onChange={this.setSelectFile} hidden type='file' />
+                      <input
+                        ref={this._inputFile}
+                         onChange={(e: any) => this.setSelectFile(e, 'ava')}
+                         hidden type='file' />
                       <img alt='icon' src={avatarUpload} />
                     </label>
                   </div>
                 )}
-                {this.state.isLoadAvatar &&
-                  <div className={styles.avatarSpinnerWrap}><Spinner animation='grow' variant='light' /></div>}
+                {this.state.isLoadAvatar && (
+                  <div className={styles.avatarSpinnerWrap}><Spinner animation='grow' variant='light' /></div>
+                )}
               </div>
               <p className={styles.profileName}>{this.state.profile.name}</p>
               <IdentificationCopy id={this.getUserId} />

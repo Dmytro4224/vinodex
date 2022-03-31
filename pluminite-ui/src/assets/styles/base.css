@@ -687,6 +687,10 @@ input[type="range"]:disabled::-moz-range-thumb {
   gap: 20px;
 }
 
+.pointer-none {
+  pointer-events: none;
+}
+
 @media (max-width: 500px) {
   .cardWrapBig__collectionName {
     font-size: 28px;
