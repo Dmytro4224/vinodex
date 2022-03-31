@@ -13,7 +13,7 @@ import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
 import filterIcon from '../../../assets/icons/filter-icon.svg';
-import { convertNearToYoctoString, mediaUrl } from '../../../utils/sys';
+import { convertNearToYoctoString, mediaUrl, uid } from '../../../utils/sys';
 import { TokensType } from '../../../types/TokenTypes';
 import CatalogFilterView from '../../catalogFilterView/CatalogFilterView';
 import { IFilterOptions } from '../../../types/IFilterOptions';
@@ -238,7 +238,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
               return (
                 <TokenCardView
-                  key={`profiletoken-${item.token_id}`}
+                  key={`profiletoken-${item.token_id}-${uid()}`}
                   model={item}
                   countL={1}
                   countR={1}

@@ -5,8 +5,11 @@
   padding: 70px;
 }
 
-.tokenWrap .lazyload-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+@media (max-width: 1200px) {
+  .tokenWrap {
+    display: flex;
+    gap: 20px;
+    overflow: auto;
+    padding: 10px;
+  }
 }
