@@ -235,6 +235,7 @@ pub enum StorageKey {
     TokenPerOwnerInner { account_id_hash: CryptoHash },
     TokensPerCreator,
     TokenPerCreatorInner { account_id_hash: CryptoHash },
+    TokenPerArtistInner { account_id_hash: CryptoHash },
     TokensById,
     TokenMetadataById,
     NftMetadata,
@@ -706,7 +707,7 @@ impl Contract {
             true);
     }
 
-
+    //Отримати статистику профіля
     pub fn profile_get_stat(&self, account_id: AccountId) -> ProfileStat
     {
         return ProfileStatCriterion::profile_stat(

@@ -112,6 +112,27 @@ impl Contract {
             }
         }
 
+        if !metadata.artist.is_empty()
+        {
+            match self.tokens_per_artist.get(&metadata.artist) {
+                Some(mut tokens) => {
+                    tokens.insert(&final_token_id);
+                    self.tokens_per_artist.insert(&owner_id, &tokens);
+                }
+                None => {
+                    let mut tokens = UnorderedSet::new(
+                        StorageKey::TokenPerArtistInner {
+                            account_id_hash: hash_account_id(&metadata.artist),
+                        }
+                            .try_to_vec()
+                            .unwrap(),
+                    );
+                    tokens.insert(&final_token_id);
+                    self.tokens_per_artist.insert(&owner_id, &tokens);
+                }
+            }
+        }
+
         self.creator_per_token.insert(&final_token_id, &owner_id);
 
         match sale
