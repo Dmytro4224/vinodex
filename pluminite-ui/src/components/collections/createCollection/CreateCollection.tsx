@@ -161,9 +161,14 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
     })
 
     if (this.isUpdate) {
-      this.setState({
-        ...this.state,
-        isCreating: false
+      this.props.nftContractContext.collection_update(
+        this.props.collectionData?.collection_id!,
+        this._refInputName.value.trim(),
+        this._refInputDescription.value.trim(),
+        this._imageRef?.current?.src || this.props.collectionData?.profile_photo,
+        this._imageCoverRef?.current?.src || this.props.collectionData?.cover_photo
+      ).then(res => {
+        this.changeRenderType(RenderType.collectionList);
       })
     } else {
       const time = new Date().getTime();
@@ -391,7 +396,6 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
                 color={buttonColors.goldFill}
                 customClass={'min-w-100px'}
                 isLoading={this.state.isCreating}
-                disabled={this.isUpdate}
               />
             </div>
           </div>
