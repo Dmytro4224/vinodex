@@ -1,0 +1,42 @@
+.wrapper {
+  padding-bottom: 20px;
+  text-align: center;
+}
+.image {
+  margin-bottom: 36px;
+}
+
+.img {
+  display: block;
+  margin: 0 auto;
+}
+
+.title {
+  margin-bottom: 12px;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--mineShaftS);
+}
+
+.description {
+  font-style: normal;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--doveGrayS);
+}
+
+.modalBtn {
+  padding: 10px 20px !important;
+}
+
+.textConform {
+  font-size: 16px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+}
