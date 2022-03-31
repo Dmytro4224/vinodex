@@ -122,10 +122,10 @@ impl Contract {
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &env::predecessor_account_id()
-            ,1
-            ,1
-            ,true);
+            &env::predecessor_account_id(),
+            ProfileStatCriterionEnum::TokenLikesCount,
+            1,
+            true);
 
         self.tokens_resort(token_id, 8, Some(likes_count as u128));
     }
@@ -159,7 +159,10 @@ impl Contract {
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &env::predecessor_account_id(),3,1,true);
+            &env::predecessor_account_id(),
+            ProfileStatCriterionEnum::TokenViewsCount,
+            1,
+            true);
 
 
         if views_count.is_some()

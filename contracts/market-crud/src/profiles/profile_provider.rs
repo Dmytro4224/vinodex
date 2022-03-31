@@ -134,7 +134,8 @@ impl Profile {
        }
    }
     pub fn get_default_data(account_id: AccountId) -> Profile{
-        return Profile{
+        return Profile
+        {
             account_id:account_id,
             bio:String::from(""),
             email:String::from(""),
@@ -400,31 +401,31 @@ impl Profile {
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 ///структура для статистики
-pub struct ProfileStat{
-///0  - кількість лайків аккаунту
-pub likes_count: u32,
-///1 - кількість лайків токенів аккаунту
-pub tokens_likes_count: u32,
-//2 - загальна ксть переглядів аккаунту
-pub views_count: u32,
-//3 - загальна ксть переглядів токенів аккаунту
-pub tokens_views_count: u32,
-///4 - загальна ксть токенів, де користувач - creator
-pub tokens_count: u32,
-//5 - к-сть підписників автора
-pub followers_count: u32,
-//6 - к-сть токенів, де користувач - artist
-pub tokens_count_as_artist: u32,
+pub struct ProfileStat
+{
+    ///0  - кількість лайків аккаунту
+    pub likes_count: u32,
+    ///1 - кількість лайків токенів аккаунту
+    pub tokens_likes_count: u32,
+    //2 - загальна ксть переглядів аккаунту
+    pub views_count: u32,
+    //3 - загальна ксть переглядів токенів аккаунту
+    pub tokens_views_count: u32,
+    ///4 - загальна ксть токенів, де користувач - creator
+    pub tokens_count: u32,
+    //5 - к-сть підписників автора
+    pub followers_count: u32,
+    //6 - к-сть токенів, де користувач - artist
+    pub tokens_count_as_artist: u32,
 
-//поля попорядку 
-//on_sale 7 - 10
-//sold 11 - 14
-pub prices_as_creator: ProfilePriceStatMain,
+    //поля попорядку 
+    //on_sale 7 - 10
+    //sold 11 - 14
+    pub prices_as_creator: ProfilePriceStatMain,
 
-//on_sale 15 - 18
-//sold 19 - 22
-pub prices_as_artist: ProfilePriceStatMain,
-
+    //on_sale 15 - 18
+    //sold 19 - 22
+    pub prices_as_artist: ProfilePriceStatMain,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -448,15 +449,45 @@ pub struct ProfilePriceStat
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-pub struct ProfileStatCriterion{
+pub struct ProfileStatCriterion
+{
     pub account_id:AccountId,
-    pub criterion:Option<u32>
+    pub criterion:Option<u128>
+}
+
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+pub enum ProfileStatCriterionEnum
+{
+    LikesCount,
+    TokenLikesCount,
+    ViewsCount,
+    TokenViewsCount,
+    TokensCount,
+    FollowersCount,
+    TokensCountAsArtist,
+    OnSaleLowestPriceAsCreator,
+    OnSaleHighestPriceAsCreator,
+    OnSaleNewestPriceAsCreator,
+    OnSaleTotalPriceAsCreator,
+    SoldLowestPriceAsCreator,
+    SoldHighestPriceAsCreator,
+    SoldNewestPriceAsCreator,
+    SoldTotalPriceAsCreator,
+    OnSaleLowestPriceAsArtist,
+    OnSaleHighestPriceAsArtist,
+    OnSaleNewestPriceAsArtist,
+    OnSaleTotalPriceAsArtist,
+    SoldLowestPriceAsArtist,
+    SoldHighestPriceAsArtist,
+    SoldNewestPriceAsArtist,
+    SoldTotalPriceAsArtist
 }
 
 
-impl ProfileStatCriterion{
+impl ProfileStatCriterion
+{
 
-    pub fn __increment(sourse :u32,increment:u32,is_add:bool)->u32
+    pub fn __increment(sourse :u128, increment:u128, is_add:bool) -> u128
     {
         if sourse==0 && !is_add 
         { 
@@ -513,10 +544,10 @@ impl ProfileStatCriterion{
     pub fn set_profile_stat_val
     (
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
-        profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId, 
-        parameter:u8,
-        value:u32
+        profiles_global_stat_sorted_vector: &mut LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
+        user_id: &AccountId, 
+        parameter: ProfileStatCriterionEnum,
+        value: u128
     )
     {
         let mut stat:ProfileStat;
@@ -535,36 +566,119 @@ impl ProfileStatCriterion{
             
         match parameter
         {
-            //0 - кількість лайків аккаунту
-            0=>{
-                
-                stat.likes_count=value;
+            //кількість лайків аккаунту
+            ProfileStatCriterionEnum::LikesCount =>
+            {
+                stat.likes_count = value as u32;
             },
-            //1 -кількість лайків токенів аккаунту
-            1=>{
-                stat.tokens_likes_count = value;
+            //кількість лайків токенів аккаунту
+            ProfileStatCriterionEnum::TokenLikesCount =>
+            {
+                stat.tokens_likes_count = value as u32;
             },
-            //2 - загальна ксть переглядів аккаунту
-            2=>{
-                stat.views_count=value;
+            //загальна ксть переглядів аккаунту
+            ProfileStatCriterionEnum::ViewsCount =>
+            {
+                stat.views_count = value as u32;
             },
-            //3 - загальна ксть переглядів токенів аккаунту
-            3=>{
-                stat.tokens_views_count=value;
+            //загальна ксть переглядів токенів аккаунту
+            ProfileStatCriterionEnum::TokenViewsCount =>
+            {
+                stat.tokens_views_count = value as u32;
             },
-            //4 - загальна ксть токенів
-            4=>{
-                stat.tokens_count=value;
+            //загальна ксть токенів
+            ProfileStatCriterionEnum::TokensCount =>
+            {
+                stat.tokens_count = value as u32;
             },
-            // 5 - к-сть підписників автора
-            5=>{
-                stat.followers_count=value;
+            // к-сть підписників автора
+            ProfileStatCriterionEnum::FollowersCount =>
+            {
+                stat.followers_count = value as u32;
             },
-            // 6 -  к-сть токенів, де користувач - artist
-            6=>{
-                stat.tokens_count_as_artist=value;
+            // к-сть токенів, де користувач - artist
+            ProfileStatCriterionEnum::TokensCountAsArtist =>
+            {
+                stat.tokens_count_as_artist = value as u32;
             },
-            _=>{}
+            //найнижча ціна токену, який знаходиться на продажі, користувач - creator
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsCreator =>
+            {
+                stat.prices_as_creator.on_sale.lowest_price = value;
+            },
+            //найвища ціна токену, який знаходиться на продажі, користувач - creator
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsCreator =>
+            {
+                stat.prices_as_creator.on_sale.highest_price = value;
+            },
+            //ціна найновішого токену, який знаходиться на продажі, користувач - creator
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsCreator =>
+            {
+                stat.prices_as_creator.on_sale.newest_price = value;
+            },
+            //сума всії токенів, який знаходиться на продажі, користувач - creator
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator =>
+            {
+                stat.prices_as_creator.on_sale.total_price = value;
+            },
+            //найнижча ціна проданого токену, користувач - creator
+            ProfileStatCriterionEnum::SoldLowestPriceAsCreator =>
+            {
+                stat.prices_as_creator.sold.lowest_price = value;
+            },
+            //найвища ціна проданого токену, користувач - creator
+            ProfileStatCriterionEnum::SoldHighestPriceAsCreator =>
+            {
+                stat.prices_as_creator.sold.highest_price = value;
+            },
+            //ціна останнього проданого токену, користувач - creator
+            ProfileStatCriterionEnum::SoldNewestPriceAsCreator =>
+            {
+                stat.prices_as_creator.sold.newest_price = value;
+            },
+            //загальна ціна всіх проданих токенів, користувач - creator
+            ProfileStatCriterionEnum::SoldTotalPriceAsCreator =>
+            {
+                stat.prices_as_creator.sold.total_price = value;
+            },
+            //найнижча ціна токену, який знаходиться на продажі, користувач - artist
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsArtist =>
+            {
+                stat.prices_as_artist.on_sale.lowest_price = value;
+            },
+            //найвища ціна токену, який знаходиться на продажі, користувач - artist
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsArtist =>
+            {
+                stat.prices_as_artist.on_sale.highest_price = value;
+            },
+            //ціна найновішого токену, який знаходиться на продажі, користувач - artist
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsArtist =>
+            {
+                stat.prices_as_artist.on_sale.newest_price = value;
+            },
+            //сума всії токенів, який знаходиться на продажі, користувач - artist
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist =>
+            {
+                stat.prices_as_artist.on_sale.total_price = value;
+            },
+            //найнижча ціна проданого токену, користувач - artist
+            ProfileStatCriterionEnum::SoldLowestPriceAsArtist =>
+            {
+                stat.prices_as_artist.sold.lowest_price = value;
+            },
+            //найвища ціна проданого токену, користувач - artist
+            ProfileStatCriterionEnum::SoldHighestPriceAsArtist =>
+            {
+                stat.prices_as_artist.sold.highest_price = value;
+            },
+            ProfileStatCriterionEnum::SoldNewestPriceAsArtist =>
+            {
+                stat.prices_as_artist.sold.newest_price = value;
+            },
+            ProfileStatCriterionEnum::SoldTotalPriceAsArtist =>
+            {
+                stat.prices_as_artist.sold.total_price = value;
+            }
         }
 
         let _sorted_list_item = profiles_global_stat_sorted_vector.get(&parameter);
@@ -614,74 +728,422 @@ impl ProfileStatCriterion{
     pub fn profile_stat_inc
     (
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
-        profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>,
-        user_id:&AccountId, 
-        parameter:u8,
-        increment:u32,
-        need_add:bool
+        profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
+        user_id: &AccountId, 
+        parameter: ProfileStatCriterionEnum,
+        increment: u128,
+        need_add: bool
     )
+    {
+        let stat:ProfileStat;
+
+        match profiles_global_stat.get(user_id) 
         {
-            let stat:ProfileStat;
-    
-            match profiles_global_stat.get(user_id) 
+            Some(mut _profile_stat) => 
             {
-                Some(mut _profile_stat) => 
-                {
-                    stat = _profile_stat
-                },
-                None => 
-                {
-                    stat = ProfileStatCriterion::profile_stat_get_default();
-                }
-            }        
-            
-            let mut _value:u32=0;
-
-            match parameter
+                stat = _profile_stat
+            },
+            None => 
             {
-                //0 - кількість лайків аккаунту
-                0=>{
-                    
-                    _value= ProfileStatCriterion::__increment(stat.likes_count,increment,need_add);
-                },
-                //1 -кількість лайків токенів аккаунту
-                1=>{
-                    _value=ProfileStatCriterion::__increment(stat.tokens_likes_count,increment,need_add);
-                },
-                //2 - загальна ксть переглядів аккаунту
-                2=>{
-                    _value=ProfileStatCriterion::__increment(stat.views_count,increment,need_add);
-                },
-                //3 - загальна ксть переглядів токенів аккаунту
-                3=>{
-                    _value=
-                    ProfileStatCriterion::__increment(stat.tokens_views_count,increment,need_add);
-                },
-                //4 - загальна ксть токенів
-                4=>{
-                    _value=
-                    ProfileStatCriterion::__increment(stat.tokens_count,increment,need_add);
-                },
-                // 5 - к-сть підписників автора
-                5=>{
-                    _value=ProfileStatCriterion::__increment(stat.followers_count,increment,need_add);
-                },
-                // 6 - к-сть токенів, де користувач - artist
-                6=>{
-                    _value=ProfileStatCriterion::__increment(stat.tokens_count_as_artist,increment,need_add);
-                },
-                _=>{}
+                stat = ProfileStatCriterion::profile_stat_get_default();
             }
+        }        
+        
+        let mut _value: u128 = 0;
 
+        match parameter
+        {
+            //кількість лайків аккаунту
+            ProfileStatCriterionEnum::LikesCount =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.likes_count as u128, increment, need_add);
+            },
+            //кількість лайків токенів аккаунту
+            ProfileStatCriterionEnum::TokenLikesCount => 
+            {
+                _value = ProfileStatCriterion::__increment(stat.tokens_likes_count as u128, increment, need_add);
+            },
+            //загальна ксть переглядів аккаунту
+            ProfileStatCriterionEnum::ViewsCount =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.views_count as u128, increment, need_add);
+            },
+            //загальна ксть переглядів токенів аккаунту
+            ProfileStatCriterionEnum::TokenViewsCount =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.tokens_views_count as u128, increment, need_add);
+            },
+            //загальна ксть токенів
+            ProfileStatCriterionEnum::TokensCount =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.tokens_count as u128, increment, need_add);
+            },
+            //к-сть підписників автора
+            ProfileStatCriterionEnum::FollowersCount =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.followers_count as u128, increment, need_add);
+            },
+            // к-сть токенів, де користувач - artist
+            ProfileStatCriterionEnum::TokensCountAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.tokens_count_as_artist as u128, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.on_sale.lowest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.on_sale.highest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.on_sale.newest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.on_sale.total_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldLowestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.sold.lowest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldHighestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.sold.highest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldNewestPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.sold.newest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldTotalPriceAsCreator =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_creator.sold.total_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.on_sale.lowest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.on_sale.highest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.on_sale.newest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.on_sale.total_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldLowestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.sold.lowest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldHighestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.sold.highest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldNewestPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.sold.newest_price, increment, need_add);
+            },
+            // 
+            ProfileStatCriterionEnum::SoldTotalPriceAsArtist =>
+            {
+                _value = ProfileStatCriterion::__increment(stat.prices_as_artist.sold.total_price, increment, need_add);
+            }
+        }
+
+        ProfileStatCriterion::set_profile_stat_val
+        (
+            profiles_global_stat,
+            profiles_global_stat_sorted_vector,
+            user_id,
+            parameter,
+            _value
+        );
+    }
+
+    ///змінити на нове значення, якщо потрібно
+    pub fn profile_stat_check_and_change
+    (
+        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
+        user_id: &AccountId, 
+        parameter: ProfileStatCriterionEnum,
+        new_value: u128,
+        must_be_greater: bool
+    )
+    {
+        let stat : ProfileStat;
+
+        match profiles_global_stat.get(user_id) 
+        {
+            Some(mut _profile_stat) => 
+            {
+                stat = _profile_stat
+            },
+            None => 
+            {
+                stat = ProfileStatCriterion::profile_stat_get_default();
+            }
+        }        
+        
+        let mut need_change = false;
+
+        match parameter
+        {
+            //кількість лайків аккаунту
+            ProfileStatCriterionEnum::LikesCount =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.likes_count)
+                || (!must_be_greater && value_u32 < stat.likes_count)
+                {
+                    need_change = true;
+                }
+            },
+            //кількість лайків токенів аккаунту
+            ProfileStatCriterionEnum::TokenLikesCount => 
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.tokens_likes_count)
+                || (!must_be_greater && value_u32 < stat.tokens_likes_count)
+                {
+                    need_change = true;
+                }
+            },
+            //загальна ксть переглядів аккаунту
+            ProfileStatCriterionEnum::ViewsCount =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.views_count)
+                || (!must_be_greater && value_u32 < stat.views_count)
+                {
+                    need_change = true;
+                }
+            },
+            //загальна ксть переглядів токенів аккаунту
+            ProfileStatCriterionEnum::TokenViewsCount =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.tokens_views_count)
+                || (!must_be_greater && value_u32 < stat.tokens_views_count)
+                {
+                    need_change = true;
+                }
+            },
+            //загальна ксть токенів
+            ProfileStatCriterionEnum::TokensCount =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.tokens_count)
+                || (!must_be_greater && value_u32 < stat.tokens_count)
+                {
+                    need_change = true;
+                }
+            },
+            //к-сть підписників автора
+            ProfileStatCriterionEnum::FollowersCount =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.followers_count)
+                || (!must_be_greater && value_u32 < stat.followers_count)
+                {
+                    need_change = true;
+                }
+            },
+            // к-сть токенів, де користувач - artist
+            ProfileStatCriterionEnum::TokensCountAsArtist =>
+            {
+                let value_u32 = new_value as u32;
+
+                if (must_be_greater && value_u32 > stat.tokens_count_as_artist)
+                || (!must_be_greater && value_u32 < stat.tokens_count_as_artist)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.on_sale.lowest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.on_sale.lowest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.on_sale.highest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.on_sale.highest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.on_sale.newest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.on_sale.newest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.on_sale.total_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.on_sale.total_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldLowestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.sold.lowest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.sold.lowest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldHighestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.sold.highest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.sold.highest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldNewestPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.sold.newest_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.sold.newest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldTotalPriceAsCreator =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_creator.sold.total_price)
+                || (!must_be_greater && new_value < stat.prices_as_creator.sold.total_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.on_sale.lowest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.on_sale.lowest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.on_sale.highest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.on_sale.highest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleNewestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.on_sale.newest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.on_sale.newest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.on_sale.total_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.on_sale.total_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldLowestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.sold.lowest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.sold.lowest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldHighestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.sold.highest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.sold.highest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldNewestPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.sold.newest_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.sold.newest_price)
+                {
+                    need_change = true;
+                }
+            },
+            // 
+            ProfileStatCriterionEnum::SoldTotalPriceAsArtist =>
+            {
+                if (must_be_greater && new_value > stat.prices_as_artist.sold.total_price)
+                || (!must_be_greater && new_value < stat.prices_as_artist.sold.total_price)
+                {
+                    need_change = true;
+                }
+            }
+        }
+
+        if need_change
+        {
             ProfileStatCriterion::set_profile_stat_val
             (
                 profiles_global_stat,
                 profiles_global_stat_sorted_vector,
                 user_id,
                 parameter,
-                _value
+                new_value
             );
         }
+    }
 
         ///отримати дані по статистиці профілю
     pub fn profile_stat(
@@ -704,7 +1166,7 @@ impl ProfileStatCriterion{
     ///перевірити чи встановленні дефолтні значення статистистики для юзера
     pub fn profile_stat_check_for_default_stat(
         profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
-        profiles_global_stat_sorted_vector:  &mut LookupMap<u8, Vec<ProfileStatCriterion>>,
+        profiles_global_stat_sorted_vector:  &mut LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         user_id: &AccountId)
         {
     
@@ -715,20 +1177,36 @@ impl ProfileStatCriterion{
                 profiles_global_stat.insert(&user_id, &stat);
             }
 
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(0,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(1,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(2,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(3,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(4,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(5,user_id,profiles_global_stat_sorted_vector);
-            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(6,user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::LikesCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::TokenLikesCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::ViewsCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::TokenViewsCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::TokensCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::FollowersCount, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::TokensCountAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleLowestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleHighestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleNewestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldLowestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldHighestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldNewestPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldTotalPriceAsCreator, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleLowestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleHighestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleNewestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldLowestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldHighestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldNewestPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
+            ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::SoldTotalPriceAsArtist, user_id,profiles_global_stat_sorted_vector);
         }
 
 
         pub fn profile_stat_check_for_default_stat_one_parameter(
-            parameter:u8,
+            parameter:ProfileStatCriterionEnum,
             user_id:&AccountId,
-            profiles_global_stat_sorted_vector:  &mut  LookupMap<u8, Vec<ProfileStatCriterion>>)
+            profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>)
         {
             match profiles_global_stat_sorted_vector.get(&parameter)
             {

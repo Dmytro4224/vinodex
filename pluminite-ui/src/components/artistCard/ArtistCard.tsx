@@ -294,7 +294,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get coverImage() {
-    return cover;
+    return this.props.info?.cover_image || cover;
   }
 
   private get image() {
@@ -357,7 +357,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
                 isChanged={false}
                 isActive={true}
                 type={LikeViewType.wine}
-                count={0}
+                count={this.props.info?.items_count || 0}
               />
               <LikeView
                 customClass={`cardWrapBig__userInfo`}

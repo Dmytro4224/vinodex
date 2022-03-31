@@ -38,6 +38,7 @@ const NftMethods = {
     'view_artist_account',
     'token_set_like',
     'collection_add',
+    'collection_update',
   ],
 };
 

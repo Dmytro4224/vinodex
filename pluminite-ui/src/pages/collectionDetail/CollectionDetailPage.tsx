@@ -30,28 +30,8 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
 
   public componentDidMount() {
     window.scroll(0, 0);
-    // this.getCollectionInfo();
-    // this.getTokens();
+    this.getCollectionInfo();
   }
-
-  // private getTokens() {
-
-  //
-  //   // const user = this.props.near.user?.accountId || null;
-  //   //
-  //   // this.props.nftContractContext.nft_collections(
-  //   //   1,
-  //   //   100,
-  //   //   user,
-  //   //   true
-  //   // ).then(res => {
-  //   //   this.setState({
-  //   //     ...this.state,
-  //   //     isLoading: false,
-  //   //     collections: res
-  //   //   })
-  //   // })
-  // }
 
   private getCollectionInfo() {
     this.setState({
@@ -68,24 +48,25 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
       this.setState({
         ...this.state,
         isLoading: false,
+        collectionData: res
       })
     })
   }
 
   private get description() {
-    return `Champagne Deutz is formerly known as Deutz Geldermann, is a Champagne producer based in the Aÿ region of Champagne. The house was founded in 1838 and run by successive generations of the Deutz and Geldermann families. Deutz produces both vintage and non-vintage cuvée as well as a prestige wine known as Amour de Deutz. In 1983, the house was acquired by Louis Roederer and Deutz owns holding in the Bordeaux wine estate of Chateau Vernous and the Rhone estate of Delas Freres.`
+    return this.state.collectionData?.description || '';
   }
 
   private get coverImage() {
-    return collectionCover;
+    return this.state.collectionData?.cover_photo || collectionCover;
   }
 
   private get image() {
-    return defaultImage;
+    return this.state.collectionData?.profile_photo || defaultImage;
   }
 
   private get collectionName() {
-    return 'Collection name';
+    return this.state.collectionData?.name ||  'Collection name';
   }
 
   private onErrorImage(type: string, target: any) {
@@ -122,7 +103,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
             <span className='breadcrumb__separator'>/</span>
             <NavLink to={'/collections'}>Collections</NavLink>
             <span className='breadcrumb__separator'>/</span>
-            <p>Champagne bruno paillard</p>
+            <p>{this.collectionName}</p>
           </div>
 
           <p className={styles.description}>{this.description}</p>
@@ -133,7 +114,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
               <p className={styles.informerDesc}>Floor Price</p>
             </div>
             <div>
-              <p className={styles.informerTitle}>0</p>
+              <p className={styles.informerTitle}>{this.state.collectionData?.tokens_count}</p>
               <p className={styles.informerDesc}>Items</p>
             </div>
             <div>

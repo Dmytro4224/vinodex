@@ -45,6 +45,7 @@ mod nft_core;
 #[path = "profiles/profile_provider.rs"]
 mod profile;
 
+
 #[path = "sales/sale.rs"]
 mod sales;
 pub use crate::sales::*;
@@ -163,7 +164,7 @@ pub struct Contract {
     //followers_count: 5 - к-сть підписників автора
     //total_likes_count: 6 - загальна ксть  лайків аккаунт+токени
     //total_views_count: 7 - загальна ксть  переглядів аккаунт+токени
-    pub profiles_global_stat_sorted_vector: LookupMap<u8, Vec<ProfileStatCriterion>>,
+    pub profiles_global_stat_sorted_vector: LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
     //==========================================================
 
     //чи брати плату за зберігання інфи з юзера
@@ -392,7 +393,7 @@ impl Contract {
             contract_royalty: u32,
             profiles: LookupMap<AccountId, Profile>,
             use_storage_fees: bool,
-            profiles_global_stat_sorted_vector: LookupMap<u8, Vec<ProfileStatCriterion>>,
+            profiles_global_stat_sorted_vector: LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
             profiles_global_stat: LookupMap<AccountId, ProfileStat>,
             autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
             autors_views: LookupMap<AccountId, HashSet<AccountId>>,
@@ -648,13 +649,12 @@ impl Contract {
         );
 
         //збільнуємо статистику лайків
-        ProfileStatCriterion::set_profile_stat_val(
-            &mut self.profiles_global_stat,
+        ProfileStatCriterion::profile_stat_inc(&mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
             &account_id,
-            0,
-            Profile::get_profile_like_count(&mut self.autors_likes, &account_id),
-        );
+            ProfileStatCriterionEnum::LikesCount,
+            1,
+            true);
     }
 
     //поставити помітку про відвідання карточки користувача
@@ -663,18 +663,13 @@ impl Contract {
 
         Profile::set_profile_view(&mut self.autors_views, &account_id, &predecessor_account_id);
 
-        let _new_val = ProfileStatCriterion::profile_stat(&self.profiles_global_stat, &account_id)
-            .views_count
-            + 1;
-
-        //змінюємо статистику переглядів
-        ProfileStatCriterion::set_profile_stat_val(
-            &mut self.profiles_global_stat,
+        //збільнуємо статистику лайків
+        ProfileStatCriterion::profile_stat_inc(&mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
             &account_id,
-            2,
-            _new_val,
-        );
+            ProfileStatCriterionEnum::ViewsCount,
+            1,
+            true);
     }
 
     //додати користувача до стписку відстеження
@@ -697,13 +692,12 @@ impl Contract {
         );
 
         //збільнуємо статистику лайків
-        ProfileStatCriterion::set_profile_stat_val(
-            &mut self.profiles_global_stat,
+        ProfileStatCriterion::profile_stat_inc(&mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
             &account_id,
-            5,
-            Profile::get_profile_followers_count(&mut self.autors_followers, &account_id),
-        );
+            ProfileStatCriterionEnum::FollowersCount,
+            1,
+            true);
     }
 
     //Allows users to deposit storage. This is to cover the cost of storing sale objects on the contract

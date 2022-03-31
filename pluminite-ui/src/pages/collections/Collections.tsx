@@ -5,7 +5,6 @@ import { ICollectionResponseItem } from '../../types/ICollectionResponseItem';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 import Skeleton from 'react-loading-skeleton';
 import { NavLink } from 'react-router-dom';
-import { uid } from '../../utils/sys';
 import CollectionCard, { CollectionType } from '../../components/collections/collectionCard/CollectionCard';
 
 interface ICollectionsPage extends IProps { }
@@ -43,6 +42,7 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
       user,
       true
     ).then(res => {
+      console.log(res);
       this.setState({
         ...this.state,
         isLoading: false,
@@ -77,7 +77,7 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
             <div className={`container ${styles.listWrap}`}>
               {this.state.collections.map(data => (
                 <CollectionCard
-                  key={uid()}
+                  key={data.collection_id}
                   data={data}
                   type={CollectionType.big}
                 />
