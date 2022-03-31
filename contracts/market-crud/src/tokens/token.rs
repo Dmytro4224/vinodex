@@ -27,8 +27,10 @@ pub struct JsonToken {
     // CUSTOM - fields
     pub royalty: HashMap<AccountId, u32>,
     pub token_type: Option<String>,
+
     ///чи поставив лайк той, хто переглядає
-    pub is_like:bool,
+    pub is_liked:bool,
+    pub is_viewed: bool,
 
     pub sale: Option<SaleJson>,
 
