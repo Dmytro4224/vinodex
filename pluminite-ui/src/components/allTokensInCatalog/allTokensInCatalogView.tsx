@@ -110,7 +110,7 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
             buttonText={`Place a bid`}
             linkTo={`/token/${item.token_id}`}
             tokenID={item.token_id}
-            isLike={item.is_like}
+            isLike={item.is_liked}
             customClass={styles.tokenWidth}
             onClick={() => {
               //this.props.navigate('/token/qwewqq-1231-weq-123');

@@ -75,6 +75,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
   public componentDidMount() {
     window.scrollTo(0, 0);
+
     this.getData();
   }
 
@@ -156,9 +157,13 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
 
   private callUpdateUser({ name, email, bio, accountId, image, cover_image }: IUpdateUser) {
     const imgDef = (this.state.image?.length || 0) > 255 ? '' : this.state.image;
+    const coverDef = (this.state.cover_image?.length || 0) > 255 ? '' : this.state.cover_image;
+
+    const img = (image?.length || 0) > 255 ? '' : image;
+    const cover = (cover_image?.length || 0) > 255 ? '' : cover_image;
 
     return this.props.nftContractContext.set_profile({
-      profile: { name, email, bio, accountId, image: image || imgDef, cover_image: cover_image },
+      profile: { name, email, bio, accountId, image: img || imgDef, cover_image: cover || coverDef },
     });
   }
 

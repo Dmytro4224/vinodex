@@ -42,6 +42,7 @@ interface ITokenCardView extends IProps {
   isForceVisible?: boolean;
   catalog?: string;
   containerName?: string;
+  controlBtn?: any;
 }
 
 type stateTypes = {
@@ -95,6 +96,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
         model: response,
       });
     });
+  }
+
+  public componentDidMount() {
+    this.props.isForceVisible && forceVisible();
   }
 
   public componentDidUpdate() {
@@ -253,6 +258,19 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private getCardControls() {
     const price = convertYoctoNearsToNears(this.state.model?.sale?.price) || 0.00;
+
+    if (typeof this.props.controlBtn !== 'undefined' && this.props.controlBtn !== null) {
+      return (
+        <div className={styles.cardControls}>
+          <div className={styles.priceWrap}>
+            <span>Price</span>
+            {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
+          </div>
+
+          {this.props.controlBtn}
+        </div>
+      )
+    }
 
     switch (this.typeView) {
       case TokensType.created:

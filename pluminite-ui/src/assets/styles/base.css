@@ -705,6 +705,10 @@ input[type="range"]:disabled::-moz-range-thumb {
 }
 
 @media (max-width: 500px) {
+  .lazyload-wrapper {
+    width: 100%;
+  }
+
   .cardWrapBig__collectionName {
     font-size: 28px;
   }

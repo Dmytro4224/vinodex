@@ -37,6 +37,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   private _ref: React.RefObject<DropzoneRef>;
   private _refCoverFile: React.RefObject<DropzoneRef>;
   private _refInputTitle: any;
+  private _refInputAuthor: any;
+  private _refInputBrand: any;
   private _refInputStyle: any;
   private _refInputBottleSize: any;
   private _refInputDescription: any;
@@ -76,10 +78,13 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     bid: 0,
     startDate: '',
     expDate: '',
+    isCreating: false,
     year: '',
     validate: {
       isFileValid: true,
       isTitleValid: true,
+      isAuthorValid: true,
+      isBrandValid: true,
       isPriceValid: true,
       isBidsValid: true,
       isRoyaltiesValid: true,
@@ -282,6 +287,19 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     return this.totalRange === 100;
   }
 
+  private setAuthor = (e) => {
+    let tr = e.target.value.replace('.testnet', '');
+    tr = tr.replace(/^ +| +$|( ) +/g,"$1");
+
+    if(tr !== ''){
+      e.target.value = `${tr}.testnet`;
+      let l = e.target.value.length - 8;
+      e.target.setSelectionRange(l, l);
+    }else{
+      e.target.value = ``;
+    }
+  }
+
   public render() {
     return (
       <div className={styles.container}>
@@ -351,7 +369,9 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             {this.state.isLoadFile &&
               <div className={styles.spinnerWrap}><Spinner animation='grow' variant='light' /></div>}
           </div>
-
+          <div className={!this.state.validate.isFileValid ? styles.errorWrap : 'd-none'}>
+            <p className={styles.errorMessage}>Upload file</p>
+          </div>
           <div ref={this._refCoverFileWrap} className={'mt-5'} hidden>
             <label className={styles.label}>Upload cover</label>
             <div className={styles.dropzone}>
@@ -391,19 +411,51 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
           </div>
 
           <InputView
+          onChange={(e) => {
+            this.setTitle();
+          }}
+          placeholder={'Title*'}
+          absPlaceholder={'Title*'}
+          customClass={`mb-4 ${styles.titleInpWrap}`}
+          viewType={ViewType.input}
+          setRef={(ref) => {
+            this._refInputTitle = ref;
+          }}
+          value={this._refInputTitle && this._refInputTitle.value}
+          isError={!this.state.validate.isTitleValid}
+          errorMessage={`Enter title in the correct format.`}
+        />
+
+          <InputView
             onChange={(e) => {
-              this.setTitle();
+              this.setAuthor(e);
             }}
-            placeholder={'Title*'}
-            absPlaceholder={'Title*'}
+            placeholder={'artistname.testnet'}
+            absPlaceholder={'artistname.testnet'}
             customClass={`mb-4 ${styles.titleInpWrap}`}
             viewType={ViewType.input}
             setRef={(ref) => {
-              this._refInputTitle = ref;
+              this._refInputAuthor = ref;
             }}
-            value={this._refInputTitle && this._refInputTitle.value}
-            isError={!this.state.validate.isTitleValid}
-            errorMessage={`Enter title in the correct format.`}
+            value={this._refInputAuthor && this._refInputAuthor.value}
+            isError={!this.state.validate.isAuthorValid}
+            errorMessage={`Invalid artist name.`}
+          />
+
+          <InputView
+            onChange={(e) => {
+
+            }}
+            placeholder={'Brand*'}
+            absPlaceholder={'Brand*'}
+            customClass={`mb-4 ${styles.titleInpWrap}`}
+            viewType={ViewType.input}
+            setRef={(ref) => {
+              this._refInputBrand = ref;
+            }}
+            value={this._refInputBrand && this._refInputBrand.value}
+            isError={!this.state.validate.isBrandValid}
+            errorMessage={`Enter the brand.`}
           />
 
           <label className={styles.inputLabel}>Specify the style of wine</label>
@@ -731,6 +783,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             />
           </div>
         </div>
+
         <div className='d-flex align-items-center justify-content-center mt-2'>
           <ButtonView
             text={'CANCEL'}
@@ -738,12 +791,14 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
               this.props.navigate(-1);
             }}
             color={buttonColors.gold}
+            disabled={this.state.isCreating}
           />
           <ButtonView
             text={'SUBMIT'}
             onClick={this.submit}
             color={buttonColors.goldFill}
             customClass={'min-w-100px'}
+            isLoading={this.state.isCreating}
           />
         </div>
       </div>
@@ -754,6 +809,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     let validInfo = {
       file: true,
       title: true,
+      author: true,
+      brand: true,
       price: true,
       royal: true,
       descr: true,
@@ -778,8 +835,17 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       validInfo.title = false;
     }
 
+
+    if (this._refInputAuthor.value.trim() === '' || this._refInputAuthor.value.indexOf('.testnet') === -1) {
+      validInfo.author = false;
+    }
+
     if (this._refInputStyle.value.trim() === '') {
       validInfo.wineStyle = false;
+    }
+
+    if (this._refInputBrand.value.trim() === '') {
+      validInfo.brand = false;
     }
 
     if (!this.state.year) {
@@ -818,6 +884,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       !validInfo.dates ||
       !validInfo.wineStyle ||
       !validInfo.year ||
+      !validInfo.author ||
+      !validInfo.brand ||
       !validInfo.totalRange
     ) {
       this.setState({
@@ -825,6 +893,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
         validate: {
           isFileValid: validInfo.file,
           isTitleValid: validInfo.title,
+          isAuthorValid: validInfo.author,
+          isBrandValid: validInfo.brand,
           isPriceValid: validInfo.price,
           isBidsValid: validInfo.bids,
           isRoyaltiesValid: validInfo.royal,
@@ -843,7 +913,6 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
   }
 
   private submit = async () => {
-
     if (!this.isValidForm()) return;
 
     const title: string = this._refInputTitle.value;
@@ -891,11 +960,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       bottle_size: this._refInputBottleSize.selectedOption?.value,
       characteristics: this._refInputCharacteristics.value,
       specification: this._refInputSpecification.value,
-      artist: this.props.near.user?.accountId,
+      artist: this._refInputAuthor.value.trim() || this.props.near.user?.accountId,
       percentage_for_creator: this.state.range.creator,
       percentage_for_artist : this.state.range.artist,
       percentage_for_vinodex : this.state.range.vinodex,
-      brand: '',
+      brand: this._refInputBrand.value.trim(),
       additional_photos: []
     };
 
@@ -926,6 +995,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       sale: null,
     };
 
+
+
     if (this._refPutOnMarket.checked) {
       //@ts-ignore
       model.sale = {
@@ -948,6 +1019,11 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
 
     const isFreeMintAvailable = false;
     const nftContract = this.props.nftContractContext.nftContract!;
+
+    this.setState({
+      ...this.state,
+      isCreating: true
+    })
 
     //@ts-ignore
     const res = await nftContract.account.signAndSendTransaction(nftContract.contractId, [

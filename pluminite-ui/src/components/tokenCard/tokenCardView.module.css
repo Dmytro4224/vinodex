@@ -139,7 +139,8 @@
 }
 
 .card.cardSmall {
-  width: 297px;
+  width: 100%;
+  max-width: 297px;
 }
 
 .card.cardSmall .imageStyle {
@@ -240,6 +241,10 @@
 @media (max-width: 991px) {
   .card.cardSmall {
     min-width: 292px;
+  }
+
+  .card.cardSmall {
+    max-width: unset;
   }
 
   .cardFooter .cardInfo .tokenName {

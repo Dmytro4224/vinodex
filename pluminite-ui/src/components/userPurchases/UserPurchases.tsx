@@ -107,7 +107,7 @@ class UserProfile extends Component<IUserPurchases & IBaseComponentProps> {
                   buttonText={`Place a bid`}
                   linkTo={`/token/${token.token_id}`}
                   tokenID={token.token_id}
-                  isLike={token.is_like}
+                  isLike={token.is_liked}
                   price={token.metadata.price}
                   isForceVisible={true}
                   onClick={() => {

@@ -115,7 +115,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
               identification={item.account_id}
               usersCount={item.followers_count}
               likesCount={item.likes_count}
-              isLike={item.is_like}
+              isLike={item.is_liked}
               isFollow={item.is_following}
               customClass={styles.artistMobile}
             />;

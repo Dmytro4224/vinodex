@@ -24,8 +24,11 @@ export interface INftContractContext {
   minting_accounts_add: (account_id: string) => Promise<any>;
   minting_accounts_remove: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
+  collection_set_like: (collection_id: string) => Promise<any>;
+  collection_set_view: (collection_id: string) => Promise<any>;
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
+  token_set_view: (token_id: string) => Promise<any>;
   nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => Promise<Array<any>>;
   my_purchases: (catalog: string | null, page_index: number, page_size: number, account_id: string) => Promise<any>;
   sale_history_by_token: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
@@ -33,13 +36,16 @@ export interface INftContractContext {
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
   sale_get: (token_id: string, with_bids: boolean) => Promise<any>;
-  authors_by_filter: (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
+  authors_by_filter: (parameter: string, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
   followed_authors_for_account: (account_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_mint: (data: any) => Promise<any>;
   collection_add: (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => Promise<any>;
   collection_update: (collection_id: string, name?: string, description?: string, profile_photo?: string, cover_photo?: string) => Promise<any>;
+  collection_token_add: (collection_id: string, token_id: string) => Promise<any>;
+  collection_token_remove: (token_id: string) => Promise<any>;
   nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => Promise<any>;
   collection_get: (collection_id: string, account_id: string | null, with_tokens: boolean) => Promise<any>;
+  profile_get_stat: (account_id: string) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -56,7 +62,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     return this.nftContract.account.accountId || '';
   }
 
-  public authors_by_filter = (parameter: number, is_reverse: boolean, page_index: number, page_size: number) => {
+  public authors_by_filter = (parameter: string, is_reverse: boolean, page_index: number, page_size: number) => {
     return this.props.nftContract.authors_by_filter({
       parameter,
       is_reverse,
@@ -187,12 +193,31 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public collection_token_add = async (collection_id: string, token_id: string) => {
+    return this.nftContract.collection_token_add({
+      collection_id,
+      token_id,
+    });
+  };
+
+  public collection_token_remove = async (token_id: string) => {
+    return this.nftContract.collection_token_remove({
+      token_id,
+    });
+  };
+
   public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => {
     return this.nftContract.nft_collections({
       page_index,
       page_size,
       account_id,
       with_tokens,
+    });
+  };
+
+  public profile_get_stat = async (account_id: string) => {
+    return this.nftContract.profile_get_stat({
+      account_id
     });
   };
 
@@ -224,6 +249,14 @@ export class NftContractContextProvider extends Component<INftContractContextPro
 
   public token_set_like = async (token_id: string) => {
     return this.nftContract.token_set_like({ token_id: token_id });
+  };
+
+  public collection_set_like = async (collection_id: string) => {
+    return this.nftContract.collection_set_like({ collection_id: collection_id });
+  };
+
+  public collection_set_view = async (collection_id: string) => {
+    return this.nftContract.collection_set_view({ collection_id: collection_id });
   };
 
   public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {
@@ -269,6 +302,12 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public token_set_view = async (token_id: string) => {
+    return this.nftContract.token_set_view({
+      token_id: token_id,
+    });
+  };
+
   public follow_artist_account = async (accountId: string) => {
     return this.nftContract.follow_artist_account({
       account_id: accountId,
@@ -291,12 +330,17 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       set_profile: this.set_profile,
       collection_add: this.collection_add,
       collection_update: this.collection_update,
+      collection_token_add: this.collection_token_add,
+      collection_token_remove: this.collection_token_remove,
       nft_collections: this.nft_collections,
       collection_get: this.collection_get,
+      profile_get_stat: this.profile_get_stat,
       like_artist_account: this.like_artist_account,
       minting_accounts_add: this.minting_accounts_add,
       minting_accounts_remove: this.minting_accounts_remove,
       token_set_like: this.token_set_like,
+      collection_set_like: this.collection_set_like,
+      collection_set_view: this.collection_set_view,
       sale_create: this.sale_create,
       sale_offer: this.sale_offer,
       sale_remove: this.sale_remove,
@@ -305,6 +349,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_mint: this.nft_mint,
       follow_artist_account: this.follow_artist_account,
       view_artist_account: this.view_artist_account,
+      token_set_view: this.token_set_view,
       //getGem: this.getGem,
       //getGems: this.getGems,
       //getGemsForOwner,

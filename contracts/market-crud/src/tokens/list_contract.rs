@@ -814,6 +814,7 @@ impl Contract {
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.autors_views,
                         &self.tokens_per_owner,
                         true
                     ));
@@ -839,6 +840,7 @@ impl Contract {
                         &asked_account_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.autors_views,
                         &self.tokens_per_owner,
                         true
                   ));
@@ -910,6 +912,7 @@ impl Contract {
                         &_accoutn_id,
                         &self.autors_likes,
                         &self.autors_followers,
+                        &self.autors_views,
                         &self.tokens_per_owner,
                         true
                   ));
@@ -1020,6 +1023,7 @@ impl Contract {
                             &_accoutn_id,
                             &self.autors_likes,
                             &self.autors_followers,
+                            &self.autors_views,
                             &self.tokens_per_owner,
                             true
                         )

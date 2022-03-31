@@ -21,7 +21,7 @@ export interface IMetaData{
   style: string;
   specification: string;
   characteristics: string;
-  botle_size: string;
+  bottle_size: string;
   percentage_for_artist: number;
   percentage_for_creator: number;
   percentage_for_vinodex: number;
@@ -39,6 +39,7 @@ export interface ITokenResponseItem {
   royalty: any;
   token_id: string;
   token_type: string;
-  is_like: boolean;
+  is_liked: boolean;
+  is_viewed: boolean;
   sale: any;
 }

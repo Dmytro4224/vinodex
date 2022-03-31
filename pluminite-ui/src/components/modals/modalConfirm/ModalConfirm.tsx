@@ -40,6 +40,7 @@ class ModalConfirm extends Component<IModalConfirm & IBaseComponentProps, IModal
   render() {
     return (
       <ModalSample
+        customClass={'modalConfirm'}
         size={ModalSampleSizeType.lg}
         modalTitle={'Confirm your actions'}
         isShow={this.modalIsShow}

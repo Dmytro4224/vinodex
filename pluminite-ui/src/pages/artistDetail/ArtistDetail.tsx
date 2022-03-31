@@ -11,11 +11,13 @@ import defaultImage from '../../assets/images/vine-def.png';
 import { Tab, Tabs } from 'react-bootstrap';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import ProfileTokensView from '../../components/profile/profileTokensView/ProfileTokensView';
+import { convertYoctoNearsToNears } from '../../utils/sys';
 
 interface IArtistDetail extends IProps { }
 interface IArtistDetailState {
   tokens: Array<ITokenResponseItem>;
   artistData: any;
+  statistic: any;
   isLoading: boolean;
 }
 
@@ -23,7 +25,8 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   public state: IArtistDetailState = {
     tokens: new Array<ITokenResponseItem>(),
     artistData: null,
-    isLoading: true
+    isLoading: true,
+    statistic: null
   };
 
   constructor(props: IArtistDetail & IBaseComponentProps) {
@@ -37,6 +40,14 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   public componentDidMount() {
     window.scroll(0, 0);
 
+    this.props.nftContractContext.profile_get_stat(this.getUserId).then(stat => {
+      console.log('stat', stat);
+      this.setState({
+        ...this.state,
+        statistic: stat
+      })
+    });
+
     this.props.nftContractContext.getProfile(this.getUserId).then(profile => {
       if (profile) {
         this.setState({
@@ -45,6 +56,18 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
         })
       }
     });
+  }
+
+  public componentDidUpdate(prevProps: Readonly<IArtistDetail & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+    if (
+      !this.state.artistData?.is_viewed &&
+      this.state.artistData !== null &&
+      this.getUserId &&
+      this.props.near.isAuth &&
+      this.props.near.user?.accountId !== this.getUserId
+    ) {
+      this.props.nftContractContext.view_artist_account(this.getUserId);
+    }
   }
 
   private get coverImage() {
@@ -64,6 +87,10 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
         target.src = defaultImage;
         break;
     }
+  }
+
+  private getPrice(price: string | number) {
+    return convertYoctoNearsToNears(price) || 0.00;
   }
 
   public render() {
@@ -96,7 +123,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
 
           <div className={styles.informer}>
             <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.lowest_price || 0)}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Floor Price</p>
             </div>
             <div>
@@ -104,11 +131,11 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
               <p className={styles.informerDesc}>Items</p>
             </div>
             <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.newest_price || 0)}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Latest Price</p>
             </div>
             <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.total_price || 0)}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Volume traded</p>
             </div>
           </div>

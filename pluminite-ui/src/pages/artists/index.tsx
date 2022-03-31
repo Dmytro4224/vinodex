@@ -96,16 +96,18 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   public render() {
     return (
       <div>
-        <div className={styles.header}>
-          <div className={`container ${styles.headerInfo}`}>
-            <h4 className={styles.title}>Artists</h4>
-            <div className='breadcrumb'>
-              <NavLink to={'/'}>Home</NavLink>
-              <span className='breadcrumb__separator'>/</span>
-              <p>Artists</p>
+        {!this.isProfilePageView && (
+          <div className={styles.header}>
+            <div className={`container ${styles.headerInfo}`}>
+              <h4 className={styles.title}>Artists</h4>
+              <div className='breadcrumb'>
+                <NavLink to={'/'}>Home</NavLink>
+                <span className='breadcrumb__separator'>/</span>
+                <p>Artists</p>
+              </div>
             </div>
           </div>
-        </div>
+        )}
         {this.state.isLoading ? (
           <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px container'>
             <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
@@ -124,7 +126,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
                 identification={item.account_id}
                 usersCount={item.followers_count}
                 likesCount={item.likes_count}
-                isLike={item.is_like}
+                isLike={item.is_liked}
                 isFollow={item.is_following}
                 followBtnText={this.followBtnText}
                 isDisabledFollowBtn={this.isProfilePageView}

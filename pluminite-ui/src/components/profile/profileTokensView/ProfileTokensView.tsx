@@ -13,7 +13,7 @@ import { ProfileTokensType } from '../../../types/ProfileTokenTypes';
 import MediaQuery from 'react-responsive';
 import sortIcon from '../../../assets/icons/sort-icon.svg';
 import filterIcon from '../../../assets/icons/filter-icon.svg';
-import { convertNearToYoctoString, mediaUrl } from '../../../utils/sys';
+import { convertNearToYoctoString, mediaUrl, uid } from '../../../utils/sys';
 import { TokensType } from '../../../types/TokenTypes';
 import CatalogFilterView from '../../catalogFilterView/CatalogFilterView';
 import { IFilterOptions } from '../../../types/IFilterOptions';
@@ -232,13 +232,13 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         {!this.state.list.length ? (
           <EmptyListView />
         ) : (
-          <div className={`d-flex justify-content-between gap-20 pb-4 ${styles.scrollWrap}`}>
+          <div className={`d-flex gap-20 pb-4 ${styles.scrollWrap}`}>
             {this.state.list.map(item => {
               let typeView = TokensType.created;
 
               return (
                 <TokenCardView
-                  key={`profiletoken-${item.token_id}`}
+                  key={`profiletoken-${item.token_id}-${uid()}`}
                   model={item}
                   countL={1}
                   countR={1}
@@ -251,7 +251,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
                   buttonText={`Place a bid`}
                   linkTo={`/token/${item.token_id}`}
                   tokenID={item.token_id}
-                  isLike={item.is_like}
+                  isLike={item.is_liked}
                   price={item.metadata.price}
                   isForceVisible={true}
                   onClick={() => {

@@ -73,7 +73,7 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
             buttonText={`Place a bid`}
             linkTo={`/token/${item.token_id}`}
             tokenID={item.token_id}
-            isLike={item.is_like}
+            isLike={item.is_liked}
             onClick={() => {
             }} />;
         })}
