@@ -711,7 +711,7 @@ impl Contract {
 
         Profile::set_profile_view(&mut self.autors_views, &account_id, &predecessor_account_id);
 
-        //збільнуємо статистику лайків
+        //збільнуємо статистику
         ProfileStatCriterion::profile_stat_inc(&mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
             &account_id,

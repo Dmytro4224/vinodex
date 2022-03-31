@@ -111,11 +111,19 @@ impl Contract {
                 let likes_count: u64;
                 let  views_count: u64;
 
-                match self.collection_likes.get(&collection_id) 
+                let mut _is_liked = false;
+                let mut _is_viewed = false;
+
+                match self.collection_likes.get(collection_id) 
                 {
                     Some(likes) => 
                     {
                         likes_count = likes.len();
+
+                        if let Some(account_id) = account_id
+                        {
+                            _is_liked = likes.contains(account_id);
+                        }
                     }
                     None => 
                     {
@@ -123,11 +131,16 @@ impl Contract {
                     }
                 }
 
-                match self.collection_views.get(&collection_id) 
+                match self.collection_views.get(collection_id) 
                 {
                     Some(views) => 
                     {
                         views_count = views.len();
+
+                        if let Some(account_id) = account_id
+                        {
+                            _is_viewed = views.contains(account_id);
+                        }
                     }
                     None => 
                     {
@@ -147,26 +160,6 @@ impl Contract {
                     {
                         tokens_count = 0;
                     }
-                }
-
-                let mut _is_liked = false;
-                let mut _is_viewed = false;
-
-                match account_id
-                {
-                    Some(account_id) =>
-                    {
-                        if let Some(likes) = self.collection_likes.get(collection_id)
-                        {
-                            _is_liked = likes.contains(&account_id);
-                        }
-
-                        if let Some(views) = self.collection_views.get(collection_id)
-                        {
-                            _is_viewed = views.contains(&account_id);
-                        }
-                    },
-                    None => {}
                 }
 
                 return Some(CollectionJson {
@@ -463,17 +456,17 @@ impl Contract {
             Some(mut views) => {
                 if !views.contains(&user_id) {
                     views.insert(&user_id);
-                }
 
-                self.collection_views.insert(&collection_id, &views);
+                    self.collection_views.insert(&collection_id, &views);
+                }
             }
             None => {
-                let mut unordered_set_of_views: UnorderedSet<AccountId> =
+                let mut views: UnorderedSet<AccountId> =
                     UnorderedSet::new(StorageKey::CollectionViews.try_to_vec().unwrap());
-                unordered_set_of_views.insert(&user_id);
 
-                self.collection_views
-                    .insert(&collection_id, &unordered_set_of_views);
+                views.insert(&user_id);
+
+                self.collection_views.insert(&collection_id, &views);
             }
         }
     }

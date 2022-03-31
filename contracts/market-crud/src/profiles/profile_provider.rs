@@ -358,7 +358,7 @@ impl Profile {
         //вказує на те, чи потрібно робити зворотню дію: чек-анчек
         need_reverse:bool)
     {
-        match dictionary.get(&sourse_account_id)
+        match dictionary.get(sourse_account_id)
         {
             Some(mut value) =>
             {
@@ -373,14 +373,14 @@ impl Profile {
                         value.insert(target_account_id.clone());
                     }
 
-                    dictionary.insert(&sourse_account_id, &value);
+                    dictionary.insert(sourse_account_id, &value);
                 }
             },
             None =>
             {
                 let mut _fitst_record:HashSet<AccountId>=HashSet::new();
                 _fitst_record.insert(target_account_id.to_string());
-                dictionary.insert(&sourse_account_id, &_fitst_record);
+                dictionary.insert(sourse_account_id, &_fitst_record);
             }
         }
     }
