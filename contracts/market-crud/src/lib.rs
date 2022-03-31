@@ -749,7 +749,7 @@ impl Contract {
     }
 
     //Отримати статистику профіля
-    pub fn profile_get_stat(&self, account_id: AccountId) -> ProfileStat
+    pub fn profile_get_stat(&self, account_id: AccountId) -> ProfileStatJson
     {
         return ProfileStatCriterion::profile_stat(
             &self.profiles_global_stat,
