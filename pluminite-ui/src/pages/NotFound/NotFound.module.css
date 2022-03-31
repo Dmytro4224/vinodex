@@ -15,7 +15,7 @@
 .notFoundHead {
 }
 .notFoundHeadLeft, .notFoundHeadRight {
-  /*font-family: 'Bebas Neue';*/
+  font-family: 'Bebas Neue';
   font-style: normal;
   font-weight: 400;
   font-size: 32px;
@@ -44,7 +44,8 @@
   display: block;
   margin: 0 auto;
   width: 612px;
-  height: 531px;
+  max-width: 90%;
+  /*height: 531px;*/
 }
 
 .notFoundBottom {
@@ -60,3 +61,23 @@
   color: var(--pirateCold);
 }
 
+@media(max-width: 400px) {
+  .notFoundHeadLeft, .notFoundHeadRight {
+    font-size: 18px;
+  }
+
+  .notFoundHeadCenter {
+    padding: 0 18px;
+    font-size: 100px;
+  }
+  
+  .notFoundBottom {
+    font-size: 18px;
+  }
+}
+
+@media(min-width: 992px) {
+  .notFoundImageImg {
+    height: 531px;
+  }
+}
