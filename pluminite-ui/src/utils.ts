@@ -42,6 +42,7 @@ export type INftContract = nearAPI.Contract & {
     view_artist_account: ({ account_id }: { account_id: string }) => Promise<any>;
     collection_add: ({ name, description, profile_photo, cover_photo, time }: { name: string, description: string, profile_photo: string, cover_photo: string, time: number }) => Promise<any>;
     nft_collections: ({ page_index, page_size, account_id, with_tokens }: { page_index: number, page_size: number, account_id: string | null, with_tokens: boolean }) => Promise<any>;
+    collection_get: ({collection_id, account_id, with_tokens } : { collection_id: string, account_id: string | null, with_tokens: boolean }) => Promise<any>;
 };
 
 export type IMarketContract = nearAPI.Contract & {

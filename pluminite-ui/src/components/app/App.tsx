@@ -18,6 +18,7 @@ import Footer from '../footer/Footer';
 import CatalogTokens from '../../pages/catalogTokens/CatalogTokens';
 import CollectionsPage from '../../pages/collections/Collections';
 import CollectionDetailPage from '../../pages/collectionDetail/CollectionDetailPage';
+import ArtistDetail from '../../pages/artistDetail/ArtistDetail';
 
 interface IApp extends IProps {
 
@@ -55,6 +56,7 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="*" element={<Navigate to="/" />} />
             <Route path="/" element={<Home />} />
             <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
+            <Route path="/artists/:id" element={<ArtistDetail />} />
             <Route path="/collections/" element={<CollectionsPage />} />
             <Route path="/collections/:id" element={<CollectionDetailPage />} />
             <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />
