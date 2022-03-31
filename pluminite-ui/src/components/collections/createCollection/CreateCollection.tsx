@@ -11,6 +11,7 @@ import { nftStorage } from '../../../api/NftStorage';
 import { IUploadFileResponse } from '../../../api/IUploadFileResponse';
 import InputView, { ViewType } from '../../common/inputView/InputView';
 import { ICollectionResponseItem } from '../../../types/ICollectionResponseItem';
+import editImageIcon from '../../../assets/icons/edit-image.svg';
 
 interface ICreateCollection extends IProps {
   changeRenderType?: (type: RenderType) => void;
@@ -258,7 +259,6 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
                 accept='image/*'
                 onDrop={(e) => { this.setFile(e, 'cover') }}
                 ref={this._refCover}
-                noClick
                 noKeyboard
               >
                 {({ getRootProps, getInputProps, acceptedFiles }) => {
@@ -267,21 +267,26 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
                       <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
-                          <img hidden ref={this._imageCoverRef} />
-
-                          {acceptedFiles.length > 0 ? (
-                            <></>
+                          {acceptedFiles.length > 0 || (this._imageCoverRef?.current && this._imageCoverRef?.current.src != '') ? (
+                            <><img hidden ref={this._imageCoverRef} /></>
                             ) : (
                               <>
                                 <p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                                 <ButtonView
                                   text={'Upload file'}
-                                  onClick={() => { this.openDialog(this._refCover); }}
+                                  onClick={() => { /*this.openDialog(this._refCover);*/ }}
                                   color={buttonColors.goldFill}
                                   customClass={styles.button}
                                 />
                               </>
                             )}
+
+                          <div className={`${styles.dropzoneHover} ${acceptedFiles.length > 0 || (this._imageCoverRef?.current && this._imageCoverRef?.current.src != '') ? styles.dropzoneHoverShow : ''}`}>
+                            <div className="d-flex flex-column align-items-center justify-content-center">
+                              <img src={editImageIcon} alt=""/>
+                              <p className={styles.hoverText}>Change picture</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -300,7 +305,6 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
                 accept='image/*'
                 onDrop={(e) => { this.setFile(e, 'base') }}
                 ref={this._ref}
-                noClick
                 noKeyboard
               >
                 {({ getRootProps, getInputProps, acceptedFiles }) => {
@@ -309,21 +313,25 @@ class CreateCollection extends Component<ICreateCollection & IBaseComponentProps
                       <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
                         <input {...getInputProps()} />
                         <div className={styles.dropzoneControls}>
-                          <img hidden ref={this._imageRef} />
-
-                          {acceptedFiles.length > 0 ? (
-                            <></>
+                          {acceptedFiles.length > 0 || (this._imageRef?.current && this._imageRef?.current.src != '') ? (
+                            <><img hidden ref={this._imageRef} /></>
                           ) : (
                             <>
                               <p className={styles.dropzoneTitle}>PNG, GIF, WEBP, MP4 or MP3. Max 100mb</p>
                               <ButtonView
                                 text={'Upload file'}
-                                onClick={() => { this.openDialog(this._ref); }}
+                                onClick={() => { /*this.openDialog(this._ref);*/ }}
                                 color={buttonColors.goldFill}
                                 customClass={styles.button}
                               />
                             </>
                           )}
+                          <div className={`${styles.dropzoneHover} ${acceptedFiles.length > 0 || (this._imageRef?.current && this._imageRef?.current.src != '') ? styles.dropzoneHoverShow : ''}`}>
+                            <div className="d-flex flex-column align-items-center justify-content-center">
+                              <img src={editImageIcon} alt=""/>
+                              <p className={styles.hoverText}>Change picture</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     </div>
