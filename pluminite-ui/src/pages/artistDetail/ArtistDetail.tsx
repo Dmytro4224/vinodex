@@ -59,15 +59,14 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   }
 
   public componentDidUpdate(prevProps: Readonly<IArtistDetail & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
-    if (
-      !this.state.artistData?.is_viewed &&
-      this.state.artistData !== null &&
-      this.getUserId &&
-      this.props.near.isAuth &&
-      this.props.near.user?.accountId !== this.getUserId
-    ) {
-      this.props.nftContractContext.view_artist_account(this.getUserId);
-    }
+    // if (
+    //   !this.state.artistData?.is_viewed &&
+    //   this.state.artistData !== null &&
+    //   this.getUserId &&
+    //   this.props.near.isAuth
+    // ) {
+    //   this.props.nftContractContext.view_artist_account(this.getUserId);
+    // }
   }
 
   private get coverImage() {
