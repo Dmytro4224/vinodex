@@ -10,7 +10,7 @@ import collectionCover from '../../assets/images/collection-head-bg.jpg';
 import defaultImage from '../../assets/images/vine-def.png';
 import { Tab, Tabs } from 'react-bootstrap';
 import TokenCardView from '../../components/tokenCard/tokenCardView';
-import { mediaUrl } from '../../utils/sys';
+import { mediaUrl, uid } from '../../utils/sys';
 
 interface ICollectionDetailPage extends IProps { }
 interface ICollectionDetailPageState {
@@ -106,7 +106,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
           <div className={`${styles.listWrap}`}>
             {tokens.map(item => (
               <TokenCardView
-                key={`catalog-token-${item.token_id}`}
+                key={`catalog-token-${item.token_id}-${uid()}`}
                 model={item}
                 countL={1}
                 countR={1}

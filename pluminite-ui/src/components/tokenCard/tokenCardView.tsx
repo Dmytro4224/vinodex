@@ -98,6 +98,10 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     });
   }
 
+  public componentDidMount() {
+    this.props.isForceVisible && forceVisible();
+  }
+
   public componentDidUpdate() {
     this.props.isForceVisible && forceVisible();
   }
