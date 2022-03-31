@@ -165,7 +165,7 @@ impl Contract {
         //     &owner_id);
         //=======================================================
 
-        //додати запис до profiles_by_tokens_count для статистики
+        //Кількість токенів creator
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
@@ -173,7 +173,18 @@ impl Contract {
             ProfileStatCriterionEnum::TokensCount,
             1,
             true);
-        //=======================================================
+
+        //Кількість токенів artist
+        if !metadata.artist.trim().is_empty()
+        {
+            ProfileStatCriterion::profile_stat_inc(
+                &mut self.profiles_global_stat,
+                &mut self.profiles_global_stat_sorted_vector,
+                &owner_id,
+                ProfileStatCriterionEnum::TokensCountAsArtist,
+                1,
+                true);
+        }
     }
 
     ///Дозволити акаунту випускати токени

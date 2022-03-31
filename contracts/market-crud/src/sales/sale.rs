@@ -262,6 +262,8 @@ impl Contract {
             "Forbidden"
         );
 
+        let statistic_price: u128;
+
         match sale_type
         {
             1 =>
@@ -278,6 +280,8 @@ impl Contract {
                         {
                             panic!("Price must be greater then 0");
                         }
+
+                        statistic_price = pr.0;
                     },
                     None =>
                     {
@@ -299,7 +303,7 @@ impl Contract {
                 }
 
                 price = None;
-
+                statistic_price = 0;
             },
             _ =>
             {
@@ -321,6 +325,18 @@ impl Contract {
                 is_closed: false
            }
         );
+
+        let creator = self.creator_per_token.get(&token_id).unwrap();
+        let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
+
+        ProfileStatCriterion::profile_stat_price_check_and_change(
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            &creator,
+            &artist,
+            statistic_price,
+            false
+        )
     }
 
     //updates the price for a sale on the market
@@ -692,6 +708,18 @@ impl Contract {
                 }
             }
         }
+
+        let creator = self.creator_per_token.get(&token_id).unwrap();
+        let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
+
+        ProfileStatCriterion::profile_stat_price_check_and_change(
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            &creator,
+            &artist,
+            price,
+            true
+        );
 
         self.tokens_resort(token_id.clone(), 5, None);
     }

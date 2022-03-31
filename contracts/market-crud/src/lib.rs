@@ -102,6 +102,8 @@ pub struct Contract {
     pub tokens_per_owner: LookupMap<AccountId, UnorderedSet<TokenId>>,
     //токени автора
     pub tokens_per_creator: LookupMap<AccountId, UnorderedSet<TokenId>>,
+    //токени художника
+    pub tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>,
     //хто створювач нового токена
     pub creator_per_token: LookupMap<TokenId, AccountId>,
     //токени по ідентифікатру
@@ -270,6 +272,7 @@ pub enum StorageKey {
     MintingAccountIds { account_id_hash: CryptoHash },
     EmailSubscriptions,
     SalesHistory,
+    TokensPerArtist
 }
 
 #[near_bindgen]
@@ -289,6 +292,7 @@ impl Contract {
             tokens_users_views: LookupMap::new(StorageKey::TokensUsersViews.try_to_vec().unwrap()),
             tokens_sorted: LookupMap::new(StorageKey::TokensSorted.try_to_vec().unwrap()),
             tokens_per_creator: LookupMap::new(StorageKey::TokensPerCreator.try_to_vec().unwrap()),
+            tokens_per_artist: LookupMap::new(StorageKey::TokensPerArtist.try_to_vec().unwrap()),
             creator_per_token: LookupMap::new(StorageKey::CreatorPerToken.try_to_vec().unwrap()),
             tokens_by_id: LookupMap::new(StorageKey::TokensById.try_to_vec().unwrap()),
             token_metadata_by_id: UnorderedMap::new(
@@ -418,6 +422,7 @@ impl Contract {
             collection_views: LookupMap<String, UnorderedSet<AccountId>>,
             minting_account_ids: UnorderedSet<AccountId>,
             email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
+            tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -466,6 +471,7 @@ impl Contract {
             collection_views: old_contract.collection_views,
             minting_account_ids: old_contract.minting_account_ids,
             email_subscriptions: old_contract.email_subscriptions,
+            tokens_per_artist: old_contract.tokens_per_artist
         }
     }
 
@@ -698,6 +704,15 @@ impl Contract {
             ProfileStatCriterionEnum::FollowersCount,
             1,
             true);
+    }
+
+
+    pub fn profile_get_stat(&self, account_id: AccountId) -> ProfileStat
+    {
+        return ProfileStatCriterion::profile_stat(
+            &self.profiles_global_stat,
+            &account_id
+        );
     }
 
     //Allows users to deposit storage. This is to cover the cost of storing sale objects on the contract
