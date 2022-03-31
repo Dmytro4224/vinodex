@@ -32,7 +32,7 @@ pub struct JsonToken {
 
     pub sale: Option<SaleJson>,
 
-    pub collection: Option<Collection>
+    pub collection: Option<CollectionJsonWithoutTokens>
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]

@@ -94,10 +94,14 @@ impl Contract {
         self.token_metadata_by_id.insert(&final_token_id, &metadata);
         self.internal_add_token_to_owner(&token.owner_id, &final_token_id);
 
+        let is_new_creator :bool ;
+
         match self.tokens_per_creator.get(&owner_id) {
             Some(mut tokens) => {
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
+
+                is_new_creator = false;
             }
             None => {
                 let mut tokens = UnorderedSet::new(
@@ -109,6 +113,33 @@ impl Contract {
                 );
                 tokens.insert(&final_token_id);
                 self.tokens_per_creator.insert(&owner_id, &tokens);
+
+                is_new_creator = true;
+            }
+        }
+
+        let mut is_new_artist = false;
+
+        if !metadata.artist.is_empty()
+        {
+            match self.tokens_per_artist.get(&metadata.artist) {
+                Some(mut tokens) => {
+                    tokens.insert(&final_token_id);
+                    self.tokens_per_artist.insert(&owner_id, &tokens);
+                }
+                None => {
+                    let mut tokens = UnorderedSet::new(
+                        StorageKey::TokenPerArtistInner {
+                            account_id_hash: hash_account_id(&metadata.artist),
+                        }
+                            .try_to_vec()
+                            .unwrap(),
+                    );
+                    tokens.insert(&final_token_id);
+                    self.tokens_per_artist.insert(&owner_id, &tokens);
+
+                    is_new_artist = true;
+                }
             }
         }
 
@@ -158,14 +189,23 @@ impl Contract {
             );
         }
 
-        //=
-        // ProfileStatCriterion::profile_stat_check_for_default_stat(
-        //      &mut self.profiles_global_stat,
-        //     &mut self.profiles_global_stat_sorted_vector,
-        //     &owner_id);
-        //=======================================================
+        if is_new_creator
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &owner_id);
+        }
 
-        //додати запис до profiles_by_tokens_count для статистики
+        if is_new_artist
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &metadata.artist);
+        }
+
+        //Кількість токенів creator
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
@@ -173,7 +213,18 @@ impl Contract {
             ProfileStatCriterionEnum::TokensCount,
             1,
             true);
-        //=======================================================
+
+        //Кількість токенів artist
+        if !metadata.artist.trim().is_empty()
+        {
+            ProfileStatCriterion::profile_stat_inc(
+                &mut self.profiles_global_stat,
+                &mut self.profiles_global_stat_sorted_vector,
+                &owner_id,
+                ProfileStatCriterionEnum::TokensCountAsArtist,
+                1,
+                true);
+        }
     }
 
     ///Дозволити акаунту випускати токени
