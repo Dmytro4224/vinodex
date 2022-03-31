@@ -10,4 +10,6 @@ export interface ICollectionResponseItem {
   views_count?: number;
   likes_count?: number;
   collection_id?: string;
+  is_liked?: boolean;
+  is_viewed?: boolean;
 }

@@ -123,7 +123,7 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps> {
             buttonText={`Place a bid`}
             linkTo={`/token/${item.token_id}`}
             tokenID={item.token_id}
-            isLike={item.is_like}
+            isLike={item.is_liked}
             onClick={() => {
             }} />;
         })}
