@@ -30,34 +30,46 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
 
   public componentDidMount() {
     window.scroll(0, 0);
-    this.getCollectionInfo();
-    this.getTokens();
+    // this.getCollectionInfo();
+    // this.getTokens();
   }
 
-  private getTokens() {
+  // private getTokens() {
+
+  //
+  //   // const user = this.props.near.user?.accountId || null;
+  //   //
+  //   // this.props.nftContractContext.nft_collections(
+  //   //   1,
+  //   //   100,
+  //   //   user,
+  //   //   true
+  //   // ).then(res => {
+  //   //   this.setState({
+  //   //     ...this.state,
+  //   //     isLoading: false,
+  //   //     collections: res
+  //   //   })
+  //   // })
+  // }
+
+  private getCollectionInfo() {
     this.setState({
       ...this.state,
       isLoading: false,
     })
 
-    // const user = this.props.near.user?.accountId || null;
-    //
-    // this.props.nftContractContext.nft_collections(
-    //   1,
-    //   100,
-    //   user,
-    //   true
-    // ).then(res => {
-    //   this.setState({
-    //     ...this.state,
-    //     isLoading: false,
-    //     collections: res
-    //   })
-    // })
-  }
-
-  private getCollectionInfo() {
-
+    this.props.nftContractContext.collection_get(
+      this.props.params.id!,
+      this.props.near.user?.accountId || null,
+      true
+    ).then(res => {
+      console.log('collection_get res', res);
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      })
+    })
   }
 
   private get description() {
