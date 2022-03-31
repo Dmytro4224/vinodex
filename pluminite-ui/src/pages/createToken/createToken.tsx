@@ -18,6 +18,7 @@ import { nftStorage } from '../../api/NftStorage';
 import Big from 'big.js';
 import TokenCardView from '../../components/tokenCard/tokenCardView';
 import cardPreview from '../../assets/images/Corners.jpg';
+import editImageIcon from '../../assets/icons/edit-image.svg';
 import MediaQuery from 'react-responsive';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import DatePicker from 'react-datepicker';
@@ -309,15 +310,15 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
         <div className={styles.createWrap}>
           <label className={styles.label}>Upload file</label>
           <div className={styles.dropzone}>
-            <Dropzone accept='image/*,video/*' onDrop={this.setSelectFile} ref={this._ref} noClick noKeyboard>
+            <Dropzone accept='image/*,video/*' onDrop={this.setSelectFile} ref={this._ref} noKeyboard>
               {({ getRootProps, getInputProps, acceptedFiles }) => {
                 return (
                   <div>
                     <div {...getRootProps({ className: `dropzone ${styles.customDropzone} ${styles.uploadForm}` })}>
                       <input {...getInputProps()} />
                       <div className={styles.dropzoneControls}>
-                        {acceptedFiles.length > 0 ?
-                          <>{acceptedFiles[0].type.startsWith('video/') ?
+                        {acceptedFiles.length > 0 || this._selectFile  ?
+                          <>{this._selectFile?.type.startsWith('video/') ?
                             <iframe
                               ref={this._imageRef} className={styles.iFrameStyle} width='550' height='300'
                               src={''}
@@ -329,12 +330,18 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                             <ButtonView
                               text={'Upload file'}
                               onClick={() => {
-                                this.openDialog();
+                                /*this.openDialog();*/
                               }}
                               color={buttonColors.goldFill}
                               customClass={styles.button} /></>
                         }
 
+                        <div className={`${styles.dropzoneHover} ${acceptedFiles.length > 0 || this._selectFile ? styles.dropzoneHoverShow : ''}`}>
+                          <div className="d-flex flex-column align-items-center justify-content-center">
+                            <img src={editImageIcon} alt=""/>
+                            <p className={styles.hoverText}>Change picture</p>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
