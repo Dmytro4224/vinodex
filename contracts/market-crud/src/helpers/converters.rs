@@ -1,6 +1,6 @@
+use near_sdk::collections::UnorderedMap;
 use std::collections::HashSet;
 use std::iter::FromIterator;
-use near_sdk::collections::{UnorderedMap};
 
 pub type TokenId = String;
 
@@ -16,10 +16,8 @@ pub struct Transliteration {}
 
 impl Transliteration {
     // Ініціалізація та заповнення мапи букв для транслітерації
-    pub fn transliterate_char<'life>(c: char) -> &'life str
-    {
-        return match c
-        {
+    pub fn transliterate_char<'life>(c: char) -> &'life str {
+        return match c {
             'а' => "a",
             'б' => "b",
             'в' => "v",
@@ -94,14 +92,64 @@ impl Transliteration {
             'Э' => "E",
             'Ю' => "JU",
             'Я' => "YA",
-            _ => "_"
-        }
+            'a' => "a",
+            'b' => "b",
+            'c' => "c",
+            'd' => "d",
+            'e' => "e",
+            'f' => "f",
+            'g' => "g",
+            'h' => "H",
+            'i' => "i",
+            'j' => "j",
+            'k' => "k",
+            'l' => "l",
+            'm' => "m",
+            'n' => "n",
+            'o' => "o",
+            'p' => "p",
+            'q' => "q",
+            'r' => "r",
+            's' => "s",
+            't' => "t",
+            'u' => "u",
+            'v' => "v",
+            'w' => "w",
+            'x' => "x",
+            'y' => "y",
+            'z' => "z",
+            'A' => "A",
+            'B' => "B",
+            'C' => "C",
+            'D' => "D",
+            'E' => "E",
+            'F' => "F",
+            'G' => "G",
+            'H' => "H",
+            'I' => "I",
+            'J' => "J",
+            'K' => "K",
+            'L' => "L",
+            'M' => "M",
+            'N' => "N",
+            'O' => "O",
+            'P' => "P",
+            'Q' => "Q",
+            'R' => "R",
+            'S' => "S",
+            'T' => "T",
+            'U' => "U",
+            'V' => "V",
+            'W' => "W",
+            'X' => "X",
+            'Y' => "Y",
+            'Z' => "Z",
+            _ => "_",
+        };
     }
 
     // Транслітерація рядка
-    pub fn transliterate_string(
-        input: &String
-    ) -> String {
+    pub fn transliterate_string(input: &String) -> String {
         let mut result: String = "".to_string();
 
         for c in input.chars() {
