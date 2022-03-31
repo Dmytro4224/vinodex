@@ -108,6 +108,10 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
+    if (this.state.order !== null && !this.state.order?.is_viewed) {
+      this.props.nftContractContext.token_set_view(this.state.order?.token_id!);
+    }
+
     if (prevProps.params.tokenId !== this.tokenId) {
       window.scrollTo(0, 0);
       this.getInfo();
@@ -121,7 +125,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
         ...this.state,
         order: response,
         isLoading: false,
-        isLike: response.is_like,
+        isLike: response.is_liked,
         likesCount: response.metadata.likes_count,
       });
     });
@@ -651,7 +655,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     name: this.state.order?.creator_id || 'Creator name',
                     account_id: '',
                     likes_count: 0,
-                    is_like: false,
+                    is_liked: false,
                     is_following: false,
                     followers_count: 0,
                   }}
@@ -672,7 +676,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                     name: this.state.order?.metadata?.artist || 'Artist name',
                     account_id: '',
                     likes_count: 0,
-                    is_like: false,
+                    is_liked: false,
                     is_following: false,
                     followers_count: 0,
                   }}

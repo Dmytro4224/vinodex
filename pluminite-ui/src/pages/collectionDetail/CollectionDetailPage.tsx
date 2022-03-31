@@ -35,6 +35,12 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     this.getCollectionInfo();
   }
 
+  public componentDidUpdate(prevProps: Readonly<ICollectionDetailPage & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+    if (!this.state.collectionData?.is_viewed) {
+      this.props.nftContractContext.collection_set_view(this.props.params.id!);
+    }
+  }
+
   private getCollectionInfo() {
     this.setState({
       ...this.state,
@@ -119,7 +125,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
                 buttonText={`Place a bid`}
                 linkTo={`/token/${item.token_id}`}
                 tokenID={item.token_id}
-                isLike={item.is_like}
+                isLike={item.is_liked}
                 onClick={() => {}}
                 isForceVisible={true}
               />

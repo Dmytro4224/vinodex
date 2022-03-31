@@ -126,7 +126,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
                 identification={item.account_id}
                 usersCount={item.followers_count}
                 likesCount={item.likes_count}
-                isLike={item.is_like}
+                isLike={item.is_liked}
                 isFollow={item.is_following}
                 followBtnText={this.followBtnText}
                 isDisabledFollowBtn={this.isProfilePageView}
