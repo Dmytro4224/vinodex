@@ -1,0 +1,62 @@
+.container {
+  padding: 40px 72px;
+  display: flex;
+  align-items: start;
+  gap: 60px;
+  min-height: 1000px;
+  justify-content: center;
+}
+
+.containerWrap {
+  width: 100%;
+  max-width: 560px;
+}
+
+.notFoundHead {
+}
+.notFoundHeadLeft, .notFoundHeadRight {
+  /*font-family: 'Bebas Neue';*/
+  font-style: normal;
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1;
+  text-transform: capitalize;
+  color: var(--black);
+}
+.notFoundHeadCenter {
+  padding: 0 50px;
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 200px;
+  line-height: 1;
+  text-transform: capitalize;
+  color: var(--black);
+}
+.notFoundHeadRight {
+
+}
+
+.notFoundImage {
+
+}
+.notFoundImageImg {
+  display: block;
+  margin: 0 auto;
+  width: 612px;
+  height: 531px;
+}
+
+.notFoundBottom {
+  font-style: normal;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 29px;
+  text-align: center;
+  color: var(--black);
+}
+
+.notFoundBottomLink {
+  color: var(--pirateCold);
+}
+
