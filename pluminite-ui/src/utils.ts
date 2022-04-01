@@ -92,6 +92,7 @@ export async function initContracts() {
     }
   ) as INftContract;
 
+  /*
   // Initializing our contract APIs by contract name and configuration
   const marketContract = await new nearAPI.Contract(
     walletConnection.account(),
@@ -107,10 +108,11 @@ export async function initContracts() {
       sender: walletConnection.getAccountId(),
     }
   ) as IMarketContract;
+  */
 
   return {
     nftContract,
-    marketContract,
+    //marketContract,
     currentUser,
     nearConfig,
     walletConnection,
