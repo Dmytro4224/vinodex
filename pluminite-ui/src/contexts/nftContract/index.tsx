@@ -25,11 +25,13 @@ export interface INftContractContext {
   minting_accounts_remove: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   collection_set_like: (collection_id: string) => Promise<any>;
+
   collection_set_view: (collection_id: string) => Promise<any>;
+
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   token_set_view: (token_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => Promise<Array<any>>;
+  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => Promise<Array<any>>;
   my_purchases: (catalog: string | null, page_index: number, page_size: number, account_id: string) => Promise<any>;
   sale_history_by_token: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
@@ -94,7 +96,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => {
+  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => {
     return this.props.nftContract.nft_tokens_by_filter({
       catalog,
       page_index,
@@ -107,7 +109,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       is_active_bid,
       price_from,
       price_to,
-      is_single
+      is_single,
+      collection_id
     });
   };
 
@@ -264,7 +267,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public collection_set_view = async (collection_id: string) => {
-    return this.nftContract.collection_set_view({ collection_id: collection_id });
+    return this.nftContract.collection_set_view({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, '0');
   };
 
   public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {

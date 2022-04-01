@@ -41,10 +41,10 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     window.scroll(0, 0);
 
     this.props.nftContractContext.profile_get_stat(this.getUserId).then(stat => {
-      console.log('stat', stat);
       this.setState({
         ...this.state,
-        statistic: stat
+        statistic: stat,
+        isLoading: false
       })
     });
 
@@ -58,7 +58,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     });
   }
 
-  public componentDidUpdate(prevProps: Readonly<IArtistDetail & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+  // public componentDidUpdate(prevProps: Readonly<IArtistDetail & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
     // if (
     //   !this.state.artistData?.is_viewed &&
     //   this.state.artistData !== null &&
@@ -68,7 +68,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     // ) {
     //   this.props.nftContractContext.view_artist_account(this.getUserId);
     // }
-  }
+  // }
 
   private get coverImage() {
     return this.state.artistData?.cover_image || collectionCover;
@@ -132,7 +132,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
             <span className='breadcrumb__separator'>/</span>
             <NavLink to={'/artists'}>Artists</NavLink>
             <span className='breadcrumb__separator'>/</span>
-            <p>{this.state.artistData?.name || ''}</p>
+            <p>{this.state.artistData?.name || this.state.artistData?.account_id || ''}</p>
           </div>
 
           <p className={styles.description}>{this.state.artistData?.bio || ''}</p>
@@ -156,25 +156,39 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
             </div>
           </div>
 
-          <Tabs
-            id='controlled-tab'
-            className='mb-3 justify-content-center tab-custom'
-          >
-            <Tab eventKey='items' title='Items'>
-              <ProfileTokensView
-                catalog={'Art'}
-                sort={7}
-                typeViewTokens={ProfileTokensType.createdItems}
-              />
-            </Tab>
-            <Tab eventKey='sale' title='On sale'>
-              <ProfileTokensView
-                catalog={'Art'}
-                sort={7}
-                typeViewTokens={ProfileTokensType.onSale}
-              />
-            </Tab>
-          </Tabs>
+          {this.state.isLoading ? (
+            <div className={`d-flex align-items-center flex-gap-36 flex-wrap`}>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            </div>
+          ) : this.itemsCount > 0 ? (
+            <Tabs
+              id='controlled-tab'
+              className='mb-3 justify-content-center tab-custom'
+            >
+              <Tab eventKey='items' title='Items'>
+                <ProfileTokensView
+                  catalog={'Art'}
+                  sort={7}
+                  typeViewTokens={ProfileTokensType.createdItems}
+                />
+              </Tab>
+              <Tab eventKey='sale' title='On sale'>
+                <ProfileTokensView
+                  catalog={'Art'}
+                  sort={7}
+                  typeViewTokens={ProfileTokensType.onSale}
+                />
+              </Tab>
+            </Tabs>
+          ) : (
+            <>
+              <p className='line-separator my-4' />
+              <EmptyListView />
+            </>
+          )}
         </div>
       </div>
     )
