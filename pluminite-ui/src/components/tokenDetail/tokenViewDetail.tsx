@@ -744,7 +744,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 />
                 <ArtistCard
                   info={this.state.artist}
-                  identification={this.state.order?.creator_id!}
+                  identification={this.state.order?.metadata?.artist!}
                   usersCount={0}
                   likesCount={0}
                   title={'Artist'}
