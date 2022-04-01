@@ -601,6 +601,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     return [this.state.order?.metadata.media || cardPreview]
   }
 
+  private get currentSlide() {
+    const index = this.getPreviews().findIndex(el => el === this.state.currentMedia);
+    if (index === -1) return 1
+    return (index + 1)
+  }
+
   render() {
     if (this.state.isLoading) {
       return <div className={`d-flex align-items-center flex-gap-36 p-5 ${styles.scrollWrap}`}>
@@ -617,6 +623,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
               <div className={styles.cardImageWrap}>
                 {this.state.order?.metadata?.additional_photos?.length ? (
                   <CarouselView
+                    currentslide={this.currentSlide}
                     slideToShow={1}
                     customCLass={'carousel-previews-token'}
                     containerName={`carousel-previews`}

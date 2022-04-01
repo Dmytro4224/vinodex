@@ -11,6 +11,7 @@ interface ICarouselView extends IProps {
   childrens: any[];
   containerName: string;
   slideToShow?: number;
+  currentslide?: number;
 }
 
 interface ISampleNextArrow extends IProps{
@@ -55,7 +56,7 @@ class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
       infinite: true,
       speed: 500,
       slidesToShow: this.props.slideToShow ? this.props.slideToShow : this.props.childrens.length > 1 ? 2 : 1,
-      currentslide: 1,
+      currentslide: this.props.currentslide || 1,
       dots: false,
       adaptiveHeight: false,
       nextArrow: <SampleNextArrow {...(this.props as any)} />, //this.SampleNextArrow(),
