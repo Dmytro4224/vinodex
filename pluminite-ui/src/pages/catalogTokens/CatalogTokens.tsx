@@ -138,12 +138,12 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
                   onChange={(item) => { this.setSort(item.id) }}
                   childrens={dropdownData}
                 />
-                <InputView
+                {/*<InputView
                   onChange={(e) => { console.log(e) }}
                   placeholder={'Search'}
                   icon={searchIcon}
                   inputStyleType={InputStyleType.round}
-                />
+                />*/}
                 <ButtonView
                   text={""}
                   withoutText={true}
