@@ -408,11 +408,11 @@ pub struct ProfileStat
     //поля попорядку 
     //on_sale 7 - 10
     //sold 11 - 14
-    pub prices_as_creator: ProfilePriceStatMain,
+    pub prices_as_creator: PriceStatMain,
 
     //on_sale 15 - 18
     //sold 19 - 22
-    pub prices_as_artist: ProfilePriceStatMain,
+    pub prices_as_artist: PriceStatMain,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
@@ -437,29 +437,29 @@ pub struct ProfileStatJson
     //поля попорядку 
     //on_sale 7 - 10
     //sold 11 - 14
-    pub prices_as_creator: ProfilePriceStatMainJson,
+    pub prices_as_creator: PriceStatMainJson,
 
     //on_sale 15 - 18
     //sold 19 - 22
-    pub prices_as_artist: ProfilePriceStatMainJson,
+    pub prices_as_artist: PriceStatMainJson,
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-pub struct ProfilePriceStatMain
+pub struct PriceStatMain
 {
-    pub on_sale: ProfilePriceStat,
-    pub sold: ProfilePriceStat
+    pub on_sale: PriceStat,
+    pub sold: PriceStat
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-pub struct ProfilePriceStatMainJson
+pub struct PriceStatMainJson
 {
-    pub on_sale: ProfilePriceStatJson,
-    pub sold: ProfilePriceStatJson
+    pub on_sale: PriceStatJson,
+    pub sold: PriceStatJson
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-pub struct ProfilePriceStatJson
+pub struct PriceStatJson
 {
     // найнижча ціна проданого токена
     pub lowest_price: U128,
@@ -472,7 +472,7 @@ pub struct ProfilePriceStatJson
 }
 
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
-pub struct ProfilePriceStat
+pub struct PriceStat
 {
     // найнижча ціна проданого токена
     pub lowest_price: u128,
@@ -541,9 +541,9 @@ impl ProfileStatCriterion
 
     }
 
-    pub fn profile_price_stat_get_default() -> ProfilePriceStat
+    pub fn price_stat_get_default() -> PriceStat
     {
-        return ProfilePriceStat
+        return PriceStat
         {
             lowest_price: 0,
             highest_price: 0,
@@ -563,15 +563,15 @@ impl ProfileStatCriterion
             tokens_count: 0,
             followers_count: 0,
             tokens_count_as_artist: 0,
-            prices_as_artist: ProfilePriceStatMain
+            prices_as_artist: PriceStatMain
             {
-                on_sale: ProfileStatCriterion::profile_price_stat_get_default(),
-                sold: ProfileStatCriterion::profile_price_stat_get_default()
+                on_sale: ProfileStatCriterion::price_stat_get_default(),
+                sold: ProfileStatCriterion::price_stat_get_default()
             },
-            prices_as_creator: ProfilePriceStatMain
+            prices_as_creator: PriceStatMain
             {
-                on_sale: ProfileStatCriterion::profile_price_stat_get_default(),
-                sold: ProfileStatCriterion::profile_price_stat_get_default()
+                on_sale: ProfileStatCriterion::price_stat_get_default(),
+                sold: ProfileStatCriterion::price_stat_get_default()
             }
         };
     }
@@ -757,7 +757,7 @@ impl ProfileStatCriterion
             }
         }
 
-        profiles_global_stat.insert(&user_id, &stat);
+        profiles_global_stat.insert(user_id, &stat);
     }
 
     ///збільшити значення статистики
@@ -1203,16 +1203,16 @@ impl ProfileStatCriterion
             tokens_count: stat.tokens_count,
             followers_count: stat.followers_count,
             tokens_count_as_artist: stat.tokens_count_as_artist,
-            prices_as_creator: ProfilePriceStatMainJson
+            prices_as_creator: PriceStatMainJson
             {
-                on_sale: ProfilePriceStatJson
+                on_sale: PriceStatJson
                 {
                     lowest_price: U128(stat.prices_as_creator.on_sale.lowest_price),
                     highest_price: U128(stat.prices_as_creator.on_sale.highest_price),
                     newest_price: U128(stat.prices_as_creator.on_sale.newest_price),
                     total_price: U128(stat.prices_as_creator.on_sale.total_price)
                 },
-                sold: ProfilePriceStatJson
+                sold: PriceStatJson
                 {
                     lowest_price: U128(stat.prices_as_creator.sold.lowest_price),
                     highest_price: U128(stat.prices_as_creator.sold.highest_price),
@@ -1220,16 +1220,16 @@ impl ProfileStatCriterion
                     total_price: U128(stat.prices_as_creator.sold.total_price)
                 }
             },
-            prices_as_artist: ProfilePriceStatMainJson
+            prices_as_artist: PriceStatMainJson
             {
-                on_sale: ProfilePriceStatJson
+                on_sale: PriceStatJson
                 {
                     lowest_price: U128(stat.prices_as_artist.on_sale.lowest_price),
                     highest_price: U128(stat.prices_as_artist.on_sale.highest_price),
                     newest_price: U128(stat.prices_as_artist.on_sale.newest_price),
                     total_price: U128(stat.prices_as_artist.on_sale.total_price)
                 },
-                sold: ProfilePriceStatJson
+                sold: PriceStatJson
                 {
                     lowest_price: U128(stat.prices_as_artist.sold.lowest_price),
                     highest_price: U128(stat.prices_as_artist.sold.highest_price),

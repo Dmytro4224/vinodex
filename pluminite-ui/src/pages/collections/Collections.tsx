@@ -40,7 +40,8 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
       1,
       100,
       user,
-      true
+      true,
+      null
     ).then(res => {
       console.log(res);
       this.setState({
