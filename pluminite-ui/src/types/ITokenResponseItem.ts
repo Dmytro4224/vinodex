@@ -25,6 +25,7 @@ export interface IMetaData{
   percentage_for_artist: number;
   percentage_for_creator: number;
   percentage_for_vinodex: number;
+  additional_photos: any;
 }
 
 export interface IRoyalty{

@@ -1,7 +1,7 @@
 import { ChangeEvent, Component } from 'react';
 import styles from './tokenViewDetail.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
-import { ITokenCardView } from '../tokenCard/tokenCardView';
+import TokenCardView, { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import LikeView, { LikeViewType } from '../like/likeView';
 import ArtistCard, { ArtistType } from '../artistCard/ArtistCard';
@@ -19,8 +19,8 @@ import React from 'react';
 import {
   convertNearToYoctoString,
   convertYoctoNearsToNears,
-  isVideoFile,
-  showToast,
+  isVideoFile, mediaUrl,
+  showToast, uid,
 } from '../../utils/sys';
 import { EShowTost } from '../../types/ISysTypes';
 import ModalTokenCheckoutNFT from '../modals/modalTokenCheckoutNFT/ModalTokenCheckoutNFT';
@@ -30,6 +30,9 @@ import ModalConfirm from '../modals/modalConfirm/ModalConfirm';
 import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { Timer, TimerType } from '../common/timer/Timer';
 import { nftStorage } from '../../api/NftStorage';
+import CarouselView from '../carousel/carouselView';
+import { HeaderNavigation } from '../navigation/HeaderNavigation';
+import MediaQuery from 'react-responsive';
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -67,6 +70,7 @@ interface ITokenViewState {
   modalSaleShow: boolean;
   creator: any;
   isShowConfirmModal: boolean,
+  currentMedia: string,
   modalConfirmData: {
     text: string,
     confirmCallback: () => void,
@@ -83,6 +87,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     modalSaleShow: false,
     modalMediaShow: false,
     creator: null,
+    currentMedia: '',
     isShowConfirmModal: false,
     modalConfirmData: {
       text: '',
@@ -149,6 +154,18 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     return false;
   }
 
+  private isPreviewVideo(extraQ) {
+    return false; // fix
+
+    let extra = JSON.parse(extraQ);
+
+    if (extra) {
+      return isVideoFile(extra.media_type);
+    }
+
+    return false;
+  }
+
   public setDefaultImage = async () => {
     if (this._refImage.current) {
       this._refImage.current.src = cardPreview;
@@ -181,10 +198,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     });
   }
 
-  private showMediaModal() {
+  private showMediaModal(src?: string) {
     this.setState({
       ...this.state,
       modalMediaShow: true,
+      currentMedia: src || ''
     });
   }
 
@@ -575,6 +593,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     }
   }
 
+  private getPreviews() {
+    if (this.state.order?.metadata?.additional_photos?.length) {
+      return [this.state.order?.metadata.media || cardPreview, ...this.state.order.metadata.additional_photos]
+    }
+
+    return [this.state.order?.metadata.media || cardPreview]
+  }
+
   render() {
     if (this.state.isLoading) {
       return <div className={`d-flex align-items-center flex-gap-36 p-5 ${styles.scrollWrap}`}>
@@ -589,25 +615,54 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
           <div className={`d-flex flex-gap-36 container ${styles.mainWrap}`}>
             <div className={styles.cardImage}>
               <div className={styles.cardImageWrap}>
-                {this.isVideo ?
-                  <iframe
-                    className={styles.iFrameStyle} width='1000' height='600'
-                    src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
-                    title='' frameBorder='0'
-                    allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                    allowFullScreen />
-                  :
-                  <img
-                    onClick={() => {
-                      this.showMediaModal();
-                    }}
-                    ref={this._refImage}
-                    onError={this.setDefaultImage}
-                    className={styles.imageStyle}
-                    src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
-                    alt={'preview image'}
+                {this.state.order?.metadata?.additional_photos?.length ? (
+                  <CarouselView
+                    slideToShow={1}
+                    customCLass={'carousel-previews-token'}
+                    containerName={`carousel-previews`}
+                    childrens={this.getPreviews().map(item => (
+                      this.isPreviewVideo(item) ? (
+                          <iframe
+                            key={uid()}
+                            className={styles.iFrameStyle} width='1000' height='600'
+                            src={nftStorage.replaceOldUrl(item || cardPreview)}
+                            title='' frameBorder='0'
+                            allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                            allowFullScreen
+                          />
+                        ) : (
+                          <img
+                            key={uid()}
+                            onClick={() => { this.showMediaModal(item); }}
+                            onError={this.setDefaultImage}
+                            className={styles.imageStyle}
+                            src={nftStorage.replaceOldUrl(item || cardPreview)}
+                            alt={'preview image'}
+                          />
+                        )
+                    ))}
                   />
-                }
+                ) : (
+                  this.isVideo ?
+                    <iframe
+                      className={styles.iFrameStyle} width='1000' height='600'
+                      src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
+                      title='' frameBorder='0'
+                      allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+                      allowFullScreen />
+                    :
+                    <img
+                      onClick={() => {
+                        this.showMediaModal();
+                      }}
+                      ref={this._refImage}
+                      onError={this.setDefaultImage}
+                      className={styles.imageStyle}
+                      src={nftStorage.replaceOldUrl(this.state.order?.metadata.media || cardPreview)}
+                      alt={'preview image'}
+                    />
+                )}
+
                 <div className={styles.cardDetail}>
                   {(this.state.order?.metadata.expires_at! !== '' && this.state.order?.metadata.expires_at !== null) &&
                     <div className={styles.daysInfo}>
@@ -776,11 +831,14 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             this.getInfo();
           }}
           tokenInfo={{}} token={this.state.order || null} />
-        {!this.isVideo ? <ModalViewMedia
-          inShowModal={this.state.modalMediaShow}
-          onHideModal={() => this.hideMediaModal()}
-          media={{ src: this.state.order?.metadata.media || cardPreview }}
-        /> : ''}
+
+        {!this.isVideo ? (
+          <ModalViewMedia
+            inShowModal={this.state.modalMediaShow}
+            onHideModal={() => this.hideMediaModal()}
+            media={{ src: this.state.currentMedia || this.state.order?.metadata.media || cardPreview }}
+          />
+        ) : ''}
 
         <ModalSaleToken
           inShowModal={this.state.modalSaleShow}
@@ -830,7 +888,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 }
 
-export default withComponent(TokenViewDetail);
+export default  withComponent(TokenViewDetail);
 
 // <div className={styles.tabsWrap}>
 //   <Tabs
