@@ -25,7 +25,9 @@ export interface INftContractContext {
   minting_accounts_remove: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   collection_set_like: (collection_id: string) => Promise<any>;
+
   collection_set_view: (collection_id: string) => Promise<any>;
+
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   token_set_view: (token_id: string) => Promise<any>;
@@ -264,7 +266,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public collection_set_view = async (collection_id: string) => {
-    return this.nftContract.collection_set_view({ collection_id: collection_id });
+    return this.nftContract.collection_set_view({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, '0');
   };
 
   public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {
