@@ -226,7 +226,7 @@ pub struct Contract {
     pub collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>,
 
     //статистика по колекції
-    pub collections_global_stat: LookupMap<String, PriceStatMain>,
+    pub collections_global_stat: LookupMap<String, CollectionStat>,
 
     //================collections--------------------//
 
@@ -439,7 +439,7 @@ impl Contract {
             minting_account_ids: UnorderedSet<AccountId>,
             email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
             tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>,
-            collections_global_stat: LookupMap<String, PriceStatMain>,
+            collections_global_stat: LookupMap<String, CollectionStat>,
             collection_creator: LookupMap<String, AccountId>,
             collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>
         }
@@ -614,60 +614,13 @@ impl Contract {
         &self,
         account_id: AccountId,
         asked_account_id: Option<AccountId>,
-    ) -> Option<JsonProfile> {
-        let account_id: AccountId = account_id.into();
-        //return self.profiles.get(&account_id).unwrap_or(Profile::get_default_data(account_id.clone()));
-        return Profile::get_full_profile(
-            &self.profiles,
+    ) -> Option<JsonProfile> 
+    {
+        return self.get_full_profile(
             &account_id,
             &asked_account_id,
-            &self.autors_likes,
-            &self.autors_followers,
-            &self.autors_views,
-            &self.tokens_per_owner,
             true,
         );
-    }
-
-    //Встановити дані профілю
-    pub fn set_profile(&mut self, mut profile: Profile) {
-        assert!(
-            profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
-            "Profile bio length is too long. Max length is {}",
-            MAX_PROFILE_BIO_LENGTH
-        );
-
-        assert!(
-            profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile image length is too long. Max length is {}",
-            MAX_PROFILE_IMAGE_LENGTH
-        );
-
-        assert!(
-            profile.cover_image.len() < MAX_PROFILE_IMAGE_LENGTH,
-            "Profile cover image length is too long. Max length is {}",
-            MAX_PROFILE_IMAGE_LENGTH
-        );
-
-        assert!(
-            profile.name.len() < MAX_PROFILE_NAME_LENGTH,
-            "User name length is too long. Max length is {}",
-            MAX_PROFILE_NAME_LENGTH
-        );
-
-        let predecessor_account_id = env::predecessor_account_id();
-
-        profile.account_id = predecessor_account_id.clone();
-
-        Profile::set_profile(&mut self.profiles, &profile, &predecessor_account_id);
-
-        if self.is_new_creator(&predecessor_account_id) || self.is_new_artist(&predecessor_account_id)
-        {
-            ProfileStatCriterion::profile_stat_check_for_default_stat(
-                &mut self.profiles_global_stat,
-               &mut self.profiles_global_stat_sorted_vector,
-               &predecessor_account_id);
-        }
     }
 
     #[private]
@@ -708,11 +661,10 @@ impl Contract {
         let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку лайків аккаунту, який лайкнули
-        Profile::set_profile_like(&mut self.autors_likes, &account_id, &predecessor_account_id);
+        self.set_profile_like(&account_id, &predecessor_account_id);
 
         //додаємо запис до списку мого списку лайків
-        Profile::add_profile_to_my_like_list(
-            &mut self.my_authors_likes,
+        self.add_profile_to_my_like_list(
             &predecessor_account_id,
             &account_id,
         );
@@ -729,11 +681,9 @@ impl Contract {
     //поставити помітку про відвідання карточки користувача
     pub fn view_artist_account(&mut self, account_id: AccountId) 
     {
-        return;
-
         let predecessor_account_id = env::predecessor_account_id();
 
-        Profile::set_profile_view(&mut self.autors_views, &account_id, &predecessor_account_id);
+        self.set_profile_view(&account_id, &predecessor_account_id);
 
         //збільнуємо статистику
         ProfileStatCriterion::profile_stat_inc(&mut self.profiles_global_stat,
@@ -750,15 +700,13 @@ impl Contract {
         let predecessor_account_id = env::predecessor_account_id();
 
         //додаємо запис до списку підписників аккаунту, на який підписалися
-        Profile::set_profile_follow(
-            &mut self.autors_followers,
+        self.set_profile_follow(
             &account_id,
             &predecessor_account_id,
         );
 
         //додаємо запис до списку мого списку лайків
-        Profile::add_profile_to_my_followers_list(
-            &mut self.my_autors_followed,
+        self.add_profile_to_my_followers_list(
             &predecessor_account_id,
             &account_id,
         );
@@ -913,14 +861,14 @@ impl Contract {
             (
                 &collection_id,
                 CollectionStatCriterionEnum::OnSaleLowestPrice,
-                lowest_by_collection_on_sale
+                Some(lowest_by_collection_on_sale)
             );
 
             self.set_collection_stat_val
             (
                 &collection_id,
                 CollectionStatCriterionEnum::OnSaleHighestPrice,
-                highest_by_collection_on_sale
+                Some(highest_by_collection_on_sale)
             );
         }
     }

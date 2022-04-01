@@ -1,3 +1,5 @@
+use crate::*;
+
 use std::cmp::{Ordering};
 use near_sdk::{AccountId};
 use near_sdk::collections::{LookupMap};
@@ -52,223 +54,8 @@ pub struct Profile {
     pub account_id:AccountId
 }
 
-impl Profile {
-    ///Отримати дані профілю для юзера AccountId
-    pub fn get_profile_inner(profiles: &mut LookupMap<AccountId, Profile>, account_id: AccountId) -> Option<Profile> {
-        let account_id: AccountId = account_id.into();
-        return profiles.get(&account_id);
-    }
-
-
-
-    pub fn get_full_profile(
-        profiles: &LookupMap<AccountId, Profile>,
-        account_id: &AccountId,
-        asked_account_id: &Option<AccountId>,
-        autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
-        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>,
-        autors_views: &LookupMap<AccountId, HashSet<AccountId>>,
-        autors_tokens: &LookupMap<AccountId, UnorderedSet<String>>,
-        default_if_none: bool
-       ) -> Option<JsonProfile> {
-       let account_id: AccountId = account_id.into();
-
-       if let Some(_profile) = profiles.get(&account_id) {
-           let mut result=JsonProfile 
-           {
-               account_id:_profile.account_id,
-               bio:_profile.bio,
-               name:_profile.name,
-               image:_profile.image,
-               cover_image:_profile.cover_image,
-               email:_profile.email,
-               is_following :false,
-               is_liked :false,
-               is_viewed :false,
-               followers_count:Profile::get_profile_followers_count(&autors_followers,&account_id),
-               likes_count:Profile::get_profile_like_count(&autors_likes,&account_id),
-               items_count: 0
-           };
-
-           if let Some(tokens) = autors_tokens.get(&account_id)
-           {
-                result.items_count = tokens.len() as u32;
-           }
-
-           if let Some(_asked_account_id)=asked_account_id
-           {
-                result.is_following=Profile::is_profile_checked(
-                    &autors_followers,
-                    &account_id,
-                    &_asked_account_id
-                );
-
-                result.is_liked = Profile::is_profile_checked(
-                    &autors_likes,
-                    &account_id,
-                    &_asked_account_id);
-
-                result.is_viewed = Profile::is_profile_checked(
-                    &autors_views,
-                    &account_id,
-                    &_asked_account_id);
-           }
-
-           return  Some(result);
-           }
-        
-        else 
-        {
-            if default_if_none
-            {
-                return Some(JsonProfile
-                {
-                    account_id: account_id,
-                    bio: String::from(""),
-                    name: String::from(""),
-                    image: String::from(""),
-                    cover_image: String::from(""),
-                    email: String::from(""),
-                    is_following:false,
-                    is_liked:false,
-                    is_viewed:false,
-                    followers_count: 0,
-                    likes_count: 0,
-                    items_count: 0
-                });
-            }
-            else
-            {
-                return  None;
-            }
-       }
-   }
-    pub fn get_default_data(account_id: AccountId) -> Profile{
-        return Profile
-        {
-            account_id:account_id,
-            bio:String::from(""),
-            email:String::from(""),
-            image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
-            cover_image:String::from(""),
-            name:String::from("")
-        }
-    }
-
-
-    ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
-    pub fn check_default(profiles: &mut LookupMap<AccountId, Profile>, account_id: &AccountId){
-        let _profile=Profile::get_profile_inner(profiles, account_id.clone());
-        if _profile.is_none(){
-            profiles.insert(
-                &account_id, 
-                &Profile::get_default_data(account_id.clone())
-            );
-        }
-    }
-
-
-    pub fn set_profile_bio(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
-        Profile::check_default(profiles,account_id);
-
-        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
-        _profile.bio=value.clone();
-        profiles.insert(&account_id, &_profile);
-    }
-
-    pub fn set_profile_image(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
-        Profile::check_default(profiles,account_id);
-
-        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
-        _profile.image=value.clone();
-        profiles.insert(&account_id, &_profile);
-    }
-
-    pub fn set_profile_name(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
-        Profile::check_default(profiles,account_id);
-
-        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
-        _profile.name=value.clone();
-        profiles.insert(&account_id, &_profile);
-    }
-
-    pub fn set_profile_email(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
-        Profile::check_default(profiles,account_id);
-
-        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
-        _profile.email=value.clone();
-        profiles.insert(&account_id, &_profile);
-    }
-
-    pub fn set_profile_account_id(profiles: &mut LookupMap<AccountId, Profile>,value:String, account_id: &AccountId){
-        Profile::check_default(profiles,account_id);
-
-        let mut _profile=Profile::get_profile_inner(profiles, account_id.clone()).unwrap();
-        _profile.account_id=value.clone();
-        profiles.insert(&account_id, &_profile);
-    }
-
-    ///Встановити дані профілю
-    pub fn set_profile(profiles: &mut LookupMap<AccountId, Profile>, 
-        profile: &Profile, 
-        account_id: &AccountId) 
-    {
-        //let mut _profile=Profile::get_profile_inner(profiles, account_id.clone());
-        profiles.insert(&account_id, profile);
-    }
-
-
-    ///поставити лайк юзеру
-    pub fn set_profile_like(
-        autors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
-        sourse_account_id: &AccountId,
-        target_account_id: &AccountId){
-
-            Profile::change_dictionary_state(
-                autors_likes,
-                sourse_account_id,
-                target_account_id,
-            true
-            );
-
-    }
-
-    ///кількість поставлених лайків
-    pub fn get_profile_like_count(
-     autors_likes: &LookupMap<AccountId, HashSet<AccountId>>, 
-     account_id: &AccountId)->u32
-     {
-        match autors_likes.get(&account_id)
-        {
-            Some(likes) =>
-            {
-                return likes.len() as u32;
-            },
-            None =>
-            {
-                return 0 as u32;
-            }
-        }
-    }
-
-    ///кількість людей, які підписалися на автора
-    pub fn get_profile_followers_count(
-        autors_followers: &LookupMap<AccountId, HashSet<AccountId>>, 
-        account_id: &AccountId)->u32
-    {
-        match autors_followers.get(&account_id)
-        {
-            Some(follows) =>
-            {
-                return follows.len() as u32;
-            },
-            None =>
-            {
-                return 0 as u32;
-            }
-        }
-    }
-
+impl Profile
+{
     pub fn is_profile_checked(
         source: &LookupMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
@@ -290,63 +77,6 @@ impl Profile {
                 return false;
             }
         }
-    }
-
-    ///поставити відмітку, хто відвідував сторінку користувачем
-    pub fn set_profile_view(
-        autors_view:&mut LookupMap<AccountId, HashSet<AccountId>>, 
-        sourse_account_id: &AccountId,
-        target_account_id: &AccountId)
-    {
-
-        Profile::change_dictionary_state(
-            autors_view,
-            sourse_account_id,
-            target_account_id,
-        false
-        );
-    }
-
-    ///Додати користувача в список відстеження
-    pub fn set_profile_follow(
-        autors_following_list:&mut LookupMap<AccountId, HashSet<AccountId>>, 
-        sourse_account_id: &AccountId,
-        target_account_id: &AccountId)
-    {
-        Profile::change_dictionary_state(
-            autors_following_list,
-            sourse_account_id,
-            target_account_id,
-        true
-        );
-    }
-
-    ///додати юзера до мого списку вподобань
-    pub fn add_profile_to_my_like_list(
-        my_authors_likes:&mut LookupMap<AccountId, HashSet<AccountId>>, 
-        my_account_id: &AccountId,
-        like_account_id: &AccountId)
-    {
-
-        Profile::change_dictionary_state(
-            my_authors_likes,
-            my_account_id,
-            like_account_id,
-        true
-        );
-    }
-
-    pub fn add_profile_to_my_followers_list(
-        my_autors_followers:&mut LookupMap<AccountId, HashSet<AccountId>>, 
-        my_account_id: &AccountId,
-        follower_account_id: &AccountId){
-
-            Profile::change_dictionary_state(
-                my_autors_followers,
-                my_account_id,
-                follower_account_id,
-            true
-            );
     }
 
     pub fn change_dictionary_state(
@@ -383,6 +113,317 @@ impl Profile {
                 dictionary.insert(sourse_account_id, &_fitst_record);
             }
         }
+    }
+}
+
+#[near_bindgen]
+impl Contract 
+{
+
+    ///Отримати дані профілю для юзера AccountId
+    pub fn get_profile_inner(&self, account_id: &AccountId) -> Option<Profile> 
+    {
+        return self.profiles.get(account_id);
+    }
+
+    pub fn get_full_profile(
+        &self,
+        account_id: &AccountId,
+        asked_account_id: &Option<AccountId>,
+        default_if_none: bool
+       ) -> Option<JsonProfile> 
+    {
+       if let Some(_profile) = self.profiles.get(account_id) 
+       {
+            let mut result=JsonProfile 
+            {
+                account_id:_profile.account_id,
+                bio:_profile.bio,
+                name:_profile.name,
+                image:_profile.image,
+                cover_image:_profile.cover_image,
+                email:_profile.email,
+                is_following :false,
+                is_liked :false,
+                is_viewed :false,
+                followers_count: self.get_profile_followers_count(account_id),
+                likes_count: self.get_profile_like_count(account_id),
+                items_count: 0
+            };
+
+            if let Some(tokens) = self.tokens_per_owner.get(&account_id)
+            {
+                result.items_count = tokens.len() as u32;
+            }
+
+            if let Some(_asked_account_id) = asked_account_id
+            {
+                    result.is_following=Profile::is_profile_checked(
+                        &self.autors_followers,
+                        &account_id,
+                        &_asked_account_id
+                    );
+
+                    result.is_liked = Profile::is_profile_checked(
+                        &self.autors_likes,
+                        &account_id,
+                        &_asked_account_id);
+
+                    result.is_viewed = Profile::is_profile_checked(
+                        &self.autors_views,
+                        &account_id,
+                        &_asked_account_id);
+            }
+
+            return  Some(result);
+        }
+        
+        else 
+        {
+            if default_if_none
+            {
+                return Some(JsonProfile
+                {
+                    account_id: account_id.clone(),
+                    bio: String::from(""),
+                    name: String::from(""),
+                    image: String::from(""),
+                    cover_image: String::from(""),
+                    email: String::from(""),
+                    is_following:false,
+                    is_liked:false,
+                    is_viewed:false,
+                    followers_count: 0,
+                    likes_count: 0,
+                    items_count: 0
+                });
+            }
+            else
+            {
+                return  None;
+            }
+       }
+   }
+
+    pub fn get_default_profile_data(&self, account_id: AccountId) -> Profile
+    {
+        return Profile
+        {
+            account_id:account_id,
+            bio:String::from(""),
+            email:String::from(""),
+            image:String::from("https://thumbs.dreamstime.com/b/default-avatar-thumb-6599242.jpg"),
+            cover_image:String::from(""),
+            name:String::from("")
+        };
+    }
+
+    ///перевірити чи є запис про профіль, якшо нема - додати дефолтний
+    pub fn check_default(&mut self, account_id: &AccountId)
+    {
+        let _profile = self.get_profile_inner(account_id);
+
+        if _profile.is_none()
+        {
+            self.profiles.insert(
+                &account_id, 
+                &self.get_default_profile_data(account_id.clone())
+            );
+        }
+    }
+
+    pub fn set_profile_bio(&mut self,value:String, account_id: &AccountId)
+    {
+        self.check_default(account_id);
+
+        let mut _profile = self.get_profile_inner(account_id).unwrap();
+        _profile.bio = value.clone();
+        self.profiles.insert(account_id, &_profile);
+    }
+
+    pub fn set_profile_image(&mut self, value:String, account_id: &AccountId)
+    {
+        self.check_default(account_id);
+
+        let mut _profile = self.get_profile_inner(account_id).unwrap();
+        _profile.image = value.clone();
+        self.profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_name(&mut self, value:String, account_id: &AccountId)
+    {
+        self.check_default(account_id);
+
+        let mut _profile = self.get_profile_inner(account_id).unwrap();
+        _profile.name = value.clone();
+        self.profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_email(&mut self, value:String, account_id: &AccountId)
+    {
+        self.check_default(account_id);
+
+        let mut _profile = self.get_profile_inner(account_id).unwrap();
+        _profile.email = value.clone();
+        self.profiles.insert(&account_id, &_profile);
+    }
+
+    pub fn set_profile_account_id(&mut self, value:String, account_id: &AccountId)
+    {
+        self.check_default(account_id);
+
+        let mut _profile = self.get_profile_inner(account_id).unwrap();
+        _profile.account_id = value.clone();
+        self.profiles.insert(&account_id, &_profile);
+    }
+
+    //Встановити дані профілю
+    pub fn set_profile(&mut self, mut profile: Profile) 
+    {
+        assert!(
+            profile.bio.len() < MAX_PROFILE_BIO_LENGTH,
+            "Profile bio length is too long. Max length is {}",
+            MAX_PROFILE_BIO_LENGTH
+        );
+
+        assert!(
+            profile.image.len() < MAX_PROFILE_IMAGE_LENGTH,
+            "Profile image length is too long. Max length is {}",
+            MAX_PROFILE_IMAGE_LENGTH
+        );
+
+        assert!(
+            profile.cover_image.len() < MAX_PROFILE_IMAGE_LENGTH,
+            "Profile cover image length is too long. Max length is {}",
+            MAX_PROFILE_IMAGE_LENGTH
+        );
+
+        assert!(
+            profile.name.len() < MAX_PROFILE_NAME_LENGTH,
+            "User name length is too long. Max length is {}",
+            MAX_PROFILE_NAME_LENGTH
+        );
+
+        let predecessor_account_id = env::predecessor_account_id();
+
+        profile.account_id = predecessor_account_id.clone();
+
+        self.profiles.insert(&predecessor_account_id, &profile);
+
+        if self.is_new_creator(&predecessor_account_id) || self.is_new_artist(&predecessor_account_id)
+        {
+            ProfileStatCriterion::profile_stat_check_for_default_stat(
+                &mut self.profiles_global_stat,
+               &mut self.profiles_global_stat_sorted_vector,
+               &predecessor_account_id);
+        }
+    }
+
+
+    ///поставити лайк юзеру
+    pub fn set_profile_like(
+        &mut self, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId)
+    {
+        Profile::change_dictionary_state(
+            &mut self.autors_likes,
+            sourse_account_id,
+            target_account_id,
+            true
+        );
+    }
+
+    ///кількість поставлених лайків
+    pub fn get_profile_like_count(
+    &self,
+     account_id: &AccountId)->u32
+     {
+        match self.autors_likes.get(account_id)
+        {
+            Some(likes) =>
+            {
+                return likes.len() as u32;
+            },
+            None =>
+            {
+                return 0 as u32;
+            }
+        }
+    }
+
+    ///кількість людей, які підписалися на автора
+    pub fn get_profile_followers_count(
+        &self, 
+        account_id: &AccountId)->u32
+    {
+        match self.autors_followers.get(account_id)
+        {
+            Some(follows) =>
+            {
+                return follows.len() as u32;
+            },
+            None =>
+            {
+                return 0 as u32;
+            }
+        }
+    }
+
+    ///поставити відмітку, хто відвідував сторінку користувачем
+    pub fn set_profile_view(
+        &mut self, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId)
+    {
+
+        Profile::change_dictionary_state(
+            &mut self.autors_views,
+            sourse_account_id,
+            target_account_id,
+        false
+        );
+    }
+
+    ///Додати користувача в список відстеження
+    pub fn set_profile_follow(
+        &mut self, 
+        sourse_account_id: &AccountId,
+        target_account_id: &AccountId)
+    {
+        Profile::change_dictionary_state(
+            &mut self.autors_followers,
+            sourse_account_id,
+            target_account_id,
+        true
+        );
+    }
+
+    ///додати юзера до мого списку вподобань
+    pub fn add_profile_to_my_like_list(
+        &mut self, 
+        my_account_id: &AccountId,
+        like_account_id: &AccountId)
+    {
+        Profile::change_dictionary_state(
+            &mut self.my_authors_likes,
+            my_account_id,
+            like_account_id,
+            true
+        );
+    }
+
+    pub fn add_profile_to_my_followers_list(
+        &mut self, 
+        my_account_id: &AccountId,
+        follower_account_id: &AccountId)
+    {
+        Profile::change_dictionary_state(
+            &mut self.my_autors_followed,
+            my_account_id,
+            follower_account_id,
+            true
+        );
     }
 } 
 
@@ -735,7 +776,7 @@ impl ProfileStatCriterion
                 }
 
                 //сортуємо і шукаємо нову позицію
-                let _new_position=ProfileStatCriterion::binary_search(&_sort_element,&_vector);
+                let _new_position = ProfileStatCriterion::binary_search(&_sort_element,&_vector);
                     
                 match _new_position
                 {
@@ -924,6 +965,7 @@ impl ProfileStatCriterion
         creator: &AccountId, 
         artist: &AccountId, 
         price: u128,
+        previous_bid_price: Option<u128>,
         is_sold: bool
     )
     {
@@ -932,6 +974,7 @@ impl ProfileStatCriterion
             profiles_global_stat_sorted_vector,
             creator,
             price,
+            previous_bid_price,
             is_sold
         );
 
@@ -940,6 +983,7 @@ impl ProfileStatCriterion
             profiles_global_stat_sorted_vector,
             artist,
             price,
+            previous_bid_price,
             is_sold
         );
     }
@@ -951,6 +995,7 @@ impl ProfileStatCriterion
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         account_id: &AccountId, 
         price: u128,
+        previous_bid_price: Option<u128>,
         is_sold: bool
     )
     {
@@ -1011,6 +1056,15 @@ impl ProfileStatCriterion
                 ProfileStatCriterionEnum::SoldTotalPriceAsCreator,
                 stat.prices_as_creator.sold.total_price + price
             );
+
+            ProfileStatCriterion::set_profile_stat_val
+            (
+                profiles_global_stat,
+                profiles_global_stat_sorted_vector,
+                account_id,
+                ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator,
+                stat.prices_as_creator.on_sale.total_price - price
+            );
         }
         else
         {
@@ -1053,7 +1107,7 @@ impl ProfileStatCriterion
                 profiles_global_stat_sorted_vector,
                 account_id,
                 ProfileStatCriterionEnum::OnSaleTotalPriceAsCreator,
-                stat.prices_as_creator.on_sale.total_price + price
+                stat.prices_as_creator.on_sale.total_price + price - previous_bid_price.unwrap_or(0)
             );
         }
     }
@@ -1066,6 +1120,7 @@ impl ProfileStatCriterion
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         account_id: &AccountId, 
         price: u128,
+        previous_bid_price: Option<u128>,
         is_sold: bool
     )
     {
@@ -1126,6 +1181,15 @@ impl ProfileStatCriterion
                 ProfileStatCriterionEnum::SoldTotalPriceAsArtist,
                 stat.prices_as_artist.sold.total_price + price
             );
+
+            ProfileStatCriterion::set_profile_stat_val
+            (
+                profiles_global_stat,
+                profiles_global_stat_sorted_vector,
+                account_id,
+                ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist,
+                stat.prices_as_creator.on_sale.total_price - price
+            );
         }
         else
         {
@@ -1168,7 +1232,7 @@ impl ProfileStatCriterion
                 profiles_global_stat_sorted_vector,
                 account_id,
                 ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist,
-                stat.prices_as_artist.on_sale.total_price + price
+                stat.prices_as_artist.on_sale.total_price + price - previous_bid_price.unwrap_or(0)
             );
         }
     }
@@ -1177,7 +1241,7 @@ impl ProfileStatCriterion
     pub fn profile_stat(
         profiles_global_stat: &LookupMap<AccountId, ProfileStat>,
         user_id:&AccountId
-        )->ProfileStatJson
+        ) -> ProfileStatJson
     {
         let stat:ProfileStat;
             

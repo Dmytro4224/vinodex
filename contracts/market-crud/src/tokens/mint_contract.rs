@@ -16,7 +16,8 @@ impl Contract {
     ) 
     {
         let mut owner_id = env::predecessor_account_id();
-        if !self.minting_account_ids.contains(&owner_id)
+        let creator_id = env::predecessor_account_id();
+        if !self.minting_account_ids.contains(&creator_id)
         {
             panic!("You do not have permission for minting");
         }
@@ -96,23 +97,23 @@ impl Contract {
 
         let is_new_creator :bool ;
 
-        match self.tokens_per_creator.get(&owner_id) {
+        match self.tokens_per_creator.get(&creator_id) {
             Some(mut tokens) => {
                 tokens.insert(&final_token_id);
-                self.tokens_per_creator.insert(&owner_id, &tokens);
+                self.tokens_per_creator.insert(&creator_id, &tokens);
 
                 is_new_creator = false;
             }
             None => {
                 let mut tokens = UnorderedSet::new(
                     StorageKey::TokenPerCreatorInner {
-                        account_id_hash: hash_account_id(&owner_id),
+                        account_id_hash: hash_account_id(&creator_id),
                     }
                         .try_to_vec()
                         .unwrap(),
                 );
                 tokens.insert(&final_token_id);
-                self.tokens_per_creator.insert(&owner_id, &tokens);
+                self.tokens_per_creator.insert(&creator_id, &tokens);
 
                 is_new_creator = true;
             }
@@ -143,7 +144,7 @@ impl Contract {
             }
         }
 
-        self.creator_per_token.insert(&final_token_id, &owner_id);
+        self.creator_per_token.insert(&final_token_id, &creator_id);
 
         match sale
         {
@@ -176,16 +177,14 @@ impl Contract {
 
         //створюємо профіль, якшо нема
     
-        let _profile_data=self.profiles.get(&owner_id);
+        let _profile_data=self.profiles.get(&creator_id);
         if _profile_data.is_none()
         {
             //дефолтні значення
             //виправити перед релізом!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            Profile::set_profile
+            self.set_profile
             (
-                &mut self.profiles,
-                &Profile::get_default_data(owner_id.clone()),
-                &owner_id
+                self.get_default_profile_data(creator_id.clone())
             );
         }
 
@@ -194,7 +193,7 @@ impl Contract {
             ProfileStatCriterion::profile_stat_check_for_default_stat(
                 &mut self.profiles_global_stat,
                &mut self.profiles_global_stat_sorted_vector,
-               &owner_id);
+               &creator_id);
         }
 
         if is_new_artist
@@ -209,7 +208,7 @@ impl Contract {
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &owner_id,
+            &creator_id,
             ProfileStatCriterionEnum::TokensCount,
             1,
             true);
@@ -220,7 +219,7 @@ impl Contract {
             ProfileStatCriterion::profile_stat_inc(
                 &mut self.profiles_global_stat,
                 &mut self.profiles_global_stat_sorted_vector,
-                &owner_id,
+                &metadata.artist,
                 ProfileStatCriterionEnum::TokensCountAsArtist,
                 1,
                 true);

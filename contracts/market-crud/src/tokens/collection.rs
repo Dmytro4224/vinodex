@@ -2,8 +2,11 @@ use crate::*;
 
 #[path = "../helpers/converters.rs"]
 mod converters;
-
 use converters::Transliteration;
+
+#[path = "../helpers/self_viewer.rs"]
+mod self_viewer;
+use self_viewer::*;
 
 #[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
 #[serde(crate = "near_sdk::serde")]
@@ -62,6 +65,13 @@ pub struct CollectionStatJson {
     pub prices : PriceStatMainJson
 }
 
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[serde(crate = "near_sdk::serde")]
+pub struct CollectionStat {
+    pub views_count: u64,
+    pub prices : PriceStatMain
+}
+
 #[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
 pub enum CollectionStatCriterionEnum
 {
@@ -72,7 +82,8 @@ pub enum CollectionStatCriterionEnum
     SoldLowestPrice,
     SoldHighestPrice,
     SoldNewestPrice,
-    SoldTotalPrice
+    SoldTotalPrice,
+    ViewsCount
 }
 
 #[near_bindgen]
@@ -136,6 +147,7 @@ impl Contract {
         collection_id: &String,
         account_id: &Option<AccountId>,
         with_tokens: bool,
+        set_view: bool
     ) -> Option<CollectionJson> {
         match self.collections.get(collection_id) {
             Some(collection) => {
@@ -209,6 +221,11 @@ impl Contract {
                     }
                 }
 
+                if set_view
+                {
+                    //self.collection_set_view(collection_id);
+                }
+
                 return Some(CollectionJson {
                     collection_id: collection_id.clone(),
                     name: collection.name,
@@ -216,14 +233,9 @@ impl Contract {
                     profile_photo: collection.profile_photo,
                     cover_photo: collection.cover_photo,
                     is_active: collection.is_active,
-                    owner: Profile::get_full_profile(
-                        &self.profiles,
+                    owner: self.get_full_profile(
                         &collection.owner_id,
                         account_id,
-                        &self.autors_likes,
-                        &self.autors_followers,
-                        &self.autors_views,
-                        &self.tokens_per_owner,
                         true,
                     ),
                     tokens: tokens,
@@ -291,7 +303,7 @@ impl Contract {
                         continue;
                     }
 
-                    res.push(self.collection_get(&collection_id, &account_id, with_tokens));
+                    res.push(self.collection_get(&collection_id, &account_id, with_tokens, false));
                 },
                 None =>
                 {
@@ -307,7 +319,7 @@ impl Contract {
     {
         match self.collection_per_token.get(&token_id) {
             Some(collection_id) => {
-                match self.collection_get(&collection_id, account_id, false)
+                match self.collection_get(&collection_id, account_id, false, true)
                 {
                     Some(collection) =>
                     {
@@ -485,25 +497,20 @@ impl Contract {
 
     pub fn collection_get_stat(&self, collection_id: String) -> CollectionStatJson
     {
-        let price_stat: PriceStatMain;
+        let stat: CollectionStat;
         match self.collections_global_stat.get(&collection_id)
         {
-            Some(stat) =>
+            Some(_stat) =>
             {
-                price_stat = stat;
+                stat = _stat;
             },
             None =>
             {
-                price_stat = PriceStatMain
-                {
-                    on_sale: ProfileStatCriterion::price_stat_get_default(),
-                    sold: ProfileStatCriterion::price_stat_get_default()
-                };
+                stat = self.collection_get_stat_default();
             }
         }
 
         let likes_count: u64;
-        let  views_count: u64;
 
         match self.collection_likes.get(&collection_id) 
         {
@@ -514,18 +521,6 @@ impl Contract {
             None => 
             {
                 likes_count = 0;
-            }
-        }
-
-        match self.collection_views.get(&collection_id) 
-        {
-            Some(views) => 
-            {
-                views_count = views.len();
-            }
-            None => 
-            {
-                views_count = 0;
             }
         }
 
@@ -547,22 +542,22 @@ impl Contract {
         {
             likes_count: likes_count,
             tokens_count: tokens_count,
-            views_count: views_count,
+            views_count: stat.views_count,
             prices: PriceStatMainJson
             {
                 on_sale: PriceStatJson
                 {
-                    lowest_price: U128(price_stat.on_sale.lowest_price),
-                    highest_price: U128(price_stat.on_sale.highest_price),
-                    newest_price: U128(price_stat.on_sale.newest_price),
-                    total_price: U128(price_stat.on_sale.total_price)
+                    lowest_price: U128(stat.prices.on_sale.lowest_price),
+                    highest_price: U128(stat.prices.on_sale.highest_price),
+                    newest_price: U128(stat.prices.on_sale.newest_price),
+                    total_price: U128(stat.prices.on_sale.total_price)
                 },
                 sold: PriceStatJson
                 {
-                    lowest_price: U128(price_stat.sold.lowest_price),
-                    highest_price: U128(price_stat.sold.highest_price),
-                    newest_price: U128(price_stat.sold.newest_price),
-                    total_price: U128(price_stat.sold.total_price)
+                    lowest_price: U128(stat.prices.sold.lowest_price),
+                    highest_price: U128(stat.prices.sold.highest_price),
+                    newest_price: U128(stat.prices.sold.newest_price),
+                    total_price: U128(stat.prices.sold.total_price)
                 }
             }
         };
@@ -574,13 +569,6 @@ impl Contract {
             Some(collection_id) => {
                 match self.collection_tokens.get(&collection_id) {
                     Some(mut tokens) => {
-                        // let pos = tokens.iter().position(|x| x.eq(&token_id));
-
-                        // if let Some(position) = pos
-                        // {
-                        //     tokens.remove(position);
-                        // }
-
                         tokens.remove(&token_id);
 
                         self.collection_tokens.insert(&collection_id, &tokens);
@@ -655,9 +643,7 @@ impl Contract {
     }
 
     // поставити перегляд колекції
-    pub fn collection_set_view(&mut self, collection_id: String) {
-        return;
-
+    pub fn collection_set_view(&mut self, collection_id: &String) {
         let user_id = env::predecessor_account_id();
 
         match self.collection_views.get(&collection_id) {
@@ -677,6 +663,26 @@ impl Contract {
                 self.collection_views.insert(&collection_id, &views);
             }
         }
+
+        self.set_collection_stat_val
+        (
+            &collection_id,
+            CollectionStatCriterionEnum::ViewsCount,
+            None
+        );
+    }
+
+    pub fn collection_get_stat_default(&self) -> CollectionStat
+    {
+        return CollectionStat
+        {
+            prices: PriceStatMain
+            {
+                on_sale: ProfileStatCriterion::price_stat_get_default(),
+                sold: ProfileStatCriterion::price_stat_get_default()
+            },
+            views_count: 0
+        };
     }
 
 
@@ -690,7 +696,7 @@ impl Contract {
         is_sold: bool
     )
     {
-        let mut stat : PriceStatMain;
+        let mut stat : CollectionStat;
 
         match self.collections_global_stat.get(collection_id) 
         {
@@ -700,33 +706,29 @@ impl Contract {
             },
             None => 
             {
-                stat = PriceStatMain
-                {
-                    on_sale: ProfileStatCriterion::price_stat_get_default(),
-                    sold: ProfileStatCriterion::price_stat_get_default()
-                };
+                stat = self.collection_get_stat_default();
             }
         }   
         
         if is_sold
         {
-            if price < stat.sold.lowest_price
+            if price < stat.prices.sold.lowest_price
             {
                 self.set_collection_stat_val
                 (
                     collection_id,
                     CollectionStatCriterionEnum::SoldLowestPrice,
-                    price
+                    Some(price)
                 );
             }
 
-            if price > stat.sold.highest_price
+            if price > stat.prices.sold.highest_price
             {
                 self.set_collection_stat_val
                 (
                     collection_id,
                     CollectionStatCriterionEnum::SoldHighestPrice,
-                    price
+                    Some(price)
                 );
             }
 
@@ -734,35 +736,35 @@ impl Contract {
             (
                 collection_id,
                 CollectionStatCriterionEnum::SoldNewestPrice,
-                price
+                Some(price)
             );
 
             self.set_collection_stat_val
             (
                 collection_id,
                 CollectionStatCriterionEnum::SoldTotalPrice,
-                stat.sold.total_price + price
+                Some(stat.prices.sold.total_price + price)
             );
         }
         else
         {
-            if price < stat.on_sale.lowest_price
+            if price < stat.prices.on_sale.lowest_price
             {
                 self.set_collection_stat_val
                 (
                     collection_id,
                     CollectionStatCriterionEnum::OnSaleLowestPrice,
-                    price
+                    Some(price)
                 );
             }
 
-            if price > stat.on_sale.highest_price
+            if price > stat.prices.on_sale.highest_price
             {
                 self.set_collection_stat_val
                 (
                     collection_id,
                     CollectionStatCriterionEnum::OnSaleHighestPrice,
-                    price
+                    Some(price)
                 );
             }
 
@@ -770,14 +772,14 @@ impl Contract {
             (
                 collection_id,
                 CollectionStatCriterionEnum::OnSaleNewestPrice,
-                price
+                Some(price)
             );
 
             self.set_collection_stat_val
             (
                 collection_id,
                 CollectionStatCriterionEnum::OnSaleTotalPrice,
-                stat.on_sale.lowest_price + price
+                Some(stat.prices.on_sale.lowest_price + price)
             );
         }
     }
@@ -789,10 +791,10 @@ impl Contract {
         &mut self,
         collection_id: &String, 
         parameter: CollectionStatCriterionEnum,
-        value: u128
+        value: Option<u128>
     )
     {
-        let mut stat : PriceStatMain;
+        let mut stat : CollectionStat;
 
         match self.collections_global_stat.get(collection_id) 
         {
@@ -802,55 +804,56 @@ impl Contract {
             },
             None => 
             {
-                stat = PriceStatMain
-                {
-                    on_sale: ProfileStatCriterion::price_stat_get_default(),
-                    sold: ProfileStatCriterion::price_stat_get_default()
-                };
+                stat = self.collection_get_stat_default();
             }
-        }  
+        }   
             
         match parameter
         {
             //найнижча ціна токену, який знаходиться на продажі
             CollectionStatCriterionEnum::OnSaleLowestPrice =>
             {
-                stat.on_sale.lowest_price = value;
+                stat.prices.on_sale.lowest_price = value.unwrap();
             },
             //найвища ціна токену, який знаходиться на продажі
             CollectionStatCriterionEnum::OnSaleHighestPrice =>
             {
-                stat.on_sale.highest_price = value;
+                stat.prices.on_sale.highest_price = value.unwrap();
             },
             //ціна найновішого токену, який знаходиться на продажі
             CollectionStatCriterionEnum::OnSaleNewestPrice =>
             {
-                stat.on_sale.newest_price = value;
+                stat.prices.on_sale.newest_price = value.unwrap();
             },
             //сума всії токенів, який знаходиться на продажі
             CollectionStatCriterionEnum::OnSaleTotalPrice =>
             {
-                stat.on_sale.total_price = value;
+                stat.prices.on_sale.total_price = value.unwrap();
             },
             //найнижча ціна проданого токену
             CollectionStatCriterionEnum::SoldLowestPrice =>
             {
-                stat.sold.lowest_price = value;
+                stat.prices.sold.lowest_price = value.unwrap();
             },
             //найвища ціна проданого токену
             CollectionStatCriterionEnum::SoldHighestPrice =>
             {
-                stat.sold.highest_price = value;
+                stat.prices.sold.highest_price = value.unwrap();
             },
             //ціна останнього проданого токену
             CollectionStatCriterionEnum::SoldNewestPrice =>
             {
-                stat.sold.newest_price = value;
+                stat.prices.sold.newest_price = value.unwrap();
             },
             //загальна ціна всіх проданих токенів
             CollectionStatCriterionEnum::SoldTotalPrice =>
             {
-                stat.sold.total_price = value;
+                stat.prices.sold.total_price = value.unwrap();
+            },
+            //загальна кількість переглядів
+            CollectionStatCriterionEnum::ViewsCount =>
+            {
+                stat.views_count += 1;
             }
         }
 

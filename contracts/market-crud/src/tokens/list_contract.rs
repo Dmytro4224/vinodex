@@ -481,7 +481,14 @@ impl Contract {
 
             if is_reverse
             {
-                index = index - 1;
+                if index as i64 - 1 < 0
+                {
+                    stop = true;
+                }
+                else
+                {
+                    index = index - 1;
+                }
             }
             else
             {
@@ -570,18 +577,32 @@ impl Contract {
 
                         if let Some(collection_id) = collection_id.clone()
                         {
-                            match self.collection_per_token.get(&_token.token_id)
+                            if collection_id == String::from("")
                             {
-                                Some(collection) =>
+                                match self.collection_per_token.get(&_token.token_id)
                                 {
-                                    if collection != collection_id
+                                    Some(collection) =>
+                                    {
+                                        continue;
+                                    },
+                                    None => {}
+                                }
+                            }
+                            else
+                            {
+                                match self.collection_per_token.get(&_token.token_id)
+                                {
+                                    Some(collection) =>
+                                    {
+                                        if collection != collection_id
+                                        {
+                                            continue;
+                                        }
+                                    },
+                                    None =>
                                     {
                                         continue;
                                     }
-                                },
-                                None =>
-                                {
-                                    continue;
                                 }
                             }
                         }
@@ -748,106 +769,197 @@ impl Contract {
         }
     }
 
+    // //списки авторів
+    // pub fn authors_by_filter(
+    //     &self,
+    //     //по чому сортувати
+    //     parameter: ProfileStatCriterionEnum, 
+    //    // true = asc
+    //    is_reverse: bool, 
+    //     //пагінація
+    //     page_index: u64,
+    //     //ксть елементів на сторінкі
+    //     page_size: u64,
+    //     asked_account_id:Option<AccountId>
+    // ) -> Vec<Option<JsonProfile>> 
+    // {
+    //     if !self.profiles_global_stat_sorted_vector.contains_key(&parameter)
+    //     {
+    //         return Vec::new();
+    //     }
+
+    //     let authors_ids : Vec<ProfileStatCriterion>;
+    //     let mut skip = 0;
+    //     if page_index >= 1
+    //     {
+    //         skip = (page_index - 1) * page_size;
+    //     }
+
+    //     authors_ids=self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new());
+
+    //     let mut available_amount = authors_ids.len() as i64 - skip as i64;
+
+    //     if available_amount <= 0
+    //     {
+    //         return Vec::new();
+    //     }
+
+    //     if available_amount > page_size as i64
+    //     {
+    //         available_amount = page_size as i64;
+    //     }
+       
+    //     if authors_ids.len() < skip as usize
+    //     {
+    //         return Vec::new();
+    //     }
+
+    //     let mut result : Vec<Option<JsonProfile>> = Vec::new();
+
+    //     if is_reverse
+    //     {
+    //         let start_index = authors_ids.len() as i64 - skip as i64;
+    //         let end_index = start_index - available_amount;
+
+    //         for i in (end_index..start_index).rev()
+    //         {
+    //             let _index = i as usize;
+    //             let _author_id=authors_ids.get(_index);
+                    
+    //             if _author_id.is_some() && !_author_id.is_none()
+    //             {
+    //               result.push (
+    //                 Profile::get_full_profile(
+    //                     &self.profiles,
+    //                     &_author_id.unwrap().account_id,
+    //                     &asked_account_id,
+    //                     &self.autors_likes,
+    //                     &self.autors_followers,
+    //                     &self.autors_views,
+    //                     &self.tokens_per_owner,
+    //                     true
+    //                 ));
+    //             }
+    //         }
+    //     }
+    //     else
+    //     {
+    //         for i in skip..skip + available_amount as u64
+    //         {
+    //             let _index = i as usize;
+    //             let _author_id = authors_ids.get(_index);
+
+    //             if !_author_id.is_some() || _author_id.is_none()
+    //             {
+    //                 continue;
+    //             }
+
+    //             result.push (
+    //                 Profile::get_full_profile(
+    //                     &self.profiles,
+    //                     &_author_id.unwrap().account_id,
+    //                     &asked_account_id,
+    //                     &self.autors_likes,
+    //                     &self.autors_followers,
+    //                     &self.autors_views,
+    //                     &self.tokens_per_owner,
+    //                     true
+    //               ));
+    //         }
+    //     }
+
+    //     return result;
+    // }
+
     //списки авторів
     pub fn authors_by_filter(
         &self,
         //по чому сортувати
         parameter: ProfileStatCriterionEnum, 
-       // true = asc
-       is_reverse: bool, 
+        // true = asc
+        is_reverse: bool, 
         //пагінація
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
         asked_account_id:Option<AccountId>
-    ) ->Vec<Option<JsonProfile>> {
-
+    ) ->Vec<Option<JsonProfile>> 
+    {
         if !self.profiles_global_stat_sorted_vector.contains_key(&parameter)
         {
             return Vec::new();
         }
 
-        let authors_ids : Vec<ProfileStatCriterion>;
+        let authors_ids : Vec<ProfileStatCriterion> = self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new());
+        let mut result : Vec<Option<JsonProfile>> = Vec::new();
+
         let mut skip = 0;
-        if page_index >= 1
+        if page_index > 1
         {
             skip = (page_index - 1) * page_size;
         }
 
-        authors_ids=self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new());
-
-        let mut available_amount = authors_ids.len() as i64 - skip as i64;
-
-        if available_amount <= 0
-        {
-            return Vec::new();
-        }
-
-        if available_amount > page_size as i64
-        {
-            available_amount = page_size as i64;
-        }
-       
-        if authors_ids.len() < skip as usize
-        {
-            return Vec::new();
-        }
-
-        let mut result : Vec<Option<JsonProfile>> = Vec::new();
+        let mut index : i64;
 
         if is_reverse
         {
-            let start_index = authors_ids.len() as i64 - skip as i64;
-            let end_index = start_index - available_amount;
-
-            for i in (end_index..start_index).rev()
-            {
-                let _index = i as usize;
-                let _author_id=authors_ids.get(_index);
-                    
-                if _author_id.is_some() && !_author_id.is_none()
-                {
-                  result.push (
-                    Profile::get_full_profile(
-                        &self.profiles,
-                        &_author_id.unwrap().account_id,
-                        &asked_account_id,
-                        &self.autors_likes,
-                        &self.autors_followers,
-                        &self.autors_views,
-                        &self.tokens_per_owner,
-                        true
-                    ));
-                }
-            }
+            index = authors_ids.len() as i64 - skip as i64 - 1;
         }
         else
         {
-            for i in skip..skip + available_amount as u64
+            index = skip as i64;
+        }
+
+        while result.len() < page_size as usize
+        {
+            let res = authors_ids.get(index as usize);
+
+            match res
             {
-                let _index = i as usize;
-                let _author_id = authors_ids.get(_index);
-
-                if !_author_id.is_some() || _author_id.is_none()
+                Some(res) =>
                 {
-                    continue;
+                    if self.tokens_per_artist.get(&res.account_id).is_some()
+                    {
+                        result.push 
+                        (
+                            self.get_full_profile(
+                                &res.account_id,
+                                &asked_account_id,
+                                true)
+                        );
+                    }
+                },
+                None =>
+                {
+                    break;
                 }
+            }
 
-                result.push (
-                    Profile::get_full_profile(
-                        &self.profiles,
-                        &_author_id.unwrap().account_id,
-                        &asked_account_id,
-                        &self.autors_likes,
-                        &self.autors_followers,
-                        &self.autors_views,
-                        &self.tokens_per_owner,
-                        true
-                  ));
+            if is_reverse
+            {
+                index = index - 1;
+
+                if index < 0
+                {
+                    break;
+                }
+            }
+            else
+            {
+                index = index + 1;
             }
         }
 
         return result;
+    }
+
+    pub fn authors_test(
+        &self,
+        //по чому сортувати
+        parameter: ProfileStatCriterionEnum
+    ) ->Vec<ProfileStatCriterion> 
+    {
+       return self.profiles_global_stat_sorted_vector.get(&parameter).unwrap_or(Vec::new());
     }
 
     ///список вподобаних авторів
@@ -905,17 +1017,13 @@ impl Contract {
                     continue;
                 }
 
-                result.push (
-                    Profile::get_full_profile(
-                        &self.profiles,
+                result.push 
+                (
+                    self.get_full_profile(
                         &_author_id.unwrap(),
                         &_accoutn_id,
-                        &self.autors_likes,
-                        &self.autors_followers,
-                        &self.autors_views,
-                        &self.tokens_per_owner,
-                        true
-                  ));
+                        true)
+                );
             }
         
 
@@ -1016,15 +1124,10 @@ impl Contract {
                 {
                     result.push
                     (
-                        Profile::get_full_profile
+                        self.get_full_profile
                         (
-                            &self.profiles,
                             &author_id,
                             &_accoutn_id,
-                            &self.autors_likes,
-                            &self.autors_followers,
-                            &self.autors_views,
-                            &self.tokens_per_owner,
                             true
                         )
                     );
