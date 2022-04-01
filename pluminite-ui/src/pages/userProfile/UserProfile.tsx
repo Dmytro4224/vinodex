@@ -193,7 +193,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     this.setState({
       ...this.state,
       ...(profile.image && { image: profile.image }),
+      ...(profile.cover_image && { cover_image: profile.cover_image }),
       isLoadAvatar: false,
+      isLoadCover: false,
       profile: {
         bio: profile.bio,
         email: profile.email,
