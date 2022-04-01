@@ -46,12 +46,12 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                 <li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
                 </li>
-                <li>
+                {/*<li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
-                </li>
+                </li>*/}
               </ul>
             </div>
-            <div>
+            {/*<div>
               <p className={styles.linksTitle}>Resources</p>
               <ul className={styles.linksWrap}>
                 <li className='disabled'>
@@ -67,7 +67,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                   <NavLink to={'/'}>Activity</NavLink>
                 </li>
               </ul>
-            </div>
+            </div>*/}
             <div>
               <p className={styles.linksTitle}>Company</p>
               <ul className={styles.linksWrap}>
