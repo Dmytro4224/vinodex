@@ -603,7 +603,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   private get currentSlide() {
     const index = this.getPreviews().findIndex(el => el === this.state.currentMedia);
-    if (index === -1) return 1
+    if (index === -1) return 0
     return index;
   }
 
