@@ -210,14 +210,9 @@ impl Contract {
                         {
                             price: U128(sale.bids[i].price),
                             date: U128(sale.bids[i].date),
-                            account: Profile::get_full_profile(
-                                &self.profiles,
+                            account: self.get_full_profile(
                                 &sale.bids[i].account_id,
                                 &asked_account_id,
-                                &self.autors_likes,
-                                &self.autors_followers,
-                                &self.autors_views,
-                                &self.tokens_per_owner,
                                 true
                             )
                         });
@@ -235,14 +230,9 @@ impl Contract {
                         {
                             price: U128(sale.bids[i].price),
                             date: U128(sale.bids[i].date),
-                            account: Profile::get_full_profile(
-                                &self.profiles,
+                            account: self.get_full_profile(
                                 &sale.bids[i].account_id,
                                 &asked_account_id,
-                                &self.autors_likes,
-                                &self.autors_followers,
-                                &self.autors_views,
-                                &self.tokens_per_owner,
                                 true
                             )
                         });
@@ -348,6 +338,7 @@ impl Contract {
             &creator,
             &artist,
             statistic_price,
+            Some(0),
             false
         );
         //====================Статистика по користувачу=========================//
@@ -572,6 +563,17 @@ impl Contract {
                     }
                 }
 
+                let previous_bid_price :Option<u128>;
+                if sale.bids.len() == 0
+                {
+                    previous_bid_price = Some(0);
+                }
+                else
+                {
+                    previous_bid_price = Some(sale.bids.get(sale.bids.len() - 1).unwrap().price);
+                }
+
+
                 sale.bids.push(SaleBid
                 {
                     account_id: buyer_id.clone(),
@@ -618,6 +620,7 @@ impl Contract {
                     &creator,
                     &artist,
                     price,
+                    previous_bid_price,
                     false
                 );
                 //====================Статистика по користувачу=========================//
@@ -769,9 +772,9 @@ impl Contract {
             &creator,
             &artist,
             price,
+            None,
             true
         );
-
         
         //====================Статистика по користувачу=========================//
 
@@ -895,14 +898,9 @@ impl Contract {
                                 {
                                     price: item.price,
                                     date: item.date,
-                                    account: Profile::get_full_profile(
-                                        &self.profiles,
+                                    account: self.get_full_profile(
                                         &item.account_from,
                                         &Some(account_id.clone()),
-                                        &self.autors_likes,
-                                        &self.autors_followers,
-                                        &self.autors_views,
-                                        &self.tokens_per_owner,
                                         true
                                     ),
                                     token: self.nft_token_for_account
@@ -1001,14 +999,9 @@ impl Contract {
                                 {
                                     price: item.price,
                                     date: item.date,
-                                    account: Profile::get_full_profile(
-                                        &self.profiles,
+                                    account: self.get_full_profile(
                                         &item.account_to,
                                         &Some(account_id.clone()),
-                                        &self.autors_likes,
-                                        &self.autors_followers,
-                                        &self.autors_views,
-                                        &self.tokens_per_owner,
                                         true
                                     ),
                                     token: self.nft_token_for_account
@@ -1085,24 +1078,14 @@ impl Contract {
 
                             result.push(SaleHistoryJson
                                 {
-                                    account_from: Profile::get_full_profile(
-                                        &self.profiles,
+                                    account_from: self.get_full_profile(
                                         &item.account_from,
                                         &asked_account_id,
-                                        &self.autors_likes,
-                                        &self.autors_followers,
-                                        &self.autors_views,
-                                        &self.tokens_per_owner,
                                         true
                                     ),
-                                    account_to: Profile::get_full_profile(
-                                        &self.profiles,
+                                    account_to: self.get_full_profile(
                                         &item.account_to,
                                         &asked_account_id,
-                                        &self.autors_likes,
-                                        &self.autors_followers,
-                                        &self.autors_views,
-                                        &self.tokens_per_owner,
                                         true
                                     ),
                                     price: item.price,
@@ -1152,24 +1135,14 @@ impl Contract {
                 {
                     result.push(SaleHistoryJson
                     {
-                        account_from: Profile::get_full_profile(
-                            &self.profiles,
+                        account_from: self.get_full_profile(
                             &item.account_from,
                             &asked_account_id,
-                            &self.autors_likes,
-                            &self.autors_followers,
-                            &self.autors_views,
-                            &self.tokens_per_owner,
                             true
                         ),
-                        account_to: Profile::get_full_profile(
-                            &self.profiles,
+                        account_to: self.get_full_profile(
                             &item.account_to,
                             &asked_account_id,
-                            &self.autors_likes,
-                            &self.autors_followers,
-                            &self.autors_views,
-                            &self.tokens_per_owner,
                             true
                         ),
                         price: item.price,
@@ -1206,14 +1179,9 @@ impl Contract {
             {
                 Some(creator) =>
                 {
-                    let res = Profile::get_full_profile(
-                        &self.profiles,
+                    let res = self.get_full_profile(
                         &creator,
                         &asked_account_id,
-                        &self.autors_likes,
-                        &self.autors_followers,
-                        &self.autors_views,
-                        &self.tokens_per_owner,
                         true
                     );
 
@@ -1265,14 +1233,9 @@ impl Contract {
                         {
                             let item = self.sales_history.get(*item_index).unwrap();
 
-                            result.push(Profile::get_full_profile(
-                                &self.profiles,
+                            result.push(self.get_full_profile(
                                 &item.account_to,
                                 &asked_account_id,
-                                &self.autors_likes,
-                                &self.autors_followers,
-                                &self.autors_views,
-                                &self.tokens_per_owner,
                                 true
                             ).unwrap());
                         },

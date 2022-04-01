@@ -150,14 +150,9 @@ impl Contract
                             email: item.email.clone(),
                             page: item.page.clone(),
                             time: item.time,
-                            account: Profile::get_full_profile(
-                                &self.profiles,
+                            account: self.get_full_profile(
                                 &current_account_id,
                                 &account_id,
-                                &self.autors_likes,
-                                &self.autors_followers,
-                                &self.autors_views,
-                                &self.tokens_per_owner,
                                 true
                             ).unwrap()
                         });
