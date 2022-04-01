@@ -39,11 +39,11 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
   }
 /*
   public componentDidUpdate(prevProps: Readonly<ICollectionDetailPage & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
-    
+
     if (this.state.collectionData && !this.state.collectionData?.is_viewed && this.props.near.isAuth) {
       this.props.nftContractContext.collection_set_view(this.props.params.id!);
     }
-    
+
   }
 */
   private getStat() {
@@ -105,41 +105,34 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     }
 
     return (
-      this.state.isLoading ? (
-          <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px'>
-            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-            <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
-          </div>
-        ) : !tokens.length ? (
-          <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
-            <EmptyListView />
-          </div>
-        ) : (
-          <div className={`${styles.listWrap}`}>
-            {tokens.map(item => (
-              <TokenCardView
-                key={`catalog-token-${item.token_id}-${uid()}`}
-                model={item}
-                countL={1}
-                countR={1}
-                days={item.metadata.expires_at}
-                name={item.metadata.title}
-                author={item.owner_id}
-                likesCount={item.metadata.likes_count}
-                icon={mediaUrl(item.metadata)}
-                isSmall={true}
-                buttonText={`Place a bid`}
-                linkTo={`/token/${item.token_id}`}
-                tokenID={item.token_id}
-                isLike={item.is_liked}
-                onClick={() => {}}
-                isForceVisible={true}
-              />
-            ))}
-          </div>
-        )
+      !tokens.length ? (
+        <div className='w-100 my-5 d-flex align-items-center justify-content-center flex-column'>
+          <EmptyListView />
+        </div>
+      ) : (
+        <div className={`${styles.listWrap}`}>
+          {tokens.map(item => (
+            <TokenCardView
+              key={`catalog-token-${item.token_id}-${uid()}`}
+              model={item}
+              countL={1}
+              countR={1}
+              days={item.metadata.expires_at}
+              name={item.metadata.title}
+              author={item.owner_id}
+              likesCount={item.metadata.likes_count}
+              icon={mediaUrl(item.metadata)}
+              isSmall={true}
+              buttonText={`Place a bid`}
+              linkTo={`/token/${item.token_id}`}
+              tokenID={item.token_id}
+              isLike={item.is_liked}
+              onClick={() => {}}
+              isForceVisible={true}
+            />
+          ))}
+        </div>
+      )
     )
   }
 
@@ -210,17 +203,31 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
             </div>
           </div>
 
-          <Tabs
-            id='controlled-tab'
-            className='mb-3 justify-content-center tab-custom'
-          >
-            <Tab eventKey='items' title='Items'>
-              {this.getTabData()}
-            </Tab>
-            <Tab eventKey='sale' title='On sale'>
-              {this.getTabData('sale')}
-            </Tab>
-          </Tabs>
+          {this.state.isLoading ? (
+            <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px'>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+              <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
+            </div>
+          ) : this.state.tokens.length > 0 ? (
+            <Tabs
+              id='controlled-tab'
+              className='mb-3 justify-content-center tab-custom'
+            >
+              <Tab eventKey='items' title='Items'>
+                {this.getTabData()}
+              </Tab>
+              <Tab eventKey='sale' title='On sale'>
+                {this.getTabData('sale')}
+              </Tab>
+            </Tabs>
+          ) : (
+            <>
+              <p className='line-separator my-4' />
+              <EmptyListView />
+            </>
+          )}
         </div>
       </div>
     )
