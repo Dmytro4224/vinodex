@@ -63,7 +63,8 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     //   !this.state.artistData?.is_viewed &&
     //   this.state.artistData !== null &&
     //   this.getUserId &&
-    //   this.props.near.isAuth
+    //   this.props.near.isAuth &&
+    //   this.props.near.user?.accountId !== this.getUserId
     // ) {
     //   this.props.nftContractContext.view_artist_account(this.getUserId);
     // }
@@ -90,6 +91,22 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
 
   private getPrice(price: string | number) {
     return convertYoctoNearsToNears(price) || 0.00;
+  }
+
+  private get floorPrice() {
+    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.lowest_price || 0);
+  }
+
+  private get itemsCount() {
+    return this.state.artistData?.items_count || 0
+  }
+
+  private get latestPrice() {
+    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.newest_price || 0);
+  }
+
+  private get volumeTraded() {
+    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.total_price || 0)
   }
 
   public render() {
@@ -121,20 +138,20 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
           <p className={styles.description}>{this.state.artistData?.bio || ''}</p>
 
           <div className={styles.informer}>
-            <div>
-              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.lowest_price || 0)}&nbsp;Ⓝ</p>
+            <div className={this.floorPrice > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.floorPrice}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Floor Price</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>{this.state.artistData?.items_count || 0}</p>
+            <div className={this.itemsCount > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.itemsCount}</p>
               <p className={styles.informerDesc}>Items</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.newest_price || 0)}&nbsp;Ⓝ</p>
+            <div className={this.latestPrice > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.latestPrice}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Latest Price</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>{this.getPrice(this.state.statistic?.prices_as_artist?.sold?.total_price || 0)}&nbsp;Ⓝ</p>
+            <div className={this.volumeTraded > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.volumeTraded}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Volume traded</p>
             </div>
           </div>

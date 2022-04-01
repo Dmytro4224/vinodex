@@ -50,6 +50,7 @@ export type INftContract = nearAPI.Contract & {
     collection_token_add: ({ collection_id, token_id } : { collection_id: string, token_id: string }) => Promise<any>;
     collection_token_remove: ({ token_id } : { token_id: string }) => Promise<any>;
     profile_get_stat: ({ account_id } : { account_id: string }) => Promise<any>;
+    collection_get_stat: ({ collection_id } : { collection_id: string }) => Promise<any>;
 };
 
 export type IMarketContract = nearAPI.Contract & {

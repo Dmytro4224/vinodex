@@ -17,6 +17,7 @@ import InputView, { InputStyleType } from "../../components/common/inputView/Inp
 import { dropdownData } from '../../components/common/dropdown/data';
 import CatalogFilterView from '../../components/catalogFilterView/CatalogFilterView';
 import { IFilterOptions } from "../../types/IFilterOptions";
+import TopCollection from '../../components/topCollection/TopCollection';
 
 interface IHome extends IProps {}
 
@@ -151,6 +152,10 @@ class Home extends Component<IHome & IBaseComponentProps> {
             sort={this.sort}
             catalog={this.catalog}
           />
+
+          <p className="separator-horizontal" />
+
+          <TopCollection />
 
           <p className="separator-horizontal" />
 
