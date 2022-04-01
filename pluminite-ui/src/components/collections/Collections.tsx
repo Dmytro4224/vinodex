@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { IBaseComponentProps, withComponent } from '../../utils/withComponent';
+import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import CreateCollection from './createCollection/CreateCollection';
 import CollectionList from './collectionList/CollectionList';
 import CollectionDetail from './collectionDetail/CollectionDetail';
@@ -11,13 +11,17 @@ export enum RenderType {
   createCollection = 'createCollection'
 }
 
-class Collections extends Component<IBaseComponentProps> {
+interface ICollections extends IProps {
+  collectionOwner?: string | null;
+}
+
+class Collections extends Component<ICollections & IBaseComponentProps> {
   public state = {
     renderType: RenderType.collectionList,
     collectionData: null
   }
 
-  constructor(props) {
+  constructor(props: ICollections & IBaseComponentProps) {
     super(props);
   }
 
@@ -34,6 +38,7 @@ class Collections extends Component<IBaseComponentProps> {
       case RenderType.collectionList:
         return (
           <CollectionList
+            collectionOwner={this.props.collectionOwner}
             changeRenderType={(type: RenderType, data?: ICollectionResponseItem | null) => this.changeRenderType(type, data)}
           />
         )

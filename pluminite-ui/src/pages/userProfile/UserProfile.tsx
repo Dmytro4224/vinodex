@@ -234,7 +234,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             />
           </Tab>
           <Tab eventKey='collections' title='My collections'>
-            <Collections />
+            <Collections collectionOwner={this.getUserId} />
           </Tab>
           <Tab eventKey='items' title='Created Items'>
             <ProfileTokensView

@@ -40,7 +40,8 @@ class TopCollection extends Component<ITopCollection & IBaseComponentProps> {
       1,
       2,
       user,
-      true
+      true,
+      null
     ).then(res => {
       this.setState({
         ...this.state,

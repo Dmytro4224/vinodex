@@ -43,7 +43,7 @@ export interface INftContractContext {
   collection_update: (collection_id: string, name?: string, description?: string, profile_photo?: string, cover_photo?: string) => Promise<any>;
   collection_token_add: (collection_id: string, token_id: string) => Promise<any>;
   collection_token_remove: (token_id: string) => Promise<any>;
-  nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => Promise<any>;
+  nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean, collection_owner: string | null) => Promise<any>;
   collection_get: (collection_id: string, account_id: string | null, with_tokens: boolean) => Promise<any>;
   profile_get_stat: (account_id: string) => Promise<any>;
   collection_get_stat: (collection_id: string) => Promise<any>;
@@ -207,12 +207,13 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => {
+  public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean, collection_owner: string | null) => {
     return this.nftContract.nft_collections({
       page_index,
       page_size,
       account_id,
       with_tokens,
+      collection_owner
     });
   };
 
