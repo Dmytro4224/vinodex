@@ -27,9 +27,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <img className={styles.footerLogo} width="145" height="45" src={footerLogo} alt="logo" />
 
             <p className={styles.infoDesc}>
-              Lorem ipsum dolor sit amet,consectetur
-              adip isicing elit. Quis non, fugit totam vel
-              laboriosam vitae.
+              Upgraiding fine wine to the WEB 3.0 with NFTs.
             </p>
 
             <Social />
