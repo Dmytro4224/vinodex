@@ -238,9 +238,11 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return (
       <div className='d-flex align-items-center justify-content-between w-100'>
         <div className={styles.artistWrap}>
-          <img ref={this._refAvatar} onError={() => {
-            changeAvatarRefSrc(this._refAvatar);
-          }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
+          <NavLink to={`/artists/${this.identification}`}>
+            <img ref={this._refAvatar} onError={() => {
+              changeAvatarRefSrc(this._refAvatar);
+            }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
+          </NavLink>
           <div>
             <NavLink to={`/artists/${this.identification}`}>
               <p className={styles.artistName}>{this.name}</p>
@@ -274,7 +276,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private isInfoType() {
     return (
       <div className='d-flex align-items-center justify-content-between w-100'>
-        <div className={`${styles.artistWrap} ${styles.infoStyle}`}>
+        <NavLink className={`${styles.artistWrap} ${styles.infoStyle}`} to={`/artists/${this.identification}`}>
           <img
             ref={this._refAvatar}
             onError={() => { changeAvatarRefSrc(this._refAvatar); }}
@@ -284,11 +286,9 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
           />
           <div className={'w-100'}>
             <p className={styles.infoTitle}>{this.title || 'Creator'}</p>
-            <NavLink to={`/artists/${this.identification}`}>
-              <p className={styles.artistName}>{this.name}</p>
-            </NavLink>
+            <p className={styles.artistName}>{this.name}</p>
           </div>
-        </div>
+        </NavLink>
       </div>
     );
   }
