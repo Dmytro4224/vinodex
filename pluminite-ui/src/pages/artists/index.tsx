@@ -7,6 +7,8 @@ import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 import styles from '../../components/bestArtists/bestArtists.module.css';
 import Skeleton from 'react-loading-skeleton';
 import { NavLink } from 'react-router-dom';
+import { MainLogoView } from '../../components/mainLogo/mainLogoView';
+import bgArtist from '../../assets/images/bg-artitst.png';
 
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
@@ -97,16 +99,19 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     return (
       <div>
         {!this.isProfilePageView && (
-          <div className={styles.header}>
-            <div className={`container ${styles.headerInfo}`}>
-              <h4 className={styles.title}>Artists</h4>
-              <div className='breadcrumb'>
+          <MainLogoView
+            img={bgArtist}
+            title={'Artists'}
+            bgWrap={'#807F68'}
+            bgHeadInfo={'#5E4C1A'}
+            breadcrumbs={
+              <>
                 <NavLink to={'/'}>Home</NavLink>
                 <span className='breadcrumb__separator'>/</span>
                 <p>Artists</p>
-              </div>
-            </div>
-          </div>
+              </>
+            }
+          />
         )}
         {this.state.isLoading ? (
           <div className='d-flex w-100 align-items-center flex-gap-36 my-4 flex-wrap-500px container'>
@@ -118,7 +123,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
             <EmptyListView />
           </div>
         ) : (
-          <div className={`container ${styles.listWrap}`}>
+          <div className={`container my-4 ${styles.listWrap}`}>
             {this.state.list.map((item, index) => (
               <ArtistCard
                 key={`artist-${item.account_id}`}

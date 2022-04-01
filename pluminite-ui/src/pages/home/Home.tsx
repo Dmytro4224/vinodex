@@ -8,7 +8,7 @@ import PopularTokensView from "../../components/popularTokens/popularTokensView"
 import AllTokensView from "../../components/allTokens/allTokensView";
 import TabsFilterView from "../../components/tabsFilterView/tabsFilterView";
 import { MainLogoView } from "../../components/mainLogo/mainLogoView";
-import logoImage from '../../assets/images/main-logo.jpg';
+import logoImage from '../../assets/images/bg-t.png';
 import sortIcon from '../../assets/icons/sort-icon.svg';
 import filterIcon from '../../assets/icons/filter-icon.svg';
 import searchIcon from "../../assets/icons/search.svg";
@@ -80,7 +80,10 @@ class Home extends Component<IHome & IBaseComponentProps> {
     return (
       <div>
         <MediaQuery minWidth={992}>
-          <MainLogoView img={logoImage} title={'VINE & NFT'} />
+          <MainLogoView
+            img={logoImage}
+            title={'VINE & NFT'}
+          />
         </MediaQuery>
 
         <div className="my-5 container">

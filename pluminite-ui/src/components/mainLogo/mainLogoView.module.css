@@ -1,54 +1,84 @@
-.wrap{
-    width: 100%;
-    position: relative;
-}
-.image{
-    object-fit: cover;
-    width: 100%;
-    height: 100%;
-}
-.titleMainWrap{
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-.titleWrap{
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 55px 130px;
-    background: rgba(174, 126, 3, .9);
-}
-.title{
-   font-family: 'Bebas Neue', 'Urbanist', sans-serif;
-    font-size: 48px;
-    color: var(--white);
-    text-transform: uppercase;
-    z-index: 2;
-    letter-spacing: 0.1rem;
+.wrap {
+  position: relative;
+  width: 100%;
+  min-height: 330px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 0 0 50px 50px;
 }
 
-.backButton{
-    left: 70px;
-    position: absolute;
-    cursor: pointer;
+.image {
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 }
 
-.smallWrap{
-    height: 259px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
-}
-.smallWrap .titleWrap{
-    padding: 21px 102px;
+.titleMainWrap {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
-.smallWrap .image{
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 30px;
+.titleWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 35px 100px;
+  width: 100%;
+  max-width: 414px;
+  min-height: 168px;
+}
+
+.title {
+  font-family: 'Bebas Neue', 'Urbanist', sans-serif;
+  font-size: 48px;
+  color: var(--white);
+  text-transform: uppercase;
+  z-index: 2;
+  letter-spacing: 0.1rem;
+  line-height: 1;
+}
+
+.backButton {
+  left: 70px;
+  position: absolute;
+  cursor: pointer;
+}
+
+.smallWrap {
+  height: 259px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+.smallWrap .titleWrap {
+  padding: 21px 102px;
+}
+
+.smallWrap .image {
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+}
+
+@media (max-width: 500px) {
+  .wrap {
+    min-height: 200px;
+  }
+
+  .titleWrap {
+    padding: 20px;
+    width: 90%;
+    min-height: 108px;
+  }
+
+  .title {
+    font-size: 38px;
+  }
 }

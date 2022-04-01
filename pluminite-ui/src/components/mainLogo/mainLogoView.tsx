@@ -7,7 +7,10 @@ interface ImainLogoView{
   img: any,
   title: string;
   isSmall?: boolean;
-  onClick?: () => void
+  onClick?: () => void,
+  breadcrumbs?: any;
+  bgWrap?: string;
+  bgHeadInfo?: string;
 }
 
 class MainLogoView extends Component<ImainLogoView>{
@@ -21,20 +24,40 @@ class MainLogoView extends Component<ImainLogoView>{
 
   render(){
     return (
-      <div className={`${styles.wrap} ${this.props.isSmall ? styles.smallWrap : ''}`}>
-        <img className={styles.image} src={this.props.img} alt="main logo"/>
+      <div
+        style={{
+          backgroundImage: `url(${this.props.img})`,
+          backgroundColor: `${this.props.bgWrap || '#2B231E'}`
+        }}
+        className={`${styles.wrap} ${this.props.isSmall ? styles.smallWrap : ''}`}
+      >
         <div className={styles.titleMainWrap}>
-          {this.props.onClick ? <div className={styles.backButton}>
-            <ButtonView
-              text={""}
-              withoutText={true}
-              icon={backArrowIcon}
-              onClick={() => { this.onClick() }}
-              color={buttonColors.backButton}
-            />
-          </div> : ''}
-          <div className={styles.titleWrap}>
+          {this.props.onClick && (
+            <div className={styles.backButton}>
+              <ButtonView
+                text={""}
+                withoutText={true}
+                icon={backArrowIcon}
+                onClick={() => { this.onClick() }}
+                color={buttonColors.backButton}
+              />
+            </div>
+          )}
+
+          <div
+            style={{
+              backgroundColor: `${this.props.bgHeadInfo || 'rgba(174, 126, 3, .9)'}`
+            }}
+            className={styles.titleWrap}
+          >
             <span className={styles.title}>{this.props.title}</span>
+
+            {this.props.breadcrumbs && (
+              <div className='breadcrumb'>
+                {this.props.breadcrumbs}
+              </div>
+            )}
+
           </div>
         </div>
       </div>

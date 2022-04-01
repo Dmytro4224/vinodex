@@ -55,7 +55,7 @@
   min-height: 170px;
   background: rgba(82, 59, 0, 0.75);
   backdrop-filter: blur(40px);
-  border-radius: 8px;
+  /*border-radius: 8px;*/
 }
 
 .title {
