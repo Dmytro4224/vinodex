@@ -33,7 +33,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <Social />
           </div>
 
-          <div className={styles.footerLinksWrap}>
+          <div className={`${styles.footerLinksWrap} align-items-start`}>
             <div className={styles.myAccountLinks}>
               <p className={styles.linksTitle}>My Account</p>
               <ul className={styles.linksWrap}>
