@@ -57,6 +57,7 @@ class CarouselView extends Component<ICarouselView & IBaseComponentProps>{
       speed: 500,
       slidesToShow: this.props.slideToShow ? this.props.slideToShow : this.props.childrens.length > 1 ? 2 : 1,
       currentslide: this.props.currentslide || 1,
+      initialSlide: this.props.currentslide || 0,
       dots: false,
       adaptiveHeight: false,
       nextArrow: <SampleNextArrow {...(this.props as any)} />, //this.SampleNextArrow(),
