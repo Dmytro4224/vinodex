@@ -40,11 +40,15 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
     super(props);
   }
 
-  public componentDidUpdate(prevProps: Readonly<IModal & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
-    if (this.state.list === null) {
-      this.loadData();
-    }
+  public componentDidMount() {
+    this.loadData();
   }
+
+  // public componentDidUpdate(prevProps: Readonly<IModal & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+  //   if (this.state.list === null) {
+  //     this.loadData();
+  //   }
+  // }
 
   private loadData() {
     this.props.nftContractContext.nft_tokens_by_filter(
