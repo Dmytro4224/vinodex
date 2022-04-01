@@ -35,7 +35,7 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
     })
 
     const user = this.props.params.userId || this.props.near.user?.accountId || null;
-    
+
     this.props.nftContractContext.nft_collections(
       1,
       100,

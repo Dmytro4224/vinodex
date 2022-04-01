@@ -69,6 +69,7 @@ interface ITokenViewState {
   modalMediaShow: boolean;
   modalSaleShow: boolean;
   creator: any;
+  artist: any;
   isShowConfirmModal: boolean,
   currentMedia: string,
   modalConfirmData: {
@@ -87,6 +88,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
     modalSaleShow: false,
     modalMediaShow: false,
     creator: null,
+    artist: null,
     currentMedia: '',
     isShowConfirmModal: false,
     modalConfirmData: {
@@ -118,9 +120,28 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
       this.props.nftContractContext.token_set_view(this.state.order?.token_id!);
     }
     */
+
     if (prevProps.params.tokenId !== this.tokenId) {
       window.scrollTo(0, 0);
       this.getInfo();
+    }
+
+    if (this.state.order?.metadata?.artist && this.state.artist === null) {
+      this.props.nftContractContext.getProfile(this.state.order?.metadata?.artist!).then(profile => {
+        if (profile) {
+          this.setState({ ...this.state, artist: profile });
+        }
+      });
+    }
+
+
+    if (this.getUserId && this.state.creator === null) {
+      this.props.nftContractContext.getProfile(this.getUserId!).then(profile => {
+        if (profile) {
+          console.log(`response profile`, profile);
+          this.setState({ ...this.state, creator: profile });
+        }
+      });
     }
   }
 
@@ -711,17 +732,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
               <div className={`${styles.artistsWrap} d-flex align-items-center flex-gap-36 mt-3`}>
                 <ArtistCard
-                  info={{
-                    bio: '',
-                    email: '',
-                    image: '',
-                    name: this.state.order?.creator_id || 'Creator name',
-                    account_id: '',
-                    likes_count: 0,
-                    is_liked: false,
-                    is_following: false,
-                    followers_count: 0,
-                  }}
+                  info={this.state.creator}
                   identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}
@@ -732,17 +743,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   withoutControls={true}
                 />
                 <ArtistCard
-                  info={{
-                    bio: '',
-                    email: '',
-                    image: '',
-                    name: this.state.order?.metadata?.artist || 'Artist name',
-                    account_id: '',
-                    likes_count: 0,
-                    is_liked: false,
-                    is_following: false,
-                    followers_count: 0,
-                  }}
+                  info={this.state.artist}
                   identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}

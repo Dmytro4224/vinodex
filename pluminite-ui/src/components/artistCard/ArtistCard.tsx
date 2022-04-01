@@ -74,7 +74,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   }
 
   private get name() {
-    return this.props.info?.name;
+    return this.props.info?.name || this.identification;
   }
 
   private get identification() {
@@ -282,7 +282,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             src={this.avatar || defaultAvatar}
             alt='avatar'
           />
-          <div>
+          <div className={'w-100'}>
             <p className={styles.infoTitle}>{this.title || 'Creator'}</p>
             <NavLink to={`/artists/${this.identification}`}>
               <p className={styles.artistName}>{this.name}</p>
@@ -330,7 +330,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
 
         <div className={`cardWrapBig__content`}>
           <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
-            <h4 className={`cardWrapBig__creatorName`}>{this.name}</h4>
+            <h4 className={`cardWrapBig__creatorName ellipsis`}>{this.name}</h4>
           </NavLink>
 
           <div className='my-3 d-flex align-items-center justify-content-center'>
