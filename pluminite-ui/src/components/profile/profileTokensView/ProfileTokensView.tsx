@@ -41,9 +41,9 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
   private _catalogFilterView: any;
   private _typeViewParams = {
-    [ProfileTokensType.onSale]: [true, this.props.params.userId, null, null, null],
-    [ProfileTokensType.createdItems]: [null, this.props.params.userId, null, null, null],
-    [ProfileTokensType.activeBids]: [null, this.props.params.userId, null, null, true],
+    [ProfileTokensType.onSale]: [true, this.urlUserId, null, null, null],
+    [ProfileTokensType.createdItems]: [null, this.urlUserId, null, null, null],
+    [ProfileTokensType.activeBids]: [null, this.urlUserId, null, null, true],
     [ProfileTokensType.favourites]: [null, null, true, null, null],
   };
 
@@ -51,6 +51,10 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     super(props);
 
     this._catalogFilterView = React.createRef();
+  }
+
+  private get urlUserId() {
+    return this.props.params.id || this.props.params.userId || null;
   }
 
   private setFilter(filterOptions: IFilterOptions) {
