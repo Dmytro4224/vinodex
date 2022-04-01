@@ -19,6 +19,15 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
     return this.props.near.user?.accountId || '';
   }
 
+  private onClickProfileLinks = async (e: React.MouseEvent, to: string) => {
+    if (!this.props.near.isAuth) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.props.near.signIn(to);
+      return false;
+    }
+  }
+
   render() {
     return (
       <footer className={styles.footer}>
@@ -34,23 +43,23 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
           </div>
 
           <div className={`${styles.footerLinksWrap} align-items-start`}>
-            { this.props.near.isAuth && <div className={styles.myAccountLinks}>
+            <div className={styles.myAccountLinks}>
               <p className={styles.linksTitle}>My Account</p>
               <ul className={styles.linksWrap}>
                 <li>
-                  <NavLink to={`/userProfile/${this.accountId}?tab=details`}>Profile</NavLink>
+                  <NavLink onClick={e => this.onClickProfileLinks(e, `/userProfile/${this.accountId}?tab=details`)} to={`/userProfile/${this.accountId}?tab=details`}>Profile</NavLink>
                 </li>
                 <li>
-                  <NavLink to={`/userProfile/${this.accountId}?tab=birds`}>My Auctions</NavLink>
+                  <NavLink onClick={e => this.onClickProfileLinks(e, `/userProfile/${this.accountId}?tab=birds`)} to={`/userProfile/${this.accountId}?tab=birds`}>My Auctions</NavLink>
                 </li>
                 <li>
-                  <NavLink to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
+                  <NavLink onClick={e => this.onClickProfileLinks(e, `/userProfile/${this.accountId}?tab=items`)} to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
                 </li>
                 {/*<li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
                 </li>*/}
               </ul>
-            </div>}
+            </div>
             {/*<div>
               <p className={styles.linksTitle}>Resources</p>
               <ul className={styles.linksWrap}>

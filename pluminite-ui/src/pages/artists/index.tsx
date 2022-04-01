@@ -1,4 +1,4 @@
-﻿import React, { Component } from 'react';
+import React, { Component } from 'react';
 import ArtistCard, { ArtistType } from '../../components/artistCard/ArtistCard';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
@@ -58,7 +58,6 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   private getFollowingAuthors() {
     this.props.nftContractContext.followed_authors_for_account(this.props.params.userId!, this._pageIndex, this._pageSize).then(response => {
       let list = response.filter(item => item !== null);
-
       this.setState({
         ...this.state,
         list,
@@ -69,8 +68,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
   private getAllAuthors() {
     this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
-      let list = response.filter(item => item !== null);
-
+      let list = response.filter(item => item !== null && item.name && item.name.length !== 0);
       this.setState({
         ...this.state,
         list,
