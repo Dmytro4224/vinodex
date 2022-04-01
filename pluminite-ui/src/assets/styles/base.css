@@ -626,6 +626,7 @@ input[type="range"]:disabled::-moz-range-thumb {
   border-radius: 4px 4px 30px 30px;
   background-position: center center;
   background-repeat: no-repeat;
+  background-size: cover;
 }
 
 .cardWrapBig__imageWrap {
