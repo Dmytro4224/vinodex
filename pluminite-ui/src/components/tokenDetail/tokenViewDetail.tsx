@@ -113,10 +113,11 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
+    /*
     if (this.state.order !== null && !this.state.order?.is_viewed && this.props.near.isAuth) {
       this.props.nftContractContext.token_set_view(this.state.order?.token_id!);
     }
-
+    */
     if (prevProps.params.tokenId !== this.tokenId) {
       window.scrollTo(0, 0);
       this.getInfo();
