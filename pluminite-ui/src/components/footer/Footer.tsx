@@ -27,15 +27,13 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <img className={styles.footerLogo} width="145" height="45" src={footerLogo} alt="logo" />
 
             <p className={styles.infoDesc}>
-              Lorem ipsum dolor sit amet,consectetur
-              adip isicing elit. Quis non, fugit totam vel
-              laboriosam vitae.
+              Upgraiding fine wine to the WEB 3.0 with NFTs.
             </p>
 
             <Social />
           </div>
 
-          <div className={styles.footerLinksWrap}>
+          <div className={`${styles.footerLinksWrap} align-items-start`}>
             <div className={styles.myAccountLinks}>
               <p className={styles.linksTitle}>My Account</p>
               <ul className={styles.linksWrap}>
@@ -48,12 +46,12 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                 <li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
                 </li>
-                <li>
+                {/*<li>
                   <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
-                </li>
+                </li>*/}
               </ul>
             </div>
-            <div>
+            {/*<div>
               <p className={styles.linksTitle}>Resources</p>
               <ul className={styles.linksWrap}>
                 <li className='disabled'>
@@ -69,7 +67,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                   <NavLink to={'/'}>Activity</NavLink>
                 </li>
               </ul>
-            </div>
+            </div>*/}
             <div>
               <p className={styles.linksTitle}>Company</p>
               <ul className={styles.linksWrap}>

@@ -21,6 +21,7 @@ const NftMethods = {
     'nft_collections',
     'collection_get',
     'profile_get_stat',
+    'collection_get_stat',
   ],
   changeMethods: [
     'nft_approve',

@@ -118,7 +118,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
             <EmptyListView />
           </div>
         ) : (
-          <div className='d-flex flex-wrap flex-gap-36 mt-3 mb-5 container'>
+          <div className={`container ${styles.listWrap}`}>
             {this.state.list.map((item, index) => (
               <ArtistCard
                 key={`artist-${item.account_id}`}

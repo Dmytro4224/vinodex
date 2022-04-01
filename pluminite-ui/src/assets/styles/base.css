@@ -727,3 +727,9 @@ input[type="range"]:disabled::-moz-range-thumb {
 .flex-dir-column {
   flex-direction: column;
 }
+
+.carousel-previews-token {
+  width: 100%;
+  height: 100%;
+  max-width: 480px;
+}
