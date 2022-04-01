@@ -1,17 +1,12 @@
 import * as nearAPI from 'near-api-js';
 import { getConfig } from './config';
-
-import { NftMethods, MarketMethods } from './constants/contractMethods';
-import { APP } from './constants';
+import { NftMethods } from './constants/contractMethods';
 import { ICurrentUser } from './types/ICurrentUser';
 import { IProfile } from './types/IProfile';
 import { ITokenResponseItem } from './types/ITokenResponseItem';
 import { IAuthorResponseItem } from './types/IAuthorResponseItem';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
-
-//export const getMarketContractName = (nftContractName: string) => `market.${nftContractName}`;
-export const getMarketContractName = 'vinodexmarket.testnet';
 
 export type INftContract = nearAPI.Contract & {
     nft_token: ({ token_id }: { token_id: string }) => void;
@@ -53,10 +48,6 @@ export type INftContract = nearAPI.Contract & {
     collection_get_stat: ({ collection_id } : { collection_id: string }) => Promise<any>;
 };
 
-export type IMarketContract = nearAPI.Contract & {
-    get_sale: ({ nft_contract_token }: { nft_contract_token: string }) => void;
-};
-
 // Initialize contract & set global variables
 export async function initContracts() {
   // Initialize connection to the NEAR testnet
@@ -76,7 +67,7 @@ export async function initContracts() {
     };
   }
 
-  console.log('currentUser is: ', currentUser);
+  //console.log('currentUser is: ', currentUser);
 
   // Initializing our contract APIs by contract name and configuration
   const nftContract = await new nearAPI.Contract(
@@ -93,25 +84,8 @@ export async function initContracts() {
     }
   ) as INftContract;
 
-  // Initializing our contract APIs by contract name and configuration
-  const marketContract = await new nearAPI.Contract(
-    walletConnection.account(),
-    getMarketContractName,
-    {
-      // View methods are read only. They don't modify the state, but usually return some value.
-      viewMethods: [...MarketMethods.viewMethods],
-      // Change methods can modify the state. But you don't receive the returned value when called.
-      changeMethods: [...MarketMethods.changeMethods],
-      // Sender is the account ID to initialize transactions.
-
-      //@ts-ignore
-      sender: walletConnection.getAccountId(),
-    }
-  ) as IMarketContract;
-
   return {
     nftContract,
-    marketContract,
     currentUser,
     nearConfig,
     walletConnection,
