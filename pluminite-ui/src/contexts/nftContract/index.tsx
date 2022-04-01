@@ -46,6 +46,7 @@ export interface INftContractContext {
   nft_collections: (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean) => Promise<any>;
   collection_get: (collection_id: string, account_id: string | null, with_tokens: boolean) => Promise<any>;
   profile_get_stat: (account_id: string) => Promise<any>;
+  collection_get_stat: (collection_id: string) => Promise<any>;
 }
 
 interface INftContractContextProviderProps {
@@ -221,6 +222,12 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
+  public collection_get_stat = async (collection_id: string) => {
+    return this.nftContract.collection_get_stat({
+      collection_id
+    });
+  };
+
   public collection_get = async (collection_id: string, account_id: string | null, with_tokens: boolean) => {
     return this.nftContract.collection_get({
       collection_id,
@@ -335,6 +342,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       nft_collections: this.nft_collections,
       collection_get: this.collection_get,
       profile_get_stat: this.profile_get_stat,
+      collection_get_stat: this.collection_get_stat,
       like_artist_account: this.like_artist_account,
       minting_accounts_add: this.minting_accounts_add,
       minting_accounts_remove: this.minting_accounts_remove,

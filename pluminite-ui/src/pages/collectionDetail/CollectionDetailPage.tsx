@@ -10,20 +10,22 @@ import collectionCover from '../../assets/images/collection-head-bg.jpg';
 import defaultImage from '../../assets/images/vine-def.png';
 import { Tab, Tabs } from 'react-bootstrap';
 import TokenCardView from '../../components/tokenCard/tokenCardView';
-import { mediaUrl, uid } from '../../utils/sys';
+import { convertYoctoNearsToNears, mediaUrl, uid } from '../../utils/sys';
 
 interface ICollectionDetailPage extends IProps { }
 interface ICollectionDetailPageState {
   tokens: Array<ITokenResponseItem>;
   collectionData: ICollectionResponseItem | null;
   isLoading: boolean;
+  statistic: any;
 }
 
 class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseComponentProps> {
   public state: ICollectionDetailPageState = {
     tokens: new Array<ITokenResponseItem>(),
     collectionData: null,
-    isLoading: true
+    isLoading: true,
+    statistic: null
   };
 
   constructor(props: ICollectionDetailPage & IBaseComponentProps) {
@@ -33,6 +35,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
   public componentDidMount() {
     window.scroll(0, 0);
     this.getCollectionInfo();
+    this.getStat();
   }
 
   public componentDidUpdate(prevProps: Readonly<ICollectionDetailPage & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
@@ -41,18 +44,21 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     }
   }
 
-  private getCollectionInfo() {
-    this.setState({
-      ...this.state,
-      isLoading: false,
-    })
+  private getStat() {
+    this.props.nftContractContext.collection_get_stat(this.props.params.id!).then(stat => {
+      this.setState({
+        ...this.state,
+        statistic: stat
+      })
+    });
+  }
 
+  private getCollectionInfo() {
     this.props.nftContractContext.collection_get(
       this.props.params.id!,
       this.props.near.user?.accountId || null,
       true
     ).then(res => {
-      console.log('collection_get res', res);
       this.setState({
         ...this.state,
         isLoading: false,
@@ -135,9 +141,27 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     )
   }
 
-  public render() {
-    const saleTokens = [];
+  private getPrice(price: string | number) {
+    return convertYoctoNearsToNears(price) || 0.00;
+  }
 
+  private get floorPrice() {
+    return this.getPrice(this.state.statistic?.prices?.on_sale?.lowest_price || 0);
+  }
+
+  private get itemsCount() {
+    return this.state.collectionData?.tokens?.length || 0
+  }
+
+  private get latestPrice() {
+    return this.getPrice(this.state.statistic?.prices?.on_sale?.newest_price || 0);
+  }
+
+  private get volumeTraded() {
+    return this.getPrice(this.state.statistic?.prices?.on_sale?.total_price || 0)
+  }
+
+  public render() {
     return (
       <div>
         <div className={styles.header}>
@@ -166,20 +190,20 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
           <p className={styles.description}>{this.description}</p>
 
           <div className={styles.informer}>
-            <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+            <div className={this.floorPrice > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.floorPrice}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Floor Price</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>{this.state.collectionData?.tokens_count}</p>
+            <div className={this.itemsCount > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.itemsCount}</p>
               <p className={styles.informerDesc}>Items</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+            <div className={this.latestPrice > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.latestPrice}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Latest Price</p>
             </div>
-            <div>
-              <p className={styles.informerTitle}>0 Ⓝ</p>
+            <div className={this.volumeTraded > 0 ? '' : 'disabled'}>
+              <p className={styles.informerTitle}>{this.volumeTraded}&nbsp;Ⓝ</p>
               <p className={styles.informerDesc}>Volume traded</p>
             </div>
           </div>
