@@ -34,7 +34,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
           </div>
 
           <div className={`${styles.footerLinksWrap} align-items-start`}>
-            <div className={styles.myAccountLinks}>
+            { this.props.near.isAuth && <div className={styles.myAccountLinks}>
               <p className={styles.linksTitle}>My Account</p>
               <ul className={styles.linksWrap}>
                 <li>
@@ -50,7 +50,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                   <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
                 </li>*/}
               </ul>
-            </div>
+            </div>}
             {/*<div>
               <p className={styles.linksTitle}>Resources</p>
               <ul className={styles.linksWrap}>

@@ -11,6 +11,7 @@ import { EmptyListView } from '../../common/emptyList/emptyListView';
 
 interface ICollectionList extends IProps {
   changeRenderType?: (type: RenderType, data?: ICollectionResponseItem | null) => void;
+  collectionOwner?: string | null;
 }
 
 class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
@@ -39,7 +40,8 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
       1,
       100,
       user,
-      true
+      true,
+      this.props.collectionOwner || null
     ).then(res => {
       this.setState({
         ...this.state,

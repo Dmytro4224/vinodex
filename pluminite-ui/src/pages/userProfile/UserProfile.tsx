@@ -76,10 +76,20 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
   public componentDidMount() {
     window.scrollTo(0, 0);
 
+    if(!this.props.near.isAuth){
+      this.props.navigate('/');
+      return;
+    }
+
     this.getData();
   }
 
   public componentDidUpdate(prevState, currentState) {
+    if(!this.props.near.isAuth){
+      this.props.navigate('/');
+      return;
+    }
+
     if (this.state.activeTab !== this.activeTabFromUrl && this.activeTabFromUrl) {
       this.setState({
         ...this.state,
@@ -234,7 +244,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             />
           </Tab>
           <Tab eventKey='collections' title='My collections'>
-            <Collections />
+            <Collections collectionOwner={this.getUserId} />
           </Tab>
           <Tab eventKey='items' title='Created Items'>
             <ProfileTokensView

@@ -260,3 +260,20 @@
     font-size: 20px;
   }
 }
+
+.imageStyle{
+  object-fit: contain;
+  height: 100%;
+}
+
+@media(max-width: 991px){
+  .imageStyle{
+    max-height: 320px;
+  }
+}
+
+@media(min-width: 992px){
+  .imageStyle{
+    max-height: 450px;
+  }
+}

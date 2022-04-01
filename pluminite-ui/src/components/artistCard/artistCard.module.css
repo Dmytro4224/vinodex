@@ -35,6 +35,11 @@
   font-weight: 500;
   font-size: 16px;
   color: var(--black);
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 99%;
+  white-space: nowrap;
 }
 
 .artistAvatar {

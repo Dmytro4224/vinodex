@@ -64,6 +64,7 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
       null,
       null,
       null,
+      ''
     ).then(response => {
       this.setState({
         ...this.state,

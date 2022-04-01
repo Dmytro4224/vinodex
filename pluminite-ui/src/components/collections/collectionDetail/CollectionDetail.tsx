@@ -84,7 +84,7 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
             </Tab>
             <Tab eventKey='tokensCollection' title='TOKENS IN THE COLLECTION'>
               {this.props.collectionData?.tokens?.length ? (
-                <div className={styles.tokenWrap}>
+                <div className={`d-flex gap-20 pb-4 ${styles.tokenWrap}`}>
                   <div className={styles.cardCreate}>
                     <h4>ADD A TOKEN TO THE COLLECTION</h4>
                     <p>Select a token from the existing ones and add it to this collection</p>
