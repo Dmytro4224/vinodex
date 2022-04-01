@@ -9,10 +9,18 @@
 }
 
 .tokenWrap {
-  display: flex;
   padding: 40px;
-  gap: 20px;
-  overflow: auto;
+
+  /*display: flex;*/
+  /*gap: 20px;*/
+  /*overflow: auto;*/
+}
+
+@media (max-width: 600px) {
+  .tokenWrap {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
 }
 
 .cardCreate {

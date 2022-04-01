@@ -31,7 +31,7 @@ export interface INftContractContext {
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   token_set_view: (token_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => Promise<Array<any>>;
+  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => Promise<Array<any>>;
   my_purchases: (catalog: string | null, page_index: number, page_size: number, account_id: string) => Promise<any>;
   sale_history_by_token: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
@@ -96,7 +96,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null) => {
+  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => {
     return this.props.nftContract.nft_tokens_by_filter({
       catalog,
       page_index,
@@ -109,7 +109,8 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       is_active_bid,
       price_from,
       price_to,
-      is_single
+      is_single,
+      collection_id
     });
   };
 
