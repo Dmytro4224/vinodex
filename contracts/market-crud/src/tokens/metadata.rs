@@ -132,6 +132,7 @@ impl Contract {
 
     pub fn token_set_view(&mut self, token_id: TokenId)
     {
+        return;
         let user_id = env::predecessor_account_id();
         let mut views_count: Option<u128> = None;
 

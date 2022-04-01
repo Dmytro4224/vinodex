@@ -158,7 +158,16 @@ impl Contract {
     #[private]
     pub fn sale_remove_inner(&mut self, token_id: &TokenId) -> Sale
     {
-        return self.sales_active.remove(token_id).expect("No sale");
+
+        let sale = self.sales_active.remove(token_id).expect("No sale");
+
+        let creator = self.creator_per_token.get(&token_id).unwrap();
+        let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
+        let collection_id = self.collection_per_token.get(&token_id);
+
+        self.recount_price_stat(&creator, &artist, &collection_id);
+
+        return sale;
     }
 
     pub fn sale_remove(&mut self, token_id: TokenId) -> Sale
@@ -328,6 +337,8 @@ impl Contract {
            }
         );
 
+
+        //====================Статистика по користувачу=========================//
         let creator = self.creator_per_token.get(&token_id).unwrap();
         let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
 
@@ -338,7 +349,16 @@ impl Contract {
             &artist,
             statistic_price,
             false
-        )
+        );
+        //====================Статистика по користувачу=========================//
+
+
+        //====================Статистика по колекції=========================//
+        if let Some(collection_id) = self.collection_per_token.get(&token_id)
+        {
+            self.collection_stat_price_check_and_change(&collection_id, statistic_price, false);
+        }
+        //====================Статистика по колекції=========================//
     }
 
     //updates the price for a sale on the market
@@ -375,6 +395,12 @@ impl Contract {
             bids: sale.bids,
             is_closed: sale.is_closed
         });
+
+        let creator = self.creator_per_token.get(&token_id).unwrap();
+        let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
+        let collection_id = self.collection_per_token.get(&token_id);
+
+        self.recount_price_stat(&creator, &artist, &collection_id);
 
         self.tokens_resort(token_id.clone(), 5, Some(price.0));
     }
@@ -582,6 +608,7 @@ impl Contract {
                     }
                 }
 
+                //====================Статистика по користувачу=========================//
                 let creator = self.creator_per_token.get(&token_id).unwrap();
                 let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
 
@@ -592,7 +619,16 @@ impl Contract {
                     &artist,
                     price,
                     false
-                )
+                );
+                //====================Статистика по користувачу=========================//
+
+
+                //====================Статистика по колекції=========================//
+                if let Some(collection_id) = self.collection_per_token.get(&token_id)
+                {
+                    self.collection_stat_price_check_and_change(&collection_id, price, false);
+                }
+                //====================Статистика по колекції=========================//
             },
             _ =>
             {
@@ -723,6 +759,7 @@ impl Contract {
             }
         }
 
+        //====================Статистика по користувачу=========================//
         let creator = self.creator_per_token.get(&token_id).unwrap();
         let artist = self.token_metadata_by_id.get(&token_id).unwrap().artist;
 
@@ -734,6 +771,22 @@ impl Contract {
             price,
             true
         );
+
+        
+        //====================Статистика по користувачу=========================//
+
+        let collection_id = self.collection_per_token.get(&token_id);
+
+        self.recount_price_stat(&creator, &artist, &collection_id);
+
+        //====================Статистика по колекції=========================//
+        if let Some(collection_id) = collection_id
+        {
+            self.collection_stat_price_check_and_change(&collection_id, price, true);
+        }
+        //====================Статистика по колекції=========================//
+
+        
 
         self.tokens_resort(token_id.clone(), 5, None);
     }
@@ -1238,5 +1291,105 @@ impl Contract {
         }
             
         return result;
+    }
+
+    //Знайти ціну для статистики
+    pub fn find_price(&self, source_type: u8, target_id: &String, is_lowest : bool) -> u128
+    {
+        let mut price : u128 = 0;
+        let mut is_first = true;
+
+        let source: Option<UnorderedSet<TokenId>>;
+
+        match source_type
+        {
+            1 =>
+            {
+                source = self.tokens_per_creator.get(target_id);
+            },
+            2 =>
+            {
+                source = self.tokens_per_artist.get(target_id);
+            },
+            3 =>
+            {
+                source = self.collection_tokens.get(target_id);
+            },
+            _ =>
+            {
+                panic!("source type not implemented");
+            }
+        }
+
+        match source
+        {
+            Some(tokens) =>
+            {
+                let sales : Vec<Option<SaleJson>> = tokens.iter().map(|x| self.sale_get(&x, None, false)).collect();
+
+                for i in 0..sales.len()
+                {
+                    let sale = sales.get(i).unwrap();
+
+                    match sale
+                    {
+                        Some(sale) =>
+                        {
+                            match sale.sale_type
+                            {
+                                1 =>
+                                {
+                                    let sale_price = sale.price.unwrap().0;
+
+                                    if is_first
+                                    {
+                                        price = sale_price;
+                                        is_first = false;
+                                    }
+                                    else if (is_lowest && sale_price < price)
+                                    || (!is_lowest && sale_price > price)
+                                    {
+                                        price = sale_price;
+                                    }
+                                },
+                                2 | 3 =>
+                                {
+                                    let bids_len = sale.bids.len();
+
+                                    if bids_len == 0
+                                    {
+                                        continue;
+                                    }
+
+                                    let sale_price = sale.bids.get(bids_len - 1).unwrap().price.0;
+
+                                    if is_first
+                                    {
+                                        price = sale_price;
+                                        is_first = false;
+                                    }
+                                    else if (is_lowest && sale_price < price)
+                                    || (!is_lowest && sale_price > price)
+                                    {
+                                        price = sale_price;
+                                    }
+                                },
+                                _ =>
+                                {
+                                    continue;
+                                }
+                            }
+                        },
+                        None =>
+                        {
+                            continue;
+                        }
+                    }
+                }
+            },
+            None => {}
+        }
+
+        return price;
     }
 }

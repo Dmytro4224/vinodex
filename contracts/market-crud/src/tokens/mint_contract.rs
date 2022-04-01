@@ -238,4 +238,11 @@ impl Contract {
     {
         self.minting_account_ids.remove(&account_id);
     }
+
+    pub fn minting_accounts_list(&self) -> Vec<String>
+    {
+        let res : Vec<String> = self.minting_account_ids.iter().collect();
+
+        return res;
+    }
 }
