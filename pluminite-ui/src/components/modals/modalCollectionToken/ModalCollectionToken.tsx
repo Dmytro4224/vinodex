@@ -18,7 +18,7 @@ interface IModal extends IProps {
 }
 
 interface IModalState {
-  list: Array<ITokenResponseItem>;
+  list: Array<ITokenResponseItem> | null;
   isLoading: boolean;
   isShowConfirmModal: boolean;
   modalConfirmData: any;
@@ -26,7 +26,7 @@ interface IModalState {
 
 class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
   public state: IModalState = {
-    list: new Array<ITokenResponseItem>(),
+    list: null,
     isLoading: true,
     isShowConfirmModal: false,
     modalConfirmData: {
@@ -40,8 +40,10 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
     super(props);
   }
 
-  public componentDidUpdate() {
-    this.loadData();
+  public componentDidUpdate(prevProps: Readonly<IModal & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+    if (this.state.list === null) {
+      this.loadData();
+    }
   }
 
   private loadData() {
@@ -61,7 +63,7 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
     ).then(response => {
       this.setState({
         ...this.state,
-        list: response,
+        list: response || [],
         isLoading: false
       });
     });
@@ -140,9 +142,9 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
             <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
             <div className='w-100'><Skeleton count={1} height={300} /><Skeleton count={3} /></div>
           </div>
-        ) : this.state.list.length ? (
+        ) : this.state.list?.length ? (
           <div className={styles.tokenWrap}>
-            {this.state.list.map(item => {
+            {this.state.list?.map(item => {
               return (
                 <TokenCardView
                   key={`modal-tokens-${item.token_id}`}
