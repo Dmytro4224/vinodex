@@ -17,6 +17,7 @@ export interface IInputView extends IProps {
   isError?: boolean;
   errorMessage?: string;
   disabled?: boolean;
+  maxLength?: number;
 };
 
 export enum InputStyleType {
@@ -139,6 +140,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
                 type={this.inputType}
                 ref={this.ref}
                 disabled={this.disabled}
+                maxLength={this.props.maxLength || 1000}
               />
               :
               <textarea
@@ -147,7 +149,7 @@ class InputView extends Component<IInputView & IBaseComponentProps> {
                 className={`${styles.inputView} ${this.absPlaceholder && styles.hidePlaceholder}`}
                 ref={this.ref}
                 disabled={this.disabled}
-                // maxLength={250}
+                maxLength={this.props.maxLength || 1000}
               />
             }
 

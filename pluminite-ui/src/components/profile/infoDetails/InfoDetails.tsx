@@ -333,6 +333,7 @@ class InfoDetails extends Component<IInfoDetails & IBaseComponentProps> {
             disabled={this.state.isLoading}
             isError={!this.state.validate.isBioValid}
             errorMessage={`Enter the Bio`}
+            maxLength={255}
           />
 
           <div className="d-flex align-items-center justify-content-center">
