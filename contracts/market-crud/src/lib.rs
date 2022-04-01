@@ -176,6 +176,7 @@ pub struct Contract {
     pub version: u16,
 
     //===========лакйи, фоловери, перегляди авторів======
+
     //список користувачів, яким сподобався аккаунт AccountId
     pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
     //список користувачів, які дивилися аккаунт AccountId
@@ -214,11 +215,18 @@ pub struct Contract {
     //================sales==========================//
 
     //================collections--------------------//
+
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
     pub collection_per_token: LookupMap<TokenId, String>,
     pub collections: UnorderedMap<String, Collection>,
     pub collection_likes: LookupMap<String, UnorderedSet<AccountId>>,
     pub collection_views: LookupMap<String, UnorderedSet<AccountId>>,
+
+    pub collection_creator: LookupMap<String, AccountId>,
+    pub collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>,
+
+    //статистика по колекції
+    pub collections_global_stat: LookupMap<String, PriceStatMain>,
 
     //================collections--------------------//
 
@@ -235,6 +243,7 @@ pub enum StorageKey {
     TokenPerOwnerInner { account_id_hash: CryptoHash },
     TokensPerCreator,
     TokenPerCreatorInner { account_id_hash: CryptoHash },
+    CollectionPerCreatorInner { account_id_hash: CryptoHash },
     TokenPerArtistInner { account_id_hash: CryptoHash },
     TokensById,
     TokenMetadataById,
@@ -270,6 +279,9 @@ pub enum StorageKey {
     CollectionOfTokensSet { collection_id_hash: CryptoHash },
     CollectionLikes,
     CollectionViews,
+    CollectionGlobalStat,
+    CollectionCreator,
+    CollectionsPerCreator,
     MintingAccountIds { account_id_hash: CryptoHash },
     EmailSubscriptions,
     SalesHistory,
@@ -347,6 +359,9 @@ impl Contract {
             collections: UnorderedMap::new(StorageKey::Collection.try_to_vec().unwrap()),
             collection_likes: LookupMap::new(StorageKey::CollectionLikes.try_to_vec().unwrap()),
             collection_views: LookupMap::new(StorageKey::CollectionViews.try_to_vec().unwrap()),
+            collections_global_stat: LookupMap::new(StorageKey::CollectionGlobalStat.try_to_vec().unwrap()),
+            collection_creator: LookupMap::new(StorageKey::CollectionCreator.try_to_vec().unwrap()),
+            collections_per_creator: LookupMap::new(StorageKey::CollectionsPerCreator.try_to_vec().unwrap()),
             minting_account_ids: UnorderedSet::new(
                 StorageKey::MintingAccountIds {
                     account_id_hash: hash_account_id(&owner_id.into()),
@@ -423,7 +438,10 @@ impl Contract {
             collection_views: LookupMap<String, UnorderedSet<AccountId>>,
             minting_account_ids: UnorderedSet<AccountId>,
             email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
-            tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>
+            tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>,
+            collections_global_stat: LookupMap<String, PriceStatMain>,
+            collection_creator: LookupMap<String, AccountId>,
+            collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -472,7 +490,10 @@ impl Contract {
             collection_views: old_contract.collection_views,
             minting_account_ids: old_contract.minting_account_ids,
             email_subscriptions: old_contract.email_subscriptions,
-            tokens_per_artist: old_contract.tokens_per_artist
+            tokens_per_artist: old_contract.tokens_per_artist,
+            collections_global_stat: old_contract.collections_global_stat,
+            collection_creator: old_contract.collection_creator,
+            collections_per_creator: old_contract.collections_per_creator
         }
     }
 
@@ -652,9 +673,9 @@ impl Contract {
     #[private]
     pub fn is_new_creator(&self, account_id: &AccountId) -> bool
     {
-        match self.tokens_per_creator.get(&account_id) 
+        match self.tokens_per_creator.get(account_id) 
         {
-            Some(mut tokens) => 
+            Some(tokens) => 
             {
                 return false;
             }
@@ -668,9 +689,9 @@ impl Contract {
     #[private]
     pub fn is_new_artist(&self, account_id: &AccountId) -> bool
     {
-        match self.tokens_per_artist.get(&account_id) 
+        match self.tokens_per_artist.get(account_id) 
         {
-            Some(mut tokens) => 
+            Some(tokens) => 
             {
                 return false;
             }
@@ -706,7 +727,10 @@ impl Contract {
     }
 
     //поставити помітку про відвідання карточки користувача
-    pub fn view_artist_account(&mut self, account_id: AccountId) {
+    pub fn view_artist_account(&mut self, account_id: AccountId) 
+    {
+        return;
+
         let predecessor_account_id = env::predecessor_account_id();
 
         Profile::set_profile_view(&mut self.autors_views, &account_id, &predecessor_account_id);
@@ -832,5 +856,72 @@ impl Contract {
     //return how much storage an account has paid for
     pub fn storage_balance_of(&self, account_id: AccountId) -> U128 {
         U128(self.storage_deposits.get(&account_id).unwrap_or(0))
+    }
+
+    #[private]
+    pub fn recount_price_stat(&mut self, creator: &String, artist: &String, collection_id: &Option<String>)
+    {
+        let lowest_by_creator_on_sale = self.find_price(1, creator, true);
+        let highest_by_creator_on_sale = self.find_price(1, creator, false);
+
+        ProfileStatCriterion::set_profile_stat_val
+        (
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            creator,
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsCreator,
+            lowest_by_creator_on_sale
+        );
+
+        ProfileStatCriterion::set_profile_stat_val
+        (
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            creator,
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsCreator,
+            highest_by_creator_on_sale
+        );
+
+        let lowest_by_artist_on_sale = self.find_price(2, artist, true);
+        let highest_by_artist_on_sale = self.find_price(2, artist, false);
+
+        ProfileStatCriterion::set_profile_stat_val
+        (
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            artist,
+            ProfileStatCriterionEnum::OnSaleLowestPriceAsArtist,
+            lowest_by_artist_on_sale
+        );
+
+        ProfileStatCriterion::set_profile_stat_val
+        (
+            &mut self.profiles_global_stat, 
+            &mut self.profiles_global_stat_sorted_vector,
+            artist,
+            ProfileStatCriterionEnum::OnSaleHighestPriceAsArtist,
+            highest_by_artist_on_sale
+        );
+
+
+        if let Some(collection_id) = collection_id
+        {
+            let lowest_by_collection_on_sale = self.find_price(3, &collection_id, true);
+            let highest_by_collection_on_sale = self.find_price(3, &collection_id, false);
+
+            self.set_collection_stat_val
+            (
+                &collection_id,
+                CollectionStatCriterionEnum::OnSaleLowestPrice,
+                lowest_by_collection_on_sale
+            );
+
+            self.set_collection_stat_val
+            (
+                &collection_id,
+                CollectionStatCriterionEnum::OnSaleHighestPrice,
+                highest_by_collection_on_sale
+            );
+        }
     }
 }

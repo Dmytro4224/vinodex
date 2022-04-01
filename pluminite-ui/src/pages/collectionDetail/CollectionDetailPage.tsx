@@ -37,13 +37,15 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
     this.getCollectionInfo();
     this.getStat();
   }
-
+/*
   public componentDidUpdate(prevProps: Readonly<ICollectionDetailPage & IBaseComponentProps>, prevState: Readonly<{}>, snapshot?: any) {
+    
     if (this.state.collectionData && !this.state.collectionData?.is_viewed && this.props.near.isAuth) {
       this.props.nftContractContext.collection_set_view(this.props.params.id!);
     }
+    
   }
-
+*/
   private getStat() {
     this.props.nftContractContext.collection_get_stat(this.props.params.id!).then(stat => {
       this.setState({
