@@ -25,10 +25,12 @@
     background: rgba(174, 126, 3, .9);
 }
 .title{
+   font-family: 'Bebas Neue', 'Urbanist', sans-serif;
     font-size: 48px;
     color: var(--white);
     text-transform: uppercase;
     z-index: 2;
+    letter-spacing: 0.1rem;
 }
 
 .backButton{
