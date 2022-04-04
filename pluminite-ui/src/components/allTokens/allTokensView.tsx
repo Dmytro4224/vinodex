@@ -58,20 +58,15 @@ class AllTokensView extends Component<IAllTokensView & IBaseComponentProps> {
   }
 
   private loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(
-      null,
-      1,
-      4,
-      this.sort,
-      null,
-      null,
-      null,
-      null,
-      null,
-      this.priceFrom,
-      this.priceTo,
-      typeof this.props.type === 'undefined' ? null : this.props.type,
-    ).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: null,
+      page_index: 1,
+      page_size: 4,
+      sort: this.sort,
+      price_from: this.priceFrom,
+      price_to: this.priceTo,
+      is_single: typeof this.props.type === 'undefined' ? null : this.props.type,
+    }).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });
   }

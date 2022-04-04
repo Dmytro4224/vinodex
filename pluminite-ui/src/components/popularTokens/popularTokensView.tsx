@@ -59,20 +59,16 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
   }
 
   private loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(
-      this.props.catalog,
-      1,
-      4,
-      this.sort,
-      null,
-      null,
-      null,
-      null,
-      null,
-      this.priceFrom,
-      this.priceTo,
-      typeof this.props.type === 'undefined' ? null : this.props.type,
-    ).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: this.props.catalog,
+      page_index: 1,
+      page_size: 4,
+      sort: this.sort,
+      price_from: this.priceFrom,
+      price_to: this.priceTo,
+      is_single: typeof this.props.type === 'undefined' ? null : this.props.type,
+      collection_id: '',
+    }).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });
   }

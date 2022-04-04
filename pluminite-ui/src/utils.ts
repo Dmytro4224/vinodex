@@ -5,6 +5,7 @@ import { ICurrentUser } from './types/ICurrentUser';
 import { IProfile } from './types/IProfile';
 import { ITokenResponseItem } from './types/ITokenResponseItem';
 import { IAuthorResponseItem } from './types/IAuthorResponseItem';
+import { ITokensByFilter } from './types/NearAPI';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
@@ -16,7 +17,7 @@ export type INftContract = nearAPI.Contract & {
     set_profile: ({ profile: { bio, name, image, email, account_id, cover_image } }: { profile: { bio: string, name: string, image: string, email: string, account_id: string, cover_image: string } }) => Promise<IProfile>;
     authors_by_filter: ({ parameter, is_reverse, page_index, page_size,asked_account_id }: { parameter: string, is_reverse: boolean, page_index: number, page_size: number,asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
     followed_authors_for_account: ({ account_id, page_index, page_size }: { account_id: string, page_index: number, page_size: number }) => Promise<Array<IAuthorResponseItem>>;
-    nft_tokens_by_filter: ({ catalog, page_index, page_size, sort, account_id, is_for_sale, owner_id, is_liked, is_followed, is_active_bid, price_from, price_to, is_single, collection_id}: { catalog: string | null, page_index: number, page_size: number, sort: number, account_id:string, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null }) => Promise<Array<ITokenResponseItem>>;
+    nft_tokens_by_filter: (data: ITokensByFilter) => Promise<Array<ITokenResponseItem>>;
     my_purchases: ({ catalog, page_index, page_size, account_id}: { catalog: string | null, page_index: number, page_size: number, account_id: string}) => Promise<any>;
     sale_history_by_token: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<any>>;
     token_owners_history: ({ token_id, page_index, page_size, asked_account_id}: { token_id: string, page_index: number, page_size: number, asked_account_id: string }) => Promise<Array<any>>;

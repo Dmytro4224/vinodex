@@ -21,7 +21,12 @@ class SimilarTokensView extends Component<ISimilarTokensView & IBaseComponentPro
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.nft_tokens_by_filter(null, 1, 4, 7).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: null,
+      page_index: 1,
+      page_size: 4,
+      sort: 7
+    }).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });
   }

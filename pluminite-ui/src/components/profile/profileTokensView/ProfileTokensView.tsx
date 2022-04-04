@@ -41,10 +41,10 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
   private _catalogFilterView: any;
   private _typeViewParams = {
-    [ProfileTokensType.onSale]: [true, this.urlUserId, null, null, null],
-    [ProfileTokensType.createdItems]: [null, this.urlUserId, null, null, null],
-    [ProfileTokensType.activeBids]: [null, this.urlUserId, null, null, true],
-    [ProfileTokensType.favourites]: [null, null, true, null, null],
+    [ProfileTokensType.onSale]: { is_for_sale: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
+    [ProfileTokensType.createdItems]: { owner_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type},
+    [ProfileTokensType.activeBids]: { is_active_bid: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
+    [ProfileTokensType.favourites]: { is_liked: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
   };
 
   constructor(props: IProfileTokensView & IBaseComponentProps) {
@@ -95,16 +95,15 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   private loadData() {
-    const data = [...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems]];
-    data.push(this.priceFrom, this.priceTo, this.state.filterOptions.type);
+    const data = { ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems] };
 
-    this.props.nftContractContext.nft_tokens_by_filter(
-      this.catalog,
-      1,
-      1000,
-      this.sort,
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: this.props.catalog,
+      page_index: 1,
+      page_size: 1000,
+      sort: this.sort || 7,
       ...data
-    ).then(response => {
+    }).then(response => {
       this.setState({
         ...this.state,
         list: response,
@@ -139,82 +138,75 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   private getFilter() {
-    switch (this.typeViewTokens) {
-      case ProfileTokensType.onSale:
-      case ProfileTokensType.activeBids:
-      case ProfileTokensType.favourites:
-      case ProfileTokensType.owned:
-      case ProfileTokensType.createdItems:
-        return (
-          <div className={'mt-2'}>
-            <MediaQuery minWidth={992}>
-              <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
-                <DropdownView
-                  colorType={dropdownColors.selectFilter}
-                  title={'Sort by'}
-                  onChange={(item) => {
-                    this.setSort(item.id);
-                  }}
-                  childrens={dropdownData}
-                />
-
-                {/*<TabsFilterView*/}
-                {/*  currentTabIndex={this.state.currentCatalog}*/}
-                {/*  onClick={(index) => {*/}
-                {/*    this.setCatalog(index);*/}
-                {/*  }}*/}
-                {/*/>*/}
-
-                <ButtonView
-                  text={'Filter'}
-                  onClick={this.onFilterClick}
-                  color={buttonColors.select}
-                  customClass={'btn-filter'}
-                />
-              </div>
-            </MediaQuery>
-            <MediaQuery maxWidth={991}>
-              <div className='d-flex flex-column w-100'>
-                <div className='d-flex align-items-center justify-content-between'>
-                  <DropdownView
-                    colorType={dropdownColors.select}
-                    title={''}
-                    icon={sortIcon}
-                    hideArrow={true}
-                    onChange={(item) => {
-                      this.setSort(item.id);
-                    }}
-                    childrens={dropdownData}
-                  />
-
-                  <ButtonView
-                    text={''}
-                    withoutText={true}
-                    icon={filterIcon}
-                    onClick={this.onFilterClick}
-                    color={buttonColors.select}
-                  />
-                </div>
-                {/*<div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>*/}
-                {/*  <TabsFilterView*/}
-                {/*    currentTabIndex={this.state.currentCatalog}*/}
-                {/*    onClick={(index) => {*/}
-                {/*      this.setCatalog(index);*/}
-                {/*    }}*/}
-                {/*  />*/}
-                {/*</div>*/}
-              </div>
-            </MediaQuery>
-
-            <CatalogFilterView
-              setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
-              setRef={cmp => this._catalogFilterView = cmp}
+    return (
+      <div className={'mt-2'}>
+        <MediaQuery minWidth={992}>
+          <div className={`d-flex align-items-center justify-content-between my-4 ${styles.filterWrap}`}>
+            <DropdownView
+              colorType={dropdownColors.selectFilter}
+              title={'Sort by'}
+              onChange={(item) => {
+                this.setSort(item.id);
+              }}
+              childrens={dropdownData}
             />
 
-            <p className='line-separator my-4' />
+            {/*<TabsFilterView*/}
+            {/*  currentTabIndex={this.state.currentCatalog}*/}
+            {/*  onClick={(index) => {*/}
+            {/*    this.setCatalog(index);*/}
+            {/*  }}*/}
+            {/*/>*/}
+
+            <ButtonView
+              text={'Filter'}
+              onClick={this.onFilterClick}
+              color={buttonColors.select}
+              customClass={'btn-filter'}
+            />
           </div>
-        );
-    }
+        </MediaQuery>
+        <MediaQuery maxWidth={991}>
+          <div className='d-flex flex-column w-100'>
+            <div className='d-flex align-items-center justify-content-between'>
+              <DropdownView
+                colorType={dropdownColors.select}
+                title={''}
+                icon={sortIcon}
+                hideArrow={true}
+                onChange={(item) => {
+                  this.setSort(item.id);
+                }}
+                childrens={dropdownData}
+              />
+
+              <ButtonView
+                text={''}
+                withoutText={true}
+                icon={filterIcon}
+                onClick={this.onFilterClick}
+                color={buttonColors.select}
+              />
+            </div>
+            {/*<div className={`d-flex align-items-center mt-4 ${styles.filterWrap}`}>*/}
+            {/*  <TabsFilterView*/}
+            {/*    currentTabIndex={this.state.currentCatalog}*/}
+            {/*    onClick={(index) => {*/}
+            {/*      this.setCatalog(index);*/}
+            {/*    }}*/}
+            {/*  />*/}
+            {/*</div>*/}
+          </div>
+        </MediaQuery>
+
+        <CatalogFilterView
+          setFilter={(filterOptions: IFilterOptions) => this.setFilter(filterOptions)}
+          setRef={cmp => this._catalogFilterView = cmp}
+        />
+
+        <p className='line-separator my-4' />
+      </div>
+    );
   }
 
   public render() {

@@ -170,14 +170,14 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
             >
               <Tab eventKey='items' title='Items'>
                 <ProfileTokensView
-                  catalog={'Art'}
+                  catalog={'Wine'}
                   sort={7}
                   typeViewTokens={ProfileTokensType.createdItems}
                 />
               </Tab>
               <Tab eventKey='sale' title='On sale'>
                 <ProfileTokensView
-                  catalog={'Art'}
+                  catalog={'Wine'}
                   sort={7}
                   typeViewTokens={ProfileTokensType.onSale}
                 />

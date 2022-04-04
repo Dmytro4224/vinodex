@@ -51,21 +51,13 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
   // }
 
   private loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(
-      null,
-      1,
-      100,
-      7,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      null,
-      ''
-    ).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: null,
+      page_index: 1,
+      page_size: 100,
+      sort: 7,
+      collection_id: '',
+    }).then(response => {
       this.setState({
         ...this.state,
         list: response || [],

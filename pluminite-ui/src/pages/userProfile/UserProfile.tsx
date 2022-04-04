@@ -56,7 +56,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
     image: avatarDefault,
     cover_image: coverDff,
     activeTab: this.activeTabFromUrl,
-    catalog: 'Art',
+    catalog: 'Wine',
     sort: 7,
     profile: {
       bio: 'Bio Example',

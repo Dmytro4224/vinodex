@@ -61,20 +61,15 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
   }
 
   private async loadData() {
-    this.props.nftContractContext.nft_tokens_by_filter(
-      this.props.catalog,
-      1,
-      1000,
-      this.sort,
-      null,
-      null,
-      null,
-      null,
-      null,
-      this.priceFrom,
-      this.priceTo,
-      typeof this.props.type === 'undefined' ? null : this.props.type,
-    ).then(response => {
+    this.props.nftContractContext.nft_tokens_by_filter({
+      catalog: this.props.catalog,
+      page_index: 1,
+      page_size: 1000,
+      sort: this.sort,
+      price_from: this.priceFrom,
+      price_to: this.priceTo,
+      is_single: typeof this.props.type === 'undefined' ? null : this.props.type,
+    }).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });
   }

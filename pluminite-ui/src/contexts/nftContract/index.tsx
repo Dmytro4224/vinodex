@@ -5,6 +5,7 @@ import { INftContract } from '../../utils';
 import { IProfile } from '../../types/IProfile';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { APP } from '../../constants';
+import { ITokensByFilter } from '../../types/NearAPI';
 
 export const initialNftContractState = {
   nftContract: null,
@@ -25,13 +26,11 @@ export interface INftContractContext {
   minting_accounts_remove: (account_id: string) => Promise<any>;
   token_set_like: (token_id: string) => Promise<any>;
   collection_set_like: (collection_id: string) => Promise<any>;
-
   collection_set_view: (collection_id: string) => Promise<any>;
-
   follow_artist_account: (account_id: string) => Promise<any>;
   view_artist_account: (account_id: string) => Promise<any>;
   token_set_view: (token_id: string) => Promise<any>;
-  nft_tokens_by_filter: (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => Promise<Array<any>>;
+  nft_tokens_by_filter: (data: ITokensByFilter) => Promise<Array<any>>;
   my_purchases: (catalog: string | null, page_index: number, page_size: number, account_id: string) => Promise<any>;
   sale_history_by_token: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   token_owners_history: (token_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
@@ -96,21 +95,24 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     });
   };
 
-  public nft_tokens_by_filter = (catalog: string | null, page_index: number, page_size: number, sort: number, is_for_sale?: boolean | null, owner_id?: string | null, is_liked?: boolean | null, is_followed?: boolean | null, is_active_bid?: boolean | null, price_from?: string | null, price_to?: string | null, is_single?: boolean | null, collection_id?: string | null) => {
+  public nft_tokens_by_filter = (data: ITokensByFilter): Promise<Array<any>> => {
     return this.props.nftContract.nft_tokens_by_filter({
-      catalog,
-      page_index,
-      page_size,
-      sort,
-      account_id: this.myAccountId,
-      is_for_sale,
-      owner_id,
-      is_liked,
-      is_active_bid,
-      price_from,
-      price_to,
-      is_single,
-      collection_id
+      catalog: 'Wine', // data.catalog
+      page_index: data.page_index,
+      page_size: data.page_size,
+      sort: data.sort || 7,
+      is_for_sale: data.is_for_sale || null,
+      owner_id: data.owner_id || null,
+      creator_id: data.creator_id || null,
+      artist_id: data.artist_id || null,
+      is_liked: data.is_liked || null,
+      is_followed: data.is_followed || null,
+      is_active_bid: data.is_active_bid || null,
+      price_from: data.price_from || null,
+      price_to: data.price_to || null,
+      is_single: data.is_single || null,
+      collection_id: data.collection_id || null,
+      account_id: this.myAccountId
     });
   };
 
