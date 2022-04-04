@@ -15,4 +15,16 @@ export interface ITokensByFilter {
   is_single?: boolean | null;
   collection_id?: string | null;
   account_id?: string | null | undefined;
+  brand?: string | null;
+  style?: string | null;
+  year?: string | null;
+  bottle_size?: string | null;
+  sale_filter?: SaleFilterTokens | null;
+}
+
+export enum SaleFilterTokens {
+  notSale = 0,
+  fix = 1,
+  auction = 2,
+  fixAndAuction = 3
 }

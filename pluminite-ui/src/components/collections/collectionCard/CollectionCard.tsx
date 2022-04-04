@@ -11,6 +11,7 @@ import ModalSample, { ModalSampleSizeType } from '../../common/modalSample/Modal
 import LikeView, { LikeViewType } from '../../like/likeView';
 import { showToast } from '../../../utils/sys';
 import { EShowTost } from '../../../types/ISysTypes';
+import { NavLink } from 'react-router-dom';
 
 interface ICollectionCard extends IProps {
   data?: ICollectionResponseItem;
@@ -201,20 +202,24 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
       case CollectionType.big:
         return (
           <div key={this.key} className={`cardWrapBig`}>
-            <div
-              style={{ backgroundImage: `url(${this.coverImage})` }}
-              className={`cardWrapBig__coverImage`}
-            />
+            <NavLink to={`/collections/${this.props.data?.collection_id}`}>
+              <div
+                style={{ backgroundImage: `url(${this.coverImage})` }}
+                className={`cardWrapBig__coverImage`}
+              />
 
-            <div className={`cardWrapBig__imageWrap`}>
-              <img
-                onError={(e) => { this.onErrorImage('logo', e.target) }}
-                className={`cardWrapBig__image`} src={this.image} alt='img' />
-            </div>
+              <div className={`cardWrapBig__imageWrap`}>
+                <img
+                  onError={(e) => { this.onErrorImage('logo', e.target) }}
+                  className={`cardWrapBig__image`} src={this.image} alt='img' />
+              </div>
+            </NavLink>
 
             <div className={`cardWrapBig__content`}>
-              <h4 className={`cardWrapBig__collectionName`}>{this.collectionName}</h4>
-              <p className={`cardWrapBig__description`}>{(this.props.data?.description?.length || 0) > 180 ? `${this.props.data?.description?.slice(0, 180)}...` : this.props.data?.description}</p>
+              <NavLink to={`/collections/${this.props.data?.collection_id}`}>
+                <h4 className={`cardWrapBig__collectionName`}>{this.collectionName}</h4>
+                <p className={`cardWrapBig__description`}>{(this.props.data?.description?.length || 0) > 180 ? `${this.props.data?.description?.slice(0, 180)}...` : this.props.data?.description}</p>
+              </NavLink>
 
               <div className={`cardWrapBig__controls`}>
                 <ButtonView

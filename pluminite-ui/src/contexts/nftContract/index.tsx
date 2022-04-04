@@ -5,7 +5,7 @@ import { INftContract } from '../../utils';
 import { IProfile } from '../../types/IProfile';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { APP } from '../../constants';
-import { ITokensByFilter } from '../../types/NearAPI';
+import { ITokensByFilter, SaleFilterTokens } from '../../types/NearAPI';
 
 export const initialNftContractState = {
   nftContract: null,
@@ -112,6 +112,11 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       price_to: data.price_to || null,
       is_single: data.is_single || null,
       collection_id: data.collection_id || null,
+      brand: data.brand || null,
+      style: data.style || null,
+      year: data.year || null,
+      bottle_size: data.bottle_size || null,
+      sale_filter: data.sale_filter || null,
       account_id: this.myAccountId
     });
   };

@@ -47,6 +47,10 @@ a {
   text-decoration: none;
 }
 
+.fz-16px {
+  font-size: 16px;
+}
+
 .slick-slider .slick-track,
 .slick-slider .slick-list {
   display: flex;
@@ -648,6 +652,7 @@ input[type="range"]:disabled::-moz-range-thumb {
 .cardWrapBig__collectionName {
   margin-bottom: 20px;
   font-family: 'Bebas Neue', 'Urbanist', sans-serif;
+  color: var(--black);
   font-size: 48px;
   text-align: center;
   text-transform: uppercase;
