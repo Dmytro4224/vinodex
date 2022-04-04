@@ -14,12 +14,16 @@ class LoginButton extends Component<ILoginButton & IBaseComponentProps>{
     super(props);
   }
 
+  private onClick = async (e: React.MouseEvent) => {
+    this.props.near.signIn();
+  }
+
   render() {
     if (this.props.user === null || this.props.user === undefined) {
       return (
         <ButtonView
           text={'Wallet connect'}
-          onClick={this.props.near.signIn}
+          onClick={this.onClick}
           color={buttonColors.dark}
           icon={walletIcon}
           customClass={`px-4 py-2`}

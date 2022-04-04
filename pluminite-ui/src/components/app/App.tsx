@@ -20,6 +20,7 @@ import CollectionsPage from '../../pages/collections/Collections';
 import CollectionDetailPage from '../../pages/collectionDetail/CollectionDetailPage';
 import ArtistDetail from '../../pages/artistDetail/ArtistDetail';
 import NotFound from '../../pages/NotFound/NotFound';
+import RedirectPage from '../../pages/redirect/Redirect';
 
 interface IApp extends IProps {
 
@@ -65,6 +66,7 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="/token/:tokenId" element={<OrderDetail />} />
             <Route path="/tokens/:type" element={<CatalogTokens />} />
             <Route path="/create/:type" element={<CreateToken />} />
+            <Route path="/redirect" element={<RedirectPage />} />
           </Routes>
         </main>
 

@@ -21,7 +21,7 @@ export const NearContext = React.createContext<INearContext>(initialNearContext)
 export interface INearContext {
   isLoading: boolean;
   error: Error | string | null;
-  signIn: () => void;
+  signIn: (returnUrl?: string) => void;
   signOut: () => void;
   user: ICurrentUser | null;
   isAuth: boolean,
@@ -114,8 +114,8 @@ export class NearContextProvider extends React.Component<INearContextProviderPro
     return this.props.nearConfig;
   }
 
-  public signIn = () => {
-    this.wallet.requestSignIn(this.nearConfig.contractName, `NEAR ${APP.NAME}`, `${window.location.origin}/#/mint`);
+  public signIn = (returnUrl: string = '/') => {
+    this.wallet.requestSignIn(this.nearConfig.contractName, `NEAR ${APP.NAME}`, `${window.location.origin}/redirect/?returnUrl=${returnUrl}`);
   };
 
   public signOut = () => {
