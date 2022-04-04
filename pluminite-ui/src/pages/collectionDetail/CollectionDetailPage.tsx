@@ -146,7 +146,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
   }
 
   private get floorPrice() {
-    return this.getPrice(this.state.statistic?.prices?.on_sale?.lowest_price || 0);
+    return this.getPrice(this.state.statistic?.prices?.sold?.lowest_price || 0);
   }
 
   private get itemsCount() {
@@ -154,11 +154,11 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
   }
 
   private get latestPrice() {
-    return this.getPrice(this.state.statistic?.prices?.on_sale?.newest_price || 0);
+    return this.getPrice(this.state.statistic?.prices?.sold?.newest_price || 0);
   }
 
   private get volumeTraded() {
-    return this.getPrice(this.state.statistic?.prices?.on_sale?.total_price || 0)
+    return this.getPrice(this.state.statistic?.prices?.sold?.total_price || 0)
   }
 
   public render() {
