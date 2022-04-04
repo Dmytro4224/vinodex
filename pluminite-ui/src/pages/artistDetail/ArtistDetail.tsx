@@ -94,19 +94,19 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   }
 
   private get floorPrice() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.lowest_price || 0);
+    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.lowest_price || 0);
   }
 
   private get itemsCount() {
-    return this.state.artistData?.items_count || 0
+    return this.state.statistic?.tokens_count_as_artist || 0
   }
 
   private get latestPrice() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.newest_price || 0);
+    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.newest_price || 0);
   }
 
   private get volumeTraded() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.on_sale?.total_price || 0)
+    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.total_price || 0)
   }
 
   public render() {

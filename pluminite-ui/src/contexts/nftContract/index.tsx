@@ -5,7 +5,7 @@ import { INftContract } from '../../utils';
 import { IProfile } from '../../types/IProfile';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { APP } from '../../constants';
-import { ITokensByFilter, SaleFilterTokens } from '../../types/NearAPI';
+import { ITokensByFilter } from '../../types/NearAPI';
 
 export const initialNftContractState = {
   nftContract: null,
