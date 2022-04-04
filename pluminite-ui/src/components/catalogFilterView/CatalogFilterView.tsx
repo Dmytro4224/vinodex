@@ -7,6 +7,8 @@ import style from './catalogFilter.module.css';
 import close from '../../assets/icons/close.svg'
 import closeSm from '../../assets/icons/close-sm.svg'
 import { IFilterOptions } from '../../types/IFilterOptions';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 export interface ICatalogFilterView extends IProps {
   setRef?: (view: CatalogFilterView) => void;
@@ -30,6 +32,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
   private _inputPriceFrom: any;
   private _inputPriceTo: any;
   private _inputBrand: any;
+  private _inputStyle: any;
   private _initialState: IFilterOptions;
   private _timeoutToSetState: any;
 
@@ -61,6 +64,10 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
 
       // if (!this.state.brand) {
       //   this._inputBrand.ref.current.value = ``;
+      // }
+      //
+      // if (!this.state.style) {
+      //   this._inputStyle.ref.current.value = ``;
       // }
 
       this.setFilterOptions();
@@ -158,6 +165,13 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
             ...this.state,
             brand: value || null
           })
+          break;
+        case 'style':
+          this.setState({
+            ...this.state,
+            style: value || null
+          })
+          break;
       }
     }, 500);
   }
@@ -230,6 +244,30 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
           {/*    this.setTimeoutState('brand', e.target.value)*/}
           {/*  }}*/}
           {/*/>*/}
+          {/*<InputView*/}
+          {/*  placeholder={'Style'}*/}
+          {/*  customClass={`ml-4 ${style.inputView}`}*/}
+          {/*  value={this._inputStyle?.value || ''}*/}
+          {/*  absPlaceholder={'Style'}*/}
+          {/*  setRef={(ref) => {*/}
+          {/*    this._inputStyle = ref;*/}
+          {/*  }}*/}
+          {/*  onChange={(e) => {*/}
+          {/*    // @ts-ignore*/}
+          {/*    this.setTimeoutState('style', e.target.value)*/}
+          {/*  }}*/}
+          {/*/>*/}
+          {/*<div className={style.datePWrap}>*/}
+          {/*  <DatePicker*/}
+          {/*    selected={this.state.year || null}*/}
+          {/*    maxDate={new Date()}*/}
+          {/*    showYearPicker*/}
+          {/*    dateFormat="yyyy"*/}
+          {/*    placeholderText="Vintage Year"*/}
+          {/*    className={style.dateInput}*/}
+          {/*    onChange={(date) => console.log(date)}*/}
+          {/*  />*/}
+          {/*</div>*/}
           {/*<SelectView*/}
           {/*  setRef={ref => this._bottleSize = ref}*/}
           {/*  onChange={item => {*/}
@@ -306,6 +344,32 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                     className={`${style.resultItem} ${style.clearButton}`}
                   >
                     {this.state.brand}
+                    <img src={closeSm} alt="remove" />
+                  </button>
+                </div>
+              )}
+
+              {this.state.style && (
+                <div className="d-flex align-items-center gap-5px">
+                  <p>Style: </p>
+                  <button
+                    onClick={() => { this.setState({ ...this.state, style: null }) }}
+                    className={`${style.resultItem} ${style.clearButton}`}
+                  >
+                    {this.state.style}
+                    <img src={closeSm} alt="remove" />
+                  </button>
+                </div>
+              )}
+
+              {this.state.year && (
+                <div className="d-flex align-items-center gap-5px">
+                  <p>Year: </p>
+                  <button
+                    onClick={() => { this.setState({ ...this.state, year: null }) }}
+                    className={`${style.resultItem} ${style.clearButton}`}
+                  >
+                    {this.state.year}
                     <img src={closeSm} alt="remove" />
                   </button>
                 </div>

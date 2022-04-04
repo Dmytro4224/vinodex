@@ -2,6 +2,24 @@
   gap: 15px;
 }
 
+.datePWrap {
+  width: 100%;
+  max-width: 200px;
+  overflow: hidden;
+}
+
+.dateInput {
+  padding: 0 12px;
+  min-height: 60px;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(0, 0, 0, 0.8);
+  border-radius: 4px;
+  outline: none;
+  border: none;
+  background-color: var(--wildSand);
+}
+
 .separator {
   width: 1px;
   height: 40px;
