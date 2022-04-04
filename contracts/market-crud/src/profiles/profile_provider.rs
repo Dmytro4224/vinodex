@@ -57,11 +57,11 @@ pub struct Profile {
 impl Profile
 {
     pub fn is_profile_checked(
-        source: &LookupMap<AccountId, HashSet<AccountId>>, 
+        source: &HashMap<AccountId, HashSet<AccountId>>, 
         sourse_account_id: &AccountId,
         asked_account_id: &AccountId)->bool
     {
-        match source.get(&sourse_account_id)
+        match source.get(sourse_account_id)
         {
             Some(tmp) =>
             {
@@ -80,7 +80,7 @@ impl Profile
     }
 
     pub fn change_dictionary_state(
-        dictionary:&mut LookupMap<AccountId, HashSet<AccountId>>, 
+        dictionary:&mut HashMap<AccountId, HashSet<AccountId>>, 
         //аккаунт, до якого відноситься помітка
         sourse_account_id: &AccountId,
         //аккаунт, який робить помітку
@@ -88,7 +88,9 @@ impl Profile
         //вказує на те, чи потрібно робити зворотню дію: чек-анчек
         need_reverse:bool)
     {
-        match dictionary.get(sourse_account_id)
+        let mut hash_set : HashSet<AccountId>;
+
+        match dictionary.get_mut(sourse_account_id)
         {
             Some(mut value) =>
             {
@@ -102,17 +104,23 @@ impl Profile
                     {
                         value.insert(target_account_id.clone());
                     }
-
-                    dictionary.insert(sourse_account_id, &value);
+                    //dictionary.insert(sourse_account_id.clone(), value.clone());
                 }
+
+                hash_set = value.clone();
             },
             None =>
             {
-                let mut _fitst_record:HashSet<AccountId>=HashSet::new();
-                _fitst_record.insert(target_account_id.to_string());
-                dictionary.insert(sourse_account_id, &_fitst_record);
+                // let mut _fitst_record:HashSet<AccountId>=HashSet::new();
+                // _fitst_record.insert(target_account_id.to_string());
+                // dictionary.insert(sourse_account_id.clone(), _fitst_record);
+
+                hash_set = HashSet::new();
+                hash_set.insert(target_account_id.to_string());
             }
         }
+
+        dictionary.insert(sourse_account_id.clone(), hash_set);
     }
 }
 
@@ -232,6 +240,7 @@ impl Contract
         }
     }
 
+    #[payable]
     pub fn set_profile_bio(&mut self,value:String, account_id: &AccountId)
     {
         self.check_default(account_id);
@@ -241,6 +250,7 @@ impl Contract
         self.profiles.insert(account_id, &_profile);
     }
 
+    #[payable]
     pub fn set_profile_image(&mut self, value:String, account_id: &AccountId)
     {
         self.check_default(account_id);
@@ -250,6 +260,7 @@ impl Contract
         self.profiles.insert(&account_id, &_profile);
     }
 
+    #[payable]
     pub fn set_profile_name(&mut self, value:String, account_id: &AccountId)
     {
         self.check_default(account_id);
@@ -259,6 +270,7 @@ impl Contract
         self.profiles.insert(&account_id, &_profile);
     }
 
+    #[payable]
     pub fn set_profile_email(&mut self, value:String, account_id: &AccountId)
     {
         self.check_default(account_id);
@@ -268,6 +280,7 @@ impl Contract
         self.profiles.insert(&account_id, &_profile);
     }
 
+    #[payable]
     pub fn set_profile_account_id(&mut self, value:String, account_id: &AccountId)
     {
         self.check_default(account_id);
@@ -278,6 +291,7 @@ impl Contract
     }
 
     //Встановити дані профілю
+    #[payable]
     pub fn set_profile(&mut self, mut profile: Profile) 
     {
         assert!(
@@ -321,6 +335,7 @@ impl Contract
 
 
     ///поставити лайк юзеру
+    #[payable]
     pub fn set_profile_like(
         &mut self, 
         sourse_account_id: &AccountId,
@@ -386,6 +401,7 @@ impl Contract
     }
 
     ///Додати користувача в список відстеження
+    #[payable]
     pub fn set_profile_follow(
         &mut self, 
         sourse_account_id: &AccountId,
@@ -427,7 +443,7 @@ impl Contract
     }
 } 
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
 ///структура для статистики
 pub struct ProfileStat
 {
@@ -485,7 +501,7 @@ pub struct ProfileStatJson
     pub prices_as_artist: PriceStatMainJson,
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
 pub struct PriceStatMain
 {
     pub on_sale: PriceStat,
@@ -512,7 +528,7 @@ pub struct PriceStatJson
     pub total_price: U128,
 }
 
-#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize)]
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
 pub struct PriceStat
 {
     // найнижча ціна проданого токена
@@ -620,20 +636,20 @@ impl ProfileStatCriterion
     //встановити значення параметру статистики
     pub fn set_profile_stat_val
     (
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector: &mut LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         user_id: &AccountId, 
         parameter: ProfileStatCriterionEnum,
         value: u128
     )
     {
-        let mut stat:ProfileStat;
+        let mut stat: ProfileStat;
     
         match profiles_global_stat.get(user_id) 
         {
-            Some(mut _profile_stat) => 
+            Some(_profile_stat) => 
             {
-                stat = _profile_stat
+                stat = _profile_stat.clone();
             }
             None => 
             {
@@ -798,13 +814,13 @@ impl ProfileStatCriterion
             }
         }
 
-        profiles_global_stat.insert(user_id, &stat);
+        profiles_global_stat.insert(user_id.clone(), stat);
     }
 
     ///збільшити значення статистики
     pub fn profile_stat_inc
     (
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         user_id: &AccountId, 
         parameter: ProfileStatCriterionEnum,
@@ -812,13 +828,13 @@ impl ProfileStatCriterion
         need_add: bool
     )
     {
-        let stat:ProfileStat;
+        let stat: ProfileStat;
 
         match profiles_global_stat.get(user_id) 
         {
             Some(mut _profile_stat) => 
             {
-                stat = _profile_stat
+                stat = _profile_stat.clone();
             },
             None => 
             {
@@ -960,7 +976,7 @@ impl ProfileStatCriterion
     ///змінити на нове значення, якщо умова задовольняється
     pub fn profile_stat_price_check_and_change
     (
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         creator: &AccountId, 
         artist: &AccountId, 
@@ -991,7 +1007,7 @@ impl ProfileStatCriterion
     ///змінити статистику по цінам для створювача на нове значення, якщо умова задовольняється
     pub fn profile_stat_price_check_and_change_for_creator
     (
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         account_id: &AccountId, 
         price: u128,
@@ -1005,7 +1021,7 @@ impl ProfileStatCriterion
         {
             Some(_profile_stat) => 
             {
-                stat = _profile_stat
+                stat = _profile_stat.clone();
             },
             None => 
             {
@@ -1015,7 +1031,7 @@ impl ProfileStatCriterion
         
         if is_sold
         {
-            if price < stat.prices_as_creator.sold.lowest_price
+            if price < stat.prices_as_creator.sold.lowest_price || stat.prices_as_creator.sold.lowest_price == 0
             {
                 ProfileStatCriterion::set_profile_stat_val
                 (
@@ -1068,7 +1084,7 @@ impl ProfileStatCriterion
         }
         else
         {
-            if price < stat.prices_as_creator.on_sale.lowest_price
+            if price < stat.prices_as_creator.on_sale.lowest_price || stat.prices_as_creator.on_sale.lowest_price == 0
             {
                 ProfileStatCriterion::set_profile_stat_val
                 (
@@ -1116,7 +1132,7 @@ impl ProfileStatCriterion
     ///змінити статистику по цінам для артиста на нове значення, якщо умова задовольняється
     pub fn profile_stat_price_check_and_change_for_artist
     (
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut  LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         account_id: &AccountId, 
         price: u128,
@@ -1130,7 +1146,7 @@ impl ProfileStatCriterion
         {
             Some(_profile_stat) => 
             {
-                stat = _profile_stat
+                stat = _profile_stat.clone();
             },
             None => 
             {
@@ -1140,7 +1156,7 @@ impl ProfileStatCriterion
         
         if is_sold
         {
-            if price < stat.prices_as_artist.sold.lowest_price
+            if price < stat.prices_as_artist.sold.lowest_price || stat.prices_as_artist.sold.lowest_price == 0
             {
                 ProfileStatCriterion::set_profile_stat_val
                 (
@@ -1188,12 +1204,12 @@ impl ProfileStatCriterion
                 profiles_global_stat_sorted_vector,
                 account_id,
                 ProfileStatCriterionEnum::OnSaleTotalPriceAsArtist,
-                stat.prices_as_creator.on_sale.total_price - price
+                stat.prices_as_artist.on_sale.total_price - price
             );
         }
         else
         {
-            if price < stat.prices_as_artist.on_sale.lowest_price
+            if price < stat.prices_as_artist.on_sale.lowest_price || stat.prices_as_artist.on_sale.lowest_price == 0
             {
                 ProfileStatCriterion::set_profile_stat_val
                 (
@@ -1239,14 +1255,17 @@ impl ProfileStatCriterion
 
     ///отримати дані по статистиці профілю
     pub fn profile_stat(
-        profiles_global_stat: &LookupMap<AccountId, ProfileStat>,
+        profiles_global_stat: &HashMap<AccountId, ProfileStat>,
         user_id:&AccountId
         ) -> ProfileStatJson
     {
         let stat:ProfileStat;
             
         match profiles_global_stat.get(&user_id.clone()) {
-            Some(mut _profile_stat) => {stat=_profile_stat}
+            Some(_profile_stat) => 
+            {
+                stat= _profile_stat.clone();
+            }
             None => {
                 stat = ProfileStatCriterion::profile_stat_get_default();
             }
@@ -1306,7 +1325,7 @@ impl ProfileStatCriterion
 
     ///перевірити чи встановленні дефолтні значення статистистики для юзера
     pub fn profile_stat_check_for_default_stat(
-        profiles_global_stat: &mut LookupMap<AccountId, ProfileStat>, 
+        profiles_global_stat: &mut HashMap<AccountId, ProfileStat>, 
         profiles_global_stat_sorted_vector:  &mut LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
         user_id: &AccountId)
         {
@@ -1315,7 +1334,7 @@ impl ProfileStatCriterion
             if profiles_global_stat.get(&user_id.clone()).is_none() 
             {
                 let stat = ProfileStatCriterion::profile_stat_get_default();
-                profiles_global_stat.insert(&user_id, &stat);
+                profiles_global_stat.insert(user_id.clone(), stat);
             }
 
             ProfileStatCriterion::profile_stat_check_for_default_stat_one_parameter(ProfileStatCriterionEnum::LikesCount, user_id,profiles_global_stat_sorted_vector);

@@ -156,7 +156,7 @@ pub struct Contract {
     pub profiles: LookupMap<AccountId, Profile>,
 
     //загальна статистика по користувачу
-    pub profiles_global_stat: LookupMap<AccountId, ProfileStat>,
+    pub profiles_global_stat: HashMap<AccountId, ProfileStat>,
 
     //likes_count: 0 - кількість лайків аккаунту
     //tokens_likes_count: 1 -кількість лайків токенів аккаунту
@@ -178,18 +178,18 @@ pub struct Contract {
     //===========лакйи, фоловери, перегляди авторів======
 
     //список користувачів, яким сподобався аккаунт AccountId
-    pub autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+    pub autors_likes: HashMap<AccountId, HashSet<AccountId>>,
     //список користувачів, які дивилися аккаунт AccountId
-    pub autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+    pub autors_views: HashMap<AccountId, HashSet<AccountId>>,
     //список користувачів, які відстежуються аккаунт AccountId
-    pub autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
+    pub autors_followers: HashMap<AccountId, HashSet<AccountId>>,
     //===========мої лакйи, фоловери, перегляди авторів======
     //мій список користувачів, яким я поставив лайки
-    pub my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
+    pub my_authors_likes: HashMap<AccountId, HashSet<AccountId>>,
     //аккаунти, які я переглянув
-    pub my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
+    pub my_autors_views: HashMap<AccountId, HashSet<AccountId>>,
     //список аккаунтів, на які я підписався
-    pub my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
+    pub my_autors_followed: HashMap<AccountId, HashSet<AccountId>>,
 
     //================sales==========================//
 
@@ -219,14 +219,14 @@ pub struct Contract {
     pub collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
     pub collection_per_token: LookupMap<TokenId, String>,
     pub collections: UnorderedMap<String, Collection>,
-    pub collection_likes: LookupMap<String, UnorderedSet<AccountId>>,
-    pub collection_views: LookupMap<String, UnorderedSet<AccountId>>,
+    pub collection_likes: HashMap<String, HashSet<AccountId>>,
+    pub collection_views: HashMap<String, HashSet<AccountId>>,
 
     pub collection_creator: LookupMap<String, AccountId>,
     pub collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>,
 
     //статистика по колекції
-    pub collections_global_stat: LookupMap<String, CollectionStat>,
+    pub collections_global_stat: HashMap<String, CollectionStat>,
 
     //================collections--------------------//
 
@@ -327,20 +327,27 @@ impl Contract {
             use_storage_fees,
             free_mints,
             version: 0,
-            profiles_global_stat: LookupMap::new(
-                StorageKey::ProfilesGlobalStat.try_to_vec().unwrap(),
-            ),
+            // profiles_global_stat: LookupMap::new(
+            //     StorageKey::ProfilesGlobalStat.try_to_vec().unwrap(),
+            // ),
+            profiles_global_stat: HashMap::new(),
             profiles_global_stat_sorted_vector: LookupMap::new(
                 StorageKey::ProfilesGlobalStatSortedVector
                     .try_to_vec()
                     .unwrap(),
             ),
-            autors_likes: LookupMap::new(StorageKey::AutorsLikes.try_to_vec().unwrap()),
-            autors_views: LookupMap::new(StorageKey::AutorsViews.try_to_vec().unwrap()),
-            autors_followers: LookupMap::new(StorageKey::AutorsFollowers.try_to_vec().unwrap()),
-            my_authors_likes: LookupMap::new(StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
-            my_autors_views: LookupMap::new(StorageKey::MyAutorsViews.try_to_vec().unwrap()),
-            my_autors_followed: LookupMap::new(StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
+            //autors_likes: LookupMap::new(StorageKey::AutorsLikes.try_to_vec().unwrap()),
+            autors_likes: HashMap::new(),
+            //autors_views: LookupMap::new(StorageKey::AutorsViews.try_to_vec().unwrap()),
+            autors_views: HashMap::new(),
+            //autors_followers: LookupMap::new(StorageKey::AutorsFollowers.try_to_vec().unwrap()),
+            autors_followers: HashMap::new(),
+            //my_authors_likes: LookupMap::new(StorageKey::MyAuthorsLikes.try_to_vec().unwrap()),
+            my_authors_likes: HashMap::new(),
+            //my_autors_views: LookupMap::new(StorageKey::MyAutorsViews.try_to_vec().unwrap()),
+            my_autors_views: HashMap::new(),
+            //my_autors_followed: LookupMap::new(StorageKey::MyAutorsFollowed.try_to_vec().unwrap()),
+            my_autors_followed: HashMap::new(),
             my_tokens_likes: LookupMap::new(StorageKey::MyTokensLikes.try_to_vec().unwrap()),
             my_tokens_followed: LookupMap::new(StorageKey::MyTokensFollowed.try_to_vec().unwrap()),
             sales_active: UnorderedMap::new(StorageKey::SalesActive.try_to_vec().unwrap()),
@@ -357,9 +364,12 @@ impl Contract {
                 StorageKey::CollectionPerToken.try_to_vec().unwrap(),
             ),
             collections: UnorderedMap::new(StorageKey::Collection.try_to_vec().unwrap()),
-            collection_likes: LookupMap::new(StorageKey::CollectionLikes.try_to_vec().unwrap()),
-            collection_views: LookupMap::new(StorageKey::CollectionViews.try_to_vec().unwrap()),
-            collections_global_stat: LookupMap::new(StorageKey::CollectionGlobalStat.try_to_vec().unwrap()),
+            //collection_likes: LookupMap::new(StorageKey::CollectionLikes.try_to_vec().unwrap()),
+            collection_likes: HashMap::new(),
+            //collection_views: LookupMap::new(StorageKey::CollectionViews.try_to_vec().unwrap()),
+            collection_views: HashMap::new(),
+            //collections_global_stat: LookupMap::new(StorageKey::CollectionGlobalStat.try_to_vec().unwrap()),
+            collections_global_stat: HashMap::new(),
             collection_creator: LookupMap::new(StorageKey::CollectionCreator.try_to_vec().unwrap()),
             collections_per_creator: LookupMap::new(StorageKey::CollectionsPerCreator.try_to_vec().unwrap()),
             minting_account_ids: UnorderedSet::new(
@@ -414,13 +424,13 @@ impl Contract {
             profiles: LookupMap<AccountId, Profile>,
             use_storage_fees: bool,
             profiles_global_stat_sorted_vector: LookupMap<ProfileStatCriterionEnum, Vec<ProfileStatCriterion>>,
-            profiles_global_stat: LookupMap<AccountId, ProfileStat>,
-            autors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-            autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-            autors_followers: LookupMap<AccountId, HashSet<AccountId>>,
-            my_authors_likes: LookupMap<AccountId, HashSet<AccountId>>,
-            my_autors_views: LookupMap<AccountId, HashSet<AccountId>>,
-            my_autors_followed: LookupMap<AccountId, HashSet<AccountId>>,
+            profiles_global_stat: HashMap<AccountId, ProfileStat>,
+            autors_likes: HashMap<AccountId, HashSet<AccountId>>,
+            autors_views: HashMap<AccountId, HashSet<AccountId>>,
+            autors_followers: HashMap<AccountId, HashSet<AccountId>>,
+            my_authors_likes: HashMap<AccountId, HashSet<AccountId>>,
+            my_autors_views: HashMap<AccountId, HashSet<AccountId>>,
+            my_autors_followed: HashMap<AccountId, HashSet<AccountId>>,
             my_tokens_likes: LookupMap<AccountId, HashSet<TokenId>>,
             my_tokens_followed: LookupMap<AccountId, HashSet<TokenId>>,
             storage_deposits: LookupMap<AccountId, Balance>,
@@ -434,12 +444,12 @@ impl Contract {
             collection_tokens: LookupMap<String, UnorderedSet<TokenId>>,
             collection_per_token: LookupMap<TokenId, String>,
             collections: UnorderedMap<String, Collection>,
-            collection_likes: LookupMap<String, UnorderedSet<AccountId>>,
-            collection_views: LookupMap<String, UnorderedSet<AccountId>>,
+            collection_likes: HashMap<String, HashSet<AccountId>>,
+            collection_views: HashMap<String, HashSet<AccountId>>,
             minting_account_ids: UnorderedSet<AccountId>,
             email_subscriptions: UnorderedMap<AccountId, Vec<EmailSubscription>>,
             tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>,
-            collections_global_stat: LookupMap<String, CollectionStat>,
+            collections_global_stat: HashMap<String, CollectionStat>,
             collection_creator: LookupMap<String, AccountId>,
             collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>
         }
@@ -657,6 +667,7 @@ impl Contract {
 
     //лайкнути карточку користувача
     // працює дзеркально: лайк або ставиться/або знімається
+    #[payable]
     pub fn like_artist_account(&mut self, account_id: AccountId) {
         let predecessor_account_id = env::predecessor_account_id();
 
@@ -696,6 +707,7 @@ impl Contract {
 
     //додати користувача до стписку відстеження
     // працює дзеркально: ставить або знімає
+    #[payable]
     pub fn follow_artist_account(&mut self, account_id: AccountId) {
         let predecessor_account_id = env::predecessor_account_id();
 

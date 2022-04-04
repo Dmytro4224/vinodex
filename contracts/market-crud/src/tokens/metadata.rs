@@ -65,6 +65,7 @@ impl NonFungibleTokenMetadata for Contract {
 #[near_bindgen]
 impl Contract {
     ///поставити лайк токену
+    #[payable]
     pub fn token_set_like(&mut self, token_id: TokenId)
     {
         let user_id = env::predecessor_account_id();

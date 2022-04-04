@@ -310,6 +310,7 @@ impl Contract {
         is_for_sale: Option<bool>,
         owner_id: Option<AccountId>,
         creator_id: Option<AccountId>,
+        artist_id: Option<AccountId>,
         is_liked: Option<bool>,
         is_followed: Option<bool>,
         is_active_bid: Option<bool>,
@@ -333,8 +334,10 @@ impl Contract {
         let token_ids : HashSet<String>;
         let tokens_per_owner : Option<UnorderedSet<TokenId>>;
         let tokens_per_creator : Option<UnorderedSet<TokenId>>;
+        let tokens_per_artist : Option<UnorderedSet<TokenId>>;
         let check_owner : Option<bool>;
         let check_creator : Option<bool>;
+        let check_artist : Option<bool>;
 
         if owner_id.is_some()
         {
@@ -378,6 +381,28 @@ impl Contract {
         {
             tokens_per_creator = None;
             check_creator = None;
+        }
+
+        if artist_id.is_some()
+        {
+            match self.tokens_per_artist.get(&artist_id.unwrap())
+            {
+                Some(value) =>
+                {
+                    tokens_per_artist = Some(value);
+                },
+                None =>
+                {
+                    return Vec::new();
+                }
+            }
+
+            check_artist = Some(true);
+        }
+        else
+        {
+            tokens_per_artist = None;
+            check_artist = None;
         }
 
         let mut skip = 0;
@@ -507,6 +532,11 @@ impl Contract {
                         }
 
                         if !self.check_unordered_set(&tokens_per_creator, &_token.token_id, check_creator)
+                        {
+                            continue;
+                        }
+
+                        if !self.check_unordered_set(&tokens_per_artist, &_token.token_id, check_artist)
                         {
                             continue;
                         }
@@ -985,7 +1015,19 @@ impl Contract {
             skip = (page_index - 1) * page_size;
         }
 
-        authors_ids=(self.my_authors_likes.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
+        match self.my_authors_likes.get(&account_id)
+        {
+            Some(likes) =>
+            {
+                authors_ids = likes.clone().into_iter().collect();
+            },
+            None =>
+            {
+                authors_ids = Vec::new();
+            }
+        }
+
+        //authors_ids=(self.my_authors_likes.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
 
         let mut available_amount = authors_ids.len() as i64 - skip as i64;
 
@@ -1092,7 +1134,19 @@ impl Contract {
             skip = (page_index - 1) * page_size;
         }
 
-        authors_ids=(self.my_autors_followed.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
+        //authors_ids=(self.my_autors_followed.get(&account_id).unwrap_or(HashSet::new())).into_iter().collect();
+
+        match self.my_autors_followed.get(&account_id)
+        {
+            Some(follows) =>
+            {
+                authors_ids = follows.clone().into_iter().collect();
+            },
+            None =>
+            {
+                authors_ids = Vec::new();
+            }
+        }
 
         let mut available_amount = authors_ids.len() as i64 - skip as i64;
 

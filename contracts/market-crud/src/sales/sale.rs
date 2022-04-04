@@ -170,6 +170,7 @@ impl Contract {
         return sale;
     }
 
+    #[payable]
     pub fn sale_remove(&mut self, token_id: TokenId) -> Sale
     {
         let token = self.tokens_by_id.get(&token_id).expect("Token not found");
@@ -244,6 +245,7 @@ impl Contract {
         return Some(sale_json);
     }
 
+    #[payable]
     pub fn sale_create(
         &mut self,
         token_id: TokenId,
@@ -397,6 +399,7 @@ impl Contract {
     }
 
     //Закрити/відкрити ставки по аукціону
+    #[payable]
     pub fn sale_set_is_closed(
         &mut self,
         token_id: String,
@@ -491,6 +494,7 @@ impl Contract {
     pub fn sale_offer(&mut self, token_id: String, offer: Option<U128>, time: u128) {
         //get the attached deposit and make sure it's greater than 0
         let deposit = env::attached_deposit();
+
         let token = self.nft_token(token_id.clone()).expect("Token not found");
 
         let mut sale = self.sales_active.get(&token_id).expect("Token is not for sale");
@@ -687,7 +691,7 @@ impl Contract {
             price: U128(price)
         });
 
-        let index = self.sales_history.len();
+        let index = self.sales_history.len() - 1;
 
         match self.sales_history_by_token_id.get(&token_id)
         {
@@ -825,6 +829,13 @@ impl Contract {
         price
     }
 
+    pub fn sales_history_test(
+        &self
+    ) -> Vec<SaleHistory> 
+    {
+        return self.sales_history.to_vec();
+    }
+
     ///історія покупок токенів користувачем
     pub fn my_purchases(
         &self,
@@ -890,7 +901,7 @@ impl Contract {
                     {
                         Some(item_index) =>
                         {
-                            let item = self.sales_history.get(*item_index).unwrap();
+                            let item = self.sales_history.get(item_index.clone()).unwrap();
 
                             if token_ids.contains(&item.token_id)
                             {

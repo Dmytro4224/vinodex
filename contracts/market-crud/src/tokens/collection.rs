@@ -65,7 +65,7 @@ pub struct CollectionStatJson {
     pub prices : PriceStatMainJson
 }
 
-#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize)]
+#[derive(Serialize, Deserialize, BorshDeserialize, BorshSerialize, Clone)]
 #[serde(crate = "near_sdk::serde")]
 pub struct CollectionStat {
     pub views_count: u64,
@@ -146,8 +146,7 @@ impl Contract {
         &self,
         collection_id: &String,
         account_id: &Option<AccountId>,
-        with_tokens: bool,
-        set_view: bool
+        with_tokens: bool
     ) -> Option<CollectionJson> {
         match self.collections.get(collection_id) {
             Some(collection) => {
@@ -177,7 +176,7 @@ impl Contract {
                 {
                     Some(likes) => 
                     {
-                        likes_count = likes.len();
+                        likes_count = likes.len() as u64;
 
                         if let Some(account_id) = account_id
                         {
@@ -194,7 +193,7 @@ impl Contract {
                 {
                     Some(views) => 
                     {
-                        views_count = views.len();
+                        views_count = views.len() as u64;
 
                         if let Some(account_id) = account_id
                         {
@@ -219,11 +218,6 @@ impl Contract {
                     {
                         tokens_count = 0;
                     }
-                }
-
-                if set_view
-                {
-                    //self.collection_set_view(collection_id);
                 }
 
                 return Some(CollectionJson {
@@ -303,7 +297,7 @@ impl Contract {
                         continue;
                     }
 
-                    res.push(self.collection_get(&collection_id, &account_id, with_tokens, false));
+                    res.push(self.collection_get(&collection_id, &account_id, with_tokens));
                 },
                 None =>
                 {
@@ -319,7 +313,7 @@ impl Contract {
     {
         match self.collection_per_token.get(&token_id) {
             Some(collection_id) => {
-                match self.collection_get(&collection_id, account_id, false, true)
+                match self.collection_get(&collection_id, account_id, false)
                 {
                     Some(collection) =>
                     {
@@ -502,7 +496,7 @@ impl Contract {
         {
             Some(_stat) =>
             {
-                stat = _stat;
+                stat = _stat.clone();
             },
             None =>
             {
@@ -516,7 +510,7 @@ impl Contract {
         {
             Some(likes) => 
             {
-                likes_count = likes.len();
+                likes_count = likes.len() as u64;
             }
             None => 
             {
@@ -618,51 +612,80 @@ impl Contract {
     }
 
     // поставити лайк колекції
+    #[payable]
     pub fn collection_set_like(&mut self, collection_id: String) {
         let user_id = env::predecessor_account_id();
-        match self.collection_likes.get(&collection_id) {
-            Some(mut likes) => {
-                if likes.contains(&user_id) {
+
+        let mut hash_set : HashSet<String>;
+
+        match self.collection_likes.get_mut(&collection_id) 
+        {
+            Some(likes) => 
+            {
+                if likes.contains(&user_id) 
+                {
                     likes.remove(&user_id);
-                } else {
-                    likes.insert(&user_id);
+                } 
+                else 
+                {
+                    likes.insert(user_id.clone());
                 }
 
-                self.collection_likes.insert(&collection_id, &likes);
+                hash_set = likes.clone();
+
+                //self.collection_likes.insert(collection_id.clone(), likes.clone());
             }
-            None => {
-                let mut unordered_set_of_likes: UnorderedSet<AccountId> =
-                    UnorderedSet::new(StorageKey::CollectionLikes.try_to_vec().unwrap());
+            None => 
+            {
+                // let mut likes = HashSet::new();
 
-                unordered_set_of_likes.insert(&user_id);
+                // likes.insert(user_id.clone());
 
-                self.collection_likes
-                    .insert(&collection_id, &unordered_set_of_likes);
+                // self.collection_likes.insert(collection_id.clone(), likes);
+
+                hash_set = HashSet::new();
+
+                hash_set.insert(user_id.clone());
             }
         }
+
+        self.collection_likes.insert(collection_id.clone(), hash_set);
     }
 
     // поставити перегляд колекції
     pub fn collection_set_view(&mut self, collection_id: &String) {
         let user_id = env::predecessor_account_id();
 
-        match self.collection_views.get(&collection_id) {
-            Some(mut views) => {
-                if !views.contains(&user_id) {
-                    views.insert(&user_id);
+        let mut hash_set : HashSet<String>;
 
-                    self.collection_views.insert(&collection_id, &views);
+        match self.collection_views.get_mut(collection_id) 
+        {
+            Some(views) => 
+            {
+                if !views.contains(&user_id) 
+                {
+                    views.insert(user_id.clone());
+
+                    //self.collection_views.insert(collection_id.clone(), *views);
                 }
+
+                hash_set = views.clone();
             }
-            None => {
-                let mut views: UnorderedSet<AccountId> =
-                    UnorderedSet::new(StorageKey::CollectionViews.try_to_vec().unwrap());
+            None => 
+            {
+                // let mut views = HashSet::new();
 
-                views.insert(&user_id);
+                // views.insert(user_id.clone());
 
-                self.collection_views.insert(&collection_id, &views);
+                //self.collection_views.insert(collection_id.clone(), views);
+
+                hash_set = HashSet::new();
+
+                hash_set.insert(user_id.clone());
             }
         }
+
+        self.collection_views.insert(collection_id.clone(), hash_set);
 
         self.set_collection_stat_val
         (
@@ -702,7 +725,7 @@ impl Contract {
         {
             Some(_stat) => 
             {
-                stat = _stat;
+                stat = _stat.clone();
             },
             None => 
             {
@@ -712,7 +735,7 @@ impl Contract {
         
         if is_sold
         {
-            if price < stat.prices.sold.lowest_price
+            if price < stat.prices.sold.lowest_price || stat.prices.sold.lowest_price == 0
             {
                 self.set_collection_stat_val
                 (
@@ -748,7 +771,7 @@ impl Contract {
         }
         else
         {
-            if price < stat.prices.on_sale.lowest_price
+            if price < stat.prices.on_sale.lowest_price || stat.prices.on_sale.lowest_price == 0
             {
                 self.set_collection_stat_val
                 (
@@ -800,7 +823,7 @@ impl Contract {
         {
             Some(_stat) => 
             {
-                stat = _stat;
+                stat = _stat.clone();
             },
             None => 
             {
@@ -857,6 +880,6 @@ impl Contract {
             }
         }
 
-        self.collections_global_stat.insert(collection_id, &stat);
+        self.collections_global_stat.insert(collection_id.clone(), stat);
     }
 }

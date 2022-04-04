@@ -1,6 +1,6 @@
 // todo: get contract name from environment variable
-//const CONTRACT_NAME = 'vinodex_test_v16.testnet';
-const CONTRACT_NAME = 'vinodex_uat_02.testnet';
+const CONTRACT_NAME = 'vinodex_test_v18.testnet';
+//const CONTRACT_NAME = 'vinodex_uat_02.testnet';
 
 export interface IConfig {
     networkId: 'production' | 'mainnet' | 'development' | 'testnet' | 'betanet' | 'local' | 'test' | 'ci' | 'ci-betanet' | 'shared-test' | 'shared-test-staging';
