@@ -1,7 +1,8 @@
 export enum ProfileTokensType {
   onSale = 'onSale',
-  createdItems = 'createdItems',
   activeBids = 'activeBids',
   favourites = 'favourites',
-  owned = 'owned',
+  creator = 'creator',
+  artist = 'artist',
+  owner = 'owner',
 }

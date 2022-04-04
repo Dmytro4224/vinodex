@@ -250,7 +250,7 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
             <ProfileTokensView
               catalog={this.catalog}
               sort={this.sort}
-              typeViewTokens={ProfileTokensType.createdItems}
+              typeViewTokens={ProfileTokensType.creator}
             />
           </Tab>
           <Tab eventKey='purchases' title='Purchases'>
@@ -273,6 +273,20 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
               catalog={this.catalog}
               sort={this.sort}
               typeViewTokens={ProfileTokensType.favourites}
+            />
+          </Tab>
+          <Tab eventKey='owner' title='Owner'>
+            <ProfileTokensView
+              catalog={this.catalog}
+              sort={this.sort}
+              typeViewTokens={ProfileTokensType.owner}
+            />
+          </Tab>
+          <Tab eventKey='artist' title='Artist'>
+            <ProfileTokensView
+              catalog={this.catalog}
+              sort={this.sort}
+              typeViewTokens={ProfileTokensType.artist}
             />
           </Tab>
         </Tabs >
@@ -300,16 +314,9 @@ class UserProfile extends Component<IUserProfile & IBaseComponentProps> {
           <ProfileTokensView
             catalog={this.catalog}
             sort={this.sort}
-            typeViewTokens={ProfileTokensType.createdItems}
+            typeViewTokens={ProfileTokensType.owner}
           />
         </Tab>
-        {/* <Tab eventKey='owned' title='Owned'>
-          <ProfileTokensView
-            catalog={this.catalog}
-            sort={this.sort}
-            typeViewTokens={ProfileTokensType.purchases}
-          />
-        </Tab> */}
         <Tab eventKey='favourites' title='Favorites'>
           <ProfileTokensView
             catalog={this.catalog}

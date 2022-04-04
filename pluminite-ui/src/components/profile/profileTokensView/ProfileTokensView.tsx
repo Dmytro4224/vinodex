@@ -41,10 +41,12 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
   private _catalogFilterView: any;
   private _typeViewParams = {
-    [ProfileTokensType.onSale]: { is_for_sale: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
-    [ProfileTokensType.createdItems]: { owner_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type},
-    [ProfileTokensType.activeBids]: { is_active_bid: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
-    [ProfileTokensType.favourites]: { is_liked: true, price_from: this.priceFrom, price_to: this.priceTo, is_single: this.state.filterOptions.type },
+    [ProfileTokensType.onSale]: { owner_id: this.urlUserId, is_for_sale: true, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.activeBids]: { is_active_bid: true, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.favourites]: { is_liked: true, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.creator]: { creator_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.artist]: { artist_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.owner]: { owner_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
   };
 
   constructor(props: IProfileTokensView & IBaseComponentProps) {
@@ -95,7 +97,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
   }
 
   private loadData() {
-    const data = { ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.createdItems] };
+    const data = { ...this._typeViewParams[this.typeViewTokens || ProfileTokensType.owner] };
 
     this.props.nftContractContext.nft_tokens_by_filter({
       catalog: this.props.catalog,
