@@ -102,7 +102,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
     return (
       <div>
         <MediaQuery minWidth={992}>
-          <MainLogoView isSmall={true} onClick={() => { this.props.navigate('/home') }} img={logoImage} title={this.type} />
+          <MainLogoView isSmall={true} onClick={() => { this.props.navigate('/') }} img={logoImage} title={this.type} />
         </MediaQuery>
 
         <div className="my-5 container">
