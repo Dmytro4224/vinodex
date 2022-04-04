@@ -98,7 +98,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   }
 
   private get itemsCount() {
-    return this.state.artistData?.items_count || 0
+    return this.state.statistic?.tokens_count_as_artist || 0
   }
 
   private get latestPrice() {

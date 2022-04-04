@@ -48,9 +48,26 @@ class SelectView extends Component<ISelectView, ISelectState> {
     const { selectedOption } = this.state;
 
     const customStyles = {
-      option: (provided, state) => ({
+      option: (provided, state) => {
+        const backgroundColor = state.isSelected ? 'var(--pirateCold)' : 'var(--white)';
+        const color = state.isSelected ? 'var(--white)' : 'var(--black)';
+
+        return {
         ...provided,
-        cursor: 'pointer',
+          cursor: 'pointer',
+          backgroundColor,
+          color
+        }
+      },
+      control: (provided, state) => ({
+        ...provided,
+        border: 'none',
+      }),
+      placeholder: (provided, state) => ({
+        ...provided,
+        color: '#737272',
+        fontWeight: '500',
+        fontSize: '15px'
       }),
       valueContainer: (provided, state) => ({
         ...provided,
@@ -60,7 +77,6 @@ class SelectView extends Component<ISelectView, ISelectState> {
       indicatorsContainer: (provided, state) => ({
         ...provided,
         background: '#F8F8F8',
-
       }),
       indicatorSeparator: (provided, state) => ({
         ...provided,

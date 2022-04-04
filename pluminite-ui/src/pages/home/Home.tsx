@@ -34,6 +34,10 @@ class Home extends Component<IHome & IBaseComponentProps> {
       type: null,
       priceFrom: null,
       priceTo: null,
+      bottle_size: null,
+      brand: null,
+      style: null,
+      year: null,
     }
   };
 

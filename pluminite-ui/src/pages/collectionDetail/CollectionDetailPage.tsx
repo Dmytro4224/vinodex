@@ -150,7 +150,7 @@ class CollectionDetailPage extends Component<ICollectionDetailPage & IBaseCompon
   }
 
   private get itemsCount() {
-    return this.state.collectionData?.tokens?.length || 0
+    return this.state.statistic?.tokens_count || 0
   }
 
   private get latestPrice() {
