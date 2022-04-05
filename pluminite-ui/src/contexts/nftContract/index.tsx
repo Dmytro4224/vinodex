@@ -5,7 +5,7 @@ import { INftContract } from '../../utils';
 import { IProfile } from '../../types/IProfile';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { APP } from '../../constants';
-import { ITokensByFilter } from '../../types/NearAPI';
+import { ITokensByFilter, UserTypes } from '../../types/NearAPI';
 
 export const initialNftContractState = {
   nftContract: null,
@@ -37,7 +37,7 @@ export interface INftContractContext {
   nft_tokens_catalogs: () => Promise<Array<any>>;
   nft_token_get: (token_id: string) => Promise<ITokenResponseItem>;
   sale_get: (token_id: string, with_bids: boolean) => Promise<any>;
-  authors_by_filter: (parameter: string, is_reverse: boolean, page_index: number, page_size: number) => Promise<Array<any>>;
+  authors_by_filter: (parameter: string, is_reverse: boolean, page_index: number, page_size: number, user_type: UserTypes) => Promise<Array<any>>;
   followed_authors_for_account: (account_id: string, page_index: number, page_size: number) => Promise<Array<any>>;
   nft_mint: (data: any) => Promise<any>;
   collection_add: (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => Promise<any>;
@@ -64,12 +64,13 @@ export class NftContractContextProvider extends Component<INftContractContextPro
     return this.nftContract.account.accountId || '';
   }
 
-  public authors_by_filter = (parameter: string, is_reverse: boolean, page_index: number, page_size: number) => {
+  public authors_by_filter = (parameter: string, is_reverse: boolean, page_index: number, page_size: number, user_type: UserTypes) => {
     return this.props.nftContract.authors_by_filter({
       parameter,
       is_reverse,
       page_index,
       page_size,
+      user_type,
       asked_account_id: this.myAccountId,
     });
   };
@@ -111,7 +112,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       price_from: data.price_from || null,
       price_to: data.price_to || null,
       is_single: data.is_single || null,
-      collection_id: data.collection_id || null,
+      collection_id: data.collection_id === '' ? data.collection_id : null,
       brand: data.brand || null,
       style: data.style || null,
       year: data.year || null,

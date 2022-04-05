@@ -5,7 +5,7 @@ import { ICurrentUser } from './types/ICurrentUser';
 import { IProfile } from './types/IProfile';
 import { ITokenResponseItem } from './types/ITokenResponseItem';
 import { IAuthorResponseItem } from './types/IAuthorResponseItem';
-import { ITokensByFilter } from './types/NearAPI';
+import { ITokensByFilter, UserTypes } from './types/NearAPI';
 
 const nearConfig = getConfig(process.env.NODE_ENV || 'production');
 
@@ -15,7 +15,7 @@ export type INftContract = nearAPI.Contract & {
     nft_tokens_for_owner: ({ account_id, from_index, limit }: { account_id: string, from_index: number, limit: number }) => void;
     get_profile: ({ account_id }: { account_id: string }) => Promise<IProfile>;
     set_profile: ({ profile: { bio, name, image, email, account_id, cover_image } }: { profile: { bio: string, name: string, image: string, email: string, account_id: string, cover_image: string } }) => Promise<IProfile>;
-    authors_by_filter: ({ parameter, is_reverse, page_index, page_size,asked_account_id }: { parameter: string, is_reverse: boolean, page_index: number, page_size: number,asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
+    authors_by_filter: ({ parameter, is_reverse, page_index, page_size, user_type, asked_account_id }: { parameter: string, is_reverse: boolean, page_index: number, page_size: number, user_type: UserTypes, asked_account_id:string }) => Promise<Array<IAuthorResponseItem>>;
     followed_authors_for_account: ({ account_id, page_index, page_size }: { account_id: string, page_index: number, page_size: number }) => Promise<Array<IAuthorResponseItem>>;
     nft_tokens_by_filter: (data: ITokensByFilter) => Promise<Array<ITokenResponseItem>>;
     my_purchases: ({ catalog, page_index, page_size, account_id}: { catalog: string | null, page_index: number, page_size: number, account_id: string}) => Promise<any>;

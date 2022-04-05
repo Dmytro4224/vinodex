@@ -28,3 +28,9 @@ export enum SaleFilterTokens {
   auction = 2,
   fixAndAuction = 3
 }
+
+export enum UserTypes {
+  all = 0,
+  artist = 1,
+  creator = 2
+}

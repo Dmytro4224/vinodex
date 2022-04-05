@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+﻿import React, { Component } from 'react';
 import ArtistCard, { ArtistType } from '../../components/artistCard/ArtistCard';
 import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import { IAuthorResponseItem } from '../../types/IAuthorResponseItem';
@@ -9,6 +9,7 @@ import Skeleton from 'react-loading-skeleton';
 import { NavLink } from 'react-router-dom';
 import { MainLogoView } from '../../components/mainLogo/mainLogoView';
 import bgArtist from '../../assets/images/bg-artitst.png';
+import { UserTypes } from '../../types/NearAPI';
 
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
@@ -67,7 +68,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   }
 
   private getAllAuthors() {
-    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize).then(response => {
+    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize, UserTypes.artist).then(response => {
       let list = response.filter(item => item !== null && item.name && item.name.length !== 0);
       this.setState({
         ...this.state,

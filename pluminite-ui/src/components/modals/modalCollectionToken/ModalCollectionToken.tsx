@@ -18,6 +18,7 @@ interface IModal extends IProps {
 }
 
 interface IModalState {
+  isBtnLoading: boolean;
   list: Array<ITokenResponseItem> | null;
   isLoading: boolean;
   isShowConfirmModal: boolean;
@@ -26,6 +27,7 @@ interface IModalState {
 
 class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
   public state: IModalState = {
+    isBtnLoading: false,
     list: null,
     isLoading: true,
     isShowConfirmModal: false,
@@ -79,8 +81,10 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
   }
 
   private removeTokenFromCollection(token_id) {
+    this.setState({ ...this.state, isBtnLoading: true });
+
     this.props.nftContractContext.collection_token_remove(token_id).then(res => {
-      this.setState({ ...this.state })
+      this.setState({ ...this.state, isBtnLoading: false });
     })
 
     // this.modalToggleVisibility({
@@ -104,11 +108,13 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
   }
 
   private addTokenFromCollection(token_id) {
+    this.setState({ ...this.state, isBtnLoading: true });
+
     this.props.nftContractContext.collection_token_add(
       this.props.collectionData?.collection_id!,
       token_id
     ).then(res => {
-      this.setState({ ...this.state })
+      this.setState({ ...this.state, isBtnLoading: false });
     })
   }
 
@@ -164,6 +170,7 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
                         onClick={() => { this.removeTokenFromCollection(item.token_id); }}
                         color={buttonColors.redButton}
                         customClass={`min-w-100px ${styles.buttonSecondControls}`}
+                        isLoading={this.state.isBtnLoading}
                       />
                     ) : (
                       <ButtonView
@@ -171,6 +178,7 @@ class ModalCollectionToken extends Component<IModal & IBaseComponentProps> {
                         onClick={() => { this.addTokenFromCollection(item.token_id) }}
                         color={buttonColors.goldFill}
                         customClass={`min-w-100px ${styles.buttonSecondControls}`}
+                        isLoading={this.state.isBtnLoading}
                       />
                     )
                   }

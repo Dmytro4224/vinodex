@@ -18,6 +18,7 @@ interface ICollectionDetail extends IProps {
 
 class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps> {
   public state = {
+    isBtnLoading: false,
     isShowModalTokens: false,
     isShowConfirmModal: false,
     modalConfirmData: {
@@ -39,6 +40,8 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
   }
 
   private removeTokenFromCollection(token_id) {
+    this.setState({ ...this.state, isBtnLoading: true });
+
     this.modalToggleVisibility({
       isShowConfirmModal: true,
       modalConfirmData: {
@@ -46,6 +49,7 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
         confirmCallback: () => {
           this.props.nftContractContext.collection_token_remove(token_id).then(res => {
             this.modalToggleVisibility({ isShowConfirmModal: false });
+            this.setState({ ...this.state, isBtnLoading: false });
           })
         },
       },
@@ -60,11 +64,13 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
   }
 
   private addTokenFromCollection(token_id) {
+    this.setState({ ...this.state, isBtnLoading: true });
+
     this.props.nftContractContext.collection_token_add(
       this.props.collectionData?.collection_id!,
       token_id
     ).then(res => {
-      this.setState({ ...this.state })
+      this.setState({ ...this.state, isBtnLoading: false });
     })
   }
 
@@ -118,6 +124,7 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
                               onClick={() => { this.removeTokenFromCollection(item.token_id); }}
                               color={buttonColors.redButton}
                               customClass={`min-w-100px ${styles.buttonSecondControls}`}
+                              isLoading={this.state.isBtnLoading}
                             />
                           ) : (
                             <ButtonView
@@ -125,6 +132,7 @@ class CollectionDetail extends Component<ICollectionDetail & IBaseComponentProps
                               onClick={() => { this.addTokenFromCollection(item.token_id) }}
                               color={buttonColors.goldFill}
                               customClass={`min-w-100px ${styles.buttonSecondControls}`}
+                              isLoading={this.state.isBtnLoading}
                             />
                           )
                         }

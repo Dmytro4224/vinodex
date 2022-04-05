@@ -10,6 +10,7 @@ import { BestArtistsParameter } from '../../types/BestArtistsParameter';
 import styles from './bestArtists.module.css';
 import Skeleton from 'react-loading-skeleton';
 import { toast } from 'react-toastify';
+import { UserTypes } from '../../types/NearAPI';
 
 interface IBestArtists extends IProps {
   parameter?: BestArtistsParameter;
@@ -45,7 +46,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize).then(response => {
+    this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize, UserTypes.artist).then(response => {
       this.list = response.filter(el => el !== null);
     });
   }
