@@ -36,7 +36,7 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <img className={styles.footerLogo} width="145" height="45" src={footerLogo} alt="logo" />
 
             <p className={styles.infoDesc}>
-              Upgraiding fine wine to the WEB 3.0 with NFTs.
+              Upgrading fine wine to the WEB 3.0 with NFTs.
             </p>
 
             <Social />
@@ -55,28 +55,8 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                 <li>
                   <NavLink onClick={e => this.onClickProfileLinks(e, `/userProfile/${this.accountId}?tab=items`)} to={`/userProfile/${this.accountId}?tab=items`}>My Wine</NavLink>
                 </li>
-                {/*<li>
-                  <NavLink to={`/userProfile/${this.accountId}?tab=following`}>Activity</NavLink>
-                </li>*/}
               </ul>
             </div>
-            {/*<div>
-              <p className={styles.linksTitle}>Resources</p>
-              <ul className={styles.linksWrap}>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Help & Support</NavLink>
-                </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Live Auctions</NavLink>
-                </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Wine Details</NavLink>
-                </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Activity</NavLink>
-                </li>
-              </ul>
-            </div>*/}
             <div>
               <p className={styles.linksTitle}>Company</p>
               <ul className={styles.linksWrap}>
@@ -85,12 +65,6 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
                 </li>
                 <li className='disabled'>
                   <NavLink to={'/'}>Contact Us</NavLink>
-                </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Our Blog</NavLink>
-                </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Discover</NavLink>
                 </li>
               </ul>
             </div>
