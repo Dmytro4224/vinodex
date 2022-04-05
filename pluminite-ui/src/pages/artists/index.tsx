@@ -14,6 +14,8 @@ import { UserTypes } from '../../types/NearAPI';
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
   viewType?: ArtistViewType;
+  userType?: UserTypes;
+  pageSize?: number;
 }
 
 interface IArtistsViewState {
@@ -29,7 +31,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
   private _parameter: BestArtistsParameter;
   private _pageIndex: number = 1;
-  private _pageSize: number = 8;
+  private _pageSize: number = this.props.pageSize || 1000;
   private _isReverse: boolean = true;
 
   constructor(props: IArtistsView & IBaseComponentProps) {
@@ -47,6 +49,12 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     window.scrollTo(0, 0);
     this.getAuthors();
   }
+
+   public componentDidUpdate(prevProps, prevState) {
+    if (prevProps.userType !== this.props.userType) {
+      this.getAuthors();
+    }
+   }
 
   private getAuthors() {
     if (this.isProfilePageView) {
@@ -67,8 +75,12 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     });
   }
 
+  private get userType() {
+    return this.props.userType || UserTypes.all;
+  }
+
   private getAllAuthors() {
-    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize, UserTypes.artist).then(response => {
+    this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize, this.userType).then(response => {
       let list = response.filter(item => item !== null && item.name && item.name.length !== 0);
       this.setState({
         ...this.state,
@@ -94,20 +106,26 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
     return this.isProfilePageView ? 'your following' : '';
   }
 
+  private get pageTitle() {
+    if (this.userType === UserTypes.artist) return 'Artists';
+    if (this.userType === UserTypes.creator) return 'Creators';
+    return 'Artists';
+  }
+
   public render() {
     return (
       <div>
         {!this.isProfilePageView && (
           <MainLogoView
             img={bgArtist}
-            title={'Artists'}
+            title={this.pageTitle}
             bgWrap={'#807F68'}
             bgHeadInfo={'#5E4C1A'}
             breadcrumbs={
               <>
                 <NavLink to={'/'}>Home</NavLink>
                 <span className='breadcrumb__separator'>/</span>
-                <p>Artists</p>
+                <p>{this.pageTitle}</p>
               </>
             }
           />
@@ -125,6 +143,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
           <div className={`container my-4 ${styles.listWrap}`}>
             {this.state.list.map((item, index) => (
               <ArtistCard
+                linkTo={this.userType === UserTypes.creator ? `/creators/${item.account_id}` : ''}
                 key={`artist-${item.account_id}`}
                 info={item}
                 identification={item.account_id}

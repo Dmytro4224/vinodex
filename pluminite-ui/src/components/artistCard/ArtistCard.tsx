@@ -30,6 +30,7 @@ interface IArtistCard extends IProps {
   isDisabledFollowBtn?: boolean;
   isForceVisible?: boolean;
   withoutControls?: boolean;
+  linkTo?: string;
 }
 
 export enum ArtistType {
@@ -176,6 +177,10 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     }
   };
 
+  private get linkTo() {
+    return this.props.linkTo || `/artists/${this.identification}`;
+  }
+
   private isCardType() {
     return (
       <LazyLoad
@@ -191,13 +196,13 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         className={`${styles.artistCard} ${this.props.customClass || ''}`}
       >
         <div className={styles.artistWrap}>
-          <NavLink to={`/artists/${this.identification}`}>
+          <NavLink to={this.linkTo}>
             <img ref={this._refAvatar} onError={() => {
               changeAvatarRefSrc(this._refAvatar);
             }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           </NavLink>
           <div>
-            <NavLink to={`/artists/${this.identification}`}>
+            <NavLink to={this.linkTo}>
               <p className={styles.artistName}>{this.name}</p>
             </NavLink>
             <IdentificationCopy id={this.identification} />
@@ -238,13 +243,13 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
     return (
       <div className='d-flex align-items-center justify-content-between w-100'>
         <div className={styles.artistWrap}>
-          <NavLink to={`/artists/${this.identification}`}>
+          <NavLink to={this.linkTo}>
             <img ref={this._refAvatar} onError={() => {
               changeAvatarRefSrc(this._refAvatar);
             }} className={styles.artistAvatar} src={this.avatar || defaultAvatar} alt='avatar' />
           </NavLink>
           <div>
-            <NavLink to={`/artists/${this.identification}`}>
+            <NavLink to={this.linkTo}>
               <p className={styles.artistName}>{this.name}</p>
             </NavLink>
             <IdentificationCopy id={this.identification} />
@@ -276,7 +281,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private isInfoType() {
     return (
       <div className='d-flex align-items-center justify-content-between w-100'>
-        <NavLink className={`${styles.artistWrap} ${styles.infoStyle}`} to={`/artists/${this.identification}`}>
+        <NavLink className={`${styles.artistWrap} ${styles.infoStyle}`} to={this.linkTo}>
           <img
             ref={this._refAvatar}
             onError={() => { changeAvatarRefSrc(this._refAvatar); }}
@@ -315,7 +320,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
   private isBigType() {
     return (
       <div key={this.identification} className={`cardWrapBig`}>
-        <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+        <NavLink className={'d-block'} to={this.linkTo}>
           <div
             style={{ backgroundImage: `url(${this.coverImage})` }}
             className={`cardWrapBig__coverImage`}
@@ -329,7 +334,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
         </NavLink>
 
         <div className={`cardWrapBig__content`}>
-          <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+          <NavLink className={'d-block'} to={this.linkTo}>
             <h4 className={`cardWrapBig__creatorName ellipsis`}>{this.name}</h4>
           </NavLink>
 
@@ -337,7 +342,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             <IdentificationCopy id={this.identification} />
           </div>
 
-          <NavLink className={'d-block'} to={`/artists/${this.identification}`}>
+          <NavLink className={'d-block'} to={this.linkTo}>
             <p className={`cardWrapBig__description`}>{(this.props.info?.bio?.length || 0) > 180 ? `${this.props.info?.bio?.slice(0, 180)}...` : this.props.info?.bio}</p>
           </NavLink>
 

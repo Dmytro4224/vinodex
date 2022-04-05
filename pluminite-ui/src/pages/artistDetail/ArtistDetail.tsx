@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import styles from './artistDetail.module.css';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
-import { ICollectionResponseItem } from '../../types/ICollectionResponseItem';
 import { EmptyListView } from '../../components/common/emptyList/emptyListView';
 import Skeleton from 'react-loading-skeleton';
 import { NavLink } from 'react-router-dom';
@@ -12,8 +11,12 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { ProfileTokensType } from '../../types/ProfileTokenTypes';
 import ProfileTokensView from '../../components/profile/profileTokensView/ProfileTokensView';
 import { convertYoctoNearsToNears } from '../../utils/sys';
+import { UserTypes } from '../../types/NearAPI';
 
-interface IArtistDetail extends IProps { }
+interface IArtistDetail extends IProps {
+  userType?: UserTypes;
+}
+
 interface IArtistDetailState {
   tokens: Array<ITokenResponseItem>;
   artistData: any;
@@ -70,6 +73,10 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     }
   }
 
+  private get userType() {
+    return this.props.userType || UserTypes.all;
+  }
+
   private get coverImage() {
     return this.state.artistData?.cover_image || collectionCover;
   }
@@ -94,19 +101,41 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
   }
 
   private get floorPrice() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.lowest_price || 0);
+    if (this.userType === UserTypes.artist) {
+      return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.lowest_price || 0);
+    }
+
+    return this.getPrice(this.state.statistic?.prices_as_creator?.sold?.lowest_price || 0);
   }
 
   private get itemsCount() {
-    return this.state.statistic?.tokens_count_as_artist || 0
+    if (this.userType === UserTypes.artist) {
+      return this.state.statistic?.tokens_count_as_artist || 0
+    }
+
+    return this.state.statistic?.tokens_count || 0
   }
 
   private get latestPrice() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.newest_price || 0);
+    if (this.userType === UserTypes.artist) {
+      return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.newest_price || 0);
+    }
+
+    return this.getPrice(this.state.statistic?.prices_as_creator?.sold?.newest_price || 0);
   }
 
   private get volumeTraded() {
-    return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.total_price || 0)
+    if (this.userType === UserTypes.artist) {
+      return this.getPrice(this.state.statistic?.prices_as_artist?.sold?.total_price || 0)
+    }
+
+    return this.getPrice(this.state.statistic?.prices_as_creator?.sold?.total_price || 0)
+  }
+
+  private get pageTitle() {
+    if (this.userType === UserTypes.artist) return 'Artists';
+    if (this.userType === UserTypes.creator) return 'Creators';
+    return 'Artists';
   }
 
   public render() {
@@ -130,7 +159,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
           <div className={`breadcrumb breadcrumb-black mt-2 mb-5 ${styles.breadcrumb}`}>
             <NavLink to={'/'}>Home</NavLink>
             <span className='breadcrumb__separator'>/</span>
-            <NavLink to={'/artists'}>Artists</NavLink>
+            <NavLink to={'/artists'}>{this.pageTitle}</NavLink>
             <span className='breadcrumb__separator'>/</span>
             <p>{this.state.artistData?.name || this.state.artistData?.account_id || ''}</p>
           </div>

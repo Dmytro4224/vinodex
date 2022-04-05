@@ -28,6 +28,14 @@ const navigationData = [
     isIcon: false,
     submenuData: null,
   },
+  {
+    name: 'Creators',
+    linkClass: `${styles.navLink}`,
+    path: '/creators',
+    id: 4,
+    isIcon: false,
+    submenuData: null,
+  },
 ];
 
 class HeaderNavigation extends Component {

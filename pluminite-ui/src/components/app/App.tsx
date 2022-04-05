@@ -1,12 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React, { Component } from "react"
-import { NftContractContext } from '../../contexts';
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import 'react-loading-skeleton/dist/skeleton.css'
-import { Navigate, Route, Routes } from 'react-router-dom';
-import Home from "../../pages/home/Home";
-import Header from "../header/Header";
+import React, { Component } from 'react';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import 'react-loading-skeleton/dist/skeleton.css';
+import { Route, Routes } from 'react-router-dom';
+import Home from '../../pages/home/Home';
+import Header from '../header/Header';
 import UserProfile from '../../pages/userProfile/UserProfile';
 import OrderDetail from '../../pages/orderDetail/orderDetail';
 import CreateToken from '../../pages/createToken/createToken';
@@ -21,6 +20,7 @@ import CollectionDetailPage from '../../pages/collectionDetail/CollectionDetailP
 import ArtistDetail from '../../pages/artistDetail/ArtistDetail';
 import NotFound from '../../pages/NotFound/NotFound';
 import RedirectPage from '../../pages/redirect/Redirect';
+import { UserTypes } from '../../types/NearAPI';
 
 interface IApp extends IProps {
 
@@ -58,8 +58,10 @@ class App extends Component<IApp & IBaseComponentProps> {
             {/*<Route path="*" element={<Navigate to="/" />} />*/}
             <Route path="*" element={<NotFound />} />
             <Route path="/" element={<Home />} />
-            <Route path="/artists/" element={<ArtistsView parameter={BestArtistsParameter.likes_count} />} />
-            <Route path="/artists/:id" element={<ArtistDetail />} />
+            <Route path="/artists/" element={<ArtistsView userType={UserTypes.artist} parameter={BestArtistsParameter.likes_count} />} />
+            <Route path="/artists/:id" element={<ArtistDetail userType={UserTypes.artist} />} />
+            <Route path="/creators/" element={<ArtistsView userType={UserTypes.creator} parameter={BestArtistsParameter.likes_count} />} />
+            <Route path="/creators/:id" element={<ArtistDetail userType={UserTypes.creator} />} />
             <Route path="/collections/" element={<CollectionsPage />} />
             <Route path="/collections/:id" element={<CollectionDetailPage />} />
             <Route path="/userProfile/:userId" element={<UserProfile callUpdateUserInfo={this.callUpdateUserInfo} />} />

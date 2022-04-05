@@ -1,17 +1,11 @@
-import { ChangeEvent, Component } from 'react';
+import { Component } from 'react';
 import styles from './tokenViewDetail.module.css';
 import cardPreview from '../../assets/icons/card-preview.jpg';
-import TokenCardView, { ITokenCardView } from '../tokenCard/tokenCardView';
 import { IBaseComponentProps, IProps, withComponent } from '../../utils/withComponent';
 import LikeView, { LikeViewType } from '../like/likeView';
 import ArtistCard, { ArtistType } from '../artistCard/ArtistCard';
-import { Badge, Form, FormCheck, Tab, Tabs } from 'react-bootstrap';
 import ButtonView, { buttonColors } from '../common/button/ButtonView';
 import DescrtiptionView from '../description/descrtiptionView';
-import TokenDetailView from './tabs/detail/tokenDetailView';
-import BidsView from './tabs/bids/bidsView';
-import HistoryView from './tabs/history/historyView';
-import OwnersView from './tabs/owners/ownersView';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import Skeleton from 'react-loading-skeleton';
 import SimilarTokensView from '../../components/similarTokens/similarTokensView';
@@ -31,8 +25,7 @@ import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { Timer, TimerType } from '../common/timer/Timer';
 import { nftStorage } from '../../api/NftStorage';
 import CarouselView from '../carousel/carouselView';
-import { HeaderNavigation } from '../navigation/HeaderNavigation';
-import MediaQuery from 'react-responsive';
+
 
 interface ITokenViewDetail extends IProps {
   hash?: string;
@@ -730,6 +723,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
               <div className={`${styles.artistsWrap} d-flex align-items-center flex-gap-36 mt-3`}>
                 <ArtistCard
+                  linkTo={`/creators/${this.state.order?.creator_id!}`}
                   info={this.state.creator}
                   identification={this.state.order?.creator_id!}
                   usersCount={0}
