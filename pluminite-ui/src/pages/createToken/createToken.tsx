@@ -296,6 +296,24 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     const input = e.target;
     const value = Number(input.value);
 
+    if (this.totalRange > 100) {
+      input.disabled = true;
+
+      this.setState({
+        ...this.state,
+        range: {
+          ...this.state.range,
+          [input.dataset.type]: this.state.range[input.dataset.type] - (this.totalRange - 100),
+        }
+      })
+
+      setTimeout(() => {
+        input.disabled = false;
+      }, 300)
+
+      return;
+    }
+
     this.setState({
       ...this.state,
       range: {
@@ -579,9 +597,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                   min="0" max="100"
                   data-type="creator"
                   value={this.state.range.creator}
-                  onChange={(e: ChangeEvent) => {
-                    this.rangeChangeHandler(e);
-                  }}
+                  onChange={(e: ChangeEvent) => { this.rangeChangeHandler(e); }}
+                  onMouseUp={(e) => { this.rangeChangeHandler(e); }}
+                  onKeyUp={(e) => { this.rangeChangeHandler(e); }}
+                  onTouchEnd={(e) => { this.rangeChangeHandler(e); }}
                   step="1"
                 />
               </div>
@@ -593,9 +612,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                   min="0" max="100"
                   data-type="artist"
                   value={this.state.range.artist}
-                  onChange={(e: ChangeEvent) => {
-                    this.rangeChangeHandler(e);
-                  }}
+                  onChange={(e: ChangeEvent) => { this.rangeChangeHandler(e); }}
+                  onMouseUp={(e) => { this.rangeChangeHandler(e); }}
+                  onKeyUp={(e) => { this.rangeChangeHandler(e); }}
+                  onTouchEnd={(e) => { this.rangeChangeHandler(e); }}
                   step="1"
                 />
               </div>
@@ -607,9 +627,10 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
                   min="0" max="100"
                   data-type="vinodex"
                   value={this.state.range.vinodex}
-                  onChange={(e: ChangeEvent) => {
-                    this.rangeChangeHandler(e);
-                  }}
+                  onChange={(e: ChangeEvent) => { this.rangeChangeHandler(e); }}
+                  onMouseUp={(e) => { this.rangeChangeHandler(e); }}
+                  onKeyUp={(e) => { this.rangeChangeHandler(e); }}
+                  onTouchEnd={(e) => { this.rangeChangeHandler(e); }}
                   step="1"
                 />
               </div>
