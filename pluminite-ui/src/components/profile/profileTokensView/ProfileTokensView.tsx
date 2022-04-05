@@ -81,7 +81,6 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
 
   public componentDidUpdate(prevProps, prevState) {
     if (
-      prevState.catalog !== this.catalog ||
       prevState.sort !== this.sort ||
       prevState.filterOptions?.priceFrom !== this.state.filterOptions?.priceFrom ||
       prevState.filterOptions?.priceTo !== this.state.filterOptions?.priceTo ||
