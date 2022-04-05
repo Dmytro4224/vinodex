@@ -123,12 +123,15 @@ impl Contract {
 
         if !metadata.artist.is_empty()
         {
-            match self.tokens_per_artist.get(&metadata.artist) {
-                Some(mut tokens) => {
+            match self.tokens_per_artist.get(&metadata.artist) 
+            {
+                Some(mut tokens) => 
+                {
                     tokens.insert(&final_token_id);
-                    self.tokens_per_artist.insert(&owner_id, &tokens);
+                    self.tokens_per_artist.insert(&metadata.artist, &tokens);
                 }
-                None => {
+                None => 
+                {
                     let mut tokens = UnorderedSet::new(
                         StorageKey::TokenPerArtistInner {
                             account_id_hash: hash_account_id(&metadata.artist),
@@ -137,7 +140,7 @@ impl Contract {
                             .unwrap(),
                     );
                     tokens.insert(&final_token_id);
-                    self.tokens_per_artist.insert(&owner_id, &tokens);
+                    self.tokens_per_artist.insert(&metadata.artist, &tokens);
 
                     is_new_artist = true;
                 }

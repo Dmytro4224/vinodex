@@ -189,15 +189,22 @@ impl Contract {
                     }
                 }
 
-                match self.collection_views.get(collection_id) 
+                match self.collections_global_stat.get(collection_id) 
                 {
-                    Some(views) => 
+                    Some(stat) => 
                     {
-                        views_count = views.len() as u64;
+                        views_count = stat.views_count;
 
                         if let Some(account_id) = account_id
                         {
-                            _is_viewed = views.contains(account_id);
+                            match self.collection_views.get(collection_id) 
+                            {
+                                Some(views) =>
+                                {
+                                    _is_viewed = views.contains(account_id);
+                                },
+                                None => {}
+                            }
                         }
                     }
                     None => 

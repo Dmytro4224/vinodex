@@ -133,12 +133,13 @@ impl Contract {
 
     pub fn token_set_view(&mut self, token_id: TokenId)
     {
-        return;
         let user_id = env::predecessor_account_id();
         let mut views_count: Option<u128> = None;
 
-        match self.tokens_users_views.get(&token_id.clone()) {
-            Some(mut views) => {
+        match self.tokens_users_views.get(&token_id.clone()) 
+        {
+            Some(mut views) => 
+            {
                 if !views.contains(&user_id)
                 {
                     views.insert(user_id);
@@ -148,7 +149,8 @@ impl Contract {
 
                 self.tokens_users_views.insert(&token_id, &views);
             }
-            None => {
+            None => 
+            {
                 let mut hash_set: HashSet<String> = HashSet::new();
                 hash_set.insert(user_id);
 
@@ -161,7 +163,7 @@ impl Contract {
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
             &mut self.profiles_global_stat_sorted_vector,
-            &env::predecessor_account_id(),
+            &self.creator_per_token.get(&token_id).unwrap(),
             ProfileStatCriterionEnum::TokenViewsCount,
             1,
             true);

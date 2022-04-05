@@ -649,6 +649,66 @@ impl Contract {
         }
     }
 
+    pub fn fix_artists(&mut self)
+    {
+        self.tokens_per_artist.remove(&String::from("bruno_paillard_01.testnet"));
+
+        let mut hash_map : HashMap<String, Vec<String>> = HashMap::new();
+
+        let tokens = self.nft_tokens(Some(U128(0)), Some(1000), None);
+        let mut keys = Vec::new();
+
+        for i in 0..tokens.len()
+        {
+            let token = tokens.get(i).unwrap();
+
+            if !token.metadata.artist.is_empty()
+            {
+                let mut tmp = Vec::new();
+
+                match hash_map.get_mut(&token.metadata.artist) 
+                {
+                    Some(mut tokens) => 
+                    {
+                        tokens.push(token.token_id.clone());
+
+                        tmp = tokens.clone();
+                    }
+                    None => 
+                    {
+                        let mut tokens = Vec::new();
+                        tokens.push(token.token_id.clone());
+
+                        tmp = tokens.clone();
+                        keys.push(token.metadata.artist.clone());
+                    }
+                }
+
+                hash_map.insert(token.metadata.artist.clone(), tmp);
+            }
+        }
+
+        for j in 0..keys.len()
+        {
+            let key = keys.get(j).unwrap();
+            let value = hash_map.get(key).unwrap();
+
+            let mut tokens = UnorderedSet::new(
+                StorageKey::TokenPerArtistInner {
+                    account_id_hash: hash_account_id(key),
+                }
+                    .try_to_vec()
+                    .unwrap(),
+            );
+
+            for k in 0..value.len()
+            {
+                tokens.insert(value.get(k).unwrap());
+            }
+            self.tokens_per_artist.insert(key, &tokens);
+        }
+    }
+
     #[private]
     pub fn is_new_artist(&self, account_id: &AccountId) -> bool
     {

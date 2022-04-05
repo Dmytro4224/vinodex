@@ -901,6 +901,9 @@ impl Contract {
     //     return result;
     // }
 
+
+    
+
     //списки авторів
     pub fn authors_by_filter(
         &self,
@@ -912,7 +915,8 @@ impl Contract {
         page_index: u64,
         //ксть елементів на сторінкі
         page_size: u64,
-        asked_account_id:Option<AccountId>
+        asked_account_id:Option<AccountId>,
+        user_type: u8
     ) ->Vec<Option<JsonProfile>> 
     {
         if !self.profiles_global_stat_sorted_vector.contains_key(&parameter)
@@ -942,11 +946,24 @@ impl Contract {
 
         while result.len() < page_size as usize
         {
-            let res = authors_ids.get(index as usize);
-
-            match res
+            let res :&ProfileStatCriterion;
+            
+            match authors_ids.get(index as usize)
             {
-                Some(res) =>
+                Some(value) =>
+                {
+                    res = value;
+                },
+                None =>
+                {
+                    break;
+                }
+            }
+
+            match user_type
+            {
+                //artist
+                1 =>
                 {
                     if self.tokens_per_artist.get(&res.account_id).is_some()
                     {
@@ -959,9 +976,30 @@ impl Contract {
                         );
                     }
                 },
-                None =>
+                //creator
+                2 =>
                 {
-                    break;
+                    if self.tokens_per_creator.get(&res.account_id).is_some()
+                    {
+                        result.push 
+                        (
+                            self.get_full_profile(
+                                &res.account_id,
+                                &asked_account_id,
+                                true)
+                        );
+                    }
+                },
+                //all
+                _ =>
+                {
+                    result.push 
+                    (
+                        self.get_full_profile(
+                            &res.account_id,
+                            &asked_account_id,
+                            true)
+                    );
                 }
             }
 

@@ -34,7 +34,8 @@ pub struct JsonProfile {
     pub is_viewed : bool,
 
     pub likes_count:u32,
-    pub items_count:u32
+    pub items_count:u32,
+    pub views_count: u32
 }
 
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
@@ -151,17 +152,23 @@ impl Contract
                 image:_profile.image,
                 cover_image:_profile.cover_image,
                 email:_profile.email,
-                is_following :false,
-                is_liked :false,
-                is_viewed :false,
+                is_following : false,
+                is_liked : false,
+                is_viewed : false,
                 followers_count: self.get_profile_followers_count(account_id),
                 likes_count: self.get_profile_like_count(account_id),
-                items_count: 0
+                items_count: 0,
+                views_count: 0
             };
 
-            if let Some(tokens) = self.tokens_per_owner.get(&account_id)
+            if let Some(tokens) = self.tokens_per_owner.get(account_id)
             {
                 result.items_count = tokens.len() as u32;
+            }
+
+            if let Some(stat) = self.profiles_global_stat.get(account_id)
+            {
+                result.views_count = stat.views_count;
             }
 
             if let Some(_asked_account_id) = asked_account_id
@@ -203,7 +210,8 @@ impl Contract
                     is_viewed:false,
                     followers_count: 0,
                     likes_count: 0,
-                    items_count: 0
+                    items_count: 0,
+                    views_count: 0
                 });
             }
             else
