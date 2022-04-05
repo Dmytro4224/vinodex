@@ -50,7 +50,9 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     [ProfileTokensType.activeBids]: { is_active_bid: true, price_from: this.priceFrom, price_to: this.priceTo },
     [ProfileTokensType.favourites]: { is_liked: true, price_from: this.priceFrom, price_to: this.priceTo },
     [ProfileTokensType.creator]: { creator_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.creatorOnSale]: { creator_id: this.urlUserId, is_for_sale: true, price_from: this.priceFrom, price_to: this.priceTo },
     [ProfileTokensType.artist]: { artist_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
+    [ProfileTokensType.artistOnSale]: { artist_id: this.urlUserId, is_for_sale: true, price_from: this.priceFrom, price_to: this.priceTo },
     [ProfileTokensType.owner]: { owner_id: this.urlUserId, price_from: this.priceFrom, price_to: this.priceTo },
   };
 

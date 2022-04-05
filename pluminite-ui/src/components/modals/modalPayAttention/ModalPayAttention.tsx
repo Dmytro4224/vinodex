@@ -53,8 +53,10 @@ class ModalPayAttention extends Component<IModalAttention & IBaseComponentProps>
       >
         <div className={styles.modalWrap}>
           <img width='84' height='74' src={attention} alt='attention' />
-          <p className={styles.title}>Pay attention!</p>
-          <p className={styles.description}>After saving the token, editing will not be possible. Are you sure you want to save the data?</p>
+          <p className={styles.title}>Please note!</p>
+          <p className={styles.description}>
+            After confirmation your NFT will not be editable. Make sure you upload the correct images and data.
+          </p>
 
           <div className={`d-flex align-items-center justify-content-center w-100`}>
             <ButtonView
