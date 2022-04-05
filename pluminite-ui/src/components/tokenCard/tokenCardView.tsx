@@ -262,10 +262,14 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
     if (typeof this.props.controlBtn !== 'undefined' && this.props.controlBtn !== null) {
       return (
         <div className={styles.cardControls}>
-          <div className={styles.priceWrap}>
-            <span>Price</span>
-            {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
-          </div>
+          {this.typeView === TokensType.created ? (
+            <span/>
+          ) : (
+            <div className={styles.priceWrap}>
+              <span>Price</span>
+              {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
+            </div>
+          )}
 
           {this.props.controlBtn}
         </div>
@@ -277,10 +281,15 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
       case TokensType.fixedPrice:
         return (
           <div className={styles.cardControls}>
-            <div className={styles.priceWrap}>
-              <span>Price</span>
-              {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
-            </div>
+            {this.typeView === TokensType.created ? (
+              <span/>
+            ) : (
+              <div className={styles.priceWrap}>
+                <span>Price</span>
+                {price && price > 0 ? <p>{price}&nbsp;Ⓝ</p> : <p>—</p>}
+              </div>
+            )}
+
 
             {this.isMyToken ? this.props.buttonText && (
               <ButtonView

@@ -785,10 +785,12 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                 </>
               )}
 
-              <div className={`my-4 ${styles.priceWrap}`}>
-                <p>Price</p>
-                <p><strong>{this.price && this.price > 0 ? `${this.price} Ⓝ` : '— Ⓝ'}</strong></p>
-              </div>
+              {this.state.order?.sale && (
+                <div className={`my-4 ${styles.priceWrap}`}>
+                  <p>Price</p>
+                  <p><strong>{this.price && this.price > 0 ? `${this.price} Ⓝ` : '— Ⓝ'}</strong></p>
+                </div>
+              )}
 
               <div className={styles.buttonWrap}>
                 {this.getCardControls()}
