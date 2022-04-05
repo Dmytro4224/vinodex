@@ -23,6 +23,7 @@ import MediaQuery from 'react-responsive';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import ModalPayAttention from '../../components/modals/modalPayAttention/ModalPayAttention';
 
 const convertYoctoNearsToNears = (yoctoNears, precision = 2) => {
   return new Big(yoctoNears)
@@ -84,6 +85,8 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     expDate: '',
     isCreating: false,
     year: '',
+    isLoadingAttention: false,
+    modalAttentionIsShow: false,
     validate: {
       isFileValid: true,
       isTitleValid: true,
@@ -858,15 +861,29 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
             disabled={this.state.isCreating}
           />
           <ButtonView
-            text={'SUBMIT'}
-            onClick={this.submit}
+            text={'continue'}
+            onClick={this.showModalAttention}
             color={buttonColors.goldFill}
             customClass={'min-w-100px'}
             isLoading={this.state.isCreating}
           />
         </div>
       </div>
-    </div>);
+
+      <ModalPayAttention
+        isLoading={this.state.isLoadingAttention}
+        modalIsShow={this.state.modalAttentionIsShow}
+        onHideModal={() => {
+          this.setState({
+            ...this.state,
+            modalAttentionIsShow: false,
+            isLoadingAttention: false
+          })
+        }}
+        onConfirm={this.submit}
+      />
+    </div>
+    );
   }
 
   private isValidForm() {
@@ -976,8 +993,17 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
     return true;
   }
 
-  private submit = async () => {
+  private showModalAttention = async () => {
     if (!this.isValidForm()) return;
+
+    this.setState({ ...this.state, modalAttentionIsShow: true });
+  }
+
+  private submit = async () => {
+    this.setState({
+      ...this.state,
+      isLoadingAttention: true
+    })
 
     const title: string = this._refInputTitle.value;
     const description: string = this._refInputDescription.value;
@@ -1123,6 +1149,12 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
         APP.USE_STORAGE_FEES ? marketContractState.minStorage : 1
       ),*/
     ]);
+
+    this.setState({
+      ...this.state,
+      isLoadingAttention: false,
+      modalAttentionIsShow: false
+    })
   };
 }
 
