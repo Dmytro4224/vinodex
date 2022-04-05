@@ -62,13 +62,13 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
         this._inputPriceTo.ref.current.value = ``;
       }
 
-      // if (!this.state.brand) {
-      //   this._inputBrand.ref.current.value = ``;
-      // }
-      //
-      // if (!this.state.style) {
-      //   this._inputStyle.ref.current.value = ``;
-      // }
+      if (!this.state.brand) {
+        this._inputBrand.ref.current.value = ``;
+      }
+
+      if (!this.state.style) {
+        this._inputStyle.ref.current.value = ``;
+      }
 
       this.setFilterOptions();
     }
@@ -106,7 +106,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
 
   private clearState() {
     // this.resetSelectType();
-    // this.resetSelectBottleSize();
+    this.resetSelectBottleSize();
     this.setState(this._initialState);
   }
 
@@ -177,17 +177,17 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
   }
 
   private resetSelectType() {
-    this._typeSelect.handleChange({ label: 'All', value: 'all' });
+    this._typeSelect.handleChange(null);
   }
 
   private resetSelectBottleSize() {
-    this._bottleSize.handleChange({ label: 'All size', value: 'all' });
+    this._bottleSize.handleChange(null);
   }
 
   public render() {
     return (
       <div className={'mt-4'} ref={this._ref} hidden>
-        <div className={`d-flex align-items-center ${style.filterWrap}`}>
+        <div className={`${style.filterWrap}`}>
           <SelectView
             setRef={ref => this._typeSelect = ref}
             onChange={item => {
@@ -196,9 +196,8 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                 type: this.getTypeToState(item?.value || null)
               })
             }}
-            // selectedOpt={{ label: 'All', value: 'all' }}
             placeholder={'Type'}
-            options={[{ label: 'All', value: 'all' }, { label: 'Single', value: 'single' }, { label: 'Multiple', value: 'multiple' }]}
+            options={[{ label: 'Single', value: 'single' }, { label: 'Multiple', value: 'multiple' }]}
             customCLass={`${style.select} d-none`}
           />
           <InputView
@@ -231,56 +230,56 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
               this.setTimeoutState('price to', e.target.value)
             }}
           />
-          {/*<InputView*/}
-          {/*  placeholder={'Brand'}*/}
-          {/*  customClass={`ml-4 ${style.inputView}`}*/}
-          {/*  value={this._inputBrand?.value || ''}*/}
-          {/*  absPlaceholder={'Brand'}*/}
-          {/*  setRef={(ref) => {*/}
-          {/*    this._inputBrand = ref;*/}
-          {/*  }}*/}
-          {/*  onChange={(e) => {*/}
-          {/*    // @ts-ignore*/}
-          {/*    this.setTimeoutState('brand', e.target.value)*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*<InputView*/}
-          {/*  placeholder={'Style'}*/}
-          {/*  customClass={`ml-4 ${style.inputView}`}*/}
-          {/*  value={this._inputStyle?.value || ''}*/}
-          {/*  absPlaceholder={'Style'}*/}
-          {/*  setRef={(ref) => {*/}
-          {/*    this._inputStyle = ref;*/}
-          {/*  }}*/}
-          {/*  onChange={(e) => {*/}
-          {/*    // @ts-ignore*/}
-          {/*    this.setTimeoutState('style', e.target.value)*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*<div className={style.datePWrap}>*/}
-          {/*  <DatePicker*/}
-          {/*    selected={this.state.year || null}*/}
-          {/*    maxDate={new Date()}*/}
-          {/*    showYearPicker*/}
-          {/*    dateFormat="yyyy"*/}
-          {/*    placeholderText="Vintage Year"*/}
-          {/*    className={style.dateInput}*/}
-          {/*    onChange={(date) => console.log(date)}*/}
-          {/*  />*/}
-          {/*</div>*/}
-          {/*<SelectView*/}
-          {/*  setRef={ref => this._bottleSize = ref}*/}
-          {/*  onChange={item => {*/}
-          {/*    this.setState({*/}
-          {/*      ...this.state,*/}
-          {/*      bottle_size: item?.value*/}
-          {/*    })*/}
-          {/*  }}*/}
-          {/*  // selectedOpt={{ label: 'All', value: 'all' }}*/}
-          {/*  placeholder={'Bottle size'}*/}
-          {/*  options={[{ label: 'All size', value: 'all' }, { label: '0.5', value: '0.5' }, { label: '0.7', value: '0.7' }, { label: '3.0', value: '3.0' }]}*/}
-          {/*  customCLass={`${style.select}`}*/}
-          {/*/>*/}
+          <InputView
+            placeholder={'Brand'}
+            customClass={`ml-4 ${style.inputView}`}
+            value={this._inputBrand?.value || ''}
+            absPlaceholder={'Brand'}
+            setRef={(ref) => {
+              this._inputBrand = ref;
+            }}
+            onChange={(e) => {
+              // @ts-ignore
+              this.setTimeoutState('brand', e.target.value)
+            }}
+          />
+          <InputView
+            placeholder={'Style'}
+            customClass={`ml-4 ${style.inputView}`}
+            value={this._inputStyle?.value || ''}
+            absPlaceholder={'Style'}
+            setRef={(ref) => {
+              this._inputStyle = ref;
+            }}
+            onChange={(e) => {
+              // @ts-ignore
+              this.setTimeoutState('style', e.target.value)
+            }}
+          />
+          <div className={style.datePWrap}>
+            <DatePicker
+              selected={this.state.year || null}
+              maxDate={new Date()}
+              showYearPicker
+              dateFormat="yyyy"
+              placeholderText="Vintage Year"
+              className={style.dateInput}
+              onChange={(date) => this.setState({ ...this.state, year: date })}
+            />
+          </div>
+          <SelectView
+            setRef={ref => this._bottleSize = ref}
+            onChange={item => {
+              this.setState({
+                ...this.state,
+                bottle_size: item?.value
+              })
+            }}
+            // selectedOpt={{ label: 'All', value: 'all' }}
+            placeholder={'Bottle size'}
+            options={[{ label: '0.5', value: '0.5' }, { label: '0.75', value: '0.75' }, { label: '3.0', value: '3.0' }]}
+            customCLass={`${style.select}`}
+          />
         </div>
 
         {this.isShowResult && (
@@ -369,7 +368,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                     onClick={() => { this.setState({ ...this.state, year: null }) }}
                     className={`${style.resultItem} ${style.clearButton}`}
                   >
-                    {this.state.year}
+                    {new Date(this.state.year).getFullYear()}
                     <img src={closeSm} alt="remove" />
                   </button>
                 </div>
@@ -379,7 +378,7 @@ class CatalogFilterView extends Component<ICatalogFilterView & IBaseComponentPro
                 <div className="d-flex align-items-center gap-5px">
                   <p>Bottle size: </p>
                   <button
-                    onClick={() => { this.resetSelectBottleSize() }}
+                    onClick={() => { this.resetSelectBottleSize(); this.setState({ ...this.state, bottle_size: null })  }}
                     className={`${style.resultItem} ${style.clearButton}`}
                   >
                     {this.state.bottle_size}

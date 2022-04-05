@@ -25,18 +25,23 @@ interface IProfileTokensView extends IProps {
   typeViewTokens?: ProfileTokensType;
 }
 
+type ProfileTokensViewTypes = {
+  filterOptions: IFilterOptions | null
+  currentCatalog: number,
+  isLoading: boolean,
+  catalog: any,
+  sort: number,
+  list: any,
+}
+
 class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentProps> {
-  public state = {
+  public state: ProfileTokensViewTypes = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
     currentCatalog: -1,
     catalog: this.props.near.catalogs[0],
     isLoading: true,
-    filterOptions: {
-      type: null,
-      priceFrom: null,
-      priceTo: null,
-    }
+    filterOptions: null
   };
 
   private _catalogFilterView: any;
@@ -76,22 +81,26 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     if (
       prevState.catalog !== this.catalog ||
       prevState.sort !== this.sort ||
-      prevState.filterOptions.priceFrom !== this.state.filterOptions.priceFrom ||
-      prevState.filterOptions.priceTo !== this.state.filterOptions.priceTo ||
-      prevState.filterOptions.type !== this.state.filterOptions.type
+      prevState.filterOptions?.priceFrom !== this.state.filterOptions?.priceFrom ||
+      prevState.filterOptions?.priceTo !== this.state.filterOptions?.priceTo ||
+      prevState.filterOptions?.year !== this.state.filterOptions?.year ||
+      prevState.filterOptions?.type !== this.state.filterOptions?.type ||
+      prevState.filterOptions?.style !== this.state.filterOptions?.style ||
+      prevState.filterOptions?.brand !== this.state.filterOptions?.brand ||
+      prevState.filterOptions?.bottle_size !== this.state.filterOptions?.bottle_size
     ) {
       this.loadData();
     }
   }
 
   private get priceFrom() {
-    if (!this.state.filterOptions.priceFrom) return null;
+    if (!this.state.filterOptions?.priceFrom) return null;
 
     return convertNearToYoctoString(Number(this.state.filterOptions.priceFrom));
   }
 
   private get priceTo() {
-    if (!this.state.filterOptions.priceTo) return null;
+    if (!this.state.filterOptions?.priceTo) return null;
 
     return convertNearToYoctoString(Number(this.state.filterOptions.priceTo));
   }
@@ -104,7 +113,12 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       page_index: 1,
       page_size: 1000,
       sort: this.sort || 7,
-      ...data
+      ...data,
+      is_single: typeof this.state.filterOptions?.type === 'undefined' ? null : this.state.filterOptions.type,
+      year: this.state.filterOptions?.year,
+      style: this.state.filterOptions?.style,
+      brand: this.state.filterOptions?.brand,
+      bottle_size: this.state.filterOptions?.bottle_size
     }).then(response => {
       this.setState({
         ...this.state,

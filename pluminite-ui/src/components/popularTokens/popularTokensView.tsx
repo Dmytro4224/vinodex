@@ -9,14 +9,13 @@ import LabelView from '../common/label/labelView';
 import Loader from '../common/loader/loader';
 import TokenCardView from '../tokenCard/tokenCardView';
 import styles from './popularTokens.module.css';
+import { IFilterOptions } from '../../types/IFilterOptions';
 
 interface IPopularTokensView extends IProps {
   list?: Array<ITokenResponseItem>;
   catalog: string;
   sort: number;
-  priceFrom?: number | string | null;
-  priceTo?: number | string | null;
-  type?: boolean | null;
+  filterOptions: IFilterOptions | null;
 }
 
 class PopularTokensView extends Component<IPopularTokensView & IBaseComponentProps> {
@@ -38,24 +37,27 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
     if (
       prevProps.catalog !== this.props.catalog ||
       prevProps.sort !== this.props.sort ||
-      prevProps.priceFrom !== this.props.priceFrom ||
-      prevProps.priceTo !== this.props.priceTo ||
-      prevProps.type !== this.props.type
+      prevProps.filterOptions?.priceFrom !== this.props.filterOptions?.priceFrom ||
+      prevProps.filterOptions?.priceTo !== this.props.filterOptions?.priceTo ||
+      prevProps.filterOptions?.year !== this.props.filterOptions?.year ||
+      prevProps.filterOptions?.style !== this.props.filterOptions?.style ||
+      prevProps.filterOptions?.brand !== this.props.filterOptions?.brand ||
+      prevProps.filterOptions?.bottle_size !== this.props.filterOptions?.bottle_size
     ) {
       this.loadData();
     }
   }
 
   private get priceFrom() {
-    if (!this.props.priceFrom) return null;
+    if (!this.props.filterOptions?.priceFrom) return null;
 
-    return convertNearToYoctoString(Number(this.props.priceFrom));
+    return convertNearToYoctoString(Number(this.props.filterOptions.priceFrom));
   }
 
   private get priceTo() {
-    if (!this.props.priceTo) return null;
+    if (!this.props.filterOptions?.priceTo) return null;
 
-    return convertNearToYoctoString(Number(this.props.priceTo));
+    return convertNearToYoctoString(Number(this.props.filterOptions.priceTo));
   }
 
   private loadData() {
@@ -66,8 +68,11 @@ class PopularTokensView extends Component<IPopularTokensView & IBaseComponentPro
       sort: this.sort,
       price_from: this.priceFrom,
       price_to: this.priceTo,
-      is_single: typeof this.props.type === 'undefined' ? null : this.props.type,
-      collection_id: '',
+      is_single: typeof this.props.filterOptions?.type === 'undefined' ? null : this.props.filterOptions.type,
+      year: this.props.filterOptions?.year,
+      style: this.props.filterOptions?.style,
+      brand: this.props.filterOptions?.brand,
+      bottle_size: this.props.filterOptions?.bottle_size,
     }).then(response => {
       this.setState({ ...this.state, list: response, isLoading: false });
     });

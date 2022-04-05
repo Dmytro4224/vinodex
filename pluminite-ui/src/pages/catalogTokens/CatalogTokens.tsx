@@ -19,17 +19,21 @@ interface ICatalogTokens extends IProps {
 
 }
 
+type CatalogTokensTypes = {
+  filterOptions: IFilterOptions | null
+  currentCatalog: number,
+  isLoading: boolean,
+  catalogs: any,
+  sort: number,
+}
+
 class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
-  public state = {
+  public state: CatalogTokensTypes = {
     catalogs: new Array<any>(),
     sort: 7,
     currentCatalog: -1,
     isLoading: true,
-    filterOptions: {
-      type: null,
-      priceFrom: null,
-      priceTo: null,
-    }
+    filterOptions: null
   };
 
   private _catalogFilterView: any;
@@ -167,9 +171,7 @@ class CatalogTokens extends Component<ICatalogTokens & IBaseComponentProps> {
 
           <p className="separator-horizontal" />
           <AllTokensInCatalogView
-            priceFrom={this.state.filterOptions.priceFrom}
-            priceTo={this.state.filterOptions.priceTo}
-            type={this.state.filterOptions.type}
+            filterOptions={this.state.filterOptions}
             sort={this.sort}
             catalog={this.catalog}
           />

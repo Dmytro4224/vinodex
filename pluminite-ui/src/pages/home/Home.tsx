@@ -21,24 +21,24 @@ import TopCollection from '../../components/topCollection/TopCollection';
 
 interface IHome extends IProps {}
 
+type HomeStateTypes = {
+  filterOptions: IFilterOptions | null
+  currentCatalog: number,
+  isLoading: boolean,
+  catalogs: any,
+  sort: number,
+}
+
 class Home extends Component<IHome & IBaseComponentProps> {
 
   private _catalogFilterView: any;
 
-  public state = {
+  public state: HomeStateTypes = {
     catalogs: new Array<any>(),
     sort: 7,
     currentCatalog: -1,
     isLoading: true,
-    filterOptions: {
-      type: null,
-      priceFrom: null,
-      priceTo: null,
-      bottle_size: null,
-      brand: null,
-      style: null,
-      year: null,
-    }
+    filterOptions: null
   };
 
   constructor(props: IHome & IBaseComponentProps) {
@@ -153,9 +153,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           <p className="separator-horizontal" />
 
           <TopTokensView
-            priceFrom={this.state.filterOptions.priceFrom}
-            priceTo={this.state.filterOptions.priceTo}
-            type={this.state.filterOptions.type}
+            filterOptions={this.state.filterOptions}
             sort={this.sort}
             catalog={this.catalog}
           />
@@ -167,9 +165,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           <p className="separator-horizontal" />
 
           <PopularTokensView
-            priceFrom={this.state.filterOptions.priceFrom}
-            priceTo={this.state.filterOptions.priceTo}
-            type={this.state.filterOptions.type}
+            filterOptions={this.state.filterOptions}
             sort={this.sort}
             catalog={this.catalog}
           />
@@ -181,9 +177,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
           <p className="separator-horizontal" />
 
           <AllTokensView
-            priceFrom={this.state.filterOptions.priceFrom}
-            priceTo={this.state.filterOptions.priceTo}
-            type={this.state.filterOptions.type}
+            filterOptions={this.state.filterOptions}
             sort={this.sort}
             catalog={this.catalog}
           />
