@@ -138,6 +138,16 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
     return 'Artists';
   }
 
+  private get profileTokenType() {
+    if (this.userType === UserTypes.artist) return ProfileTokensType.artist;
+    return ProfileTokensType.creator;
+  }
+
+  private get profileTokenOnSaleType() {
+    if (this.userType === UserTypes.artist) return ProfileTokensType.artistOnSale;
+    return ProfileTokensType.creatorOnSale;
+  }
+
   public render() {
     return (
       <div>
@@ -201,30 +211,30 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
                 <ProfileTokensView
                   catalog={'Wine'}
                   sort={7}
-                  typeViewTokens={ProfileTokensType.owner}
+                  typeViewTokens={this.profileTokenType}
                 />
               </Tab>
               <Tab eventKey='sale' title='On sale'>
                 <ProfileTokensView
                   catalog={'Wine'}
                   sort={7}
-                  typeViewTokens={ProfileTokensType.onSale}
+                  typeViewTokens={this.profileTokenOnSaleType}
                 />
               </Tab>
-              <Tab eventKey='creator' title='Creator'>
-                <ProfileTokensView
-                  catalog={'Wine'}
-                  sort={7}
-                  typeViewTokens={ProfileTokensType.creator}
-                />
-              </Tab>
-              <Tab eventKey='artist' title='Artist'>
-                <ProfileTokensView
-                  catalog={'Wine'}
-                  sort={7}
-                  typeViewTokens={ProfileTokensType.artist}
-                />
-              </Tab>
+              {/*<Tab eventKey='creator' title='Creator'>*/}
+              {/*  <ProfileTokensView*/}
+              {/*    catalog={'Wine'}*/}
+              {/*    sort={7}*/}
+              {/*    typeViewTokens={ProfileTokensType.creator}*/}
+              {/*  />*/}
+              {/*</Tab>*/}
+              {/*<Tab eventKey='artist' title='Artist'>*/}
+              {/*  <ProfileTokensView*/}
+              {/*    catalog={'Wine'}*/}
+              {/*    sort={7}*/}
+              {/*    typeViewTokens={ProfileTokensType.artist}*/}
+              {/*  />*/}
+              {/*</Tab>*/}
             </Tabs>
           ) : (
             <>

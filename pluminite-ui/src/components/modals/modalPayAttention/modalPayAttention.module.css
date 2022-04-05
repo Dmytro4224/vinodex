@@ -1,0 +1,26 @@
+.modalWrap {
+  margin: 0 auto;
+  padding: 20px 40px;
+  width: 100%;
+  max-width: 500px;
+}
+
+.modalWrap img {
+  margin: 40px auto 0 auto;
+}
+
+.title {
+  margin: 20px 0 10px 0;
+  font-weight: 600;
+  font-size: 24px;
+  text-align: center;
+  color: var(--mineShaftS);
+}
+
+.description {
+  margin-bottom: 50px;
+  font-weight: 500;
+  font-size: 16px;
+  text-align: center;
+  color: var(--doveGrayS);
+}

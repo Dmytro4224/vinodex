@@ -4,5 +4,7 @@ export enum ProfileTokensType {
   favourites = 'favourites',
   creator = 'creator',
   artist = 'artist',
+  creatorOnSale = 'creatorOnSale',
+  artistOnSale = 'artistOnSale',
   owner = 'owner',
 }
