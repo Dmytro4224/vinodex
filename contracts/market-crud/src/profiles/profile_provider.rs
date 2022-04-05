@@ -107,6 +107,10 @@ impl Profile
                     }
                     //dictionary.insert(sourse_account_id.clone(), value.clone());
                 }
+                else
+                {
+                    value.insert(target_account_id.clone());
+                }
 
                 hash_set = value.clone();
             },
