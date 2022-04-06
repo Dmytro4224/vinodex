@@ -410,11 +410,23 @@ impl NonFungibleTokenCore for Contract {
 
     fn get_token_views_count(&self, token_id: &TokenId) -> usize
     {
-        match self.tokens_users_views.get(token_id)
+        // match self.tokens_users_views.get(token_id)
+        // {
+        //     Some(set) =>
+        //     {
+        //         return set.len();
+        //     },
+        //     None =>
+        //     {
+        //         return 0;
+        //     }
+        // }
+
+        match self.token_stat.get(token_id)
         {
-            Some(set) =>
+            Some(_stat) =>
             {
-                return set.len();
+                return _stat.views_count as usize;
             },
             None =>
             {

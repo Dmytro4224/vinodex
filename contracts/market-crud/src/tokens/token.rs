@@ -44,6 +44,12 @@ pub struct SortedToken
     pub criterion: Option<u128>
 }
 
+#[derive(BorshDeserialize, BorshSerialize, Serialize, Deserialize, Clone)]
+pub struct TokenStat
+{
+    pub views_count: u64
+}
+
 pub trait Resort
 {
     fn tokens_resort(&mut self, token_id: TokenId, sort: u8, criterion: Option<u128>);

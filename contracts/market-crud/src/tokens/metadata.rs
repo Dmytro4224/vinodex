@@ -134,7 +134,6 @@ impl Contract {
     pub fn token_set_view(&mut self, token_id: TokenId)
     {
         let user_id = env::predecessor_account_id();
-        let mut views_count: Option<u128> = None;
 
         match self.tokens_users_views.get(&token_id.clone()) 
         {
@@ -143,8 +142,6 @@ impl Contract {
                 if !views.contains(&user_id)
                 {
                     views.insert(user_id);
-
-                    views_count = Some(views.len() as u128);
                 }
 
                 self.tokens_users_views.insert(&token_id, &views);
@@ -154,11 +151,35 @@ impl Contract {
                 let mut hash_set: HashSet<String> = HashSet::new();
                 hash_set.insert(user_id);
 
-                views_count = Some(1);
-
                 self.tokens_users_views.insert(&token_id, &hash_set);
             }
         }
+
+        let views_count: u64;
+        let stat : TokenStat;
+
+        match self.token_stat.get_mut(&token_id)
+        {
+            Some(_stat) =>
+            {
+                _stat.views_count += 1;
+
+                views_count = _stat.views_count;
+
+                stat = _stat.clone();
+            },
+            None =>
+            {
+                stat = TokenStat
+                {
+                    views_count: 1
+                };
+
+                views_count = 1;
+            }
+        }
+
+        self.token_stat.insert(token_id.clone(), stat);
 
         ProfileStatCriterion::profile_stat_inc(
             &mut self.profiles_global_stat,
@@ -169,10 +190,7 @@ impl Contract {
             true);
 
 
-        if views_count.is_some()
-        {
-            self.tokens_resort(token_id, 7, views_count);
-        }
+        self.tokens_resort(token_id, 7, Some(views_count as u128));
     }
 
 }

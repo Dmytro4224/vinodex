@@ -113,6 +113,9 @@ pub struct Contract {
     //власник
     pub owner_id: AccountId,
 
+    //статистика по токену
+    pub token_stat: HashMap<TokenId, TokenStat>,
+
     //Вподобання токенів
     pub tokens_users_likes: LookupMap<TokenId, HashSet<AccountId>>,
 
@@ -308,6 +311,7 @@ impl Contract {
             tokens_per_artist: LookupMap::new(StorageKey::TokensPerArtist.try_to_vec().unwrap()),
             creator_per_token: LookupMap::new(StorageKey::CreatorPerToken.try_to_vec().unwrap()),
             tokens_by_id: LookupMap::new(StorageKey::TokensById.try_to_vec().unwrap()),
+            token_stat: HashMap::new(),
             token_metadata_by_id: UnorderedMap::new(
                 StorageKey::TokenMetadataById.try_to_vec().unwrap(),
             ),
@@ -451,7 +455,8 @@ impl Contract {
             tokens_per_artist: LookupMap<AccountId, UnorderedSet<TokenId>>,
             collections_global_stat: HashMap<String, CollectionStat>,
             collection_creator: LookupMap<String, AccountId>,
-            collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>
+            collections_per_creator: LookupMap<AccountId, UnorderedSet<String>>,
+            token_stat: HashMap<TokenId, TokenStat>
         }
 
         let old_contract: OldContract = env::state_read().expect("Old state doesn't exist");
@@ -464,6 +469,7 @@ impl Contract {
             tokens_per_creator: old_contract.tokens_per_creator,
             tokens_by_id: old_contract.tokens_by_id,
             token_metadata_by_id: old_contract.token_metadata_by_id,
+            token_stat: old_contract.token_stat,
             owner_id: old_contract.owner_id,
             extra_storage_in_bytes_per_token: old_contract.extra_storage_in_bytes_per_token,
             metadata: old_contract.metadata,

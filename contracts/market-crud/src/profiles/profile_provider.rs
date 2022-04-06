@@ -35,7 +35,9 @@ pub struct JsonProfile {
 
     pub likes_count:u32,
     pub items_count:u32,
-    pub views_count: u32
+    pub views_count: u32,
+
+    pub mint_is_available: bool
 }
 
 #[derive(Debug, Clone, BorshDeserialize, BorshSerialize, Serialize, Deserialize,Validate)]
@@ -162,41 +164,53 @@ impl Contract
                 followers_count: self.get_profile_followers_count(account_id),
                 likes_count: self.get_profile_like_count(account_id),
                 items_count: 0,
-                views_count: 0
+                views_count: 0,
+                mint_is_available: self.minting_account_ids.contains(account_id)
             };
 
-            if let Some(tokens) = self.tokens_per_owner.get(account_id)
+            match self.tokens_per_owner.get(account_id)
             {
-                result.items_count = tokens.len() as u32;
+                Some(tokens) =>
+                {
+                    result.items_count = tokens.len() as u32;
+                },
+                None => {}
             }
 
-            if let Some(stat) = self.profiles_global_stat.get(account_id)
+            match self.profiles_global_stat.get(account_id)
             {
-                result.views_count = stat.views_count;
+                Some(stat) =>
+                {
+                    result.views_count = stat.views_count;
+                },
+                None => {}
             }
 
-            if let Some(_asked_account_id) = asked_account_id
+            match asked_account_id
             {
+                Some(asked_account_id) =>
+                {
                     result.is_following=Profile::is_profile_checked(
                         &self.autors_followers,
                         &account_id,
-                        &_asked_account_id
+                        asked_account_id
                     );
 
                     result.is_liked = Profile::is_profile_checked(
                         &self.autors_likes,
                         &account_id,
-                        &_asked_account_id);
+                        asked_account_id);
 
                     result.is_viewed = Profile::is_profile_checked(
                         &self.autors_views,
                         &account_id,
-                        &_asked_account_id);
+                        asked_account_id);
+                },
+                None => {}
             }
 
             return  Some(result);
         }
-        
         else 
         {
             if default_if_none
@@ -215,7 +229,8 @@ impl Contract
                     followers_count: 0,
                     likes_count: 0,
                     items_count: 0,
-                    views_count: 0
+                    views_count: 0,
+                    mint_is_available: false
                 });
             }
             else
