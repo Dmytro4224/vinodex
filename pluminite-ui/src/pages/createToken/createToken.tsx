@@ -276,7 +276,7 @@ class CreateToken extends Component<ICreateToken & IBaseComponentProps> {
       return `${this.props.near.user.accountId}`;
     }
 
-    return 'Creator name';
+    return 'Producer name';
   }
 
   private setTitle = () => {

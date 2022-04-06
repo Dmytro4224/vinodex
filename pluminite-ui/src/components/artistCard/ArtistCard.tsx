@@ -290,7 +290,7 @@ class ArtistCard extends Component<Readonly<IArtistCard & IBaseComponentProps>> 
             alt='avatar'
           />
           <div className={'w-100'}>
-            <p className={styles.infoTitle}>{this.title || 'Creator'}</p>
+            <p className={styles.infoTitle}>{this.title || 'Producer'}</p>
             <p className={styles.artistName}>{this.name}</p>
           </div>
         </NavLink>

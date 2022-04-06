@@ -18,6 +18,7 @@ interface IHeader extends IProps {
 
 class Header extends Component<IHeader & IBaseComponentProps> {
   public state = {
+    mint_is_available: false,
     profile: null
   }
 
@@ -43,6 +44,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
   set userProfile(profile) {
     this.setState({
       ...this.state,
+      mint_is_available: profile.mint_is_available,
       profile: {
         accountId: profile.account_id,
         name: profile.name,
@@ -96,7 +98,7 @@ class Header extends Component<IHeader & IBaseComponentProps> {
 
               <LoginButton user={this.state.profile} />
 
-              {this.props.near.isAuth && <CreateTokenDropdownView customBtnClass={'ml-10px'} />}
+              {this.props.near.isAuth && this.state.mint_is_available && <CreateTokenDropdownView customBtnClass={'ml-10px'} />}
             </div>
           </MediaQuery>
 

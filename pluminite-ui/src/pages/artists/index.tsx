@@ -131,7 +131,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
   private get pageTitle() {
     if (this.userType === UserTypes.artist) return 'Artists';
-    if (this.userType === UserTypes.creator) return 'Creators';
+    if (this.userType === UserTypes.creator) return 'Producers';
     return 'Artists';
   }
 
