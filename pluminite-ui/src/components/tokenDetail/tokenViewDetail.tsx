@@ -728,7 +728,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   identification={this.state.order?.creator_id!}
                   usersCount={0}
                   likesCount={0}
-                  title={'Creator'}
+                  title={'Producer'}
                   type={ArtistType.info}
                   isFollow={false}
                   isLike={false}

@@ -134,7 +134,7 @@ class ArtistDetail extends Component<IArtistDetail & IBaseComponentProps> {
 
   private get pageTitle() {
     if (this.userType === UserTypes.artist) return 'Artists';
-    if (this.userType === UserTypes.creator) return 'Creators';
+    if (this.userType === UserTypes.creator) return 'Producers';
     return 'Artists';
   }
 

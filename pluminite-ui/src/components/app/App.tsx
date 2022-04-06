@@ -30,7 +30,7 @@ class App extends Component<IApp & IBaseComponentProps> {
   private updateUserInfo: (() => void) | undefined = undefined;
 
   public componentDidMount() {
-     // this.props.nftContractContext.minting_accounts_add('vinodex_uat_01.testnet')
+    // this.props.nftContractContext.minting_accounts_add('vinodex_uat_01.testnet')
 
     this.props.nftContractContext.nft_tokens_catalogs().then(response => {
       const catalogs = ['All'];

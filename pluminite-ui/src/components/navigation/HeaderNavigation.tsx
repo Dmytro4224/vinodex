@@ -29,7 +29,7 @@ const navigationData = [
     submenuData: null,
   },
   {
-    name: 'Creators',
+    name: 'Producers',
     linkClass: `${styles.navLink}`,
     path: '/creators',
     id: 4,

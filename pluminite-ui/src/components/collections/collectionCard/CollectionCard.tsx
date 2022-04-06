@@ -72,7 +72,7 @@ class CollectionCard extends Component<ICollectionCard & IBaseComponentProps> {
       return this.props.near.user?.accountId;
     }
 
-    return this.props.data?.owner.account_id || 'Creator name';
+    return this.props.data?.owner.account_id || 'Producer name';
   }
 
   private get key() {
