@@ -10,6 +10,7 @@ import { NavLink } from 'react-router-dom';
 import { MainLogoView } from '../../components/mainLogo/mainLogoView';
 import bgArtist from '../../assets/images/bg-artitst.png';
 import { UserTypes } from '../../types/NearAPI';
+import ButtonView, { buttonColors } from '../../components/common/button/ButtonView';
 
 export interface IArtistsView extends IProps {
   parameter?: BestArtistsParameter;
@@ -20,6 +21,8 @@ export interface IArtistsView extends IProps {
 
 interface IArtistsViewState {
   isLoading: boolean;
+  isBtnLoading: boolean;
+  isShowLoadMore: boolean;
   list: Array<IAuthorResponseItem>;
 }
 
@@ -31,7 +34,7 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
   private _parameter: BestArtistsParameter;
   private _pageIndex: number = 1;
-  private _pageSize: number = this.props.pageSize || 1000;
+  private _pageSize: number = this.props.pageSize || 50;
   private _isReverse: boolean = true;
 
   constructor(props: IArtistsView & IBaseComponentProps) {
@@ -41,6 +44,8 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
 
     this.state = {
       isLoading: true,
+      isShowLoadMore: true,
+      isBtnLoading: false,
       list: [],
     };
   }
@@ -57,6 +62,8 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
    }
 
   private getAuthors() {
+    this.setState({ ...this.state, isBtnLoading: true })
+
     if (this.isProfilePageView) {
       this.getFollowingAuthors();
     } else {
@@ -67,12 +74,22 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   private getFollowingAuthors() {
     this.props.nftContractContext.followed_authors_for_account(this.props.params.userId!, this._pageIndex, this._pageSize).then(response => {
       let list = response.filter(item => item !== null);
+
+      if (list.length === this.state.list.length || list.length !== this._pageSize) {
+        this.hideLoadMore();
+      }
+
       this.setState({
         ...this.state,
         list,
         isLoading: false,
+        isBtnLoading: false,
       });
     });
+  }
+
+  private hideLoadMore() {
+    this.setState({ ...this.state, isShowLoadMore: false })
   }
 
   private get userType() {
@@ -82,10 +99,16 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
   private getAllAuthors() {
     this.props.nftContractContext.authors_by_filter(this._parameter, this._isReverse, this._pageIndex, this._pageSize, this.userType).then(response => {
       let list = response.filter(item => item !== null && item.name && item.name.length !== 0);
+
+      if (list.length === this.state.list.length || list.length !== this._pageSize) {
+        this.hideLoadMore();
+      }
+
       this.setState({
         ...this.state,
         list,
         isLoading: false,
+        isBtnLoading: false,
       });
     });
   }
@@ -140,24 +163,36 @@ class ArtistsView extends Component<IArtistsView & IBaseComponentProps, IArtists
             <EmptyListView />
           </div>
         ) : (
-          <div className={`container my-4 ${styles.listWrap}`}>
-            {this.state.list.map((item, index) => (
-              <ArtistCard
-                linkTo={this.userType === UserTypes.creator ? `/creators/${item.account_id}` : ''}
-                key={`artist-${item.account_id}`}
-                info={item}
-                identification={item.account_id}
-                usersCount={item.followers_count}
-                likesCount={item.likes_count}
-                isLike={item.is_liked}
-                isFollow={item.is_following}
-                followBtnText={this.followBtnText}
-                isDisabledFollowBtn={this.isProfilePageView}
-                isForceVisible={this.isProfilePageView}
-                type={ArtistType.big}
-              />),
+          <>
+            <div className={`container my-4 ${styles.listWrap}`}>
+              {this.state.list.map((item, index) => (
+                <ArtistCard
+                  linkTo={this.userType === UserTypes.creator ? `/creators/${item.account_id}` : ''}
+                  key={`artist-${item.account_id}`}
+                  info={item}
+                  identification={item.account_id}
+                  usersCount={item.followers_count}
+                  likesCount={item.likes_count}
+                  isLike={item.is_liked}
+                  isFollow={item.is_following}
+                  followBtnText={this.followBtnText}
+                  isDisabledFollowBtn={this.isProfilePageView}
+                  isForceVisible={this.isProfilePageView}
+                  type={ArtistType.big}
+                />),
+              )}
+            </div>
+
+            {this.state.isShowLoadMore && (
+              <ButtonView
+                text={'Load more'}
+                onClick={() => { this._pageSize *= 2; this.getAuthors() }}
+                color={buttonColors.goldBordered}
+                customClass={`min-w-100px m-0-a py-2 my-5 d-block`}
+                isLoading={this.state.isBtnLoading}
+              />
             )}
-          </div>
+          </>
         )}
       </div>
     )

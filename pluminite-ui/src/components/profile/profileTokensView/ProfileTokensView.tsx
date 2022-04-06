@@ -32,16 +32,22 @@ type ProfileTokensViewTypes = {
   catalog: any,
   sort: number,
   list: any,
+  isShowLoadMore: boolean,
+  isBtnLoading: boolean,
 }
 
 class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentProps> {
+  private _pageSize: number = 50;
+
   public state: ProfileTokensViewTypes = {
     list: new Array<ITokenResponseItem>(),
     sort: 7,
     currentCatalog: -1,
     catalog: this.props.near.catalogs[0],
     isLoading: true,
-    filterOptions: null
+    filterOptions: null,
+    isShowLoadMore: false,
+    isBtnLoading: false,
   };
 
   private _catalogFilterView: any;
@@ -112,7 +118,7 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
     this.props.nftContractContext.nft_tokens_by_filter({
       catalog: this.props.catalog,
       page_index: 1,
-      page_size: 1000,
+      page_size: this._pageSize,
       sort: this.sort || 7,
       ...data,
       is_single: typeof this.state.filterOptions?.type === 'undefined' ? null : this.state.filterOptions.type,
@@ -121,12 +127,20 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
       brand: this.state.filterOptions?.brand,
       bottle_size: this.state.filterOptions?.bottle_size
     }).then(response => {
+      let isShowLoadMore = true;
+
+      if (response.length === this.state.list.length || response.length !== this._pageSize) {
+        isShowLoadMore = false;
+      }
+
       this.setState({
         ...this.state,
         list: response,
         isLoading: false,
         catalog: this.catalog,
         sort: this.sort,
+        isShowLoadMore,
+        isBtnLoading: false,
       });
     }).catch(ex => {
       console.error('loadData ex => ', ex);
@@ -245,34 +259,54 @@ class ProfileTokensView extends Component<IProfileTokensView & IBaseComponentPro
         {!this.state.list.length ? (
           <EmptyListView />
         ) : (
-          <div className={`d-flex gap-20 pb-4 ${styles.scrollWrap}`}>
-            {this.state.list.map(item => {
-              let typeView = TokensType.created;
+          <>
+            <div className={`d-flex gap-20 pb-4 ${styles.scrollWrap}`}>
+              {this.state.list.map(item => {
+                let typeView = TokensType.created;
 
-              return (
-                <TokenCardView
-                  key={`profiletoken-${item.token_id}-${uid()}`}
-                  model={item}
-                  countL={1}
-                  countR={1}
-                  days={item.metadata.expires_at}
-                  name={item.metadata.title}
-                  author={item.owner_id}
-                  likesCount={item.metadata.likes_count}
-                  icon={mediaUrl(item.metadata)}
-                  isSmall={true}
-                  buttonText={`Place a bid`}
-                  linkTo={`/token/${item.token_id}`}
-                  tokenID={item.token_id}
-                  isLike={item.is_liked}
-                  price={item.metadata.price}
-                  isForceVisible={true}
-                  onClick={() => {
-                  }}
-                />
-              );
-            })}
-          </div>
+                return (
+                  <TokenCardView
+                    key={`profiletoken-${item.token_id}-${uid()}`}
+                    model={item}
+                    countL={1}
+                    countR={1}
+                    days={item.metadata.expires_at}
+                    name={item.metadata.title}
+                    author={item.owner_id}
+                    likesCount={item.metadata.likes_count}
+                    icon={mediaUrl(item.metadata)}
+                    isSmall={true}
+                    buttonText={`Place a bid`}
+                    linkTo={`/token/${item.token_id}`}
+                    tokenID={item.token_id}
+                    isLike={item.is_liked}
+                    price={item.metadata.price}
+                    isForceVisible={true}
+                    onClick={() => {
+                    }}
+                  />
+                );
+              })}
+            </div>
+
+            {this.state.isShowLoadMore && (
+              <ButtonView
+                text={'Load more'}
+                onClick={() => {
+                  this.setState({
+                    ...this.state,
+                    isBtnLoading: true,
+                  });
+
+                  this._pageSize *= 2;
+                  this.loadData();
+                }}
+                color={buttonColors.goldBordered}
+                customClass={`min-w-100px m-0-a py-2 my-5 d-block`}
+                isLoading={this.state.isBtnLoading}
+              />
+            )}
+          </>
         )}
       </div>
     );

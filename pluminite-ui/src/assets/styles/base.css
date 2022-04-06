@@ -730,6 +730,10 @@ input[type="range"]:disabled::-moz-range-thumb {
   }
 }
 
+.m-0-a {
+  margin: 0 auto;
+}
+
 .flex-dir-column {
   flex-direction: column;
 }

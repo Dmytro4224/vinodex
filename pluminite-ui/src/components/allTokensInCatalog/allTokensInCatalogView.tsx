@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { ITokenResponseItem } from '../../types/ITokenResponseItem';
 import { TokensSortType } from '../../types/TokensSortType';
@@ -20,7 +20,14 @@ interface IAllTokensInCatalogView extends IProps {
 }
 
 class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseComponentProps> {
-  public state = { list: new Array<ITokenResponseItem>(), isLoading: true };
+  private _pageSize: number = 50;
+
+  public state = {
+    list: new Array<ITokenResponseItem>(),
+    isLoading: true,
+    isShowLoadMore: true,
+    isBtnLoading: false
+  };
 
   constructor(props: IAllTokensInCatalogView & IBaseComponentProps) {
     super(props);
@@ -63,10 +70,12 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
   }
 
   private async loadData() {
+    this.setState({ ...this.state, isBtnLoading: true })
+
     this.props.nftContractContext.nft_tokens_by_filter({
       catalog: this.props.catalog,
       page_index: 1,
-      page_size: 1000,
+      page_size: this._pageSize,
       sort: this.sort,
       price_from: this.priceFrom,
       price_to: this.priceTo,
@@ -76,7 +85,19 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
       brand: this.props.filterOptions?.brand,
       bottle_size: this.props.filterOptions?.bottle_size
     }).then(response => {
-      this.setState({ ...this.state, list: response, isLoading: false });
+      let isShowLoadMore = true;
+
+      if (response.length === this.state.list.length || response.length !== this._pageSize) {
+        isShowLoadMore = false;
+      }
+
+      this.setState({
+        ...this.state,
+        list: response,
+        isLoading: false,
+        isBtnLoading: false,
+        isShowLoadMore
+      });
     });
   }
 
@@ -94,31 +115,43 @@ class AllTokensInCatalogView extends Component<IAllTokensInCatalogView & IBaseCo
       return <EmptyListView />;
     }
 
-    return <div>
-      <div className={`d-flex flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
-        {this.state.list.map(item => {
-          return <TokenCardView
-            key={`alltokensincatalog-${item.token_id}`}
-            model={item}
-            countL={1}
-            countR={1}
-            days={item.metadata.expires_at}
-            name={item.metadata.title}
-            author={item.owner_id}
-            likesCount={item.metadata.likes_count}
-            icon={mediaUrl(item.metadata)}
-            isSmall={true}
-            buttonText={`Place a bid`}
-            linkTo={`/token/${item.token_id}`}
-            tokenID={item.token_id}
-            isLike={item.is_liked}
-            customClass={styles.tokenWidth}
-            onClick={() => {
-              //this.props.navigate('/token/qwewqq-1231-weq-123');
-            }} />;
-        })}
+    return (
+      <div>
+        <div className={`d-flex flex-gap-36 flex-wrap ${styles.scrollWrap}`}>
+          {this.state.list.map(item => {
+            return <TokenCardView
+              key={`alltokensincatalog-${item.token_id}`}
+              model={item}
+              countL={1}
+              countR={1}
+              days={item.metadata.expires_at}
+              name={item.metadata.title}
+              author={item.owner_id}
+              likesCount={item.metadata.likes_count}
+              icon={mediaUrl(item.metadata)}
+              isSmall={true}
+              buttonText={`Place a bid`}
+              linkTo={`/token/${item.token_id}`}
+              tokenID={item.token_id}
+              isLike={item.is_liked}
+              customClass={styles.tokenWidth}
+              onClick={() => {
+                //this.props.navigate('/token/qwewqq-1231-weq-123');
+              }} />;
+          })}
+        </div>
+
+        {this.state.isShowLoadMore && (
+          <ButtonView
+            text={'Load more'}
+            onClick={() => { this._pageSize *= 2; this.loadData() }}
+            color={buttonColors.goldBordered}
+            customClass={`min-w-100px m-0-a py-2 my-5 d-block`}
+            isLoading={this.state.isBtnLoading}
+          />
+        )}
       </div>
-    </div>;
+    )
   }
 }
 

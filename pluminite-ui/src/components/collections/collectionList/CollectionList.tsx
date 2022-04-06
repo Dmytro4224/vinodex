@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import { IBaseComponentProps, IProps, withComponent } from '../../../utils/withComponent';
 import CollectionCard from '../collectionCard/CollectionCard';
 import styles from './collectionList.module.css';
@@ -15,9 +15,13 @@ interface ICollectionList extends IProps {
 }
 
 class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
+  private _pageSize: number = 50;
+
   public state = {
     collections: new Array<ICollectionResponseItem>(),
-    isLoading: true
+    isLoading: true,
+    isShowLoadMore: false,
+    isBtnLoading: false,
   }
 
   constructor(props: ICollectionList & IBaseComponentProps) {
@@ -29,24 +33,32 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
   }
 
   private getList() {
+    const user = this.props.params.userId || this.props.near.user?.accountId || null;
+
     this.setState({
       ...this.state,
-      isLoading: true,
+      isBtnLoading: true,
     })
-
-    const user = this.props.params.userId || this.props.near.user?.accountId || null;
 
     this.props.nftContractContext.nft_collections(
       1,
-      100,
+      this._pageSize,
       user,
       true,
       this.props.collectionOwner || null
     ).then(res => {
+      let isShowLoadMore = true;
+
+      if (res.length === this.state.collections.length || res.length !== this._pageSize) {
+        isShowLoadMore = false;
+      }
+
       this.setState({
         ...this.state,
         isLoading: false,
-        collections: res
+        collections: res,
+        isShowLoadMore,
+        isBtnLoading: false,
       })
     })
   }
@@ -103,21 +115,33 @@ class CollectionList extends Component<ICollectionList & IBaseComponentProps> {
     }
 
     return (
-      <div className={styles.listWrap}>
-        {this.props.params.userId === this.props.near.user?.accountId && (
-          <div className={styles.createCollectionCard}>
-            {this.createAction}
-          </div>
-        )}
+      <>
+        <div className={styles.listWrap}>
+          {this.props.params.userId === this.props.near.user?.accountId && (
+            <div className={styles.createCollectionCard}>
+              {this.createAction}
+            </div>
+          )}
 
-        {this.state.collections.map(data => (
-          <CollectionCard
-            key={data.collection_id}
-            data={data}
-            changeRenderType={(type: RenderType, data?: ICollectionResponseItem | null) => this.changeRenderType(type, data)}
+          {this.state.collections.map(data => (
+            <CollectionCard
+              key={data.collection_id}
+              data={data}
+              changeRenderType={(type: RenderType, data?: ICollectionResponseItem | null) => this.changeRenderType(type, data)}
+            />
+          ))}
+        </div>
+
+        {this.state.isShowLoadMore && (
+          <ButtonView
+            text={'Load more'}
+            onClick={() => { this._pageSize *= 2; this.getList() }}
+            color={buttonColors.goldBordered}
+            customClass={`min-w-100px m-0-a py-2 my-5 d-block`}
+            isLoading={this.state.isBtnLoading}
           />
-        ))}
-      </div>
+        )}
+      </>
     )
   }
 }

@@ -8,17 +8,24 @@ import { NavLink } from 'react-router-dom';
 import CollectionCard, { CollectionType } from '../../components/collections/collectionCard/CollectionCard';
 import bgHead from '../../assets/images/collection-head-bg.jpg';
 import { MainLogoView } from '../../components/mainLogo/mainLogoView';
+import ButtonView, { buttonColors } from '../../components/common/button/ButtonView';
 
 interface ICollectionsPage extends IProps { }
 interface ICollectionPageState {
   collections: Array<ICollectionResponseItem>;
   isLoading: boolean;
+  isShowLoadMore: boolean;
+  isBtnLoading: boolean;
 }
 
 class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> {
+  private _pageSize: number = 50;
+
   public state: ICollectionPageState = {
     collections: new Array<ICollectionResponseItem>(),
-    isLoading: true
+    isLoading: true,
+    isShowLoadMore: false,
+    isBtnLoading: false,
   };
 
   constructor(props: ICollectionsPage & IBaseComponentProps) {
@@ -33,22 +40,29 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
   private getList() {
     this.setState({
       ...this.state,
-      isLoading: true,
+      isBtnLoading: true,
     })
 
     const user = this.props.near.user?.accountId || null;
 
     this.props.nftContractContext.nft_collections(
       1,
-      100,
+      this._pageSize,
       user,
       true,
       null
     ).then(res => {
-      console.log(res);
+      let isShowLoadMore = true;
+
+      if (res.length === this.state.collections.length || res.length !== this._pageSize) {
+        isShowLoadMore = false;
+      }
+
       this.setState({
         ...this.state,
         isLoading: false,
+        isBtnLoading: false,
+        isShowLoadMore,
         collections: res
       })
     })
@@ -81,15 +95,27 @@ class CollectionsPage extends Component<ICollectionsPage & IBaseComponentProps> 
               <EmptyListView />
             </div>
           ) : (
-            <div className={`container my-4 ${styles.listWrap}`}>
-              {this.state.collections.map(data => (
-                <CollectionCard
-                  key={data.collection_id}
-                  data={data}
-                  type={CollectionType.big}
+            <>
+              <div className={`container my-4 ${styles.listWrap}`}>
+                {this.state.collections.map(data => (
+                  <CollectionCard
+                    key={data.collection_id}
+                    data={data}
+                    type={CollectionType.big}
+                  />
+                ))}
+              </div>
+
+              {this.state.isShowLoadMore && (
+                <ButtonView
+                  text={'Load more'}
+                  onClick={() => { this._pageSize *= 2; this.getList() }}
+                  color={buttonColors.goldBordered}
+                  customClass={`min-w-100px m-0-a py-2 my-5 d-block`}
+                  isLoading={this.state.isBtnLoading}
                 />
-              ))}
-            </div>
+              )}
+            </>
           )}
       </div>
     )
