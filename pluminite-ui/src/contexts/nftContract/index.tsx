@@ -169,6 +169,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public getProfile = async (accountId: string) => {
     return this.nftContract.get_profile({
       account_id: accountId,
+      asked_account_id: this.myAccountId || null
     });
   };
 
