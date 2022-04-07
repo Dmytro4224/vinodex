@@ -413,6 +413,7 @@ impl Contract
     }
 
     ///поставити відмітку, хто відвідував сторінку користувачем
+    #[payable]
     pub fn set_profile_view(
         &mut self, 
         sourse_account_id: &AccountId,

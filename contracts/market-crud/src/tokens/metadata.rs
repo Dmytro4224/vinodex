@@ -131,6 +131,7 @@ impl Contract {
         self.tokens_resort(token_id, 8, Some(likes_count as u128));
     }
 
+    #[payable]
     pub fn token_set_view(&mut self, token_id: TokenId)
     {
         let user_id = env::predecessor_account_id();

@@ -756,6 +756,7 @@ impl Contract {
     }
 
     //поставити помітку про відвідання карточки користувача
+    #[payable]
     pub fn view_artist_account(&mut self, account_id: AccountId) 
     {
         let predecessor_account_id = env::predecessor_account_id();
