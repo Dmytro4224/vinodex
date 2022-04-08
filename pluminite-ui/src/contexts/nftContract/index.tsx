@@ -183,7 +183,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
         email: email,
         account_id: accountId,
       },
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_add = async (name: string, description: string, profile_photo: string, cover_photo: string, time: number) => {
@@ -193,7 +193,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       profile_photo,
       cover_photo,
       time
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_update = async (collection_id: string, name?: string, description?: string, profile_photo?: string, cover_photo?: string) => {
@@ -203,20 +203,20 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       description,
       profile_photo,
       cover_photo,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_token_add = async (collection_id: string, token_id: string) => {
     return this.nftContract.collection_token_add({
       collection_id,
       token_id,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_token_remove = async (token_id: string) => {
     return this.nftContract.collection_token_remove({
       token_id,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public nft_collections = async (page_index: number, page_size: number, account_id: string | null, with_tokens: boolean, collection_owner: string | null) => {
@@ -252,7 +252,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public like_artist_account = async (accountId: string) => {
     return this.nftContract.like_artist_account({
       account_id: accountId,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public minting_accounts_add = async (accountId: string) => {
@@ -268,15 +268,15 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public token_set_like = async (token_id: string) => {
-    return this.nftContract.token_set_like({ token_id: token_id });
+    return this.nftContract.token_set_like({ token_id: token_id }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_set_like = async (collection_id: string) => {
-    return this.nftContract.collection_set_like({ collection_id: collection_id });
+    return this.nftContract.collection_set_like({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public collection_set_view = async (collection_id: string) => {
-    return this.nftContract.collection_set_view({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, '0');
+    return this.nftContract.collection_set_view({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {
@@ -286,7 +286,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
       ...(price && { price }),
       ...(start_date && { start_date }),
       ...(end_date && { end_date }),
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
   public sale_offer = async (token_id: string, time: any, offer?: string, price?: string) => {
     return this.nftContract.sale_offer({
@@ -299,14 +299,14 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public sale_remove = async (token_id: string) => {
     return this.nftContract.sale_remove({
       token_id: token_id,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public sale_set_is_closed = async (token_id: string, is_closed: boolean) => {
     return this.nftContract.sale_set_is_closed({
       token_id,
       is_closed,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public sale_auction_init_transfer = async (token_id: string, time: number, price?: string) => {
@@ -319,19 +319,19 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public view_artist_account = async (accountId: string) => {
     return this.nftContract.view_artist_account({
       account_id: accountId,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public token_set_view = async (token_id: string) => {
     return this.nftContract.token_set_view({
       token_id: token_id,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public follow_artist_account = async (accountId: string) => {
     return this.nftContract.follow_artist_account({
       account_id: accountId,
-    });
+    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
   };
 
   public render() {
