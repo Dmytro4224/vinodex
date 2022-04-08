@@ -230,7 +230,7 @@ impl Contract
                     likes_count: 0,
                     items_count: 0,
                     views_count: 0,
-                    mint_is_available: false
+                    mint_is_available: self.minting_account_ids.contains(account_id)
                 });
             }
             else
@@ -444,6 +444,7 @@ impl Contract
     }
 
     ///додати юзера до мого списку вподобань
+    #[payable]
     pub fn add_profile_to_my_like_list(
         &mut self, 
         my_account_id: &AccountId,
@@ -457,6 +458,7 @@ impl Contract
         );
     }
 
+    #[payable]
     pub fn add_profile_to_my_followers_list(
         &mut self, 
         my_account_id: &AccountId,
