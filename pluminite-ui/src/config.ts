@@ -1,5 +1,6 @@
 // todo: get contract name from environment variable
-const CONTRACT_NAME = 'vinodex_uat_03.testnet';
+const CONTRACT_NAME = 'vinodex_test_v21.testnet';
+// const CONTRACT_NAME = 'vinodex_uat_03.testnet';
 //const CONTRACT_NAME = 'vinodex_uat_02.testnet';
 
 export interface IConfig {
