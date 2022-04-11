@@ -556,19 +556,27 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   />
                 </div>
               ) : (
-                <ButtonView
-                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
-                  onClick={() => {
-                    if (!this.isAuth) {
-                      this.props.near.signIn();
-                      return;
-                    }
+                (this.state.order?.sale?.end_date && (this.state.order?.sale?.end_date - new Date().getTime()) < 0)
+                  ? <ButtonView
+                    text={`Auction is closed`}
+                    onClick={() => {}}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                    disabled={true}
+                  /> :
+                  <ButtonView
+                    text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
 
-                    this.buyAction();
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.button}
-                />
+                      this.buyAction();
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                  />
               )
             )}
           </>
@@ -582,7 +590,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   private stopTime() {
     if (this.state.order?.sale?.bids?.length) {
-      this.props.nftContractContext.sale_set_is_closed(this.state.order.token_id, true)
+      /*this.props.nftContractContext.sale_set_is_closed(this.state.order.token_id, true)
         .then(res => {
           console.log('sale_set_is_closed', res);
           this.getInfo();
@@ -593,7 +601,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             message: 'Can not close sale without bids',
             type: EShowTost.error
           })
-        })
+        })*/
     } else {
       if (this.state.order) {
         this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {
