@@ -1,0 +1,50 @@
+.wrapper {
+  margin-top: 180px;
+  text-align: center;
+}
+.row1, .row2 {
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.row2 {
+  margin-top: 24px;
+}
+
+.wrapConfirmed, .errorWrap {
+  margin: 80px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.confirmedTitle {
+  margin: 0 0 90px 0;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.confirmedImage {
+  margin: 0 0 110px 0;
+}
+.confirmedImage img {
+  display: inline-block;
+}
+
+.confirmedDescription, .confirmedHome {
+  margin: 0 0 28px 0;
+  text-align: center;
+  font-weight: 400;
+  font-size: 24px;
+  line-height: 28px;
+}
+
+.confirmedHome {
+   margin-bottom: 0;
+}
+
+.confirmedHomeLink {
+  color: var(--pirateCold);
+}

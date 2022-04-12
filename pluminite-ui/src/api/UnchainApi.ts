@@ -23,11 +23,40 @@ class UnchainApi {
   public async subscribe(email: string) {
     const body = JSON.stringify({ emailBase64: toBase64(email) });
     try {
-      const response = await fetch(`${this.endpoint}/apiv1/subscribe/add`, {
+      const response = await fetch(`${this.endpoint}/apiv1/subscribe/add-v2`, {
         method: 'POST',
         body,
-        headers: this._headers,
-        
+        headers: this._headers
+      });
+      return await response.json() as IUnchainApiBaseResponse;
+    }
+    catch (ex) {
+      console.error('UnchainApi.subscribe ex => ', ex);
+      return null;
+    }
+  }
+
+  public async confirmation(emailHash: string) {
+    try {
+      const response = await fetch(`${this.endpoint}/apiv1/email-confirmation/${emailHash}`, {
+        method: 'POST',
+        headers: this._headers
+      });
+      return await response.json() as IUnchainApiTypedResponse<boolean>;
+    }
+    catch (ex) {
+      console.error('UnchainApi.confirmation ex => ', ex);
+      return null;
+    }
+  }
+
+  public async welcome(emailHash: string) {
+    const body = JSON.stringify({ emailHash });
+    try {
+      const response = await fetch(`${this.endpoint}/apiv1/welcome`, {
+        method: 'POST',
+        body,
+        headers: this._headers
       });
       return await response.json() as IUnchainApiBaseResponse;
     }
