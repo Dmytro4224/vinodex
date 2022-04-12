@@ -109,19 +109,22 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
     //document.referrer
 
-    //success - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526transactionHashes=83ZFdA11RuKuNDM9ZNiyV2MmQYFF75FTp77TELQGkaH2
+    //success - http://localhost:3000/token/bafyreig47e7646j3s3jxeuwznr64ohutqfbmaxqabnuslxxklyjkfju26u-1649666523028/?checkout=1649758159628&transactionHashes=J1uTXS1R5GigW8EBhDrfDS1hiPSyVVzgydSdgJEuTzmb
     //error   - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526?errorCode=userRejected&errorMessage=User%2520rejected%2520transaction
     const ss = new URLSearchParams(document.location.search);
     const transactionHashes = ss.get('transactionHashes');
-    if (transactionHashes !== null && transactionHashes.length !== 0) {
-      const errorCode = ss.get('errorCode');
-      if (errorCode === null && this.props.near.user !== null) {
-        unchainApi.purchase(this.tokenId, transactionHashes, this.props.near.user.accountId)
-          .then(response => {
-            console.log('response');
-          })
-          .catch(console.error);
-      }
+    const checkout = ss.get('checkout');
+    const errorCode = ss.get('errorCode');
+    if (errorCode === null
+      && checkout !== null && Number.isInteger(checkout) && new Date().getTime() > parseInt(checkout)
+      && transactionHashes !== null && transactionHashes.length !== 0
+      && this.props.near.user !== null
+    ) {
+      unchainApi.purchase(this.tokenId, transactionHashes, this.props.near.user.accountId)
+        .then(response => {
+          console.log('response', response);
+        })
+        .catch(console.error);
     }
   }
 

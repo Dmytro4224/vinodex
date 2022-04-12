@@ -10,6 +10,8 @@ import { ITokenResponseItem } from '../../../types/ITokenResponseItem';
 import TokenCardView from '../../tokenCard/tokenCardView';
 import { TokensType } from '../../../types/TokenTypes';
 import { EShowTost } from '../../../types/ISysTypes';
+import { transactions } from 'near-api-js';
+import { APP } from '../../../constants';
 
 interface IModalTokenCheckoutNFT extends IProps {
   onHideModal: () => void;
@@ -152,13 +154,20 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
     if (!this.props.token?.token_id) { return }
 
     const price = this.props.token.sale.price ? this.props.token.sale.price : null;
-
-    this.props.nftContractContext.sale_offer(
-      this.props.token?.token_id,
-      new Date().getTime(),
-      void 0,
-      price
-    ).then(res => {
+    const time = new Date().getTime();
+    const token_id = this.props.token?.token_id;
+    const nftContract = this.props.nftContractContext.nftContract!;
+    nftContract.account.functionCall({
+      contractId: nftContract.contractId,
+      methodName: 'sale_offer',
+      attachedDeposit: price,
+      gas: APP.PREPAID_GAS_LIMIT_HALF,
+      args: {
+        token_id,
+        time
+      },
+      walletCallbackUrl: `${document.location.origin}/token/${token_id}/?checkout=${time}`
+    }).then(res => {
       this.onHideModal();
       this.props.onSubmit && this.props.onSubmit();
     }).catch(ex => {
@@ -171,6 +180,28 @@ class ModalTokenCheckoutNFT extends Component<IModalTokenCheckoutNFT & IBaseComp
         isLoading: false,
       });
     });
+
+    /*
+    this.props.nftContractContext.sale_offer(
+      this.props.token?.token_id,
+      new Date().getTime(),
+      void 0,
+      price
+    ).then(res => {
+      console.log('resssssssssssssssssssssssssssss', res);
+      this.onHideModal();
+      this.props.onSubmit && this.props.onSubmit();
+    }).catch(ex => {
+      showToast({
+        message: ex.kind.ExecutionError || `Error. Please, try again`,
+        type: EShowTost.error
+      });
+      this.setState({
+        ...this.state,
+        isLoading: false,
+      });
+    });
+    */
   };
 
   private onStartPlace = async () => {
