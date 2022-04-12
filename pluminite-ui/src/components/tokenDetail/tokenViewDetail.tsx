@@ -25,6 +25,7 @@ import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { Timer, TimerType } from '../common/timer/Timer';
 import { nftStorage } from '../../api/NftStorage';
 import CarouselView from '../carousel/carouselView';
+import { unchainApi } from '../../api/UnchainApi';
 
 
 interface ITokenViewDetail extends IProps {
@@ -105,6 +106,23 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   public componentDidMount() {
     window.scrollTo(0, 0);
     this.getInfo();
+
+    //document.referrer
+
+    //success - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526transactionHashes=83ZFdA11RuKuNDM9ZNiyV2MmQYFF75FTp77TELQGkaH2
+    //error   - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526?errorCode=userRejected&errorMessage=User%2520rejected%2520transaction
+    const ss = new URLSearchParams(document.location.search);
+    const transactionHashes = ss.get('transactionHashes');
+    if (transactionHashes !== null && transactionHashes.length !== 0) {
+      const errorCode = ss.get('errorCode');
+      if (errorCode === null && this.props.near.user !== null) {
+        unchainApi.purchase(this.tokenId, transactionHashes, this.props.near.user.accountId)
+          .then(response => {
+            console.log('response');
+          })
+          .catch(console.error);
+      }
+    }
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
