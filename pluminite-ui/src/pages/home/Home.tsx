@@ -76,7 +76,7 @@ class Home extends Component<IHome & IBaseComponentProps> {
     this._catalogFilterView.toogle();
   }
 
-  render() {
+  public render() {
     if (this.state.isLoading) {
       return null;
     }
@@ -86,7 +86,8 @@ class Home extends Component<IHome & IBaseComponentProps> {
         <MediaQuery minWidth={992}>
           <MainLogoView
             img={logoImage}
-            title={'VINE & NFT'}
+            title={'VinoDEX'}
+            subTitle={'is bringing the art of wine into the web3'}
           />
         </MediaQuery>
 
