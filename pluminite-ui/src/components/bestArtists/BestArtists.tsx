@@ -110,16 +110,18 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
 
         <div className={`mt-3 ${styles.artistWrap}`}>
           {this.list.map((item, index) => {
-            return <ArtistCard
-              key={index}
-              info={item}
-              identification={item.account_id}
-              usersCount={item.followers_count}
-              likesCount={item.likes_count}
-              isLike={item.is_liked}
-              isFollow={item.is_following}
-              customClass={styles.artistMobile}
-            />;
+            if (item.account_id !== 'grafarsena.testnet') {
+              return <ArtistCard
+                key={index}
+                info={item}
+                identification={item.account_id}
+                usersCount={item.followers_count}
+                likesCount={item.likes_count}
+                isLike={item.is_liked}
+                isFollow={item.is_following}
+                customClass={styles.artistMobile}
+              />;
+            }
           })}
         </div>
       </>
