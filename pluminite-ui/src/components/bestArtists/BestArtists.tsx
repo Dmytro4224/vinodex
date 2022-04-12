@@ -46,7 +46,7 @@ class BestArtists extends Component<IBestArtists & IBaseComponentProps> {
   }
 
   public componentDidMount() {
-    this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize, UserTypes.all).then(response => {
+    this.props.nftContractContext.authors_by_filter(this.parameter, this.isReverse, this.pageIndex, this.pageSize, UserTypes.artist).then(response => {
       this.list = response.filter(el => el !== null);
     });
   }
