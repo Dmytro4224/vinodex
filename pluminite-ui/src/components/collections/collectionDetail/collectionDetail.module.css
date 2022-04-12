@@ -10,14 +10,23 @@
 
 .tokenWrap {
   padding: 40px;
-
-  /*display: flex;*/
-  /*gap: 20px;*/
-  /*overflow: auto;*/
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
 }
 
-@media (max-width: 600px) {
+@media (max-width: 1400px) {
   .tokenWrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 1000px) {
+  .tokenWrap {
+    display: flex;
+    gap: 20px;
     overflow-x: auto;
     flex-wrap: nowrap;
   }

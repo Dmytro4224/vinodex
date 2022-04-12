@@ -25,6 +25,7 @@ import ModalSaleToken from '../modals/modalSaleToken/ModalSaleToken';
 import { Timer, TimerType } from '../common/timer/Timer';
 import { nftStorage } from '../../api/NftStorage';
 import CarouselView from '../carousel/carouselView';
+import { unchainApi } from '../../api/UnchainApi';
 
 
 interface ITokenViewDetail extends IProps {
@@ -105,6 +106,23 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
   public componentDidMount() {
     window.scrollTo(0, 0);
     this.getInfo();
+
+    //document.referrer
+
+    //success - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526transactionHashes=83ZFdA11RuKuNDM9ZNiyV2MmQYFF75FTp77TELQGkaH2
+    //error   - http://localhost:3000/token/bafyreigypkmfqrdn5dg6idgnywdwnlk2h5wwqzvbsylm7junnhvv3kfmhq-1649667679526?errorCode=userRejected&errorMessage=User%2520rejected%2520transaction
+    const ss = new URLSearchParams(document.location.search);
+    const transactionHashes = ss.get('transactionHashes');
+    if (transactionHashes !== null && transactionHashes.length !== 0) {
+      const errorCode = ss.get('errorCode');
+      if (errorCode === null && this.props.near.user !== null) {
+        unchainApi.purchase(this.tokenId, transactionHashes, this.props.near.user.accountId)
+          .then(response => {
+            console.log('response');
+          })
+          .catch(console.error);
+      }
+    }
   }
 
   public componentDidUpdate(prevProps: any, prevState: any) {
@@ -556,19 +574,27 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
                   />
                 </div>
               ) : (
-                <ButtonView
-                  text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
-                  onClick={() => {
-                    if (!this.isAuth) {
-                      this.props.near.signIn();
-                      return;
-                    }
+                (this.state.order?.sale?.end_date && (this.state.order?.sale?.end_date - new Date().getTime()) < 0)
+                  ? <ButtonView
+                    text={`Auction is closed`}
+                    onClick={() => {}}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                    disabled={true}
+                  /> :
+                  <ButtonView
+                    text={`Place a bid ${price > 0 ? `${price} NEAR` : ``}`}
+                    onClick={() => {
+                      if (!this.isAuth) {
+                        this.props.near.signIn();
+                        return;
+                      }
 
-                    this.buyAction();
-                  }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.button}
-                />
+                      this.buyAction();
+                    }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.button}
+                  />
               )
             )}
           </>
@@ -582,7 +608,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
 
   private stopTime() {
     if (this.state.order?.sale?.bids?.length) {
-      this.props.nftContractContext.sale_set_is_closed(this.state.order.token_id, true)
+      /*this.props.nftContractContext.sale_set_is_closed(this.state.order.token_id, true)
         .then(res => {
           console.log('sale_set_is_closed', res);
           this.getInfo();
@@ -593,7 +619,7 @@ class TokenViewDetail extends Component<ITokenViewDetail & IBaseComponentProps, 
             message: 'Can not close sale without bids',
             type: EShowTost.error
           })
-        })
+        })*/
     } else {
       if (this.state.order) {
         this.props.nftContractContext.sale_remove(this.state.order.token_id).then(res => {

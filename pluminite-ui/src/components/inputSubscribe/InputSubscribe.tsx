@@ -7,6 +7,7 @@ import { isValidEmail } from "../../utils/sys";
 import { Spinner } from "react-bootstrap";
 import ModalProcessing, { IModalProcessing } from '../modals/modalProcessing/ModalProcessing';
 import ModalComplete from '../modals/modalComplete/ModalComplete';
+import { unchainApi } from '../../api/UnchainApi';
 
 interface ISubscribe extends IProps { }
 
@@ -45,8 +46,12 @@ class InputSubscribe extends Component<ISubscribe & IBaseComponentProps, IInputS
     return true;
   }
 
-  private subscribeHandler = async () => {
-    if (!this.isValid()) { return }
+  private subscribeHandler = async (e: React.MouseEvent) => {
+    e.preventDefault();
+
+    if (!this.isValid()) {
+      return
+    }
 
     this.setState({
       ...this.state,
@@ -61,6 +66,11 @@ class InputSubscribe extends Component<ISubscribe & IBaseComponentProps, IInputS
         this._modalProcessing.progressBar?.run();
       }
     }, 10);
+
+    const email: string = this._refInputEmail.value.trim();
+    const response = await unchainApi.subscribe(email);
+    console.log('response', response);
+
   }
 
   public stopModalProgress = async () => {

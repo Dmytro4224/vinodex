@@ -276,7 +276,7 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   };
 
   public collection_set_view = async (collection_id: string) => {
-    return this.nftContract.collection_set_view({ collection_id: collection_id }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
+    return this.nftContract.collection_set_view({ collection_id: collection_id });
   };
 
   public sale_create = async (token_id: string, sale_type: number, price?: string, start_date?: any, end_date?: any) => {
@@ -319,13 +319,13 @@ export class NftContractContextProvider extends Component<INftContractContextPro
   public view_artist_account = async (accountId: string) => {
     return this.nftContract.view_artist_account({
       account_id: accountId,
-    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
+    });
   };
 
   public token_set_view = async (token_id: string) => {
     return this.nftContract.token_set_view({
       token_id: token_id,
-    }, APP.PREPAID_GAS_LIMIT, APP.DEFAULT_DEPOSIT);
+    });
   };
 
   public follow_artist_account = async (accountId: string) => {

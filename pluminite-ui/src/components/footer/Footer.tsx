@@ -60,11 +60,11 @@ class Footer extends Component<IFooter & IBaseComponentProps> {
             <div>
               <p className={styles.linksTitle}>Company</p>
               <ul className={styles.linksWrap}>
-                <li className='disabled'>
-                  <NavLink to={'/'}>About Us</NavLink>
+                <li>
+                  <a href='https://wagmi.vinodex.io/' target="_blank">About Us</a>
                 </li>
-                <li className='disabled'>
-                  <NavLink to={'/'}>Contact Us</NavLink>
+                <li>
+                  <a href='https://wagmi.vinodex.io/#team' target="_blank">Contact Us</a>
                 </li>
               </ul>
             </div>

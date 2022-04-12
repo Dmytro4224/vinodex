@@ -444,12 +444,21 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
                   customClass={styles.buttonSecondControls}
                 />
               ) : (
-                <ButtonView
-                  text={`Place a bid ${price > 0 ? `${price} Ⓝ` : ``}`}
-                  onClick={() => { this.showCheckoutModal(); }}
-                  color={buttonColors.goldFill}
-                  customClass={styles.buttonSecondControls}
-                />
+                this.model?.sale?.end_date && (this.model?.sale?.end_date - new Date().getTime()) < 0 ?
+                  <ButtonView
+                    text={`Auction is closed`}
+                    onClick={() => { }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.buttonSecondControls}
+                    disabled={true}
+                  />
+                  :
+                  <ButtonView
+                    text={`Place a bid ${price > 0 ? `${price} Ⓝ` : ``}`}
+                    onClick={() => { this.showCheckoutModal(); }}
+                    color={buttonColors.goldFill}
+                    customClass={styles.buttonSecondControls}
+                  />
               )
             )}
           </div>
@@ -475,7 +484,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
 
   private stopTime() {
     if (this.model.sale?.bids?.length) {
-      this.props.nftContractContext.sale_set_is_closed(this.model.token_id, true)
+      /*this.props.nftContractContext.sale_set_is_closed(this.model.token_id, true)
         .then(res => {
           console.log('sale_set_is_closed', res);
           this.getInfo();
@@ -486,7 +495,7 @@ class TokenCardView extends Component<Readonly<ITokenCardView & IBaseComponentPr
             message: 'Can not close sale without bids',
             type: EShowTost.error
           })
-        })
+        })*/
     } else {
       this.props.nftContractContext.sale_remove(this.model.token_id).then(res => {
         console.log('sale_remove', res);

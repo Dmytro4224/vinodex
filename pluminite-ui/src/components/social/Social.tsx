@@ -5,6 +5,8 @@ import facebookIcon from '../../assets/icons/facebook.svg';
 import twitterIcon from '../../assets/icons/twitter.svg';
 import googleIcon from '../../assets/icons/google.svg';
 import twitchIcon from '../../assets/icons/twitch.svg';
+import linkedin from '../../assets/icons/linkedin.png';
+import discord from '../../assets/icons/discord.png';
 
 interface ISocial extends IProps { }
 
@@ -12,24 +14,24 @@ class Social extends Component<ISocial & IBaseComponentProps> {
   render() {
     return (
       <ul className={styles.socialListWrap}>
-        <li className='disabled'>
-          <a href="#">
+        <li>
+          <a href="https://www.facebook.com/vinodex/" target="_blank">
             <img width="20" height="20" src={facebookIcon} alt="facebook" />
           </a>
         </li>
-        <li className='disabled'>
-          <a href="#">
+        <li>
+          <a href="https://twitter.com/dex_vino"  target="_blank">
             <img width="20" height="17" src={twitterIcon} alt="twitter" />
           </a>
         </li>
-        <li className='disabled'>
-          <a href="#">
-            <img width="18" height="18" src={googleIcon} alt="google" />
+        <li>
+          <a href="https://www.linkedin.com/company/vinodex/" target="_blank">
+            <img width="18" height="18" src={linkedin} alt="Linkedin" />
           </a>
         </li>
-        <li className='disabled'>
-          <a href="#">
-            <img width="18" height="19" src={twitchIcon} alt="twitch" />
+        <li>
+          <a href="https://discord.gg/ZEFfhJC8" target="_blank">
+            <img width="18" height="19" src={discord} alt="Discord" />
           </a>
         </li>
       </ul>

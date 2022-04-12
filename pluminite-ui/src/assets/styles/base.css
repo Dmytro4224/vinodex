@@ -747,3 +747,7 @@ input[type="range"]:disabled::-moz-range-thumb {
 .modal-max-w-500 .modal-dialog {
   max-width: 500px !important;
 }
+
+.gap-15 {
+  gap: 15px;
+}
