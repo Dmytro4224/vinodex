@@ -32,11 +32,11 @@
   flex-direction: column;
   padding: 35px 100px;
   width: 100%;
-  max-width: 414px;
+  max-width: fit-content;
   min-height: 168px;
 }
 
-.title {
+.title, .subTitle {
   font-family: 'Bebas Neue', 'Urbanist', sans-serif;
   font-size: 48px;
   color: var(--white);
@@ -44,6 +44,10 @@
   z-index: 2;
   letter-spacing: 0.1rem;
   line-height: 1;
+}
+
+.subTitle {
+  font-size: 36px;
 }
 
 .backButton {
