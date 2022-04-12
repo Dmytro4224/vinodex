@@ -463,9 +463,14 @@ impl Contract {
             panic!("Sale is not on auction");
         }
 
-        if !sale.is_closed
+        // if !sale.is_closed
+        // {
+        //     panic!("Sale is not closed");
+        // }
+
+        if sale.sale_type == 2 && sale.end_date.unwrap() >= time
         {
-            panic!("Sale is not closed");
+            panic!("Auction is not finished yet");
         }
 
         //get the buyer ID which is the person who called the function and make sure they're not the owner of the sale
@@ -525,10 +530,10 @@ impl Contract {
             },
             2 | 3 =>
             {
-                if sale.is_closed
-                {
-                    panic!("Auction is closed for new bids");
-                }
+                // if sale.is_closed
+                // {
+                //     panic!("Auction is closed for new bids");
+                // }
 
                 let price : u128;
 
@@ -541,7 +546,7 @@ impl Contract {
 
                     if sale.end_date.unwrap() < time
                     {
-                        panic!("Sale is closed");
+                        panic!("Auction is closed for new bids");
                     }
                 }
                 
