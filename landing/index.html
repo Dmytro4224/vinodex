@@ -203,7 +203,7 @@
           const body = JSON.stringify({ emailBase64: window.btoa(value) });
 
           self.__canSend(false);
-          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add`, {
+          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add/from-landing`, {
             method: "POST",
             body,
             headers: {
@@ -1117,7 +1117,9 @@
       <section class="explore">
         <div class="container explore__container">
           <h2 class="explore__title">Explore more NFT collections on VinoDex</h2>
-          <a class="explore__look-more-btn" href="https://vinodex.io/" target="_blank">Explore more</a>
+          <a class="explore__look-more-btn" href="https://vinodex.io/" target="_blank"
+            ><span class="bgc"></span> <span class="more-btn-text">Explore more</span></a
+          >
         </div>
       </section>
       <!-- explore end -->
