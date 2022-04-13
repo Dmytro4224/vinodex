@@ -6,6 +6,7 @@ import ButtonView, { buttonColors } from '../common/button/ButtonView';
 interface ImainLogoView{
   img: any,
   title: string;
+  subTitle?: string;
   isSmall?: boolean;
   onClick?: () => void,
   breadcrumbs?: any;
@@ -51,6 +52,7 @@ class MainLogoView extends Component<ImainLogoView>{
             className={styles.titleWrap}
           >
             <span className={styles.title}>{this.props.title}</span>
+            {this.props.subTitle && <span className={styles.subTitle}>{this.props.subTitle}</span>}
 
             {this.props.breadcrumbs && (
               <div className='breadcrumb'>

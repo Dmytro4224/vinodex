@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VinoDEX</title>
+    <link rel="icon" type="image/png" href="/images/favicon.png" />
+    <!-- HTML Meta Tags -->
+    <title>VinoDEX is bringing the art of wine into the WEB3</title>
+    <meta
+      name="description"
+      content="The main philosophy of VinoDEX is to provide a unique cultural experience and pleasure to consumers by offering the best wine NFT collections"
+    />
+
+    <!-- Facebook Meta Tags -->
+    <meta property="og:url" content="https://wagmi.vinodex.io/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="VinoDEX is bringing the art of wine into the WEB3" />
+    <meta
+      property="og:description"
+      content="The main philosophy of VinoDEX is to provide a unique cultural experience and pleasure to consumers by offering the best wine NFT collections"
+    />
+    <meta
+      property="og:image"
+      content="https://vinodex.io/static/media/logo-vine.7a67f146953eaeec52d7340bb5dea924.svg"
+    />
+
+    <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta property="twitter:domain" content="wagmi.vinodex.io" />
+    <meta property="twitter:url" content="https://wagmi.vinodex.io/" />
+    <meta name="twitter:title" content="VinoDEX is bringing the art of wine into the WEB3" />
+    <meta
+      name="twitter:description"
+      content="The main philosophy of VinoDEX is to provide a unique cultural experience and pleasure to consumers by offering the best wine NFT collections"
+    />
+    <meta
+      name="twitter:image"
+      content="https://vinodex.io/static/media/logo-vine.7a67f146953eaeec52d7340bb5dea924.svg"
+    />
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-KMK3JXZ");
+    </script>
+    <!-- End Google Tag Manager -->
+    <!-- fonts start -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600&family=Montserrat&display=swap"
+      rel="stylesheet"
+    />
+    <!-- fonts end -->
+    <!-- styles start -->
+    <link rel="stylesheet" href="/css/modern-normalize.css" />
+    <!-- <link rel="stylesheet" href="/css/mobile.css" /> -->
+    <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/glide.core.min.css" />
+    <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/glide.theme.min.css" />
+    <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/mobile.css" />
+    <link rel="stylesheet" media="screen and (min-device-width: 1135px)" href="/css/index.css" />
+
+    <!-- <link rel="stylesheet" href="/css/index.css" /> -->
+    <!-- styles end -->
+    <script>
+      class SmoothAnchorScroll {
+        init() {
+          document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener("click", function (e) {
+              e.preventDefault();
+
+              const target = document.querySelector(this.getAttribute("href"));
+
+              if (target) {
+                if (document.body.classList.contains("burger-showed")) {
+                  document.body.classList.remove("burger-showed");
+                }
+
+                target.scrollIntoView({
+                  behavior: "smooth",
+                });
+              }
+            });
+          });
+        }
+      }
+      class Burger {
+        init() {
+          const btnOpen = document.querySelector(".js-open-btn");
+          const btnClose = document.querySelector(".js-close-btn");
+
+          btnOpen.addEventListener("click", e => {
+            document.body.classList.add("burger-showed");
+          });
+
+          btnClose.addEventListener("click", e => {
+            document.body.classList.remove("burger-showed");
+          });
+        }
+      }
+      class BtnToTop {
+        constructor() {
+          this.options = {
+            rootMargin: "0px",
+          };
+        }
+
+        init() {
+          this.btnWrap = document.querySelector(".js-btn-to-top-wrap");
+          this.btnForObserving = document.querySelector(".js-btn-for-observing");
+
+          if (!this.btnForObserving) return;
+
+          const observer = new IntersectionObserver(this.onIntersection.bind(this), this.options);
+
+          observer.observe(this.btnForObserving);
+        }
+
+        onIntersection(entries, observer) {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              this.btnWrap?.classList.remove("showed");
+            } else {
+              this.btnWrap?.classList.add("showed");
+            }
+          });
+        }
+      }
+      class subscribe {
+        constructor() {
+          this.subscribeBtn = document.querySelectorAll(".subscribe-btn");
+          this.subscribeValue = document.getElementById("subscribe-email");
+          this.Clear();
+          this.form = document.querySelector(".subscribe-form");
+
+          let self = this;
+
+          this.subscribeBtn.forEach(e => {
+            e.addEventListener("click", function () {
+              self.__subscribe();
+            });
+          });
+
+          ["change", "keydown", "paste", "input"].forEach(function (e) {
+            self.subscribeValue.addEventListener(e, function () {
+              self.__emailValidation(self);
+            });
+          });
+        }
+
+        Clear() {
+          this.__canSend(false);
+          this.subscribeValue.value = "";
+        }
+
+        __canSend(status) {
+          if (!status) {
+            this.subscribeBtn.forEach(e => {
+              e.disabled = true;
+              e.style.opacity = 0.3;
+            });
+          } else {
+            this.subscribeBtn.disabled = false;
+
+            this.subscribeBtn.forEach(e => {
+              e.disabled = false;
+              e.style.opacity = 1;
+            });
+          }
+        }
+
+        __emailValidation(self) {
+          let value = self.subscribeValue.value.trim();
+
+          if (self.__isEmail(value)) {
+            self.__canSend(true);
+          } else {
+            self.__canSend(false);
+          }
+        }
+
+        __isEmail(emailAddress) {
+          var pattern = new RegExp(
+            /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+          );
+          return pattern.test(emailAddress);
+        }
+
+        __subscribe() {
+          let self = this;
+          let value = self.subscribeValue.value.trim();
+
+          const body = JSON.stringify({ emailBase64: window.btoa(value) });
+
+          self.__canSend(false);
+          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add`, {
+            method: "POST",
+            body,
+            headers: {
+              "access-token": "F5E4C34D-0D3E-4BC7-8EBD-2D2AC4D626EA",
+              "content-type": "application/json",
+            },
+          })
+            .then(response => {
+              return response.json();
+            })
+            .then(result => {})
+            .catch(ex => {
+              console.error("UnchainApi.subscribe ex => ", ex);
+            })
+            .finally(() => {
+              self.Clear();
+              self.form.innerHTML = `<div style="font-weight: 400; line-height: 150%; letter-spacing: -0.02em; font-size: 14px; color: #111; opacity: .75;">
+                <p style="margin-bottom: 10px;">An email has been sent to the address you provided to confirm your email address.</p>
+                <p>Please check your inbox 📩</p>
+              </div>`;
+            });
+        }
+      }
+      const smoothAnchorScroll = new SmoothAnchorScroll();
+      const burger = new Burger();
+      const btnToTop = new BtnToTop();
+    </script>
+  </head>
+  <body id="body">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-KMK3JXZ"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+
+    <header class="header">
+      <div class="container">
+        <div class="header__top-panel">
+          <div class="header__top-panel-top">
+            <a class="header__logo-link" href="/">
+              <img class="header__logo-img" src="/images/icons/logo.svg" alt="brand logo" />
+            </a>
+
+            <div class="header__top-panel-btns-group">
+              <a class="btn btn-sm btn--black header__top-panel-btn" href="#footer">Expert advice</a>
+              <a class="btn btn-sm btn--white" href="https://vinodex.io/" target="_blank">Look fine wine</a>
+            </div>
+
+            <button class="burger-open-btn js-open-btn" type="button">
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+          </div>
+
+          <div class="header__nav-wrap burger-menu">
+            <div class="burger-menu__container">
+              <div class="burger-header">
+                <a href="/">
+                  <img
+                    class="burger-menu__logo"
+                    src="/images/icons/logo-black.svg"
+                    alt="brand logo black"
+                    width="108"
+                    height="31"
+                  />
+                </a>
+
+                <button class="burger-menu__btn-close js-close-btn" type="button">
+                  <img
+                    class="burger-menu__close-icon"
+                    src="/images/icons/cross.svg"
+                    alt="icon close"
+                    width="19.8"
+                    height="19.8"
+                  />
+                </button>
+              </div>
+
+              <nav class="header-nav">
+                <ul class="header-nav__list">
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="javascript:;">About us</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#uniq">Unique art collaboration</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#collection">Wine NFT collection</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#no-risk">No risk investment</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#benefits">Benefits</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#how-work">How it works</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#team">Our team</a>
+                  </li>
+                  <li class="header-nav__item">
+                    <a class="header-nav__link" href="#partners">Partners</a>
+                  </li>
+                </ul>
+              </nav>
+
+              <div class="header__top-panel-btns-group burger-btns">
+                <a class="btn btn-sm btn--white header__top-panel-btn" href="#footer">Expert advice</a>
+                <a class="btn btn-sm btn--black" href="https://vinodex.io/" target="_blank">Look fine wine</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <section class="about-us">
+          <h1 class="about-us__title">VinoDEX is bringing the art of wine into the web3</h1>
+          <p class="about-us__sub-title">
+            The main philosophy of VinoDEX is to provide unique cultural experience and pleasure to the consumers by
+            offering best wine NFT collections
+          </p>
+          <div class="about-us__buttons">
+            <a
+              class="btn btn-lg btn--white about-us__btn js-btn-for-observing"
+              href="https://vinodex.io/"
+              target="_blank"
+              >Look fine wine collection</a
+            >
+            <a class="btn btn-lg btn--black about-us__btn" href="#uniq">Read more</a>
+          </div>
+          <ul class="about-us__list">
+            <li class="about-us__list-item">
+              <img class="about-us__list-item-icon" src="/images/icons/palitra.svg" alt="icon palitra" />
+              <p class="about-us__list-item-text">It is a unique piece of art</p>
+            </li>
+            <li class="about-us__list-item">
+              <img class="about-us__list-item-icon" src="/images/icons/bottle-of-wine.svg" alt="icon bottle of wine" />
+              <p class="about-us__list-item-text">It is a fine wine</p>
+            </li>
+            <li class="about-us__list-item">
+              <img class="about-us__list-item-icon" src="/images/icons/rating-up.svg" alt="icon rating up" />
+              <p class="about-us__list-item-text">It is a no-risk investment</p>
+            </li>
+          </ul>
+        </section>
+      </div>
+    </header>
+
+    <main>
+      <!-- uniq start -->
+      <section id="uniq" class="uniq">
+        <div class="container uniq__container">
+          <h2 class="uniq__title">VinoDEX merges art and fine wine into a new and unique asset class</h2>
+          <p class="uniq__text uniq__text--1">
+            The web3 economy with its own financial, social and digital art paradigm should have the best items from the
+            physical world.
+          </p>
+          <p class="uniq__text uniq__text--2">
+            We bring key features of the web3 - freedom, transparency and decentralization - to the world where wine is
+            valued. We add sophistication and culture of wine as a layer to the web3.
+          </p>
+          <p class="uniq__text uniq__text--3">
+            This is how VinoDEX opens the world of fine wines to the creators and believers of the web3.
+          </p>
+
+          <img class="uniq__etherum-bg" src="images/uniq/eth-ill.png" alt="" />
+        </div>
+      </section>
+      <!-- uniq end -->
+
+      <!-- collection start -->
+      <section id="collection" class="collection">
+        <div class="container collection__container">
+          <h2 class="visually-hidden">Fine wine of NFT collection</h2>
+
+          <ul class="collection__list">
+            <li class="collection__item">
+              <picture>
+                <source srcset="/images/collection/first-item-img.jpg" media="(min-width: 1135px)" />
+                <img class="collection__img" src="/images/collection/first-item-mobile.jpg" alt="" />
+              </picture>
+
+              <div class="collection__item-right-content">
+                <p class="collection__before-title">The NFT Wine & Art collection</p>
+                <h3 class="collection__item-title collection__item-1-title">Bruno Paillard vintage 2013 NFT</h3>
+                <p class="collection__item-sub-title collection__item-1-sub-title">
+                  Our ultra rare champagne NFT collection is created in the collaboration of an extraordinary champagne
+                  domaine and a ________ artist
+                </p>
+                <a class="btn btn-lg btn--black collection__btn" href="https://vinodex.io/" target="_blank"
+                  >Look fine wine collection</a
+                >
+                <a class="btn btn-lg btn--white collection__btn collection__btn--white" href="javascript:;"
+                  >Read more</a
+                >
+              </div>
+            </li>
+
+            <li class="collection__item-2">
+              <div class="collection__item-2-left-content">
+                <h3 class="collection__item-title collection__item-2-title">The artist behind the collection</h3>
+                <p class="collection__item-sub-title collection__item-2-sub-title">
+                  The Bruno Paillard vintage 2013 NFT collection represents the ideas of contemporary art. Bruno
+                  Paillard made a selection of collaborations with the Italian expressionist artist Luis Parrier. Luis
+                  depicted the likelihood of change and progress on each of the 10 bottles in the collection.
+                </p>
+                <p class="collection__item-sub-title collection__item-2-sub-title-2">
+                  The Bruno Paillard vintage 2013 NFT collection represents the ideas of contemporary art. Bruno
+                  Paillard made a selection of collaborations with the Italian expressionist artist Luis Parrier. Luis
+                  depicted the likelihood of change and progress on each of the 10 bottles in the collection.
+                </p>
+                <picture>
+                  <source srcset="/images/collection/second-sub-sm.jpg" media="(min-width: 1135px)" />
+                  <img class="collection__item-2-img" src="/images/collection/second-sub-sm-mobile.jpg" alt="" />
+                </picture>
+              </div>
+
+              <picture>
+                <source srcset="/images/collection/second-item.jpg" media="(min-width: 1135px)" />
+                <img class="collection__img-second" src="/images/collection/second-item-mobile.jpg" alt="" />
+              </picture>
+            </li>
+          </ul>
+        </div>
+      </section>
+      <!-- collection end -->
+
+      <!-- inside start -->
+      <section class="inside">
+        <div class="container inside__container">
+          <h2 class="inside__title">What’s inside the bottle</h2>
+          <p class="inside__sub-title">
+            The Bruno Paillard vintage 2013 NFT collection represents the ideas of contemporary art. Bruno Paillard made
+            a selection of collaborations with the Italian expressionist artist Luis Parrier. Luis depicted the
+            likelihood of change and progress on each of the 10 bottles in the collection
+          </p>
+
+          <div class="inside__card in-card">
+            <picture>
+              <source srcset="/images/inside/collage.jpg" media="(min-width: 1135px)" />
+              <img class="inside__img" src="/images/inside/collage-mobile.jpg" alt="" />
+            </picture>
+
+            <div class="inside__right-wrap">
+              <h3 class="in-card__title">
+                <p>Bruno Paillard</p>
+                <p>La Cuvee</p>
+                <div class="in-card__ques-wrap">
+                  <span>N.P.U. 1996</span>
+                  <div class="tooltip-wrap">
+                    <div class="tooltip-action">
+                      <svg viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                          d="M0 4.26559C0.107822 2.95775 0.570825 1.92153 1.38901 1.15694C2.21353 0.385647 3.25687 0 4.51903 0C5.85729 0 6.93869 0.37894 7.76321 1.13682C8.58774 1.88799 9 2.84708 9 4.01408C9 4.67136 8.85729 5.28169 8.57188 5.84507C8.29281 6.40845 7.76321 7.03219 6.98309 7.7163C6.20296 8.4004 5.7241 8.94701 5.54651 9.35614C5.36892 9.75855 5.28013 10.4326 5.28013 11.3783H3.60571C3.60571 10.1308 3.74207 9.21865 4.0148 8.64185C4.28753 8.05835 4.78858 7.43796 5.51797 6.78068C6.2537 6.12341 6.71036 5.62039 6.88795 5.27163C7.06554 4.91616 7.15433 4.54058 7.15433 4.14487C7.15433 3.37357 6.91332 2.73977 6.43129 2.24346C5.94926 1.74044 5.31818 1.48893 4.53805 1.48893C3.01586 1.48893 2.12156 2.41449 1.85518 4.26559H0ZM5.47992 13.9688C5.47992 14.5383 5.04332 15 4.50476 15C3.96619 15 3.5296 14.5383 3.5296 13.9688C3.5296 13.3993 3.96619 12.9376 4.50476 12.9376C5.04332 12.9376 5.47992 13.3993 5.47992 13.9688Z"
+                        />
+                      </svg>
+                    </div>
+
+                    <div class="tooltip-content">
+                      <img class="desc-apostrof" src="/images/icons/apostrof.svg" alt="" />
+                      <div>
+                        <p style="margin-bottom: 10px">
+                          The Bruno Paillard vintage 2013 NFT collection represents the ideas of contemporary art. Bruno
+                          Paillard made a selection of collaborations with the Italian expressionist artist Luis
+                          Parrier. Luis depicted the likelihood of change and progress on each of the 10 bottles in the
+                          collection.
+                        </p>
+                        <p>
+                          The Bruno Paillard vintage 2013 NFT collection represents the ideas of contemporary art. Bruno
+                          Paillard made a selection of collaborations with the Italian expressionist artist Luis
+                          Parrier. Luis depicted the likelihood of change and progress on each of the 10 bottles in the
+                          collection.
+                        </p>
+                      </div>
+
+                      <img class="tooltip-tail" src="/images/icons/tooltip-tail.svg" alt="tooltip tail" />
+                    </div>
+                  </div>
+                </div>
+              </h3>
+
+              <div class="in-card__country-wrap">
+                <p class="in-card__country-text">Champagne, France</p>
+                <p class="in-card__country__number-text">04/10</p>
+              </div>
+
+              <div class="in-card__table">
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">Reviewed by</p>
+                  <p class="in-card__col-bold">William Kelley</p>
+                </div>
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">Issue Date</p>
+                  <p class="in-card__col-bold">31st Jan 2022</p>
+                </div>
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">Drink Date</p>
+                  <p class="in-card__col-bold">2025 - 2040</p>
+                </div>
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">Rating</p>
+                  <p class="in-card__col-bold">94+</p>
+                </div>
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">WS</p>
+                  <p class="in-card__col-bold">94</p>
+                </div>
+                <div class="in-card__table-col">
+                  <p class="in-card__col-desc">JR</p>
+                  <p class="in-card__col-bold">17+</p>
+                </div>
+              </div>
+
+              <p class="in-card__text in-card__text-1">
+                Disgorged in April 2019 with three grams per liter dosage. Paillard’s 2008 Extra-Brut N.P.U Nec Plus
+                Ultra unwinds in the glass with notes of pear and citrus mingled with hazelnut. Toasted taut and
+                chiseled t’s concentrated and complex. Its tightly wound mid-palate complemented by a pearly mousse and
+                underpinned by chalky grip.
+              </p>
+              <p class="in-card__text in-card__text-2">
+                While it’s introverted today this is a classic in the making that will show brilliantly with more age on
+                cork. Even if it will always remain a comparatively lean acid-driven-marathon runner of a Champagne.
+              </p>
+
+              <div class="price-buy">
+                <div class="price-buy__ether-price-wrap">
+                  <img class="price-buy__ether-img" src="/images/icons/etherum.svg" alt="" />
+                  <span class="price-buy__ether-price-text">2.2</span>
+                </div>
+
+                <p class="price-buy__dollar-price">$ 3.208</p>
+
+                <a class="btn btn-lg btn--black price-buy__btn" href="https://vinodex.io/" target="_blank"
+                  >Look more & buy</a
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- inside end -->
+
+      <!-- no-risk start -->
+      <section id="no-risk" class="no-risk">
+        <div class="container no-risk__container">
+          <div class="no-risk__top">
+            <p class="no-risk__sub-title">Liquid asset</p>
+            <h2 class="no-risk__title">Our wine NFT is a no-risk investment</h2>
+            <p class="no-risk__text">
+              It is backed by an exquisite physical product with a confirmed floor price. Our expertise is the guarantee
+              that your wine NFT won't go down if the NFT hype goes away. Also wine is an attractive investment in the
+              traditional markets
+            </p>
+          </div>
+
+          <div class="no-risk__grid risk-grid">
+            <div class="risk-grid__top">
+              <div class="risk-grid__square risk-grid__square-1">
+                <h3 class="risk-grid__square-title">Champagne is on fire</h3>
+                <p class="risk-grid__square-text">
+                  Selected wine positions show even stronger growth: Champagne (+31%), Burgundy (+25%), Bordeaux (+10%)
+                </p>
+              </div>
+
+              <div class="risk-grid__square risk-grid__square-2">
+                <h3 class="risk-grid__square-title">Wine rises faster than stocks</h3>
+                <p class="risk-grid__square-text">
+                  Wine is a first class asset to invest in. A portfolio in fine wine returns an average of 11% for the
+                  last 20 years — much better than S&P 500
+                  <a class="risk-grid__square-text-link" href="javascript:;">LIV-EX</a>
+                </p>
+              </div>
+            </div>
+
+            <div class="risk-grid__bottom">
+              <div class="risk-grid__square risk-grid__square-3">
+                <h3 class="risk-grid__square-title">Low correlation with the financial sector</h3>
+                <p class="risk-grid__square-text">
+                  The cost of wine is not tied to the quotes of currencies, gold, etc. Wine rises in price regardless of
+                  inflation, oil prices, political and economic factors
+                </p>
+              </div>
+
+              <div class="risk-grid__square risk-grid__square-4">
+                <h3 class="risk-grid__square-title">Stable growth and profitability</h3>
+                <p class="risk-grid__square-text">
+                  In 2021, wine market is growing at an average of 1% per month, according to research by
+                  <a class="risk-grid__square-text-link" href="javascript:;">KnightFrank</a>.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- no-risk end -->
+
+      <!-- offer-nft start -->
+      <section class="offer-nft">
+        <div class="container">
+          <h2 class="offer-nft__title">We offer NFT wine & art collection</h2>
+        </div>
+      </section>
+      <!-- offer-nft end -->
+
+      <!-- bruno start -->
+      <section class="blur-card bruno">
+        <div class="container">
+          <div class="blur-card__container bruno__container">
+            <div class="bruno__left-wrap">
+              <h2 class="bruno__title">Bruno Paillard vintage 2013 NFT</h2>
+              <p class="bruno__sub-title">
+                We launched rare NFT champagne collection created with collaboration of Bruno Paillard famous champagne
+                domaine and Luis Parrier artist (we should elaborate on the idea of this collection from the artist and
+                domaine)
+              </p>
+              <div class="price-buy bruno-price-buy">
+                <div class="bruno-price-buy__wrap">
+                  <div class="price-buy__ether-price-wrap">
+                    <img class="price-buy__ether-img" src="/images/icons/etherum.svg" alt="" />
+                    <span class="price-buy__ether-price-text">2.2</span>
+                  </div>
+                  <p class="price-buy__dollar-price">$ 3.208</p>
+                </div>
+
+                <a class="btn btn-lg btn--black price-buy__btn" href="https://vinodex.io/" target="_blank"
+                  >Look more & Buy</a
+                >
+              </div>
+            </div>
+
+            <picture>
+              <source srcset="/images/bruno/bottle.png" media="(min-width: 1135px)" />
+              <img class="bruno__img" src="/images/bruno/bottle-mobile.png" alt="bottle-of-wine" />
+            </picture>
+          </div>
+        </div>
+      </section>
+      <!-- bruno end -->
+
+      <!-- benefits start -->
+      <section id="benefits" class="benefits">
+        <div class="container benefits__container">
+          <h2 class="benefits__title">What you get</h2>
+
+          <div class="benefits__grid">
+            <div class="benefits__grid-left">
+              <div class="benefits__grid-left-top">
+                <div class="benefits__grid-left-top-left">
+                  <div class="benefits__item benefits__item-1">
+                    <p class="benefits__item-1-text">
+                      <span class="item-1-text--blur">100% Authenticity.</span> Wine is provided directly from the
+                      producers
+                    </p>
+                  </div>
+                  <div class="benefits__item benefits__item-2">
+                    <p class="benefits__item-2-text">
+                      <span class="item-2-text--blur">Best storage condition.</span> Wine is safely stored within the
+                      producer until you claim it
+                    </p>
+                  </div>
+                </div>
+
+                <div class="benefits__item benefits__item-4">
+                  <img class="benefits__item-4-img" src="/images/benefits/undefined.svg" alt="" />
+                  <p class="benefits__item-4-top-text">Liquid Asset</p>
+                  <p class="benefits__item-4-bottom-text">Wine NFTs are as liquid as the wine itself</p>
+                </div>
+              </div>
+              <div class="benefits__grid-left-bottom">
+                <!-- <div class="benefits__item benefits__item-5 benefits__item-5--mobile">
+                  <img class="benefits__item-5-img" src="/images/benefits/glasses.svg" alt="" />
+                  <p class="benefits__item-5-title">Sharing wine expertise</p>
+                  <p class="benefits__item-5-sub-title">
+                    You do not need wine expertise - Vinodex offers the best selection of fine wine
+                  </p>
+                </div> -->
+
+                <div class="benefits__item benefits__item-3">
+                  <div class="benefits__item-3-left-text-wrap">
+                    <p class="benefits__item-3-left-text-top">NFT with a real asset</p>
+                    <p class="benefits__item-3-left-text-bottom">
+                      Our NFT’s are backed by an extraordinary wine delivered worldwide
+                    </p>
+                  </div>
+                  <img class="benefits__item-3-img" src="/images/benefits/bottle-etherum.svg" alt="" />
+                </div>
+              </div>
+            </div>
+
+            <div class="benefits__grid-right">
+              <!-- <div class="benefits__item benefits__item-5 benefits__item-5--hidden">
+                <img class="benefits__item-5-img" src="/images/benefits/glasses.svg" alt="" />
+                <p class="benefits__item-5-title">Sharing wine expertise</p>
+                <p class="benefits__item-5-sub-title">
+                  You do not need wine expertise - Vinodex offers the best selection of fine wine
+                </p>
+              </div> -->
+              <div class="benefits__item benefits__item-6">
+                <p class="benefits__item-6-text">
+                  <span class="benefits__item-6-text--blur">Outstanding wines only.</span> You do not need to have wine
+                  expertise — VinoDEX offers the best selection of fine wines
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- benefits end -->
+
+      <!-- how-work start -->
+      <section id="how-work" class="how-work">
+        <div class="container-for-bg">
+          <div class="container how-work__container">
+            <h2 class="how-work__title">How it works</h2>
+
+            <ul class="how-work__list">
+              <li class="how-work__item how-work__item-1">
+                <p class="how-work__item-1-text">Choose your NFT</p>
+                <img class="how-work__item-1-img" src="/images/how-work/01.png" alt="" />
+              </li>
+
+              <li class="how-work__item how-work__item-2">
+                <img class="how-work__item-2-img" src="/images/how-work/02.png" alt="" />
+                <p class="how-work__item-2-text">Purchase NFT in one click</p>
+              </li>
+
+              <li class="how-work__item how-work__item-3">
+                <p class="how-work__item-3-text">Own and dispose your NFT at you wish</p>
+                <img class="how-work__item-3-img" src="/images/how-work/03.png" alt="" />
+              </li>
+
+              <li class="how-work__item how-work__item-4">
+                <img class="how-work__item-4-img" src="/images/how-work/04.png" alt="" />
+                <p class="how-work__item-4-text">Claim your wine</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- how-work end -->
+
+      <!-- team start -->
+      <section class="team">
+        <div class="container">
+          <h2 id="team" class="team__title">Who we are</h2>
+          <p class="team__sub-title">3 of us have started VinoDEX to create first wine NFT as a new asset class</p>
+
+          <div class="team__list">
+            <div class="team__left-col">
+              <div class="team__item team__item--1">
+                <picture>
+                  <source srcset="/images/team/vova@2x.png" media="(min-width: 1135px)" />
+                  <img class="team__item--1-img" src="/images/team/vova-mobile@2x.png" alt="" />
+                </picture>
+
+                <p class="team__item-name">Vova Antonov</p>
+                <p class="team__item-desc-1">WSET Diploma lvl4 (London) Wine specialist</p>
+                <div class="team__item-desc-wrap">
+                  <p class="team__item-desc-2">
+                    Graduated WSET in London (WSET Diploma), wine expert with 10 years experience in wine trade, CEO
+                    Wine School Goodwine (Kyiv), close and direct relationship with main producers in key wine regions.
+                  </p>
+                  <p class="team__item-desc-2">
+                    <!-- Boost your confidence in your drinks recognised qualification from WSET. -->
+                  </p>
+                </div>
+
+                <ul class="socials team__socials">
+                  <li class="socials__item team__socials-item">
+                    <a
+                      class="social-link fb-link"
+                      href="https://www.facebook.com/vladimir.antonov.9235"
+                      target="_blank"
+                    >
+                      <svg
+                        class="socials__icon team__socials-icon"
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9.44096 24.0352V13.4775H6.25V9.67624H9.44096V6.42947C9.44096 3.87813 11.3259 1.53516 15.6691 1.53516C17.4276 1.53516 18.728 1.68264 18.728 1.68264L18.6255 5.23238C18.6255 5.23238 17.2994 5.22108 15.8522 5.22108C14.286 5.22108 14.0351 5.85255 14.0351 6.90062V9.67624H18.75L18.5448 13.4775H14.0351V24.0352H9.44096Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                  <li class="socials__item team__socials-item">
+                    <a
+                      class="social-link in-link"
+                      href="https://www.linkedin.com/in/volodymyr-antonov-dipwset-328b9729/"
+                      target="_blank"
+                    >
+                      <svg
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M10.7147 9.31859H14.1966V11.053C14.6981 10.0555 15.9844 9.15922 17.9166 9.15922C21.6206 9.15922 22.5 11.1448 22.5 14.788V21.5352H18.75V15.6177C18.75 13.543 18.2484 12.373 16.9716 12.373C15.2006 12.373 14.4647 13.6339 14.4647 15.6167V21.5352H10.7147V9.31859ZM4.28437 21.3758H8.03438V9.15922H4.28437V21.3758ZM8.57156 5.17578C8.5717 5.4901 8.50937 5.80131 8.38818 6.09133C8.26699 6.38135 8.08936 6.64439 7.86562 6.86516C7.41225 7.31574 6.79857 7.56796 6.15938 7.56641C5.5213 7.56598 4.90904 7.31441 4.455 6.86609C4.23207 6.64457 4.05505 6.38124 3.93407 6.09119C3.8131 5.80113 3.75054 5.49005 3.75 5.17578C3.75 4.54109 4.00313 3.93359 4.45594 3.48547C4.90958 3.03655 5.5221 2.78488 6.16031 2.78516C6.79969 2.78516 7.41281 3.03734 7.86562 3.48547C8.3175 3.93359 8.57156 4.54109 8.57156 5.17578Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="team__item team__item--2">
+                <img class="team__item--2-img" src="/images/team/fred@2x.png" alt="" width="343" height="354" />
+                <picture>
+                  <source srcset="/images/team/fred@2x.png" media="(min-width 1135px)" />
+                  <img class="team__item--2-img" src="/images/team/fred-mobile@2x.png" alt="" />
+                </picture>
+
+                <p class="team__item-name">Fred Pollack</p>
+                <p class="team__item-desc-1">Fintech and Traveltech background</p>
+                <div class="team__item-desc-wrap">
+                  <p class="team__item-desc-2">
+                    Before starting VinoDEX Fred had an extensive fintech background - co-founded and was the CEO of a
+                    fast-lending platform focused on the underbanked powered by scoring of non-financial data and ML
+                    models. Also co-founded a travel-tech platform focused on vacations quickly becoming the biggest in
+                    Ukraine. Before that he had more than ten years of experience on senior management position in
+                    conventional banking system.
+                  </p>
+                  <p class="team__item-desc-2"></p>
+                </div>
+                <ul class="socials team__socials">
+                  <li class="socials__item team__socials-item">
+                    <a class="social-link fb-link" href="https://www.facebook.com/fred.pollack1980" target="_blank">
+                      <svg
+                        class="socials__icon team__socials-icon"
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9.44096 24.0352V13.4775H6.25V9.67624H9.44096V6.42947C9.44096 3.87813 11.3259 1.53516 15.6691 1.53516C17.4276 1.53516 18.728 1.68264 18.728 1.68264L18.6255 5.23238C18.6255 5.23238 17.2994 5.22108 15.8522 5.22108C14.286 5.22108 14.0351 5.85255 14.0351 6.90062V9.67624H18.75L18.5448 13.4775H14.0351V24.0352H9.44096Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                  <li class="socials__item team__socials-item">
+                    <a
+                      class="social-link in-link"
+                      href="https://www.linkedin.com/in/fred-pollack-46652b20/"
+                      target="_blank"
+                    >
+                      <svg
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M10.7147 9.31859H14.1966V11.053C14.6981 10.0555 15.9844 9.15922 17.9166 9.15922C21.6206 9.15922 22.5 11.1448 22.5 14.788V21.5352H18.75V15.6177C18.75 13.543 18.2484 12.373 16.9716 12.373C15.2006 12.373 14.4647 13.6339 14.4647 15.6167V21.5352H10.7147V9.31859ZM4.28437 21.3758H8.03438V9.15922H4.28437V21.3758ZM8.57156 5.17578C8.5717 5.4901 8.50937 5.80131 8.38818 6.09133C8.26699 6.38135 8.08936 6.64439 7.86562 6.86516C7.41225 7.31574 6.79857 7.56796 6.15938 7.56641C5.5213 7.56598 4.90904 7.31441 4.455 6.86609C4.23207 6.64457 4.05505 6.38124 3.93407 6.09119C3.8131 5.80113 3.75054 5.49005 3.75 5.17578C3.75 4.54109 4.00313 3.93359 4.45594 3.48547C4.90958 3.03655 5.5221 2.78488 6.16031 2.78516C6.79969 2.78516 7.41281 3.03734 7.86562 3.48547C8.3175 3.93359 8.57156 4.54109 8.57156 5.17578Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="team__right-col">
+              <div class="team__item team__item--3">
+                <picture>
+                  <source srcset="/images/team/irina@2x.png" media="(min-width: 1135px)" />
+                  <img class="team__item--3-img" src="/images/team/irina-mobile@2x.png" alt="" />
+                </picture>
+
+                <p class="team__item-name">Irina Zhdan</p>
+                <p class="team__item-desc-1">LLM (Geneva University)</p>
+                <div class="team__item-desc-wrap team__item-desc-wrap--3">
+                  <p class="team__item-desc-2">
+                    Irina Zhdan — obtained L.LM in Geneva University, has wide expertise in doing business
+                    internationally, founder of consulting company AXEL4, wine culture and web3 disciple
+                  </p>
+                </div>
+                <ul class="socials team__socials">
+                  <li class="socials__item team__socials-item">
+                    <a class="social-link fb-link" href="https://www.facebook.com/irina.zhdan" target="_blank">
+                      <svg
+                        class="socials__icon team__socials-icon"
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M9.44096 24.0352V13.4775H6.25V9.67624H9.44096V6.42947C9.44096 3.87813 11.3259 1.53516 15.6691 1.53516C17.4276 1.53516 18.728 1.68264 18.728 1.68264L18.6255 5.23238C18.6255 5.23238 17.2994 5.22108 15.8522 5.22108C14.286 5.22108 14.0351 5.85255 14.0351 6.90062V9.67624H18.75L18.5448 13.4775H14.0351V24.0352H9.44096Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                  <li class="socials__item team__socials-item">
+                    <a
+                      class="social-link in-link"
+                      href="https://www.linkedin.com/in/irina-zhdan-031527184/"
+                      target="_blank"
+                    >
+                      <svg
+                        width="17.5"
+                        height="17.5"
+                        viewBox="0 0 25 26"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          clip-rule="evenodd"
+                          d="M10.7147 9.31859H14.1966V11.053C14.6981 10.0555 15.9844 9.15922 17.9166 9.15922C21.6206 9.15922 22.5 11.1448 22.5 14.788V21.5352H18.75V15.6177C18.75 13.543 18.2484 12.373 16.9716 12.373C15.2006 12.373 14.4647 13.6339 14.4647 15.6167V21.5352H10.7147V9.31859ZM4.28437 21.3758H8.03438V9.15922H4.28437V21.3758ZM8.57156 5.17578C8.5717 5.4901 8.50937 5.80131 8.38818 6.09133C8.26699 6.38135 8.08936 6.64439 7.86562 6.86516C7.41225 7.31574 6.79857 7.56796 6.15938 7.56641C5.5213 7.56598 4.90904 7.31441 4.455 6.86609C4.23207 6.64457 4.05505 6.38124 3.93407 6.09119C3.8131 5.80113 3.75054 5.49005 3.75 5.17578C3.75 4.54109 4.00313 3.93359 4.45594 3.48547C4.90958 3.03655 5.5221 2.78488 6.16031 2.78516C6.79969 2.78516 7.41281 3.03734 7.86562 3.48547C8.3175 3.93359 8.57156 4.54109 8.57156 5.17578Z"
+                          fill="#111"
+                        />
+                      </svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- team end -->
+
+      <!-- partners start -->
+      <section id="partners" class="partners">
+        <div class="container">
+          <h2 class="partners__title">Our partners</h2>
+
+          <div class="partners__partner partner partner-desc">
+            <div class="partner__img-thumb">
+              <picture>
+                <source srcset="/images/partners/BP-logo.png" media="(min-width 1135px)" />
+                <img class="partner__img partner__bruno-img" src="/images/partners/BP-logo.png" alt="" />
+              </picture>
+            </div>
+
+            <div class="partner__right-col">
+              <h3 class="partner__name">Bruno Paillard</h3>
+              <p class="partner__sub-desc">Press release from Bruno Paillard about cooperation</p>
+              <p class="partner__desc-1">
+                The BRUNO PAILLARD style is a marriage of elegance and complexity which is manifested as a light and
+                smooth effervescence, a remarkable purity, a true freshness and a silky texture.
+              </p>
+              <p class="partner__desc-2">
+                A great champagne for BRUNO PAILLARD is – above all – an “assemblage”, blending: of diverse crus, grape
+                varieties and vintages. It is about the constant desire to capture the quintessential finesse and
+                elegance which champagne can bring when it is served with love and care.
+              </p>
+              <a class="partner__link" href="http://www.champagnebrunopaillard.com/en/" target="_blank"
+                >www.champagnebrunopaillard.com</a
+              >
+            </div>
+          </div>
+
+          <div class="glide partners-slider">
+            <div class="glide__track" data-glide-el="track">
+              <ul class="glide__slides">
+                <li class="glide__slide">
+                  <div class="partners__partner partner">
+                    <div class="partner__img-thumb">
+                      <picture>
+                        <source srcset="/images/partners/BP-logo.png" media="(min-width: 1135px)" />
+                        <img class="partner__img partner__bruno-img" src="/images/partners/BP-logo.png" alt="" />
+                      </picture>
+                    </div>
+
+                    <div class="partner__right-col">
+                      <h3 class="partner__name">Bruno Paillard</h3>
+                      <p class="partner__sub-desc">Press release from Bruno Paillard about cooperation</p>
+                      <p class="partner__desc-1">
+                        The BRUNO PAILLARD style is a marriage of elegance and complexity which is manifested as a light
+                        and smooth effervescence, a remarkable purity, a true freshness and a silky texture.
+                      </p>
+                      <p class="partner__desc-2">
+                        A great champagne for BRUNO PAILLARD is – above all – an “assemblage”, blending: of diverse
+                        crus, grape varieties and vintages. It is about the constant desire to capture the
+                        quintessential finesse and elegance which champagne can bring when it is served with love and
+                        care.
+                      </p>
+                      <a class="partner__link" href="http://www.champagnebrunopaillard.com/en/" target="_blank"
+                        >www.champagnebrunopaillard.com</a
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li class="glide__slide">
+                  <div class="partners__partner partner">
+                    <div class="partner__img-thumb">
+                      <picture>
+                        <source srcset="/images/partners/BP-logo.png" media="(min-width: 1135px)" />
+                        <img class="partner__img partner__bruno-img" src="/images/partners/BP-logo.png" alt="" />
+                      </picture>
+                    </div>
+
+                    <div class="partner__right-col">
+                      <h3 class="partner__name">Bruno Paillard</h3>
+                      <p class="partner__sub-desc">Press release from Bruno Paillard about cooperation</p>
+                      <p class="partner__desc-1">
+                        The BRUNO PAILLARD style is a marriage of elegance and complexity which is manifested as a light
+                        and smooth effervescence, a remarkable purity, a true freshness and a silky texture.
+                      </p>
+                      <p class="partner__desc-2">
+                        A great champagne for BRUNO PAILLARD is – above all – an “assemblage”, blending: of diverse
+                        crus, grape varieties and vintages. It is about the constant desire to capture the
+                        quintessential finesse and elegance which champagne can bring when it is served with love and
+                        care.
+                      </p>
+                      <a class="partner__link" href="http://www.champagnebrunopaillard.com/en/" target="_blank"
+                        >www.champagnebrunopaillard.com</a
+                      >
+                    </div>
+                  </div>
+                </li>
+                <li class="glide__slide">
+                  <div class="partners__partner partner">
+                    <div class="partner__img-thumb">
+                      <picture>
+                        <source srcset="/images/partners/BP-logo.png" media="(min-width: 1135px)" />
+                        <img class="partner__img partner__bruno-img" src="/images/partners/BP-logo.png" alt="" />
+                      </picture>
+                    </div>
+
+                    <div class="partner__right-col">
+                      <h3 class="partner__name">Bruno Paillard</h3>
+                      <p class="partner__sub-desc">Press release from Bruno Paillard about cooperation</p>
+                      <p class="partner__desc-1">
+                        The BRUNO PAILLARD style is a marriage of elegance and complexity which is manifested as a light
+                        and smooth effervescence, a remarkable purity, a true freshness and a silky texture.
+                      </p>
+                      <p class="partner__desc-2">
+                        A great champagne for BRUNO PAILLARD is – above all – an “assemblage”, blending: of diverse
+                        crus, grape varieties and vintages. It is about the constant desire to capture the
+                        quintessential finesse and elegance which champagne can bring when it is served with love and
+                        care.
+                      </p>
+                      <a class="partner__link" href="http://www.champagnebrunopaillard.com/en/" target="_blank"
+                        >www.champagnebrunopaillard.com</a
+                      >
+                    </div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+
+            <div class="bullets" data-glide-el="controls[nav]">
+              <button class="" data-glide-dir="=0"></button>
+              <button class="" data-glide-dir="=1"></button>
+              <button class="" data-glide-dir="=2"></button>
+            </div>
+          </div>
+
+          <div class="partners__supported-by supported-by">
+            <p class="supported-by__text">Supported by</p>
+
+            <ul class="supported-by__list">
+              <li class="supported-by__item near-item">
+                <a class="supported-by__link" href="javascript:;">
+                  <img class="supported-by__logo" src="/images/partners/NEAR-logo.svg" alt="" width="159" height="41" />
+                </a>
+              </li>
+              <!-- <li class="supported-by__item bruno-item">
+                <a class="supported-by__link" href="javascript:;">
+                  <img
+                    class="supported-by__logo"
+                    src="/images/partners/bruno-logo.png"
+                    alt=""
+                    width="211"
+                    height="81"
+                  />
+                </a>
+              </li> -->
+              <li class="supported-by__item opensea-item">
+                <a class="supported-by__link" href="javascript:;">
+                  <img
+                    class="supported-by__logo"
+                    src="/images/partners/OpenSea-logo.png"
+                    alt=""
+                    width="62"
+                    height="62"
+                  />
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- partners end -->
+
+      <!-- explore start -->
+      <section class="explore">
+        <div class="container explore__container">
+          <h2 class="explore__title">Explore more NFT collections on VinoDex</h2>
+          <a class="explore__look-more-btn" href="https://vinodex.io/" target="_blank">Explore more</a>
+        </div>
+      </section>
+      <!-- explore end -->
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer__top">
+        <div class="container">
+          <div class="blur-card__container footer-top__container">
+            <div class="footer__top-left-col">
+              <p class="footer__top-title">Get in touch with our wine expert</p>
+              <p class="footer__top-sub-title">If you believe in the coming of web3 and love wine</p>
+              <form class="footer__form subscribe-form">
+                <div class="footer__form-left">
+                  <input
+                    class="footer__form-input"
+                    type="email"
+                    inputmode="email"
+                    id="subscribe-email"
+                    name="email"
+                    placeholder="Email"
+                  />
+
+                  <button
+                    class="footer__form-btn-sbm footer__form-btn-sbm-mob btn btn-lg btn--black subscribe-btn"
+                    type="button"
+                    disabled
+                  >
+                    Expert advice
+                  </button>
+
+                  <div class="footer__form-checkbox-wrap form-group">
+                    <input class="footer__form-checkbox" type="checkbox" id="subscribe" name="subscribe" checked />
+                    <label class="checkbox-text" for="subscribe">Subscribe for news & personal proposal</label>
+                  </div>
+                </div>
+
+                <button
+                  class="footer__form-btn-sbm footer__form-btn-sbm-desc btn btn-lg btn--black subscribe-btn"
+                  type="button"
+                >
+                  Expert advice
+                </button>
+              </form>
+            </div>
+
+            <picture>
+              <source srcset="/images/footer/vova@2x.png" media="(min-width: 1135px)" />
+              <img class="footer__img" src="/images/footer/vova-mobile@2x.png" alt="" />
+            </picture>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer__bottom">
+        <div class="container">
+          <img class="footer__logo" src="/images/icons/logo.svg" alt="" width="110" height="32" />
+
+          <ul class="foo-socials">
+            <li class="foo-socials__item">
+              <a class="foo-socials__link" href="https://t.me/+tL6hMoHE8bM4Njgy" target="_blank">
+                <svg
+                  class="foo-socials__icon foo-socials__telegram"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 25 25"
+                  fill="#fff"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20.276 4.15794L1.80729 11.2798C0.546872 11.7861 0.554164 12.4892 1.57604 12.8027L6.31771 14.2819L17.2885 7.36003C17.8073 7.0444 18.2812 7.21419 17.8917 7.56003L9.00312 15.5819H9.00104L9.00312 15.5829L8.67604 20.4704C9.15521 20.4704 9.36666 20.2507 9.63542 19.9913L11.9385 17.7517L16.7292 21.2902C17.6125 21.7767 18.2469 21.5267 18.4667 20.4725L21.6115 5.65169C21.9333 4.36107 21.1188 3.77669 20.276 4.15794Z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="foo-socials__item">
+              <a class="foo-socials__link" href="https://discord.com/invite/ZEFfhJC8" target="_blank">
+                <svg
+                  class="foo-socials__icon foo-socials__discord"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 25 25"
+                  fill="#fff"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20.2971 5.48654C18.8628 4.81575 17.3253 4.31995 15.7175 4.03802C15.7032 4.03517 15.6884 4.03701 15.6751 4.04328C15.6619 4.04955 15.6508 4.05994 15.6435 4.07302C15.4466 4.43175 15.2272 4.89936 15.0735 5.26878C13.3683 5.00458 11.6347 5.00458 9.92957 5.26878C9.75833 4.85936 9.56522 4.46016 9.35115 4.07302C9.3439 4.05978 9.33292 4.04916 9.31969 4.04255C9.30645 4.03595 9.2916 4.0337 9.27709 4.03608C7.67027 4.31801 6.13281 4.81381 4.69754 5.48557C4.68519 5.49094 4.67472 5.5001 4.66754 5.51182C1.75012 9.95944 0.950459 14.2972 1.34326 18.5805C1.34435 18.591 1.34749 18.6012 1.35249 18.6104C1.35749 18.6196 1.36423 18.6276 1.37232 18.634C3.07514 19.9196 4.97441 20.899 6.9906 21.531C7.00465 21.5355 7.01968 21.5355 7.03373 21.531C7.04778 21.5265 7.06019 21.5177 7.06934 21.5058C7.5032 20.9041 7.88766 20.2657 8.21869 19.5974C8.22328 19.5883 8.22593 19.5782 8.22645 19.5679C8.22697 19.5576 8.22536 19.5474 8.22171 19.5378C8.21807 19.5282 8.21248 19.5195 8.20533 19.5124C8.19817 19.5052 8.18962 19.4997 8.18025 19.4963C7.57465 19.2598 6.98786 18.9744 6.4253 18.6428C6.41519 18.6368 6.40667 18.6283 6.40051 18.618C6.39435 18.6078 6.39073 18.5961 6.38999 18.5841C6.38925 18.572 6.3914 18.56 6.39625 18.549C6.40111 18.5381 6.40851 18.5285 6.4178 18.5212C6.53592 18.4308 6.65404 18.3365 6.76654 18.2422C6.77667 18.2338 6.78886 18.2284 6.80177 18.2266C6.81469 18.2249 6.8278 18.227 6.83966 18.2325C10.5211 19.9474 14.5082 19.9474 18.1465 18.2325C18.1584 18.2266 18.1717 18.2243 18.1848 18.2259C18.1979 18.2274 18.2103 18.2327 18.2206 18.2413C18.3331 18.3365 18.4503 18.4308 18.5693 18.5212C18.5787 18.5284 18.5862 18.5378 18.5912 18.5487C18.5963 18.5595 18.5986 18.5715 18.598 18.5836C18.5975 18.5956 18.594 18.6073 18.588 18.6176C18.5821 18.628 18.5737 18.6366 18.5637 18.6428C18.0031 18.9772 17.42 19.2601 16.8078 19.4953C16.7984 19.4989 16.7898 19.5045 16.7827 19.5117C16.7755 19.5189 16.7699 19.5277 16.7663 19.5374C16.7627 19.547 16.7611 19.5574 16.7616 19.5677C16.7621 19.5781 16.7648 19.5882 16.7694 19.5974C17.1069 20.2653 17.4931 20.9011 17.9178 21.5048C17.9266 21.5172 17.9389 21.5264 17.953 21.5313C17.9671 21.5362 17.9823 21.5364 17.9965 21.532C20.0162 20.9017 21.9185 19.9219 23.6232 18.634C23.6316 18.628 23.6385 18.6202 23.6437 18.6111C23.6489 18.6021 23.6521 18.592 23.6532 18.5815C24.122 13.6293 22.8676 9.32657 20.3261 5.51376C20.3199 5.50137 20.3096 5.49171 20.2971 5.48654ZM8.76898 15.9722C7.66089 15.9722 6.74685 14.933 6.74685 13.6585C6.74685 12.383 7.64308 11.3448 8.76898 11.3448C9.90333 11.3448 10.8089 12.3918 10.7911 13.6585C10.7911 14.934 9.89489 15.9722 8.76898 15.9722ZM16.2453 15.9722C15.1363 15.9722 14.2232 14.933 14.2232 13.6585C14.2232 12.383 15.1185 11.3448 16.2453 11.3448C17.3797 11.3448 18.2853 12.3918 18.2675 13.6585C18.2675 14.934 17.3806 15.9722 16.2453 15.9722Z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="foo-socials__item">
+              <a class="foo-socials__link" href="https://www.linkedin.com/company/vinodex/about/" target="_blank"
+                ><svg
+                  class="foo-socials__icon foo-socials__linkedin"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 25 25"
+                  fill="#fff"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10.7147 9.31859H14.1966V11.053C14.6981 10.0555 15.9844 9.15922 17.9166 9.15922C21.6206 9.15922 22.5 11.1448 22.5 14.788V21.5352H18.75V15.6177C18.75 13.543 18.2484 12.373 16.9716 12.373C15.2006 12.373 14.4647 13.6339 14.4647 15.6167V21.5352H10.7147V9.31859ZM4.28437 21.3758H8.03438V9.15922H4.28437V21.3758ZM8.57156 5.17578C8.5717 5.4901 8.50937 5.80131 8.38818 6.09133C8.26699 6.38135 8.08936 6.64439 7.86562 6.86516C7.41225 7.31574 6.79857 7.56796 6.15938 7.56641C5.5213 7.56598 4.90904 7.31441 4.455 6.86609C4.23207 6.64457 4.05505 6.38124 3.93407 6.09119C3.8131 5.80113 3.75054 5.49005 3.75 5.17578C3.75 4.54109 4.00313 3.93359 4.45594 3.48547C4.90958 3.03655 5.5221 2.78488 6.16031 2.78516C6.79969 2.78516 7.41281 3.03734 7.86562 3.48547C8.3175 3.93359 8.57156 4.54109 8.57156 5.17578Z"
+                  />
+                </svg>
+              </a>
+            </li>
+            <li class="foo-socials__item">
+              <a class="foo-socials__link" href="https://www.facebook.com/vinodex/" target="_blank">
+                <svg
+                  class="foo-socials__icon foo-socials__linkedin"
+                  width="25"
+                  height="25"
+                  viewBox="0 0 25 25"
+                  fill="#fff"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M9.44096 24.0352V13.4775H6.25V9.67624H9.44096V6.42947C9.44096 3.87813 11.3259 1.53516 15.6691 1.53516C17.4276 1.53516 18.728 1.68264 18.728 1.68264L18.6255 5.23238C18.6255 5.23238 17.2994 5.22108 15.8522 5.22108C14.286 5.22108 14.0351 5.85255 14.0351 6.90062V9.67624H18.75L18.5448 13.4775H14.0351V24.0352H9.44096Z"
+                  />
+                </svg>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+
+    <div class="sticky-btns">
+      <div class="container">
+        <a class="btn btn-sm btn--black" href="#footer">Expert advice</a>
+        <a class="btn btn-sm btn--white" href="https://vinodex.io/" target="_blank">Explore NFT collection</a>
+      </div>
+    </div>
+
+    <div class="btn-up-wrap js-btn-to-top-wrap">
+      <a href="#body">
+        <img src="/images/icons/arrow-up.svg" alt="" />
+      </a>
+    </div>
+
+    <script src="/js/glide.min.js"></script>
+    <script type="text/javascript">
+      smoothAnchorScroll.init();
+      burger.init();
+      btnToTop.init();
+      const glide = new Glide(".glide", { type: "carousel" }).mount();
+      const _subscribe = new subscribe();
+    </script>
+  </body>
+</html>

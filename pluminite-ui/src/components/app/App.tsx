@@ -21,6 +21,7 @@ import ArtistDetail from '../../pages/artistDetail/ArtistDetail';
 import NotFound from '../../pages/NotFound/NotFound';
 import RedirectPage from '../../pages/redirect/Redirect';
 import { UserTypes } from '../../types/NearAPI';
+import EmailConfirmation, { EmailConfirmationTypeEnum } from '../../pages/emailConfirmation/EmailConfirmation';
 
 interface IApp extends IProps {
 
@@ -69,6 +70,9 @@ class App extends Component<IApp & IBaseComponentProps> {
             <Route path="/tokens/:type" element={<CatalogTokens />} />
             <Route path="/create/:type" element={<CreateToken />} />
             <Route path="/redirect" element={<RedirectPage />} />
+            <Route path="/email-confirmation/:hash" element={<EmailConfirmation type={EmailConfirmationTypeEnum.confirm} />} />
+            <Route path="/email-confirmation/:hash/confirmed" element={<EmailConfirmation type={EmailConfirmationTypeEnum.confirmed} />} />
+            <Route path="/email-confirmation/:hash/error" element={<EmailConfirmation type={EmailConfirmationTypeEnum.error} />} />
           </Routes>
         </main>
 
