@@ -660,6 +660,7 @@ impl Contract {
     }
 
     // поставити перегляд колекції
+    #[payable]
     pub fn collection_set_view(&mut self, collection_id: &String) {
         let user_id = env::predecessor_account_id();
 
