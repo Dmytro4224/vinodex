@@ -72,7 +72,7 @@
 
     <!-- <link rel="stylesheet" href="/css/index.css" /> -->
     <!-- styles end -->
-    <script>
+    <script type="text/javascript">
       class SmoothAnchorScroll {
         init() {
           document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -203,7 +203,7 @@
           const body = JSON.stringify({ emailBase64: window.btoa(value) });
 
           self.__canSend(false);
-          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add`, {
+          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add-v2`, {
             method: "POST",
             body,
             headers: {
