@@ -67,8 +67,8 @@
     <!-- <link rel="stylesheet" href="/css/mobile.css" /> -->
     <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/glide.core.min.css" />
     <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/glide.theme.min.css" />
-    <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/mobile.css" />
-    <link rel="stylesheet" media="screen and (min-device-width: 1135px)" href="/css/index.css" />
+    <link rel="stylesheet" media="screen and (max-device-width: 1134px)" href="/css/mobile.css?v=1" />
+    <link rel="stylesheet" media="screen and (min-device-width: 1135px)" href="/css/index.css?v=1" />
 
     <!-- <link rel="stylesheet" href="/css/index.css" /> -->
     <!-- styles end -->
@@ -203,7 +203,7 @@
           const body = JSON.stringify({ emailBase64: window.btoa(value) });
 
           self.__canSend(false);
-          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add-v2`, {
+          fetch(`https://unchain.vinodex.io/apiv1/subscribe/add/from-landing`, {
             method: "POST",
             body,
             headers: {
@@ -1117,7 +1117,9 @@
       <section class="explore">
         <div class="container explore__container">
           <h2 class="explore__title">Explore more NFT collections on VinoDex</h2>
-          <a class="explore__look-more-btn" href="https://vinodex.io/" target="_blank">Explore more</a>
+          <a class="explore__look-more-btn" href="https://vinodex.io/" target="_blank"
+            ><span class="bgc"></span> <span class="more-btn-text">Explore more</span></a
+          >
         </div>
       </section>
       <!-- explore end -->
