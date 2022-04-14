@@ -50,8 +50,13 @@ class UnchainApi {
     }
   }
 
-  public async welcome(emailHash: string) {
-    const body = JSON.stringify({ emailHash });
+  /**
+   * 
+   * @param emailHash
+   * @param {(0 | 1)} appType
+   */
+  public async welcome(emailHash: string, appType: number = 0) {
+    const body = JSON.stringify({ emailHash, appType });
     try {
       const response = await fetch(`${this.endpoint}/apiv1/welcome`, {
         method: 'POST',

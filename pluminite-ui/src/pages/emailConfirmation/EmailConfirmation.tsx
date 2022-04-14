@@ -35,13 +35,21 @@ class EmailConfirmation extends Component<IEmailConfirmation & IBaseComponentPro
     }
   }
 
+  private isFromLanding() {
+    const type = new URLSearchParams(document.location.search).get('type') || '';
+    return type.localeCompare('landing', void 0, { sensitivity: 'accent' }) === 0;
+  }
+
   private sendData() {
     const emailHash = this.props.params.hash!;
+    const isFromLanding = this.isFromLanding();
     if (this.props.type === EmailConfirmationTypeEnum.confirm) {
       unchainApi.confirmation(emailHash)
         .then(response => {
-          console.log('confirm response', response);
-          if (response === null || response.statusCode !== 200 || !response.data) {
+          if (isFromLanding) {
+            this.props.navigate(`/email-confirmation/${emailHash}/confirmed/?type=landing`);
+          }
+          else if (response === null || response.statusCode !== 200 || !response.data) {
             this.props.navigate(`/email-confirmation/${emailHash}/error`);
           }
           else {
@@ -54,7 +62,7 @@ class EmailConfirmation extends Component<IEmailConfirmation & IBaseComponentPro
         });
     }
     if (this.props.type === EmailConfirmationTypeEnum.confirmed) {
-      unchainApi.welcome(emailHash)
+      unchainApi.welcome(emailHash, isFromLanding ? 1 : 0)
         .then(response => {
           console.log('confirmed response', response);
         })
